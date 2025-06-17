@@ -1,1 +1,380 @@
-These are the ELT-102 files
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Electronics - ELT102</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #00ff87 0%, #60efff 50%, #ffff00 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #0066ff, #00cc66);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(50px) translateY(50px); }
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h2 {
+            font-size: 1.8em;
+            font-weight: 300;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h3 {
+            font-size: 2.2em;
+            color: #0066ff;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card.opamp {
+            border-color: #00ff87;
+            background: linear-gradient(145deg, #f0fff0, #e8ffe8);
+        }
+
+        .card.opamp:hover {
+            border-color: #00cc66;
+            background: linear-gradient(145deg, #e8ffe8, #d0ffd0);
+        }
+
+        .card.digital {
+            border-color: #60efff;
+            background: linear-gradient(145deg, #f0ffff, #e8feff);
+        }
+
+        .card.digital:hover {
+            border-color: #00ccff;
+            background: linear-gradient(145deg, #e8feff, #d0fdff);
+        }
+
+        .card.advanced {
+            border-color: #ffff00;
+            background: linear-gradient(145deg, #fffff0, #fffee8);
+        }
+
+        .card.advanced:hover {
+            border-color: #cccc00;
+            background: linear-gradient(145deg, #fffee8, #fffd0);
+        }
+
+        .card h4 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .card .icon {
+            float: right;
+            font-size: 2em;
+            opacity: 0.3;
+            margin-left: 15px;
+        }
+
+        .footer {
+            background: linear-gradient(45deg, #333, #666);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .header h2 {
+                font-size: 1.4em;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Digital Electronics - ELT102</h1>
+            <h2>Class Simulators</h2>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h3>🔧 Operational Amplifier Circuits</h3>
+                <div class="grid">
+                    <div class="card opamp" onclick="launchSimulator('opamp-int.html')">
+                        <div class="icon">⚡</div>
+                        <h4>Operational Amplifier</h4>
+                        <p>Learn the basic principles of operational amplifiers including ideal vs real characteristics, open-loop and closed-loop gain, input impedance, and output impedance concepts.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('opamp.html')">
+                        <div class="icon">🔧</div>
+                        <h4>Op Amp Operations</h4>
+                        <p>Explore various operational amplifier operations and configurations, understanding how different feedback networks affect amplifier behavior and performance.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('invert.html')">
+                        <div class="icon">🔄</div>
+                        <h4>Inverting Op Amp</h4>
+                        <p>Explore the classic inverting amplifier configuration with virtual short concept, gain calculation, and input/output relationships. Practice with different feedback resistor values.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('non-invert.html')">
+                        <div class="icon">📈</div>
+                        <h4>Non-Inverting Op Amp</h4>
+                        <p>Study the non-inverting amplifier circuit, understand why it has high input impedance, and learn to calculate gain using the voltage divider principle.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('follower.html')">
+                        <div class="icon">👥</div>
+                        <h4>Op Amp Voltage Follower</h4>
+                        <p>Understand the unity gain buffer configuration, its high input impedance, low output impedance characteristics, and applications in impedance matching.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('integrator.html')">
+                        <div class="icon">∫</div>
+                        <h4>Op Amp Integrator</h4>
+                        <p>Learn how capacitive feedback creates an integrator circuit that can perform mathematical integration, generate ramp waveforms, and filter signals.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('difopamp.html')">
+                        <div class="icon">∂</div>
+                        <h4>Op Amp Differentiator</h4>
+                        <p>Understand how the differentiator circuit responds to rate of change of input signals and its applications in edge detection and signal processing.</p>
+                    </div>
+
+                    <div class="card opamp" onclick="launchSimulator('compopamp.html')">
+                        <div class="icon">⚖️</div>
+                        <h4>Op Amp Comparators</h4>
+                        <p>Explore voltage comparison circuits, threshold detection, and how op-amps can be used to create digital outputs from analog inputs with hysteresis.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>🎛️ Control Systems</h3>
+                <div class="grid">
+                    <div class="card digital" onclick="launchSimulator('proportional.html')">
+                        <div class="icon">📊</div>
+                        <h4>Proportional Control</h4>
+                        <p>Learn the fundamentals of proportional control systems, gain settings, steady-state error, and how proportional controllers respond to system deviations.</p>
+                    </div>
+
+                    <div class="card digital" onclick="launchSimulator('closedloop.html')">
+                        <div class="icon">🔄</div>
+                        <h4>Closed Loop Control</h4>
+                        <p>Understand feedback control systems, error detection, system stability, and how closed-loop configurations improve system performance and accuracy.</p>
+                    </div>
+
+                    <div class="card digital" onclick="launchSimulator('pid.html')">
+                        <div class="icon">⚙️</div>
+                        <h4>PID Operations</h4>
+                        <p>Explore Proportional-Integral-Derivative control algorithms, tuning parameters, and how PID controllers optimize system response and eliminate steady-state errors.</p>
+                    </div>
+
+                    <div class="card digital" onclick="launchSimulator('washer.html')">
+                        <div class="icon">🌊</div>
+                        <h4>Washer Controls</h4>
+                        <p>Practical application of control systems in washing machine operations, including timing sequences, water level control, and automated cycle management.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>💻 Digital Circuits & Converters</h3>
+                <div class="grid">
+                    <div class="card advanced" onclick="launchSimulator('a-to-d.html')">
+                        <div class="icon">🌊</div>
+                        <h4>Digital to Analog Converter</h4>
+                        <p>Bridge the digital-analog gap with D/A conversion techniques, understanding resolution, settling time, and various DAC architectures like R-2R and weighted resistor networks.</p>
+                    </div>
+
+                    <div class="card advanced" onclick="launchSimulator('johnson.html')">
+                        <div class="icon">🔐</div>
+                        <h4>Johnson Decoder</h4>
+                        <p>Learn about Johnson counter decoding, twisted ring counter outputs, and how Johnson decoders convert sequential states into unique output combinations.</p>
+                    </div>
+
+                    <div class="card advanced" onclick="launchSimulator('updown.html')">
+                        <div class="icon">🔢</div>
+                        <h4>Up-Down Binary Counter</h4>
+                        <p>Understand bidirectional counting circuits, mode control inputs, and how up-down counters can increment or decrement based on control signals in digital systems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Digital Electronics ELT102 - Interactive Learning Platform | Click any simulator to launch hands-on learning experiences | 15 Circuit Simulators Available</p>
+        </div>
+    </div>
+
+    <script>
+        function launchSimulator(filename) {
+            // Add click animation
+            event.target.closest('.card').classList.add('pulse');
+            
+            setTimeout(() => {
+                event.target.closest('.card').classList.remove('pulse');
+            }, 1000);
+
+            // Launch the actual simulator file in a new window
+            try {
+                window.open(filename, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            } catch (error) {
+                // Fallback if popup is blocked
+                window.location.href = filename;
+            }
+        }
+
+        // Add some interactive hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add floating animation to header
+            const header = document.querySelector('.header');
+            let floatDirection = 1;
+            
+            setInterval(() => {
+                const currentTransform = header.style.transform || 'translateY(0px)';
+                const currentY = parseFloat(currentTransform.match(/translateY\(([^)]+)\)/)?.[1] || 0);
+                
+                if (currentY >= 5) floatDirection = -1;
+                if (currentY <= -5) floatDirection = 1;
+                
+                header.style.transform = `translateY(${currentY + (0.5 * floatDirection)}px)`;
+            }, 100);
+        });
+    </script>
+</body>
+</html>
