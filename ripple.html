@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripple Counter Simulator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .controls-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .circuit-section {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            color: #2a5298;
+            border-bottom: 2px solid #2a5298;
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .control-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .slider-group {
+            margin: 15px 0;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .counter-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .counter-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2a5298;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circuit-diagram {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 300px;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .flip-flop {
+            display: inline-block;
+            width: 120px;
+            height: 80px;
+            border: 3px solid #333;
+            border-radius: 8px;
+            margin: 0 15px;
+            position: relative;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            vertical-align: top;
+        }
+
+        .flip-flop.active {
+            background: #fff3cd;
+            border-color: #ffc107;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .ff-label {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .ff-inputs {
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: #666;
+        }
+
+        .ff-outputs {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: #666;
+        }
+
+        .ff-state {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: #2a5298;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: #333;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .clock-line {
+            background: #ff6b6b !important;
+            height: 3px;
+        }
+
+        .waveform-section {
+            grid-column: 1 / -1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            margin-top: 20px;
+        }
+
+        .waveform-container {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-canvas {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .status-panel {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .status-value {
+            color: #2a5298;
+            font-family: monospace;
+        }
+
+        .info-panel {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .info-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-text {
+            line-height: 1.6;
+            color: #424242;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .delay-indicator {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #ff9800;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Interactive Ripple Counter Simulator</h1>
+            <div class="subtitle">Educational Tool for Digital Electronics - Asynchronous Counter Operations</div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls-section">
+                <h2 class="section-title">⚙️ Controls</h2>
+                
+                <div class="control-group">
+                    <div class="control-label">Counter Configuration</div>
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="setCounterBits(2)">2-bit</button>
+                        <button class="btn btn-secondary" onclick="setCounterBits(3)">3-bit</button>
+                        <button class="btn btn-primary" onclick="setCounterBits(4)">4-bit</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Clock Control</div>
+                    <div class="button-group">
+                        <button class="btn btn-success" id="startBtn" onclick="startClock()">▶️ Start</button>
+                        <button class="btn btn-danger" id="stopBtn" onclick="stopClock()" disabled>⏸️ Stop</button>
+                        <button class="btn btn-primary" onclick="singleStep()">👆 Step</button>
+                        <button class="btn btn-secondary" onclick="resetCounter()">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Clock Speed: <span id="speedValue">500</span> ms</div>
+                    <input type="range" class="slider" id="speedSlider" min="100" max="2000" value="500" oninput="updateSpeed()">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">Propagation Delay: <span id="delayValue">20</span> ns per FF</div>
+                    <input type="range" class="slider" id="delaySlider" min="5" max="100" value="20" oninput="updateDelay()">
+                </div>
+
+                <div class="counter-display">
+                    <div class="control-label">Current Count</div>
+                    <div class="counter-value" id="counterValue">0000 (0)</div>
+                </div>
+
+                <div class="status-panel">
+                    <div class="status-item">
+                        <span class="status-label">Clock Pulses:</span>
+                        <span class="status-value" id="clockPulses">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Total Delay:</span>
+                        <span class="status-value" id="totalDelay">80 ns</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Max Frequency:</span>
+                        <span class="status-value" id="maxFreq">12.5 MHz</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Modulus:</span>
+                        <span class="status-value" id="modulus">16</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="circuit-section">
+                <h2 class="section-title">🔌 Circuit Diagram</h2>
+                <div class="circuit-diagram" id="circuitDiagram">
+                    <!-- Circuit will be generated here -->
+                </div>
+
+                <div class="info-panel">
+                    <div class="info-title">How Ripple Counters Work</div>
+                    <div class="info-text">
+                        • Each flip-flop triggers the next when its output goes from 1→0<br>
+                        • The clock signal "ripples" through each stage with propagation delay<br>
+                        • Total delay = Number of flip-flops × Individual propagation delay<br>
+                        • Max frequency = 1 / (Total propagation delay)<br>
+                        • Watch the animation to see the ripple effect in action!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="waveform-section">
+            <h2 class="section-title">📊 Timing Waveforms</h2>
+            <div class="waveform-container">
+                <canvas class="waveform-canvas" id="waveformCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class RippleCounterSimulator {
+            constructor() {
+                this.numBits = 4;
+                this.counterValue = 0;
+                this.clockSpeed = 500; // ms
+                this.propagationDelay = 20; // ns per flip-flop
+                this.isRunning = false;
+                this.clockPulses = 0;
+                this.flipFlopStates = Array(this.numBits).fill(0);
+                this.animationStates = Array(this.numBits).fill(false);
+                
+                // Waveform data
+                this.waveformData = {
+                    clock: [],
+                    q0: [],
+                    q1: [],
+                    q2: [],
+                    q3: [],
+                    timeAxis: []
+                };
+                this.waveformTime = 0;
+                this.maxWaveformPoints = 100;
+
+                this.initializeCanvas();
+                this.generateCircuit();
+                this.updateDisplay();
+                this.startWaveformAnimation();
+            }
+
+            initializeCanvas() {
+                this.canvas = document.getElementById('waveformCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                this.canvas.width = container.clientWidth - 40;
+                this.canvas.height = container.clientHeight - 40;
+            }
+
+            generateCircuit() {
+                const diagram = document.getElementById('circuitDiagram');
+                diagram.innerHTML = '';
+
+                // Clock input
+                const clockDiv = document.createElement('div');
+                clockDiv.style.cssText = `
+                    position: absolute;
+                    left: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-weight: bold;
+                    color: #ff6b6b;
+                    font-size: 14px;
+                `;
+                clockDiv.textContent = 'CLK';
+                diagram.appendChild(clockDiv);
+
+                // Generate flip-flops
+                for (let i = 0; i < this.numBits; i++) {
+                    const ff = document.createElement('div');
+                    ff.className = 'flip-flop';
+                    ff.id = `ff${i}`;
+                    ff.style.left = `${100 + i * 160}px`;
+                    ff.style.top = '40px';
+
+                    // Add delay indicator
+                    const delayInd = document.createElement('div');
+                    delayInd.className = 'delay-indicator';
+                    delayInd.textContent = `${this.propagationDelay}ns`;
+                    ff.appendChild(delayInd);
+
+                    // FF Label
+                    const label = document.createElement('div');
+                    label.className = 'ff-label';
+                    label.textContent = `FF${i}`;
+                    ff.appendChild(label);
+
+                    // Inputs
+                    const inputs = document.createElement('div');
+                    inputs.className = 'ff-inputs';
+                    inputs.innerHTML = i === 0 ? 'CLK<br>J=1<br>K=1' : 'CLK<br>J=1<br>K=1';
+                    ff.appendChild(inputs);
+
+                    // Outputs
+                    const outputs = document.createElement('div');
+                    outputs.className = 'ff-outputs';
+                    outputs.innerHTML = `Q${i}<br>Q${i}'`;
+                    ff.appendChild(outputs);
+
+                    // State display
+                    const state = document.createElement('div');
+                    state.className = 'ff-state';
+                    state.id = `state${i}`;
+                    state.textContent = this.flipFlopStates[i];
+                    ff.appendChild(state);
+
+                    diagram.appendChild(ff);
+
+                    // Connection lines
+                    if (i > 0) {
+                        const line = document.createElement('div');
+                        line.className = 'connection-line clock-line';
+                        line.style.cssText = `
+                            left: ${100 + (i-1) * 160 + 120}px;
+                            width: 40px;
+                            top: 80px;
+                        `;
+                        diagram.appendChild(line);
+                    } else {
+                        // Clock line to first FF
+                        const clockLine = document.createElement('div');
+                        clockLine.className = 'connection-line clock-line';
+                        clockLine.style.cssText = `
+                            left: 60px;
+                            width: 40px;
+                            top: 80px;
+                        `;
+                        diagram.appendChild(clockLine);
+                    }
+                }
+
+                // Output connections
+                for (let i = 0; i < this.numBits; i++) {
+                    const outputLine = document.createElement('div');
+                    outputLine.style.cssText = `
+                        position: absolute;
+                        left: ${100 + i * 160 + 120}px;
+                        top: 55px;
+                        width: 20px;
+                        height: 2px;
+                        background: #333;
+                    `;
+                    diagram.appendChild(outputLine);
+
+                    const outputLabel = document.createElement('div');
+                    outputLabel.style.cssText = `
+                        position: absolute;
+                        left: ${100 + i * 160 + 140}px;
+                        top: 45px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        color: #2a5298;
+                    `;
+                    outputLabel.textContent = `Q${i}`;
+                    diagram.appendChild(outputLabel);
+                }
+            }
+
+            updateDisplay() {
+                // Update counter value display
+                const binary = this.counterValue.toString(2).padStart(this.numBits, '0');
+                document.getElementById('counterValue').textContent = `${binary} (${this.counterValue})`;
+
+                // Update flip-flop states
+                for (let i = 0; i < this.numBits; i++) {
+                    this.flipFlopStates[i] = (this.counterValue >> i) & 1;
+                    const stateElement = document.getElementById(`state${i}`);
+                    if (stateElement) {
+                        stateElement.textContent = this.flipFlopStates[i];
+                    }
+                }
+
+                // Update status panel
+                document.getElementById('clockPulses').textContent = this.clockPulses;
+                document.getElementById('totalDelay').textContent = `${this.numBits * this.propagationDelay} ns`;
+                document.getElementById('maxFreq').textContent = `${(1000 / (this.numBits * this.propagationDelay)).toFixed(1)} MHz`;
+                document.getElementById('modulus').textContent = Math.pow(2, this.numBits);
+
+                // Update delay indicators
+                document.querySelectorAll('.delay-indicator').forEach(el => {
+                    el.textContent = `${this.propagationDelay}ns`;
+                });
+            }
+
+            async animateRipple() {
+                // Show ripple effect through flip-flops
+                for (let i = 0; i < this.numBits; i++) {
+                    const ff = document.getElementById(`ff${i}`);
+                    if (ff) {
+                        ff.classList.add('active');
+                        
+                        // Simulate propagation delay
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        
+                        // Update this flip-flop's state
+                        const bit = (this.counterValue >> i) & 1;
+                        document.getElementById(`state${i}`).textContent = bit;
+                        
+                        ff.classList.remove('active');
+                        
+                        // If this bit didn't change from 1 to 0, stop the ripple
+                        const prevBit = ((this.counterValue - 1) >> i) & 1;
+                        if (!(prevBit === 1 && bit === 0)) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            async clockPulse() {
+                this.clockPulses++;
+                this.counterValue = (this.counterValue + 1) % Math.pow(2, this.numBits);
+                
+                // Record waveform data
+                this.recordWaveform();
+                
+                // Animate the ripple effect
+                await this.animateRipple();
+                
+                this.updateDisplay();
+            }
+
+            recordWaveform() {
+                const time = this.waveformTime;
+                
+                // Add clock pulse (square wave)
+                this.waveformData.clock.push(1);
+                this.waveformData.timeAxis.push(time);
+                
+                // Add current states
+                for (let i = 0; i < 4; i++) {
+                    const bit = i < this.numBits ? ((this.counterValue >> i) & 1) : 0;
+                    this.waveformData[`q${i}`].push(bit);
+                }
+                
+                // Add clock falling edge
+                setTimeout(() => {
+                    this.waveformData.clock[this.waveformData.clock.length - 1] = 0;
+                }, this.clockSpeed / 4);
+                
+                this.waveformTime += this.clockSpeed;
+                
+                // Limit data points
+                if (this.waveformData.timeAxis.length > this.maxWaveformPoints) {
+                    this.waveformData.timeAxis.shift();
+                    this.waveformData.clock.shift();
+                    for (let i = 0; i < 4; i++) {
+                        this.waveformData[`q${i}`].shift();
+                    }
+                }
+            }
+
+            drawWaveforms() {
+                if (!this.ctx) return;
+                
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                this.ctx.clearRect(0, 0, width, height);
+                
+                // Background
+                this.ctx.fillStyle = '#f8f9fa';
+                this.ctx.fillRect(0, 0, width, height);
+                
+                // Grid
+                this.ctx.strokeStyle = '#e9ecef';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i < width; i += 40) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(i, 0);
+                    this.ctx.lineTo(i, height);
+                    this.ctx.stroke();
+                }
+                
+                const numSignals = this.numBits + 1; // +1 for clock
+                const signalHeight = height / numSignals;
+                
+                for (let i = 0; i < numSignals; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(0, i * signalHeight);
+                    this.ctx.lineTo(width, i * signalHeight);
+                    this.ctx.stroke();
+                }
+                
+                // Signal labels
+                this.ctx.fillStyle = '#2a5298';
+                this.ctx.font = 'bold 14px Arial';
+                this.ctx.fillText('CLK', 5, signalHeight * 0.5 + 5);
+                for (let i = 0; i < this.numBits; i++) {
+                    this.ctx.fillText(`Q${i}`, 5, signalHeight * (i + 1.5) + 5);
+                }
+                
+                // Draw waveforms
+                if (this.waveformData.timeAxis.length > 1) {
+                    const timeSpan = this.waveformTime - this.waveformData.timeAxis[0];
+                    const timeScale = width / Math.max(timeSpan, this.clockSpeed * 10);
+                    
+                    // Clock signal
+                    this.drawSignal(this.waveformData.clock, this.waveformData.timeAxis, 0, signalHeight, timeScale, '#ff6b6b', 3);
+                    
+                    // Q outputs
+                    const colors = ['#28a745', '#007bff', '#ffc107', '#dc3545'];
+                    for (let i = 0; i < this.numBits; i++) {
+                        this.drawSignal(this.waveformData[`q${i}`], this.waveformData.timeAxis, (i + 1) * signalHeight, signalHeight, timeScale, colors[i], 2);
+                    }
+                }
+            }
+
+            drawSignal(data, timeAxis, yOffset, signalHeight, timeScale, color, lineWidth) {
+                if (data.length < 2) return;
+                
+                this.ctx.strokeStyle = color;
+                this.ctx.lineWidth = lineWidth;
+                this.ctx.beginPath();
+                
+                const signalAmplitude = signalHeight * 0.3;
+                const signalCenter = yOffset + signalHeight / 2;
+                
+                for (let i = 0; i < data.length; i++) {
+                    const x = (timeAxis[i] - this.waveformData.timeAxis[0]) * timeScale;
+                    const y = signalCenter + (data[i] ? -signalAmplitude : signalAmplitude);
+                    
+                    if (i === 0) {
+                        this.ctx.moveTo(x, y);
+                    } else {
+                        // Create square wave transitions
+                        const prevY = signalCenter + (data[i-1] ? -signalAmplitude : signalAmplitude);
+                        if (y !== prevY) {
+                            this.ctx.lineTo(x, prevY);
+                            this.ctx.lineTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    }
+                }
+                
+                this.ctx.stroke();
+            }
+
+            startWaveformAnimation() {
+                const animate = () => {
+                    this.drawWaveforms();
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+
+            start() {
+                if (this.isRunning) return;
+                this.isRunning = true;
+                
+                const tick = async () => {
+                    if (!this.isRunning) return;
+                    await this.clockPulse();
+                    setTimeout(tick, this.clockSpeed);
+                };
+                
+                tick();
+                
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+            }
+
+            stop() {
+                this.isRunning = false;
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+
+            async step() {
+                if (!this.isRunning) {
+                    await this.clockPulse();
+                }
+            }
+
+            reset() {
+                this.stop();
+                this.counterValue = 0;
+                this.clockPulses = 0;
+                this.waveformData = {
+                    clock: [],
+                    q0: [],
+                    q1: [],
+                    q2: [],
+                    q3: [],
+                    timeAxis: []
+                };
+                this.waveformTime = 0;
+                this.flipFlopStates = Array(this.numBits).fill(0);
+                this.updateDisplay();
+            }
+
+            setNumBits(bits) {
+                this.reset();
+                this.numBits = bits;
+                this.flipFlopStates = Array(this.numBits).fill(0);
+                this.generateCircuit();
+                this.updateDisplay();
+            }
+
+            setClockSpeed(speed) {
+                this.clockSpeed = speed;
+                document.getElementById('speedValue').textContent = speed;
+            }
+
+            setPropagationDelay(delay) {
+                this.propagationDelay = delay;
+                document.getElementById('delayValue').textContent = delay;
+                this.updateDisplay();
+            }
+        }
+
+        // Global instance
+        let simulator;
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            simulator = new RippleCounterSimulator();
+        });
+
+        // Control functions
+        function startClock() {
+            simulator.start();
+        }
+
+        function stopClock() {
+            simulator.stop();
+        }
+
+        function singleStep() {
+            simulator.step();
+        }
+
+        function resetCounter() {
+            simulator.reset();
+        }
+
+        function setCounterBits(bits) {
+            simulator.setNumBits(bits);
+            
+            // Update button states
+            document.querySelectorAll('.control-group .btn-secondary, .control-group .btn-primary').forEach(btn => {
+                btn.className = 'btn btn-secondary';
+            });
+            event.target.className = 'btn btn-primary';
+        }
+
+        function updateSpeed() {
+            const speed = document.getElementById('speedSlider').value;
+            simulator.setClockSpeed(parseInt(speed));
+        }
+
+        function updateDelay() {
+            const delay = document.getElementById('delaySlider').value;
+            simulator.setPropagationDelay(parseInt(delay));
+        }
+    </script>
+</body>
+</html>
