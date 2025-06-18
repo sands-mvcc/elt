@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Electronics: Latches and Flip-Flops Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .header h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .component-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .component-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .component-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .component-btn.active {
+            background: linear-gradient(45deg, #ff6b6b 0%, #ee5a24 100%);
+            transform: scale(1.05);
+        }
+
+        .simulator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .circuit-panel, .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+        }
+
+        .panel-title {
+            color: #1e3c72;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .circuit-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            min-height: 300px;
+            justify-content: center;
+        }
+
+        .gate {
+            background: linear-gradient(145deg, #f0f0f0, #d0d0d0);
+            border: 3px solid #333;
+            border-radius: 10px;
+            padding: 15px 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .inputs-outputs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px 0;
+        }
+
+        .input-group, .output-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-output {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .input-output.high {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .input-output.low {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .control-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .input-label {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.on {
+            background: #28a745;
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.on::before {
+            transform: translateX(30px);
+        }
+
+        .clock-control {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .clock-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #2196f3 0%, #21cbf3 100%);
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .clock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        .clock-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #dc3545;
+            margin: 10px auto;
+            transition: all 0.3s ease;
+        }
+
+        .clock-indicator.active {
+            background: #28a745;
+            box-shadow: 0 0 10px #28a745;
+        }
+
+        .truth-table {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .truth-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+
+        .truth-table th, .truth-table td {
+            padding: 12px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+
+        .truth-table th {
+            background: linear-gradient(145deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .truth-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .truth-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        .current-state {
+            background: #fff3cd !important;
+            border: 2px solid #ffc107;
+            font-weight: bold;
+        }
+
+        .explanation {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .explanation h3 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .wiring {
+            stroke: #333;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .wiring.high {
+            stroke: #28a745;
+            stroke-width: 4;
+        }
+
+        .connection-point {
+            fill: #333;
+            r: 4;
+        }
+
+        .connection-point.high {
+            fill: #28a745;
+            r: 6;
+        }
+
+        @media (max-width: 768px) {
+            .simulator-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .component-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .inputs-outputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Digital Electronics Simulator</h1>
+            <p class="subtitle">Interactive Latches and Flip-Flops Demonstration</p>
+        </div>
+
+        <div class="component-selector">
+            <button class="component-btn active" data-component="rs-latch">RS Latch</button>
+            <button class="component-btn" data-component="sr-flipflop">SR Flip-Flop</button>
+            <button class="component-btn" data-component="d-flipflop">D Flip-Flop</button>
+            <button class="component-btn" data-component="jk-flipflop">JK Flip-Flop</button>
+            <button class="component-btn" data-component="t-flipflop">T Flip-Flop</button>
+        </div>
+
+        <div class="simulator-container">
+            <div class="circuit-panel">
+                <h2 class="panel-title">Circuit Diagram</h2>
+                <div class="circuit-diagram" id="circuit-diagram">
+                    <!-- Circuit will be generated here -->
+                </div>
+            </div>
+
+            <div class="control-panel">
+                <h2 class="panel-title">Controls</h2>
+                <div class="control-inputs" id="control-inputs">
+                    <!-- Controls will be generated here -->
+                </div>
+                <div class="clock-control" id="clock-control" style="display: none;">
+                    <div class="input-label">Clock Signal</div>
+                    <div class="clock-indicator" id="clock-indicator"></div>
+                    <button class="clock-btn" onclick="triggerClock()">Clock Pulse</button>
+                    <button class="clock-btn" onclick="toggleAutoClock()">Auto Clock</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="truth-table" id="truth-table">
+            <!-- Truth table will be generated here -->
+        </div>
+
+        <div class="explanation" id="explanation">
+            <!-- Explanation will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        class DigitalSimulator {
+            constructor() {
+                this.currentComponent = 'rs-latch';
+                this.states = {
+                    'rs-latch': { S: 0, R: 0, Q: 0, Qbar: 1 },
+                    'sr-flipflop': { S: 0, R: 0, CLK: 0, Q: 0, Qbar: 1 },
+                    'd-flipflop': { D: 0, CLK: 0, Q: 0, Qbar: 1 },
+                    'jk-flipflop': { J: 0, K: 0, CLK: 0, Q: 0, Qbar: 1 },
+                    't-flipflop': { T: 0, CLK: 0, Q: 0, Qbar: 1 }
+                };
+                this.autoClockInterval = null;
+                this.clockState = 0;
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateDisplay();
+            }
+
+            setupEventListeners() {
+                // Component selector buttons
+                document.querySelectorAll('.component-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.component-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentComponent = e.target.dataset.component;
+                        this.updateDisplay();
+                    });
+                });
+            }
+
+            updateDisplay() {
+                this.renderCircuit();
+                this.renderControls();
+                this.renderTruthTable();
+                this.renderExplanation();
+                this.updateOutputs();
+            }
+
+            renderCircuit() {
+                const circuit = document.getElementById('circuit-diagram');
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                let html = '';
+
+                switch (component) {
+                    case 'rs-latch':
+                        html = `
+                            <div class="inputs-outputs">
+                                <div class="input-group">
+                                    <div class="input-output ${state.S ? 'high' : 'low'}">
+                                        <strong>S:</strong> ${state.S}
+                                    </div>
+                                    <div class="input-output ${state.R ? 'high' : 'low'}">
+                                        <strong>R:</strong> ${state.R}
+                                    </div>
+                                </div>
+                                <div class="gate">RS LATCH<br>(NOR Gates)</div>
+                                <div class="output-group">
+                                    <div class="input-output ${state.Q ? 'high' : 'low'}">
+                                        <strong>Q:</strong> ${state.Q}
+                                    </div>
+                                    <div class="input-output ${state.Qbar ? 'high' : 'low'}">
+                                        <strong>Q':</strong> ${state.Qbar}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'sr-flipflop':
+                        html = `
+                            <div class="inputs-outputs">
+                                <div class="input-group">
+                                    <div class="input-output ${state.S ? 'high' : 'low'}">
+                                        <strong>S:</strong> ${state.S}
+                                    </div>
+                                    <div class="input-output ${state.R ? 'high' : 'low'}">
+                                        <strong>R:</strong> ${state.R}
+                                    </div>
+                                    <div class="input-output ${state.CLK ? 'high' : 'low'}">
+                                        <strong>CLK:</strong> ${state.CLK}
+                                    </div>
+                                </div>
+                                <div class="gate">SR FLIP-FLOP<br>(Clock Controlled)</div>
+                                <div class="output-group">
+                                    <div class="input-output ${state.Q ? 'high' : 'low'}">
+                                        <strong>Q:</strong> ${state.Q}
+                                    </div>
+                                    <div class="input-output ${state.Qbar ? 'high' : 'low'}">
+                                        <strong>Q':</strong> ${state.Qbar}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'd-flipflop':
+                        html = `
+                            <div class="inputs-outputs">
+                                <div class="input-group">
+                                    <div class="input-output ${state.D ? 'high' : 'low'}">
+                                        <strong>D:</strong> ${state.D}
+                                    </div>
+                                    <div class="input-output ${state.CLK ? 'high' : 'low'}">
+                                        <strong>CLK:</strong> ${state.CLK}
+                                    </div>
+                                </div>
+                                <div class="gate">D FLIP-FLOP<br>(Data/Delay)</div>
+                                <div class="output-group">
+                                    <div class="input-output ${state.Q ? 'high' : 'low'}">
+                                        <strong>Q:</strong> ${state.Q}
+                                    </div>
+                                    <div class="input-output ${state.Qbar ? 'high' : 'low'}">
+                                        <strong>Q':</strong> ${state.Qbar}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 'jk-flipflop':
+                        html = `
+                            <div class="inputs-outputs">
+                                <div class="input-group">
+                                    <div class="input-output ${state.J ? 'high' : 'low'}">
+                                        <strong>J:</strong> ${state.J}
+                                    </div>
+                                    <div class="input-output ${state.K ? 'high' : 'low'}">
+                                        <strong>K:</strong> ${state.K}
+                                    </div>
+                                    <div class="input-output ${state.CLK ? 'high' : 'low'}">
+                                        <strong>CLK:</strong> ${state.CLK}
+                                    </div>
+                                </div>
+                                <div class="gate">JK FLIP-FLOP<br>(Universal)</div>
+                                <div class="output-group">
+                                    <div class="input-output ${state.Q ? 'high' : 'low'}">
+                                        <strong>Q:</strong> ${state.Q}
+                                    </div>
+                                    <div class="input-output ${state.Qbar ? 'high' : 'low'}">
+                                        <strong>Q':</strong> ${state.Qbar}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    case 't-flipflop':
+                        html = `
+                            <div class="inputs-outputs">
+                                <div class="input-group">
+                                    <div class="input-output ${state.T ? 'high' : 'low'}">
+                                        <strong>T:</strong> ${state.T}
+                                    </div>
+                                    <div class="input-output ${state.CLK ? 'high' : 'low'}">
+                                        <strong>CLK:</strong> ${state.CLK}
+                                    </div>
+                                </div>
+                                <div class="gate">T FLIP-FLOP<br>(Toggle)</div>
+                                <div class="output-group">
+                                    <div class="input-output ${state.Q ? 'high' : 'low'}">
+                                        <strong>Q:</strong> ${state.Q}
+                                    </div>
+                                    <div class="input-output ${state.Qbar ? 'high' : 'low'}">
+                                        <strong>Q':</strong> ${state.Qbar}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                }
+
+                circuit.innerHTML = html;
+            }
+
+            renderControls() {
+                const controls = document.getElementById('control-inputs');
+                const clockControl = document.getElementById('clock-control');
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                let html = '';
+
+                switch (component) {
+                    case 'rs-latch':
+                        html = `
+                            <div class="input-control">
+                                <span class="input-label">Set (S)</span>
+                                <div class="toggle-switch ${state.S ? 'on' : ''}" onclick="simulator.toggleInput('S')"></div>
+                            </div>
+                            <div class="input-control">
+                                <span class="input-label">Reset (R)</span>
+                                <div class="toggle-switch ${state.R ? 'on' : ''}" onclick="simulator.toggleInput('R')"></div>
+                            </div>
+                        `;
+                        clockControl.style.display = 'none';
+                        break;
+                    case 'sr-flipflop':
+                        html = `
+                            <div class="input-control">
+                                <span class="input-label">Set (S)</span>
+                                <div class="toggle-switch ${state.S ? 'on' : ''}" onclick="simulator.toggleInput('S')"></div>
+                            </div>
+                            <div class="input-control">
+                                <span class="input-label">Reset (R)</span>
+                                <div class="toggle-switch ${state.R ? 'on' : ''}" onclick="simulator.toggleInput('R')"></div>
+                            </div>
+                        `;
+                        clockControl.style.display = 'block';
+                        break;
+                    case 'd-flipflop':
+                        html = `
+                            <div class="input-control">
+                                <span class="input-label">Data (D)</span>
+                                <div class="toggle-switch ${state.D ? 'on' : ''}" onclick="simulator.toggleInput('D')"></div>
+                            </div>
+                        `;
+                        clockControl.style.display = 'block';
+                        break;
+                    case 'jk-flipflop':
+                        html = `
+                            <div class="input-control">
+                                <span class="input-label">J Input</span>
+                                <div class="toggle-switch ${state.J ? 'on' : ''}" onclick="simulator.toggleInput('J')"></div>
+                            </div>
+                            <div class="input-control">
+                                <span class="input-label">K Input</span>
+                                <div class="toggle-switch ${state.K ? 'on' : ''}" onclick="simulator.toggleInput('K')"></div>
+                            </div>
+                        `;
+                        clockControl.style.display = 'block';
+                        break;
+                    case 't-flipflop':
+                        html = `
+                            <div class="input-control">
+                                <span class="input-label">Toggle (T)</span>
+                                <div class="toggle-switch ${state.T ? 'on' : ''}" onclick="simulator.toggleInput('T')"></div>
+                            </div>
+                        `;
+                        clockControl.style.display = 'block';
+                        break;
+                }
+
+                controls.innerHTML = html;
+            }
+
+            renderTruthTable() {
+                const table = document.getElementById('truth-table');
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                let html = '<h2 class="panel-title">Truth Table</h2><table>';
+
+                switch (component) {
+                    case 'rs-latch':
+                        html += `
+                            <tr><th>S</th><th>R</th><th>Q</th><th>Q'</th><th>State</th></tr>
+                            <tr class="${state.S === 0 && state.R === 0 ? 'current-state' : ''}"><td>0</td><td>0</td><td>Q</td><td>Q'</td><td>Hold/Memory</td></tr>
+                            <tr class="${state.S === 1 && state.R === 0 ? 'current-state' : ''}"><td>1</td><td>0</td><td>1</td><td>0</td><td>Set</td></tr>
+                            <tr class="${state.S === 0 && state.R === 1 ? 'current-state' : ''}"><td>0</td><td>1</td><td>0</td><td>1</td><td>Reset</td></tr>
+                            <tr class="${state.S === 1 && state.R === 1 ? 'current-state' : ''}"><td>1</td><td>1</td><td>0</td><td>0</td><td>Invalid/Forbidden</td></tr>
+                        `;
+                        break;
+                    case 'sr-flipflop':
+                        html += `
+                            <tr><th>S</th><th>R</th><th>CLK</th><th>Q(n+1)</th><th>Q'(n+1)</th><th>State</th></tr>
+                            <tr class="${state.S === 0 && state.R === 0 ? 'current-state' : ''}"><td>0</td><td>0</td><td>↑</td><td>Q(n)</td><td>Q'(n)</td><td>Hold</td></tr>
+                            <tr class="${state.S === 1 && state.R === 0 ? 'current-state' : ''}"><td>1</td><td>0</td><td>↑</td><td>1</td><td>0</td><td>Set</td></tr>
+                            <tr class="${state.S === 0 && state.R === 1 ? 'current-state' : ''}"><td>0</td><td>1</td><td>↑</td><td>0</td><td>1</td><td>Reset</td></tr>
+                            <tr class="${state.S === 1 && state.R === 1 ? 'current-state' : ''}"><td>1</td><td>1</td><td>↑</td><td>X</td><td>X</td><td>Invalid</td></tr>
+                        `;
+                        break;
+                    case 'd-flipflop':
+                        html += `
+                            <tr><th>D</th><th>CLK</th><th>Q(n+1)</th><th>Q'(n+1)</th><th>State</th></tr>
+                            <tr class="${state.D === 0 ? 'current-state' : ''}"><td>0</td><td>↑</td><td>0</td><td>1</td><td>Reset</td></tr>
+                            <tr class="${state.D === 1 ? 'current-state' : ''}"><td>1</td><td>↑</td><td>1</td><td>0</td><td>Set</td></tr>
+                            <tr><td>X</td><td>0</td><td>Q(n)</td><td>Q'(n)</td><td>Hold</td></tr>
+                        `;
+                        break;
+                    case 'jk-flipflop':
+                        html += `
+                            <tr><th>J</th><th>K</th><th>CLK</th><th>Q(n+1)</th><th>Q'(n+1)</th><th>State</th></tr>
+                            <tr class="${state.J === 0 && state.K === 0 ? 'current-state' : ''}"><td>0</td><td>0</td><td>↑</td><td>Q(n)</td><td>Q'(n)</td><td>Hold</td></tr>
+                            <tr class="${state.J === 1 && state.K === 0 ? 'current-state' : ''}"><td>1</td><td>0</td><td>↑</td><td>1</td><td>0</td><td>Set</td></tr>
+                            <tr class="${state.J === 0 && state.K === 1 ? 'current-state' : ''}"><td>0</td><td>1</td><td>↑</td><td>0</td><td>1</td><td>Reset</td></tr>
+                            <tr class="${state.J === 1 && state.K === 1 ? 'current-state' : ''}"><td>1</td><td>1</td><td>↑</td><td>Q'(n)</td><td>Q(n)</td><td>Toggle</td></tr>
+                        `;
+                        break;
+                    case 't-flipflop':
+                        html += `
+                            <tr><th>T</th><th>CLK</th><th>Q(n+1)</th><th>Q'(n+1)</th><th>State</th></tr>
+                            <tr class="${state.T === 0 ? 'current-state' : ''}"><td>0</td><td>↑</td><td>Q(n)</td><td>Q'(n)</td><td>Hold</td></tr>
+                            <tr class="${state.T === 1 ? 'current-state' : ''}"><td>1</td><td>↑</td><td>Q'(n)</td><td>Q(n)</td><td>Toggle</td></tr>
+                        `;
+                        break;
+                }
+
+                html += '</table>';
+                table.innerHTML = html;
+            }
+
+            renderExplanation() {
+                const explanation = document.getElementById('explanation');
+                const component = this.currentComponent;
+
+                const explanations = {
+                    'rs-latch': {
+                        title: 'RS Latch (Set-Reset Latch)',
+                        text: 'The RS latch is the most basic bistable multivibrator, implemented using two cross-coupled NOR gates. It can store one bit of information. When S=1 and R=0, the latch is SET (Q=1). When S=0 and R=1, the latch is RESET (Q=0). When both inputs are 0, it holds its previous state. The condition S=R=1 is forbidden as it creates an indeterminate state where both outputs become 0, violating the principle that Q and Q\' should be complements.'
+                    },
+                    'sr-flipflop': {
+                        title: 'SR Flip-Flop (Synchronous Set-Reset)',
+                        text: 'The SR flip-flop is a synchronous version of the RS latch, controlled by a clock signal. It only responds to input changes on the rising edge of the clock. This eliminates timing issues present in the basic latch. The operation is identical to the RS latch but synchronized to the clock. It still has the forbidden state S=R=1, which led to the development of more advanced flip-flops.'
+                    },
+                    'd-flipflop': {
+                        title: 'D Flip-Flop (Data/Delay Flip-Flop)',
+                        text: 'The D flip-flop eliminates the forbidden state problem by having only one data input. The output Q follows the input D on each clock edge: Q(n+1) = D. It\'s called a "delay" flip-flop because it delays the input by one clock cycle. This makes it ideal for shift registers, counters, and memory applications. The D flip-flop is essentially an SR flip-flop with an inverter connecting D to S and D\' to R.'
+                    },
+                    'jk-flipflop': {
+                        title: 'JK Flip-Flop (Universal Flip-Flop)',
+                        text: 'The JK flip-flop, named after Jack Kilby, solves the forbidden state problem of the SR flip-flop by making the J=K=1 condition useful - it toggles the output. This makes it the most versatile flip-flop: it can function as a Set-Reset (J=S, K=R), a D flip-flop (J=D, K=D\'), or a T flip-flop (J=K=T). The toggle feature makes it perfect for counters and frequency dividers.'
+                    },
+                    't-flipflop': {
+                        title: 'T Flip-Flop (Toggle Flip-Flop)',
+                        text: 'The T flip-flop is a simplified version of the JK flip-flop where J and K are connected together. When T=0, it holds its state. When T=1, it toggles (complements) its output on each clock edge. This makes it ideal for binary counters and frequency division. A T flip-flop divides the input clock frequency by 2, making it essential in ripple counters and frequency synthesizers.'
+                    }
+                };
+
+                const info = explanations[component];
+                explanation.innerHTML = `
+                    <h3>${info.title}</h3>
+                    <p>${info.text}</p>
+                `;
+            }
+
+            toggleInput(input) {
+                const state = this.states[this.currentComponent];
+                state[input] = state[input] ? 0 : 1;
+                this.updateOutputs();
+                this.updateDisplay();
+            }
+
+            updateOutputs() {
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                switch (component) {
+                    case 'rs-latch':
+                        if (state.S === 1 && state.R === 0) {
+                            state.Q = 1;
+                            state.Qbar = 0;
+                        } else if (state.S === 0 && state.R === 1) {
+                            state.Q = 0;
+                            state.Qbar = 1;
+                        } else if (state.S === 1 && state.R === 1) {
+                            state.Q = 0;
+                            state.Qbar = 0; // Invalid state
+                        }
+                        // Hold state when S=R=0
+                        break;
+                    case 'sr-flipflop':
+                    case 'd-flipflop':
+                    case 'jk-flipflop':
+                    case 't-flipflop':
+                        // These are edge-triggered, outputs change only on clock pulse
+                        break;
+                }
+            }
+
+            triggerClock() {
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                if (component === 'rs-latch') return; // No clock for basic latch
+
+                // Simulate rising edge
+                state.CLK = 1;
+                const clockIndicator = document.getElementById('clock-indicator');
+                clockIndicator.classList.add('active');
+
+                // Process the clock edge
+                this.processClockEdge();
+
+                // Reset clock after short delay
+                setTimeout(() => {
+                    state.CLK = 0;
+                    clockIndicator.classList.remove('active');
+                    this.updateDisplay();
+                }, 300);
+
+                this.updateDisplay();
+            }
+
+            processClockEdge() {
+                const component = this.currentComponent;
+                const state = this.states[component];
+
+                switch (component) {
+                    case 'sr-flipflop':
+                        if (state.S === 1 && state.R === 0) {
+                            state.Q = 1;
+                            state.Qbar = 0;
+                        } else if (state.S === 0 && state.R === 1) {
+                            state.Q = 0;
+                            state.Qbar = 1;
+                        } else if (state.S === 1 && state.R === 1) {
+                            // Invalid state - outputs become unpredictable
+                            state.Q = 0;
+                            state.Qbar = 0;
+                        }
+                        // Hold state when S=R=0
+                        break;
+                    case 'd-flipflop':
+                        state.Q = state.D;
+                        state.Qbar = state.D ? 0 : 1;
+                        break;
+                    case 'jk-flipflop':
+                        if (state.J === 1 && state.K === 0) {
+                            state.Q = 1;
+                            state.Qbar = 0;
+                        } else if (state.J === 0 && state.K === 1) {
+                            state.Q = 0;
+                            state.Qbar = 1;
+                        } else if (state.J === 1 && state.K === 1) {
+                            // Toggle
+                            const oldQ = state.Q;
+                            state.Q = state.Qbar;
+                            state.Qbar = oldQ;
+                        }
+                        // Hold state when J=K=0
+                        break;
+                    case 't-flipflop':
+                        if (state.T === 1) {
+                            // Toggle
+                            const oldQ = state.Q;
+                            state.Q = state.Qbar;
+                            state.Qbar = oldQ;
+                        }
+                        // Hold state when T=0
+                        break;
+                }
+            }
+
+            toggleAutoClock() {
+                if (this.autoClockInterval) {
+                    clearInterval(this.autoClockInterval);
+                    this.autoClockInterval = null;
+                } else {
+                    this.autoClockInterval = setInterval(() => {
+                        this.triggerClock();
+                    }, 1000);
+                }
+            }
+        }
+
+        // Global functions for HTML onclick events
+        const simulator = new DigitalSimulator();
+
+        function triggerClock() {
+            simulator.triggerClock();
+        }
+
+        function toggleAutoClock() {
+            simulator.toggleAutoClock();
+        }
+    </script>
+</body>
+</html>
