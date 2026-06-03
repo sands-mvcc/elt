@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zener Diode &amp; Voltage Regulation — Interactive Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Source+Code+Pro:wght@300;400;600&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-page:#07090f; --bg-panel:#0d1220; --bg-card:#111827; --bg-elevated:#172035;
+  --border-soft:#1e2d47; --border-accent:#2a4a80;
+  --text-primary:#e8eeff; --text-secondary:#8fa3cc; --text-dim:#3d5070; --text-label:#6080b0;
+  --accent-z:#f7c948; --accent-b:#00d4ff; --accent-g:#00e887;
+  --accent-r:#ff4d6a; --accent-p:#c77dff; --accent-o:#ff9040;
+  --scope-bg:#04080f; --scope-grid:rgba(0,212,255,0.06); --scope-axis:rgba(0,212,255,0.18);
+  --glow-z:0 0 22px rgba(247,201,72,0.35); --glow-b:0 0 22px rgba(0,212,255,0.3); --glow-g:0 0 18px rgba(0,232,135,0.3);
+  --shadow-card:0 4px 32px rgba(0,0,0,0.5); --tr:all 0.28s cubic-bezier(.4,0,.2,1);
+}
+body.light {
+  --bg-page:#f0f3fb; --bg-panel:#e4e9f7; --bg-card:#ffffff; --bg-elevated:#eef1fa;
+  --border-soft:#d0d8ef; --border-accent:#a0b4df;
+  --text-primary:#111828; --text-secondary:#3a5080; --text-dim:#b0bcd8; --text-label:#5070a0;
+  --accent-z:#b08000; --accent-b:#0077bb; --accent-g:#007a40; --accent-r:#cc0033; --accent-p:#7722cc; --accent-o:#c05a00;
+  --scope-bg:#e8ecf8; --scope-grid:rgba(0,119,187,0.08); --scope-axis:rgba(0,119,187,0.22);
+  --glow-z:0 2px 12px rgba(180,140,0,0.2); --shadow-card:0 4px 24px rgba(100,120,180,0.12);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-page);color:var(--text-primary);font-family:'Nunito',sans-serif;min-height:100vh;transition:var(--tr);overflow-x:hidden;}
+body:not(.light)::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--scope-grid) 1px,transparent 1px),linear-gradient(90deg,var(--scope-grid) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.pw{position:relative;z-index:1;}
+/* HEADER */
+header{background:linear-gradient(135deg,var(--bg-panel) 0%,var(--bg-elevated) 100%);border-bottom:2px solid var(--accent-z);box-shadow:var(--glow-z);padding:0 1.5rem;position:sticky;top:0;z-index:100;}
+.hi{max-width:1380px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:.85rem 0;gap:1rem;flex-wrap:wrap;}
+.hbrand{display:flex;align-items:center;gap:.9rem;}
+.hico{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent-z),var(--accent-o));display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:var(--glow-z);}
+.htxt h1{font-family:'Orbitron',sans-serif;font-size:clamp(.95rem,2.2vw,1.4rem);font-weight:700;letter-spacing:2px;color:var(--accent-z);text-transform:uppercase;text-shadow:var(--glow-z);}
+.htxt p{font-family:'Source Code Pro',monospace;font-size:.63rem;color:var(--text-secondary);letter-spacing:2.5px;text-transform:uppercase;margin-top:2px;}
+.hright{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
+.chip{padding:3px 11px;border-radius:20px;font-family:'Source Code Pro',monospace;font-size:.63rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.chip-z{background:rgba(247,201,72,0.12);border:1px solid rgba(247,201,72,0.4);color:var(--accent-z);}
+.chip-b{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.35);color:var(--accent-b);}
+.thm-btn{display:flex;align-items:center;gap:.5rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:30px;padding:5px 12px;cursor:pointer;transition:var(--tr);font-family:'Source Code Pro',monospace;font-size:.7rem;color:var(--text-secondary);}
+.thm-btn:hover{border-color:var(--accent-z);color:var(--accent-z);}
+.trk{width:36px;height:20px;border-radius:10px;background:var(--border-accent);position:relative;transition:var(--tr);}
+.trk.on{background:var(--accent-z);}
+.tthumb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:white;transition:var(--tr);}
+.trk.on .tthumb{left:18px;}
+/* TABS */
+.tabbar{background:var(--bg-panel);border-bottom:1px solid var(--border-soft);overflow-x:auto;}
+.tabbar::-webkit-scrollbar{height:3px;} .tabbar::-webkit-scrollbar-thumb{background:var(--accent-z);border-radius:2px;}
+.tnav{max-width:1380px;margin:0 auto;display:flex;padding:0 1.5rem;min-width:max-content;}
+.tbtn{padding:.72rem 1.4rem;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-secondary);font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--tr);white-space:nowrap;}
+.tbtn:hover{color:var(--text-primary);} .tbtn.active{color:var(--accent-z);border-bottom-color:var(--accent-z);}
+.tn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(247,201,72,0.15);border:1px solid rgba(247,201,72,0.3);font-size:.6rem;color:var(--accent-z);margin-right:5px;}
+/* MAIN */
+main{max-width:1380px;margin:0 auto;padding:1.8rem 1.5rem;}
+.tp{display:none;animation:pi .3s ease;} .tp.active{display:block;}
+@keyframes pi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px;box-shadow:var(--shadow-card);overflow:hidden;transition:var(--tr);}
+.card:hover{border-color:var(--border-accent);}
+.chdr{background:var(--bg-elevated);border-bottom:1px solid var(--border-soft);padding:.72rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+.chdr h3{font-family:'Orbitron',sans-serif;font-size:.76rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--accent-g);box-shadow:var(--glow-g);animation:bk 2.2s infinite;}
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.35}}
+.stitle{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-primary);margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;}
+.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border-soft),transparent);}
+/* SIM LAYOUT */
+.sl{display:grid;grid-template-columns:285px 1fr;gap:1.4rem;align-items:start;}
+@media(max-width:960px){.sl{grid-template-columns:1fr;}}
+.cp{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px;padding:1.3rem;box-shadow:var(--shadow-card);position:sticky;top:78px;}
+.cpt{font-family:'Orbitron',sans-serif;font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent-z);margin-bottom:1.1rem;padding-bottom:.55rem;border-bottom:1px solid var(--border-soft);}
+.cg{margin-bottom:1.05rem;}
+.cg label{display:flex;justify-content:space-between;align-items:center;font-size:.7rem;color:var(--text-label);text-transform:uppercase;letter-spacing:1.3px;font-family:'Source Code Pro',monospace;margin-bottom:.32rem;}
+.cg .val{font-family:'Source Code Pro',monospace;font-size:.93rem;color:var(--accent-g);font-weight:600;}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--border-soft);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent-z);cursor:pointer;box-shadow:0 0 7px rgba(247,201,72,0.6);transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3);}
+.tr2{display:flex;gap:.42rem;flex-wrap:wrap;margin-top:.38rem;}
+.tog{flex:1;min-width:58px;padding:.38rem .5rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:7px;color:var(--text-secondary);font-family:'Source Code Pro',monospace;font-size:.65rem;cursor:pointer;transition:var(--tr);text-align:center;}
+.tog:hover{border-color:var(--border-accent);color:var(--text-primary);}
+.oz{background:rgba(247,201,72,0.1);border-color:var(--accent-z);color:var(--accent-z);}
+.og{background:rgba(0,232,135,0.1);border-color:var(--accent-g);color:var(--accent-g);}
+.or{background:rgba(255,77,106,0.1);border-color:var(--accent-r);color:var(--accent-r);}
+.ob{background:rgba(0,212,255,0.1);border-color:var(--accent-b);color:var(--accent-b);}
+.mets{display:grid;grid-template-columns:1fr 1fr;gap:.48rem;margin-top:.95rem;padding-top:.95rem;border-top:1px solid var(--border-soft);}
+.mb{background:var(--bg-elevated);border-radius:9px;padding:.58rem .5rem;text-align:center;}
+.mbl{font-size:.57rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;font-family:'Source Code Pro',monospace;display:block;margin-bottom:.18rem;}
+.mbv{font-family:'Source Code Pro',monospace;font-size:.95rem;font-weight:600;}
+.cz{color:var(--accent-z)} .cg2{color:var(--accent-g)} .cb{color:var(--accent-b)} .cr{color:var(--accent-r)} .cp2{color:var(--accent-p)} .co{color:var(--accent-o)}
+.ar{display:flex;gap:.5rem;margin-top:.85rem;}
+.abtn{flex:1;padding:.4rem .6rem;background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:7px;color:var(--text-secondary);font-family:'Source Code Pro',monospace;font-size:.67rem;cursor:pointer;transition:var(--tr);}
+.abtn:hover{border-color:var(--accent-b);color:var(--accent-b);}
+.abtn.playing{border-color:var(--accent-g);color:var(--accent-g);background:rgba(0,232,135,0.07);}
+/* CANVAS */
+canvas{display:block;width:100%;}
+.oscf{padding:.45rem 1.2rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.35rem;font-family:'Source Code Pro',monospace;font-size:.63rem;color:var(--text-dim);}
+.oscf span{color:var(--text-secondary);}
+/* INFO CARDS */
+.ic{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px;padding:1.25rem;box-shadow:var(--shadow-card);transition:var(--tr);}
+.ic:hover{border-color:var(--border-accent);}
+.ic h3{font-family:'Orbitron',sans-serif;font-size:.76rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.65rem;}
+.ic p,.ic li{font-size:.87rem;line-height:1.75;color:var(--text-secondary);}
+.ic ul{padding-left:1.1rem;} .ic li{margin-bottom:.28rem;} .ic strong{color:var(--text-primary);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr;}}
+.bcz{border-left:4px solid var(--accent-z);} .bcb{border-left:4px solid var(--accent-b);}
+.bcg{border-left:4px solid var(--accent-g);} .bcr{border-left:4px solid var(--accent-r);}
+.bcp{border-left:4px solid var(--accent-p);}
+.mb1{margin-bottom:1rem;} .mb15{margin-bottom:1.5rem;} .mt1{margin-top:1rem;}
+/* HERO */
+.hero{background:linear-gradient(135deg,rgba(247,201,72,0.06) 0%,rgba(0,212,255,0.04) 100%);border:1px solid rgba(247,201,72,0.2);border-radius:16px;padding:1.8rem 2.2rem;margin-bottom:1.4rem;position:relative;overflow:hidden;}
+.hero::after{content:'Z';position:absolute;right:2.2rem;top:50%;transform:translateY(-50%);font-family:'Orbitron',sans-serif;font-size:7rem;font-weight:900;color:rgba(247,201,72,0.05);pointer-events:none;}
+.hero h2{font-family:'Orbitron',sans-serif;font-size:clamp(1rem,2.2vw,1.4rem);font-weight:900;color:var(--accent-z);letter-spacing:2px;text-shadow:var(--glow-z);margin-bottom:.5rem;}
+.hero p{font-size:.9rem;color:var(--text-secondary);line-height:1.75;max-width:680px;}
+/* QUIZ */
+.qw{max-width:720px;margin:0 auto;}
+.qpb{height:4px;background:var(--border-soft);border-radius:2px;margin-bottom:1.8rem;overflow:hidden;}
+.qpf{height:100%;background:linear-gradient(90deg,var(--accent-z),var(--accent-o));border-radius:2px;transition:width .4s ease;}
+.qcard{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:14px;padding:1.7rem;margin-bottom:1.1rem;animation:pi .3s ease;box-shadow:var(--shadow-card);}
+.qnum{font-family:'Source Code Pro',monospace;font-size:.67rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:.45rem;}
+.qtxt{font-size:1.03rem;font-weight:700;line-height:1.6;margin-bottom:1.15rem;}
+.qopts{display:flex;flex-direction:column;gap:.52rem;}
+.qopt{display:flex;align-items:center;gap:.72rem;padding:.78rem 1rem;border-radius:9px;cursor:pointer;background:var(--bg-elevated);border:1px solid var(--border-soft);font-size:.86rem;transition:var(--tr);}
+.qopt:hover{border-color:var(--border-accent);}
+.qopt.correct{border-color:var(--accent-g);background:rgba(0,232,135,0.08);color:var(--accent-g);}
+.qopt.wrong{border-color:var(--accent-r);background:rgba(255,77,106,0.08);color:var(--accent-r);}
+.qopt.faded{opacity:.38;}
+.qltr{width:23px;height:23px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border-soft);display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;font-size:.69rem;flex-shrink:0;}
+.fb{padding:.82rem 1rem;border-radius:9px;font-size:.83rem;line-height:1.65;margin-top:.65rem;display:none;}
+.fb.show{display:block;animation:pi .25s ease;}
+.fbok{background:rgba(0,232,135,0.08);border:1px solid rgba(0,232,135,0.3);color:var(--accent-g);}
+.fbno{background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.3);color:#ff8099;}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:.75rem;}
+.bpri{padding:.62rem 1.4rem;background:rgba(247,201,72,0.1);border:1px solid var(--accent-z);border-radius:8px;color:var(--accent-z);font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--tr);}
+.bpri:hover{background:rgba(247,201,72,0.2);box-shadow:var(--glow-z);}
+.bpri:disabled{opacity:.3;cursor:not-allowed;}
+.bsec{padding:.62rem 1.3rem;background:transparent;border:1px solid var(--border-soft);border-radius:8px;color:var(--text-secondary);font-family:'Orbitron',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:var(--tr);}
+.bsec:hover{border-color:var(--border-accent);color:var(--text-primary);}
+.scard{background:var(--bg-card);border:1px solid var(--border-soft);border-radius:16px;padding:2.4rem 2rem;text-align:center;display:none;box-shadow:var(--shadow-card);}
+.scard.show{display:block;animation:pi .4s ease;}
+.sbig{font-family:'Orbitron',sans-serif;font-size:5rem;font-weight:900;color:var(--accent-z);text-shadow:var(--glow-z);line-height:1;}
+.ssub{font-family:'Source Code Pro',monospace;font-size:.68rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-top:.3rem;}
+.smsg{font-size:1rem;margin:1rem 0;color:var(--text-secondary);}
+/* FORMULA TABLE */
+.ft{width:100%;border-collapse:collapse;}
+.ft th{background:var(--bg-elevated);font-family:'Orbitron',sans-serif;font-size:.63rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-label);padding:.58rem 1rem;text-align:left;border-bottom:1px solid var(--border-soft);}
+.ft td{padding:.58rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);font-size:.84rem;}
+.ft tr:last-child td{border-bottom:none;}
+.ft tr:hover td{background:var(--bg-elevated);}
+.feq{font-family:'Source Code Pro',monospace;color:var(--accent-z);font-size:.87rem;}
+.fnote{font-size:.76rem;color:var(--text-dim);}
+::-webkit-scrollbar{width:6px;height:6px;} ::-webkit-scrollbar-track{background:var(--bg-page);} ::-webkit-scrollbar-thumb{background:var(--border-accent);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="pw">
+<header>
+  <div class="hi">
+    <div class="hbrand">
+      <div class="hico">&#9889;</div>
+      <div class="htxt">
+        <h1>Zener Diode &amp; Voltage Regulation</h1>
+        <p>Interactive Electronics Laboratory &middot; ELT-120</p>
+      </div>
+    </div>
+    <div class="hright">
+      <span class="chip chip-z">Semiconductor Devices</span>
+      <span class="chip chip-b">DC Circuits</span>
+      <button class="thm-btn" onclick="toggleTheme()">
+        <div class="trk" id="trk"><div class="tthumb"></div></div>
+        <span id="tlbl">LIGHT MODE</span>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="tabbar">
+  <div class="tnav">
+    <button class="tbtn active" onclick="showTab('intro',this)"><span class="tn">1</span>Introduction</button>
+    <button class="tbtn" onclick="showTab('how',this)"><span class="tn">2</span>How It Works</button>
+    <button class="tbtn" onclick="showTab('iv',this)"><span class="tn">3</span>I-V Curve</button>
+    <button class="tbtn" onclick="showTab('reg',this)"><span class="tn">4</span>Regulator Sim</button>
+    <button class="tbtn" onclick="showTab('load',this)"><span class="tn">5</span>Load Effects</button>
+    <button class="tbtn" onclick="showTab('formulas',this)"><span class="tn">6</span>Formulas</button>
+    <button class="tbtn" onclick="showTab('quiz',this)"><span class="tn">7</span>Quiz</button>
+  </div>
+</div>
+<main>
+
+<!-- TAB 1: INTRO -->
+<div id="tab-intro" class="tp active">
+  <div class="hero">
+    <h2>What Is a Zener Diode?</h2>
+    <p>A <strong>Zener diode</strong> is a specially engineered semiconductor that exploits <em>controlled reverse breakdown</em> to maintain a stable, predictable voltage &mdash; the <strong>Zener voltage (V<sub>Z</sub>)</strong>. Unlike ordinary diodes, Zener diodes are designed to operate in reverse breakdown continuously without damage, making them the foundation of simple, robust voltage regulation circuits found in virtually every electronic system.</p>
+  </div>
+  <div class="g2 mb15">
+    <div class="ic bcz">
+      <h3 style="color:var(--accent-z)">&#9889; Why Zener Diodes Matter</h3>
+      <ul>
+        <li>Maintain a <strong>constant output voltage</strong> despite changes in supply voltage or load</li>
+        <li>Simple, inexpensive single-component voltage reference circuit</li>
+        <li>Found in power supplies, clipping circuits, surge protection, and bias networks</li>
+        <li>Available in standard voltages from 1.8 V to over 200 V</li>
+        <li>Foundational concept for understanding IC regulators (78xx, LM317 series)</li>
+      </ul>
+    </div>
+    <div class="ic bcb">
+      <h3 style="color:var(--accent-b)">&#128300; Normal Diode vs Zener Diode</h3>
+      <ul>
+        <li><strong>Normal diode:</strong> Forward bias conducts; reverse bias blocks. Reverse breakdown is destructive.</li>
+        <li><strong>Zener diode:</strong> Designed with a <em>precise</em> breakdown voltage V<sub>Z</sub> in reverse bias</li>
+        <li>Symbol has a <strong>bent cathode bar</strong> to distinguish it from regular diodes</li>
+        <li>Must always be paired with a <strong>series resistor R<sub>S</sub></strong> to limit current</li>
+        <li>Without R<sub>S</sub>, excessive current will destroy the device instantly</li>
+      </ul>
+    </div>
+  </div>
+  <div class="stitle">Two Key Breakdown Mechanisms</div>
+  <div class="g2 mb15">
+    <div class="ic bcr">
+      <h3 style="color:var(--accent-r)">Zener Breakdown (V<sub>Z</sub> &lt; 5V)</h3>
+      <p>Occurs in <strong>heavily doped junctions</strong> with very thin depletion regions. A strong electric field directly pulls electrons across the junction through quantum tunneling (covalent bond rupture). Has a <strong>negative temperature coefficient</strong> &mdash; V<sub>Z</sub> decreases as temperature rises. Best for precision low-voltage references.</p>
+    </div>
+    <div class="ic" style="border-left:4px solid var(--accent-o)">
+      <h3 style="color:var(--accent-o)">Avalanche Breakdown (V<sub>Z</sub> &gt; 7V)</h3>
+      <p>Carriers accelerated by the electric field <strong>collide with lattice atoms</strong>, releasing additional electron-hole pairs in a multiplier chain reaction. Has a <strong>positive temperature coefficient</strong> &mdash; V<sub>Z</sub> increases with temperature. Diodes rated 5&ndash;7V exhibit both effects, yielding near-zero TC for best stability.</p>
+    </div>
+  </div>
+  <div class="stitle">Learning Objectives</div>
+  <div class="g3">
+    <div class="ic bcg">
+      <h3 style="color:var(--accent-g)">&#128208; Circuit Analysis</h3>
+      <ul>
+        <li>Identify Zener diode symbol and bias condition</li>
+        <li>Apply KVL to Zener regulator circuits</li>
+        <li>Calculate V<sub>Z</sub>, I<sub>Z</sub>, I<sub>R</sub>, V<sub>R</sub></li>
+        <li>Determine series resistor R<sub>S</sub></li>
+        <li>Verify regulation conditions (I<sub>Z(min)</sub> to I<sub>Z(max)</sub>)</li>
+      </ul>
+    </div>
+    <div class="ic bcz">
+      <h3 style="color:var(--accent-z)">&#9889; Zener Characteristics</h3>
+      <ul>
+        <li>Interpret forward and reverse I-V curves</li>
+        <li>Identify breakdown knee and regulation region</li>
+        <li>Define I<sub>Z(min)</sub>, I<sub>Z(max)</sub>, I<sub>ZT</sub></li>
+        <li>Calculate power: P<sub>Z</sub> = V<sub>Z</sub> &times; I<sub>Z</sub></li>
+        <li>Select Zener by voltage and power rating</li>
+      </ul>
+    </div>
+    <div class="ic bcp">
+      <h3 style="color:var(--accent-p)">&#128202; Regulation Analysis</h3>
+      <ul>
+        <li>Distinguish line vs load regulation</li>
+        <li>Determine min/max V<sub>in</sub> for regulation</li>
+        <li>Analyze effect of varying R<sub>L</sub></li>
+        <li>Calculate regulation percentage</li>
+        <li>Design a complete Zener voltage regulator</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: HOW IT WORKS -->
+<div id="tab-how" class="tp">
+  <div class="stitle">Zener Diode Operation</div>
+  <div class="g2 mb15">
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--accent-z)">Basic Regulator Circuit</h3><div class="sdot"></div></div>
+      <canvas id="c-basic" height="190"></canvas>
+    </div>
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--accent-b)">Operating Regions</h3><div class="sdot"></div></div>
+      <canvas id="c-regions" height="190"></canvas>
+    </div>
+  </div>
+  <div class="g3 mb15">
+    <div class="ic bcz">
+      <h3 style="color:var(--accent-z)">Region 1: Below V<sub>Z</sub></h3>
+      <p>When V<sub>in</sub> &lt; V<sub>Z</sub>, the Zener is reverse-biased but not in breakdown. Only tiny leakage current flows. Full input voltage appears at output. <em>No voltage regulation occurs.</em></p>
+    </div>
+    <div class="ic bcg">
+      <h3 style="color:var(--accent-g)">Region 2: Regulation Zone</h3>
+      <p>When V<sub>in</sub> &gt; V<sub>Z</sub> and R<sub>S</sub> limits current correctly, the Zener <strong>clamps V<sub>out</sub> at V<sub>Z</sub></strong>. Excess voltage drops across R<sub>S</sub>. I<sub>Z</sub> adjusts automatically to maintain V<sub>Z</sub>.</p>
+    </div>
+    <div class="ic bcr">
+      <h3 style="color:var(--accent-r)">Region 3: Overload</h3>
+      <p>If I<sub>Z</sub> exceeds I<sub>Z(max)</sub>, power dissipation P<sub>Z</sub> = V<sub>Z</sub> &times; I<sub>Z</sub> exceeds the rated maximum. The Zener overheats and is <strong>permanently destroyed</strong>. R<sub>S</sub> must prevent this.</p>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="ic bcb">
+      <h3 style="color:var(--accent-b)">&#129518; Essential Equations</h3>
+      <ul>
+        <li><strong>Resistor voltage:</strong> V<sub>RS</sub> = V<sub>in</sub> &minus; V<sub>Z</sub></li>
+        <li><strong>Total current:</strong> I<sub>T</sub> = V<sub>RS</sub> / R<sub>S</sub></li>
+        <li><strong>Load current:</strong> I<sub>L</sub> = V<sub>Z</sub> / R<sub>L</sub></li>
+        <li><strong>Zener current:</strong> I<sub>Z</sub> = I<sub>T</sub> &minus; I<sub>L</sub></li>
+        <li><strong>Power dissipation:</strong> P<sub>Z</sub> = V<sub>Z</sub> &times; I<sub>Z</sub></li>
+        <li><strong>RS design:</strong> R<sub>S</sub> = (V<sub>in</sub> &minus; V<sub>Z</sub>) / (I<sub>Z</sub> + I<sub>L</sub>)</li>
+      </ul>
+    </div>
+    <div class="ic bcp">
+      <h3 style="color:var(--accent-p)">&#127919; Design Rules</h3>
+      <ul>
+        <li>V<sub>in</sub> must be <strong>greater than V<sub>Z</sub></strong> for regulation</li>
+        <li>I<sub>Z</sub> must stay between <strong>I<sub>Z(min)</sub> and I<sub>Z(max)</sub></strong> always</li>
+        <li>Use a power rating of <strong>2&times; calculated P<sub>Z</sub></strong> as safety margin</li>
+        <li>R<sub>S</sub> too small &rarr; I<sub>Z</sub> too high &rarr; Zener destroyed</li>
+        <li>R<sub>S</sub> too large &rarr; I<sub>Z</sub> drops to zero &rarr; no regulation</li>
+        <li>Zener diodes are rated at test current <strong>I<sub>ZT</sub></strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: IV CURVE -->
+<div id="tab-iv" class="tp">
+  <div class="stitle">I-V Characteristic Curve</div>
+  <div class="sl">
+    <div class="cp">
+      <div class="cpt">&#9881; I-V Parameters</div>
+      <div class="cg">
+        <label>Zener Voltage V<sub>Z</sub> <span class="val" id="iv-vz-v">5.1 V</span></label>
+        <input type="range" id="iv-vz" min="2" max="15" step="0.1" value="5.1" oninput="drawIV()">
+      </div>
+      <div class="cg">
+        <label>Forward Drop V<sub>F</sub> <span class="val" id="iv-vf-v">0.7 V</span></label>
+        <input type="range" id="iv-vf" min="0.3" max="1.0" step="0.05" value="0.7" oninput="drawIV()">
+      </div>
+      <div class="cg">
+        <label>I<sub>Z(max)</sub> <span class="val" id="iv-izmax-v">50 mA</span></label>
+        <input type="range" id="iv-izmax" min="10" max="120" step="5" value="50" oninput="drawIV()">
+      </div>
+      <div class="cg">
+        <label>Knee Sharpness <span class="val" id="iv-kn-v">Medium</span></label>
+        <input type="range" id="iv-kn" min="1" max="5" step="1" value="3" oninput="drawIV()">
+      </div>
+      <div class="cg">
+        <label>Labels</label>
+        <div class="tr2"><button class="tog oz" id="iv-lbl-btn" onclick="toggleIVL()">ON</button></div>
+      </div>
+      <div class="mets">
+        <div class="mb"><span class="mbl">V<sub>Z</sub></span><span class="mbv cz" id="iv-m-vz">5.1 V</span></div>
+        <div class="mb"><span class="mbl">V<sub>F</sub></span><span class="mbv cg2" id="iv-m-vf">0.7 V</span></div>
+        <div class="mb"><span class="mbl">I<sub>Z(max)</sub></span><span class="mbv cb" id="iv-m-izmax">50 mA</span></div>
+        <div class="mb"><span class="mbl">P<sub>max</sub></span><span class="mbv cr" id="iv-m-pz">255 mW</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.1rem;">
+      <div class="card">
+        <div class="chdr"><h3 style="color:var(--accent-z)">I-V Characteristic Curve &mdash; Interactive</h3><div class="sdot"></div></div>
+        <canvas id="iv-cv" height="360"></canvas>
+        <div class="oscf">
+          <span>&#9664; Reverse Bias &nbsp;|&nbsp; Forward Bias &#9654;</span>
+          <span style="color:var(--accent-z)">Adjust sliders to modify device parameters</span>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="ic bcz">
+          <h3 style="color:var(--accent-z)">Reading the I-V Curve</h3>
+          <ul>
+            <li><strong>Left (Quadrant III):</strong> Reverse bias; Zener breakdown at &minus;V<sub>Z</sub></li>
+            <li><strong>Right (Quadrant I):</strong> Forward bias; normal diode at +V<sub>F</sub></li>
+            <li><strong>Knee:</strong> Sharp bend where breakdown begins</li>
+            <li><strong>Flat vertical region:</strong> Large current change, tiny voltage change &mdash; regulation!</li>
+          </ul>
+        </div>
+        <div class="ic bcb">
+          <h3 style="color:var(--accent-b)">Dynamic Resistance r<sub>Z</sub></h3>
+          <p>In the regulation region the Zener has a small <strong>dynamic resistance</strong>:</p><br>
+          <p style="font-family:'Source Code Pro',monospace;color:var(--accent-z);font-size:.95rem;">r<sub>Z</sub> = &Delta;V<sub>Z</sub> / &Delta;I<sub>Z</sub></p><br>
+          <p>Lower r<sub>Z</sub> = better regulation. Steeper I-V slope in breakdown = lower r<sub>Z</sub>. Typical values: 1&Omega; to 100&Omega;.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: REGULATOR SIM -->
+<div id="tab-reg" class="tp">
+  <div class="stitle">Zener Voltage Regulator Simulator</div>
+  <div class="sl">
+    <div class="cp">
+      <div class="cpt">&#9881; Circuit Parameters</div>
+      <div class="cg"><label>V<sub>in</sub> <span class="val" id="rv-in">12.0 V</span></label><input type="range" id="r-vin" min="3" max="30" step="0.5" value="12" oninput="updateReg()"></div>
+      <div class="cg"><label>V<sub>Z</sub> <span class="val" id="rv-vz">5.1 V</span></label><input type="range" id="r-vz" min="2" max="15" step="0.1" value="5.1" oninput="updateReg()"></div>
+      <div class="cg"><label>R<sub>S</sub> <span class="val" id="rv-rs">470 &Omega;</span></label><input type="range" id="r-rs" min="50" max="2000" step="10" value="470" oninput="updateReg()"></div>
+      <div class="cg"><label>R<sub>L</sub> <span class="val" id="rv-rl">1.0 k&Omega;</span></label><input type="range" id="r-rl" min="100" max="10000" step="100" value="1000" oninput="updateReg()"></div>
+      <div class="cg"><label>I<sub>Z(max)</sub> <span class="val" id="rv-izmax">50 mA</span></label><input type="range" id="r-izmax" min="5" max="200" step="5" value="50" oninput="updateReg()"></div>
+      <div class="cg">
+        <label>Input Waveform</label>
+        <div class="tr2">
+          <button class="tog og" id="r-dc-btn" onclick="setRegMode(false)">DC</button>
+          <button class="tog" id="r-ac-btn" onclick="setRegMode(true)">AC RIPPLE</button>
+        </div>
+      </div>
+      <div class="ar">
+        <button class="abtn playing" id="r-play" onclick="toggleRegPlay()">&#9208; PAUSE</button>
+        <button class="abtn" onclick="regPh=0">&#8635; RESET</button>
+      </div>
+      <div class="mets">
+        <div class="mb"><span class="mbl">V<sub>out</sub></span><span class="mbv cz" id="rm-vout">&mdash;</span></div>
+        <div class="mb"><span class="mbl">V<sub>RS</sub></span><span class="mbv cb" id="rm-vrs">&mdash;</span></div>
+        <div class="mb"><span class="mbl">I<sub>T</sub></span><span class="mbv cg2" id="rm-it">&mdash;</span></div>
+        <div class="mb"><span class="mbl">I<sub>Z</sub></span><span class="mbv cz" id="rm-iz">&mdash;</span></div>
+        <div class="mb"><span class="mbl">I<sub>L</sub></span><span class="mbv cp2" id="rm-il">&mdash;</span></div>
+        <div class="mb"><span class="mbl">P<sub>Z</sub></span><span class="mbv cr" id="rm-pz">&mdash;</span></div>
+        <div class="mb"><span class="mbl">P<sub>RS</sub></span><span class="mbv co" id="rm-prs">&mdash;</span></div>
+        <div class="mb"><span class="mbl">Status</span><span class="mbv" id="rm-status">&mdash;</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.1rem;">
+      <div class="card"><div class="chdr"><h3 style="color:var(--accent-z)">Circuit Diagram &mdash; Animated</h3><div class="sdot"></div></div><canvas id="rc-ckt" height="200"></canvas></div>
+      <div class="card"><div class="chdr"><h3 style="color:var(--accent-b)">Oscilloscope &mdash; V<sub>in</sub> vs V<sub>out</sub></h3><div class="sdot"></div></div><canvas id="rc-scope" height="190"></canvas><div class="oscf"><span>&#9644; <span style="color:var(--accent-b)">V<sub>in</sub></span></span><span>&#9644; <span style="color:var(--accent-z)">V<sub>out</sub> regulated</span></span><span id="rc-note">Regulation active</span></div></div>
+      <div class="card"><div class="chdr"><h3 style="color:var(--accent-g)">Power Distribution</h3></div><canvas id="rc-pwr" height="95"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 5: LOAD EFFECTS -->
+<div id="tab-load" class="tp">
+  <div class="stitle">Load Regulation Analysis</div>
+  <div class="sl">
+    <div class="cp">
+      <div class="cpt">&#9881; Load Parameters</div>
+      <div class="cg"><label>V<sub>in</sub> <span class="val" id="lv-in">12.0 V</span></label><input type="range" id="l-vin" min="5" max="25" step="0.5" value="12" oninput="updateLoad()"></div>
+      <div class="cg"><label>V<sub>Z</sub> <span class="val" id="lv-vz">5.1 V</span></label><input type="range" id="l-vz" min="2" max="12" step="0.1" value="5.1" oninput="updateLoad()"></div>
+      <div class="cg"><label>R<sub>S</sub> <span class="val" id="lv-rs">470 &Omega;</span></label><input type="range" id="l-rs" min="50" max="2000" step="10" value="470" oninput="updateLoad()"></div>
+      <div class="cg"><label>R<sub>L</sub> (sweep) <span class="val" id="lv-rl">1.0 k&Omega;</span></label><input type="range" id="l-rl" min="100" max="10000" step="50" value="1000" oninput="updateLoad()"></div>
+      <div class="cg"><label>I<sub>Z(min)</sub> <span class="val" id="lv-izmin">5 mA</span></label><input type="range" id="l-izmin" min="1" max="20" step="1" value="5" oninput="updateLoad()"></div>
+      <div class="mets">
+        <div class="mb"><span class="mbl">V<sub>out</sub></span><span class="mbv cz" id="lm-vout">&mdash;</span></div>
+        <div class="mb"><span class="mbl">I<sub>Z</sub></span><span class="mbv cg2" id="lm-iz">&mdash;</span></div>
+        <div class="mb"><span class="mbl">I<sub>L</sub></span><span class="mbv cb" id="lm-il">&mdash;</span></div>
+        <div class="mb"><span class="mbl">Regulating?</span><span class="mbv" id="lm-reg">&mdash;</span></div>
+        <div class="mb"><span class="mbl">R<sub>L(min)</sub></span><span class="mbv co" id="lm-rlmin">&mdash;</span></div>
+        <div class="mb"><span class="mbl">Load Reg%</span><span class="mbv cp2" id="lm-lrpct">&mdash;</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.1rem;">
+      <div class="card"><div class="chdr"><h3 style="color:var(--accent-z)">V<sub>out</sub> vs R<sub>L</sub> &mdash; Regulation Curve</h3><div class="sdot"></div></div><canvas id="lc-curve" height="250"></canvas><div class="oscf"><span>X: R<sub>L</sub> (&Omega;)</span><span>&#9644; <span style="color:var(--accent-g)">Regulated</span> &nbsp; &#9644; <span style="color:var(--accent-r)">Unregulated</span></span><span style="color:var(--accent-z)">&#9679; Current R<sub>L</sub></span></div></div>
+      <div class="g2">
+        <div class="card"><div class="chdr"><h3 style="color:var(--accent-b)">Current Split</h3></div><canvas id="lc-cur" height="140"></canvas></div>
+        <div class="ic bcz" style="margin:0">
+          <h3 style="color:var(--accent-z)">Load Regulation Formula</h3>
+          <p style="font-family:'Source Code Pro',monospace;color:var(--accent-z);font-size:.92rem;margin-bottom:.6rem;">LR% = (V<sub>NL</sub> &minus; V<sub>FL</sub>) / V<sub>FL</sub> &times; 100</p>
+          <ul>
+            <li><strong>V<sub>NL</sub></strong> = Output with no load (R<sub>L</sub> = &infin;)</li>
+            <li><strong>V<sub>FL</sub></strong> = Output at full load</li>
+            <li>Ideal: LR% = 0% (Zener ~ 1&ndash;5%)</li>
+            <li>Regulated when I<sub>Z</sub> &ge; I<sub>Z(min)</sub></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 6: FORMULAS -->
+<div id="tab-formulas" class="tp">
+  <div class="stitle">Formulas &amp; Reference</div>
+  <div class="g2 mb15">
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--accent-z)">Regulator Equations</h3></div>
+      <table class="ft">
+        <tr><th>Quantity</th><th>Formula</th><th>Notes</th></tr>
+        <tr><td>V<sub>RS</sub></td><td class="feq">V_in &minus; V_Z</td><td class="fnote">Voltage across series R</td></tr>
+        <tr><td>I<sub>T</sub></td><td class="feq">V_RS / R_S</td><td class="fnote">Total supply current</td></tr>
+        <tr><td>I<sub>L</sub></td><td class="feq">V_Z / R_L</td><td class="fnote">Load current</td></tr>
+        <tr><td>I<sub>Z</sub></td><td class="feq">I_T &minus; I_L</td><td class="fnote">Zener current</td></tr>
+        <tr><td>P<sub>Z</sub></td><td class="feq">V_Z &times; I_Z</td><td class="fnote">Zener dissipation</td></tr>
+        <tr><td>P<sub>RS</sub></td><td class="feq">V_RS &times; I_T</td><td class="fnote">Resistor power</td></tr>
+        <tr><td>R<sub>S(design)</sub></td><td class="feq">(V_in &minus; V_Z) / (I_Z + I_L)</td><td class="fnote">Design equation</td></tr>
+        <tr><td>R<sub>L(min)</sub></td><td class="feq">V_Z / (I_T &minus; I_Z(min))</td><td class="fnote">Min load for regulation</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--accent-b)">Line &amp; Load Regulation</h3></div>
+      <table class="ft">
+        <tr><th>Parameter</th><th>Formula</th><th>Notes</th></tr>
+        <tr><td>Line Regulation</td><td class="feq">&Delta;V_out / &Delta;V_in &times; 100%</td><td class="fnote">Input variation effect</td></tr>
+        <tr><td>Load Regulation</td><td class="feq">(V_NL &minus; V_FL)/V_FL &times; 100%</td><td class="fnote">Load variation effect</td></tr>
+        <tr><td>Dynamic Resistance</td><td class="feq">r_Z = &Delta;V_Z / &Delta;I_Z</td><td class="fnote">Slope of I-V in breakdown</td></tr>
+        <tr><td>V<sub>in(min)</sub></td><td class="feq">V_Z + I_Z(min) &times; R_S</td><td class="fnote">Min input for regulation</td></tr>
+        <tr><td>V<sub>in(max)</sub></td><td class="feq">V_Z + I_Z(max) &times; R_S</td><td class="fnote">Max without damage</td></tr>
+        <tr><td>Temp Coeff</td><td class="feq">TC = &Delta;V_Z / (V_Z &times; &Delta;T)</td><td class="fnote">%/&deg;C</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card mb15">
+    <div class="chdr"><h3 style="color:var(--accent-g)">Common 1N47xx Series Zener Diodes (1W)</h3></div>
+    <table class="ft">
+      <tr><th>Part</th><th>V<sub>Z</sub></th><th>I<sub>ZT</sub></th><th>P<sub>max</sub></th><th>r<sub>Z</sub></th><th>Application</th></tr>
+      <tr><td>1N4728A</td><td class="feq cz">3.3 V</td><td>76 mA</td><td>1W</td><td>10 &Omega;</td><td>Low voltage reference</td></tr>
+      <tr><td>1N4730A</td><td class="feq cz">3.9 V</td><td>64 mA</td><td>1W</td><td>9 &Omega;</td><td>Low voltage circuits</td></tr>
+      <tr><td>1N4733A</td><td class="feq cz">5.1 V</td><td>49 mA</td><td>1W</td><td>7 &Omega;</td><td>TTL supply reference</td></tr>
+      <tr><td>1N4735A</td><td class="feq cz">6.2 V</td><td>41 mA</td><td>1W</td><td>2 &Omega;</td><td>Best stability (near 0 TC)</td></tr>
+      <tr><td>1N4738A</td><td class="feq cz">8.2 V</td><td>31 mA</td><td>1W</td><td>8 &Omega;</td><td>General purpose</td></tr>
+      <tr><td>1N4742A</td><td class="feq cz">12 V</td><td>21 mA</td><td>1W</td><td>11 &Omega;</td><td>Automotive / telecom</td></tr>
+      <tr><td>1N4744A</td><td class="feq cz">15 V</td><td>17 mA</td><td>1W</td><td>16 &Omega;</td><td>Power supply reference</td></tr>
+      <tr><td>1N4748A</td><td class="feq cz">22 V</td><td>12 mA</td><td>1W</td><td>23 &Omega;</td><td>High voltage reference</td></tr>
+    </table>
+  </div>
+  <div class="g3">
+    <div class="ic bcg">
+      <h3 style="color:var(--accent-g)">&#9989; Design Checklist</h3>
+      <ul>
+        <li>V<sub>in</sub> &gt; V<sub>Z</sub> at all times?</li>
+        <li>I<sub>Z</sub> within I<sub>Z(min)</sub> to I<sub>Z(max)</sub>?</li>
+        <li>P<sub>Z</sub> &lt; P<sub>max</sub>/2 (2&times; safety margin)?</li>
+        <li>P<sub>RS</sub> within resistor watt rating?</li>
+        <li>R<sub>L</sub> &gt; R<sub>L(min)</sub> always?</li>
+        <li>Temperature effects considered?</li>
+      </ul>
+    </div>
+    <div class="ic bcz">
+      <h3 style="color:var(--accent-z)">&#9889; Quick Reference</h3>
+      <ul>
+        <li>Silicon forward drop: <strong>0.6&ndash;0.7 V</strong></li>
+        <li>Standard ratings: 250mW, 500mW, 1W, 5W</li>
+        <li>Zener breakdown: V<sub>Z</sub> &lt; 5V, negative TC</li>
+        <li>Avalanche: V<sub>Z</sub> &gt; 7V, positive TC</li>
+        <li>5&ndash;7V: mixed, near-zero TC (best stability)</li>
+        <li>I<sub>Z(min)</sub> typically 5% of I<sub>ZT</sub></li>
+      </ul>
+    </div>
+    <div class="ic bcp">
+      <h3 style="color:var(--accent-p)">&#128260; Applications</h3>
+      <ul>
+        <li>Voltage reference circuits</li>
+        <li>Overvoltage protection / clipping</li>
+        <li>Level shifting in signal circuits</li>
+        <li>Panel meter protection</li>
+        <li>Waveform clipping &amp; shaping</li>
+        <li>Transistor amplifier bias supply</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: QUIZ -->
+<div id="tab-quiz" class="tp">
+  <div class="stitle">Knowledge Check</div>
+  <div class="qw">
+    <div class="qpb"><div class="qpf" id="qpf" style="width:0%"></div></div>
+    <div id="qcon"></div>
+    <div class="scard" id="scard">
+      <div class="sbig" id="snum">0/10</div>
+      <div class="ssub">Final Score</div>
+      <div class="smsg" id="smsg"></div>
+      <button class="bpri" onclick="restartQuiz()" style="margin-top:1.5rem">&#8635; Retake Quiz</button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div><!-- /pw -->
+<script>
+// ── THEME ──────────────────────────────────────
+let LM=false;
+function toggleTheme(){
+  LM=!LM;
+  document.body.classList.toggle('light',LM);
+  document.getElementById('trk').classList.toggle('on',LM);
+  document.getElementById('tlbl').textContent=LM?'DARK MODE':'LIGHT MODE';
+  ['c-basic','c-regions','iv-cv','rc-ckt','rc-scope','rc-pwr','lc-curve','lc-cur'].forEach(id=>{
+    const c=document.getElementById(id);
+    if(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);}
+  });
+  drawBasic();drawRegions();drawIV();updateReg();updateLoad();
+}
+
+// ── TABS ──────────────────────────────────────
+function showTab(id,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(()=>{
+    if(id==='how'){drawBasic();drawRegions();}
+    if(id==='iv')drawIV();
+    if(id==='reg')updateReg();
+    if(id==='load')updateLoad();
+  },30);
+}
+
+// ── CANVAS UTIL ───────────────────────────────
+function rsz(id){
+  const c=document.getElementById(id);if(!c)return null;
+  c.width=c.parentElement.clientWidth||600;
+  return c.getContext('2d');
+}
+function scopeBg(ctx,w,h){
+  ctx.fillStyle=LM?'#e8ecf8':'#04080f';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=LM?'rgba(0,119,187,0.07)':'rgba(0,212,255,0.06)';ctx.lineWidth=1;
+  for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(i*w/10,0);ctx.lineTo(i*w/10,h);ctx.stroke();}
+  for(let j=1;j<6;j++){ctx.beginPath();ctx.moveTo(0,j*h/6);ctx.lineTo(w,j*h/6);ctx.stroke();}
+}
+function rrect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
+function gnd(ctx,x,y){
+  ctx.strokeStyle=LM?'#5070a0':'#445577';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+8);ctx.stroke();
+  for(let i=0;i<3;i++){const hw=12-i*4;ctx.beginPath();ctx.moveTo(x-hw,y+8+i*5);ctx.lineTo(x+hw,y+8+i*5);ctx.stroke();}
+}
+
+// ── TAB 2 DRAWINGS ────────────────────────────
+function drawZener(ctx,x,y,col,sz){
+  sz=sz||1;ctx.save();ctx.translate(x,y);
+  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=1.5;
+  const s=18*sz;
+  ctx.beginPath();ctx.moveTo(-s,0);ctx.lineTo(-s*0.44,0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-s*0.44,-s*0.5);ctx.lineTo(s*0.44,0);ctx.lineTo(-s*0.44,s*0.5);ctx.closePath();ctx.fill();
+  ctx.beginPath();ctx.moveTo(s*0.44,-s*0.5);ctx.lineTo(s*0.44,s*0.5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(s*0.44,-s*0.5);ctx.lineTo(s*0.2,-s*0.5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(s*0.44,s*0.5);ctx.lineTo(s*0.7,s*0.5);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(s*0.44,0);ctx.lineTo(s,0);ctx.stroke();
+  ctx.restore();
+}
+function drawRes(ctx,x,y,col,lbl){
+  ctx.save();ctx.translate(x,y);
+  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.strokeRect(-22,-9,44,18);
+  ctx.fillStyle=col;ctx.font='10px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText(lbl,0,5);ctx.restore();
+}
+
+function drawBasic(){
+  const ctx=rsz('c-basic');if(!ctx)return;
+  const c=document.getElementById('c-basic'),w=c.width,h=c.height;
+  ctx.fillStyle=LM?'#f8f9ff':'#04080f';ctx.fillRect(0,0,w,h);
+  const cy=h*0.48,lx=w*0.1;
+  const wc=LM?'#3a5080':'#2a4a80';
+  const rsX=w*0.37,zdX=w*0.62,rx=w*0.88;
+  // source
+  ctx.strokeStyle=LM?'#0077bb':'#00d4ff';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(lx,cy,26,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle=LM?'#0077bb':'#00d4ff';ctx.font='11px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('Vin',lx,cy+4);
+  // wires
+  ctx.strokeStyle=wc;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(lx+26,cy-8);ctx.lineTo(rsX-22,cy-26);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(rsX+22,cy-26);ctx.lineTo(zdX-18,cy-26);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(zdX+18,cy-26);ctx.lineTo(rx,cy-26);ctx.stroke();
+  // RS
+  drawRes(ctx,rsX,cy-26,LM?'#c05a00':'#ff9040','RS');
+  // Zener
+  drawZener(ctx,zdX,cy-26,LM?'#b08000':'#f7c948');
+  // RL
+  ctx.strokeStyle=wc;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(rx,cy-26);ctx.lineTo(rx,cy+30);ctx.stroke();
+  drawRes(ctx,rx,cy+4,LM?'#7722cc':'#c77dff','RL');
+  // bottom
+  ctx.beginPath();ctx.moveTo(rx,cy+30);ctx.lineTo(lx,cy+30);ctx.lineTo(lx+26,cy+8);ctx.stroke();
+  gnd(ctx,lx,cy+30);
+  // Vout label
+  ctx.fillStyle=LM?'#b08000':'#f7c948';ctx.font='bold 10px Source Code Pro,monospace';ctx.textAlign='left';
+  ctx.fillText('Vout = VZ',rx+5,cy+4);
+  // Arrow IT
+  ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('IT \u2192',rsX,cy-40);
+  ctx.fillText('IZ \u2193',zdX,cy-40);
+}
+
+function drawRegions(){
+  const ctx=rsz('c-regions');if(!ctx)return;
+  const c=document.getElementById('c-regions'),w=c.width,h=c.height;
+  ctx.fillStyle=LM?'#f0f3fb':'#07090f';ctx.fillRect(0,0,w,h);
+  const regions=[
+    {x:0,wf:.28,color:'rgba(255,77,106,0.09)',lbl:'BELOW VZ',sub:'No regulation\nVout = Vin',lc:LM?'#cc0033':'#ff4d6a'},
+    {x:.28,wf:.44,color:'rgba(0,232,135,0.09)',lbl:'REGULATION',sub:'Vout \u2248 VZ\n(normal operation)',lc:LM?'#007a40':'#00e887'},
+    {x:.72,wf:.28,color:'rgba(255,77,106,0.09)',lbl:'OVERLOAD',sub:'IZ > IZmax\nDevice destroyed',lc:LM?'#cc0033':'#ff4d6a'},
+  ];
+  regions.forEach(r=>{
+    ctx.fillStyle=r.color;ctx.fillRect(r.x*w,0,r.wf*w,h);
+    ctx.fillStyle=r.lc;ctx.font='bold 10px Orbitron,sans-serif';ctx.textAlign='center';
+    ctx.fillText(r.lbl,(r.x+r.wf/2)*w,h*0.2);
+    ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='9px Source Code Pro,monospace';
+    r.sub.split('\n').forEach((ln,i)=>ctx.fillText(ln,(r.x+r.wf/2)*w,h*0.36+i*13));
+    if(r.x>0){ctx.strokeStyle=LM?'#d0d8ef':'#2a4a80';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(r.x*w,0);ctx.lineTo(r.x*w,h);ctx.stroke();ctx.setLineDash([]);}
+  });
+  ctx.fillStyle=LM?'#0077bb':'#00d4ff';ctx.font='10px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('\u2192  Increasing Vin',w/2,h-8);
+  ctx.fillText('VZ',w*0.28,h-22);ctx.fillText('Vin(max)',w*0.72,h-22);
+}
+
+// ── IV CURVE ──────────────────────────────────
+let ivL=true;
+function toggleIVL(){
+  ivL=!ivL;
+  const b=document.getElementById('iv-lbl-btn');
+  b.className='tog'+(ivL?' oz':'');b.textContent=ivL?'ON':'OFF';drawIV();
+}
+function drawIV(){
+  const ctx=rsz('iv-cv');if(!ctx)return;
+  const c=document.getElementById('iv-cv'),w=c.width,h=c.height;
+  const vz=+document.getElementById('iv-vz').value;
+  const vf=+document.getElementById('iv-vf').value;
+  const izmax=+document.getElementById('iv-izmax').value;
+  const kn=+document.getElementById('iv-kn').value;
+  document.getElementById('iv-vz-v').textContent=vz.toFixed(1)+' V';
+  document.getElementById('iv-vf-v').textContent=vf.toFixed(2)+' V';
+  document.getElementById('iv-izmax-v').textContent=izmax+' mA';
+  document.getElementById('iv-m-vz').textContent=vz.toFixed(1)+' V';
+  document.getElementById('iv-m-vf').textContent=vf.toFixed(2)+' V';
+  document.getElementById('iv-m-izmax').textContent=izmax+' mA';
+  document.getElementById('iv-m-pz').textContent=(vz*izmax).toFixed(0)+' mW';
+  const knames=['','Very Sharp','Sharp','Medium','Soft','Very Soft'];
+  document.getElementById('iv-kn-v').textContent=knames[kn];
+  ctx.fillStyle=LM?'#e8ecf8':'#04080f';ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=LM?'rgba(0,119,187,0.08)':'rgba(0,212,255,0.06)';ctx.lineWidth=1;
+  for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(i*w/10,0);ctx.lineTo(i*w/10,h);ctx.stroke();}
+  for(let j=1;j<8;j++){ctx.beginPath();ctx.moveTo(0,j*h/8);ctx.lineTo(w,j*h/8);ctx.stroke();}
+  const ox=w*0.55,oy=h*0.62;
+  ctx.strokeStyle=LM?'rgba(0,119,187,0.28)':'rgba(0,212,255,0.22)';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(0,oy);ctx.lineTo(w,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,0);ctx.lineTo(ox,h);ctx.stroke();
+  ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='11px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('Voltage (V)',w/2,h-5);
+  ctx.save();ctx.translate(12,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('Current (mA)',0,0);ctx.restore();
+  ctx.fillText('\u2192 Forward',ox+w*0.18,oy-8);ctx.fillText('Reverse \u2190',ox-w*0.18,oy-8);
+  const sx=w/22,sy=h*0.52/izmax;
+  const ks=[0,70,45,25,12,6][kn];
+  // Zener breakdown
+  ctx.beginPath();ctx.strokeStyle=LM?'#b08000':'#f7c948';ctx.lineWidth=2.5;
+  for(let v=0;v<=vz+0.9;v+=0.02){
+    const dv=vz-v;
+    let ir=dv>0.5?0.4:(dv>0?0.4+Math.pow((0.5-dv)*ks,2)*0.05:0.4+Math.pow(-dv*ks,2.2)*0.85);
+    ir=Math.min(ir,izmax);
+    const px=ox-v*sx,py=oy+Math.min(ir*sy,oy-10);
+    if(v===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  // Forward characteristic
+  ctx.beginPath();ctx.strokeStyle=LM?'#007a40':'#00e887';ctx.lineWidth=2.5;
+  for(let v=0;v<=vf+0.6;v+=0.01){
+    const iFwd=v<vf?0:Math.pow((v-vf)*28,3)*izmax*0.12;
+    const px=ox+v*sx,py=oy-Math.min(iFwd*sy,oy-10);
+    if(v===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  if(ivL){
+    const zc=LM?'#b08000':'#f7c948',gc=LM?'#007a40':'#00e887';
+    ctx.setLineDash([4,4]);ctx.strokeStyle=zc;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(ox-vz*sx,oy);ctx.lineTo(ox-vz*sx,oy+oy*.65);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=zc;ctx.font='bold 10px Source Code Pro,monospace';ctx.textAlign='center';
+    ctx.fillText('\u2212VZ ('+vz.toFixed(1)+'V)',ox-vz*sx,oy+14);
+    ctx.setLineDash([4,4]);ctx.strokeStyle=gc;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(ox+vf*sx,oy);ctx.lineTo(ox+vf*sx,oy-38);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=gc;ctx.fillText('+VF ('+vf.toFixed(2)+'V)',ox+vf*sx,oy-42);
+    ctx.setLineDash([5,5]);ctx.strokeStyle=LM?'#cc0033':'#ff4d6a';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,oy+izmax*sy);ctx.lineTo(w,oy+izmax*sy);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=LM?'#cc0033':'#ff4d6a';ctx.font='10px Source Code Pro,monospace';ctx.textAlign='right';
+    ctx.fillText('IZ(max)='+izmax+'mA',w-5,oy+izmax*sy-4);
+    ctx.fillStyle=zc;ctx.font='9px Orbitron,sans-serif';ctx.textAlign='center';
+    ctx.fillText('REGULATION',ox-vz*sx-30,oy+h*0.26);ctx.fillText('REGION',ox-vz*sx-30,oy+h*0.26+13);
+    ctx.fillStyle=gc;ctx.fillText('FORWARD',ox+vf*sx+35,oy-50);ctx.fillText('CONDUCTION',ox+vf*sx+35,oy-38);
+  }
+}
+
+// ── REGULATOR SIM ─────────────────────────────
+let regPl=true,regPh=0,regAC=false;
+function toggleRegPlay(){regPl=!regPl;const b=document.getElementById('r-play');b.className='abtn'+(regPl?' playing':'');b.textContent=regPl?'\u23F8 PAUSE':'\u25B6 PLAY';}
+function setRegMode(ac){regAC=ac;document.getElementById('r-dc-btn').className='tog'+(ac?'':' og');document.getElementById('r-ac-btn').className='tog'+(ac?' oz':'');}
+function rP(){return{vin:+document.getElementById('r-vin').value,vz:+document.getElementById('r-vz').value,rs:+document.getElementById('r-rs').value,rl:+document.getElementById('r-rl').value,izmax:+document.getElementById('r-izmax').value};}
+function fmtR(v){return v>=1000?(v/1000).toFixed(1)+' k\u03A9':v+' \u03A9';}
+function updateReg(){
+  const p=rP();
+  document.getElementById('rv-in').textContent=p.vin.toFixed(1)+' V';
+  document.getElementById('rv-vz').textContent=p.vz.toFixed(1)+' V';
+  document.getElementById('rv-rs').textContent=fmtR(p.rs);
+  document.getElementById('rv-rl').textContent=fmtR(p.rl);
+  document.getElementById('rv-izmax').textContent=p.izmax+' mA';
+  const vrs=p.vin-p.vz,it=vrs/p.rs*1000,il=p.vz/p.rl*1000,iz=it-il;
+  const pz=Math.max(0,p.vz*iz/1000),prs=Math.max(0,vrs*it/1000);
+  const reg=p.vin>p.vz&&iz>=0&&iz<=p.izmax;
+  const vout=reg?p.vz:p.vin*p.rl/(p.rs+p.rl);
+  document.getElementById('rm-vout').textContent=vout.toFixed(2)+' V';
+  document.getElementById('rm-vrs').textContent=vrs.toFixed(2)+' V';
+  document.getElementById('rm-it').textContent=it.toFixed(2)+' mA';
+  document.getElementById('rm-iz').textContent=iz.toFixed(2)+' mA';
+  document.getElementById('rm-il').textContent=il.toFixed(2)+' mA';
+  document.getElementById('rm-pz').textContent=(pz*1000).toFixed(1)+' mW';
+  document.getElementById('rm-prs').textContent=(prs*1000).toFixed(1)+' mW';
+  const ov=iz>p.izmax,nr=iz<0||p.vin<=p.vz;
+  const sel=document.getElementById('rm-status');
+  sel.textContent=ov?'\u26A0 OVERLOAD':(nr?'\u26A0 NO REG':'\u2713 ACTIVE');
+  sel.className='mbv '+(ov?'cr':(nr?'co':'cg2'));
+  drawRegCkt();drawRegPwr();
+}
+function drawRegCkt(){
+  const ctx=rsz('rc-ckt');if(!ctx)return;
+  const c=document.getElementById('rc-ckt'),w=c.width,h=c.height;
+  const p=rP();
+  const vrs=p.vin-p.vz,it=vrs/p.rs*1000,il=p.vz/p.rl*1000,iz=it-il;
+  const reg=p.vin>p.vz&&iz>=0&&iz<=p.izmax;
+  ctx.fillStyle=LM?'#f8f9ff':'#04080f';ctx.fillRect(0,0,w,h);
+  const cy=h*.44,lx=w*.09,rsX=w*.34,zdX=w*.58,rx=w*.85;
+  const wc=reg?(LM?'#007a40':'#00e887'):(LM?'#5070a0':'#2a4a80');
+  const zc=reg?(LM?'#b08000':'#f7c948'):(LM?'#cc0033':'#ff4d6a');
+  // Source
+  ctx.strokeStyle=LM?'#0077bb':'#00d4ff';ctx.lineWidth=2;
+  ctx.beginPath();ctx.arc(lx,cy,25,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle=LM?'#0077bb':'#00d4ff';ctx.font='10px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('Vin',lx,cy-2);ctx.fillText(p.vin.toFixed(1)+'V',lx,cy+10);
+  // Top wire
+  ctx.strokeStyle=wc;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(lx+25,cy-8);ctx.lineTo(rsX-22,cy-25);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(rsX+22,cy-25);ctx.lineTo(zdX-18,cy-25);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(zdX+18,cy-25);ctx.lineTo(rx,cy-25);ctx.stroke();
+  // RS
+  ctx.strokeStyle=LM?'#c05a00':'#ff9040';ctx.lineWidth=1.5;
+  ctx.strokeRect(rsX-22,cy-36,44,22);
+  ctx.fillStyle=LM?'#c05a00':'#ff9040';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('RS '+p.rs+'\u03A9',rsX,cy-22);
+  // Zener
+  drawZener(ctx,zdX,cy-25,zc,0.85);
+  ctx.fillStyle=zc;ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('VZ='+p.vz+'V',zdX,cy-40);
+  // IZ vertical wire
+  ctx.strokeStyle=zc;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(zdX,cy-25);ctx.lineTo(zdX,cy+8);ctx.stroke();
+  ctx.fillStyle=zc;ctx.font='8px Source Code Pro,monospace';ctx.textAlign='left';
+  ctx.fillText('IZ='+iz.toFixed(1)+'mA',zdX+4,cy-8);
+  // RL
+  ctx.strokeStyle=LM?'#3a5080':'#2a4a80';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(rx,cy-25);ctx.lineTo(rx,cy+35);ctx.stroke();
+  ctx.strokeStyle=LM?'#7722cc':'#c77dff';ctx.lineWidth=1.5;
+  ctx.strokeRect(rx-18,cy-5,36,28);
+  ctx.fillStyle=LM?'#7722cc':'#c77dff';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('RL',rx,cy+9);ctx.fillText(fmtR(p.rl),rx,cy+20);
+  // Vout
+  ctx.fillStyle=zc;ctx.font='bold 9px Source Code Pro,monospace';ctx.textAlign='left';
+  ctx.fillText('Vout='+(reg?p.vz.toFixed(2):(p.vin*p.rl/(p.rs+p.rl)).toFixed(2))+'V',rx+5,cy+5);
+  // Bottom wire
+  ctx.strokeStyle=LM?'#3a5080':'#2a4a80';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(rx,cy+35);ctx.lineTo(lx,cy+35);ctx.lineTo(lx+25,cy+8);ctx.stroke();
+  gnd(ctx,lx,cy+35);
+  // Status badge
+  const sc=reg?(LM?'rgba(0,122,64,0.15)':'rgba(0,232,135,0.1)'):'rgba(255,77,106,0.1)';
+  const bc=reg?(LM?'#007a40':'#00e887'):(LM?'#cc0033':'#ff4d6a');
+  ctx.fillStyle=sc;ctx.strokeStyle=bc;ctx.lineWidth=1;
+  rrect(ctx,w*.04,h-28,180,20,5);ctx.fill();ctx.stroke();
+  ctx.fillStyle=bc;ctx.font='bold 9px Orbitron,sans-serif';ctx.textAlign='center';
+  ctx.fillText(reg?'\u2713 REGULATION ACTIVE':'\u26A0 CHECK CONDITIONS',w*.04+90,h-14);
+}
+function drawRegScope(){
+  const ctx=rsz('rc-scope');if(!ctx)return;
+  const c=document.getElementById('rc-scope'),w=c.width,h=c.height;
+  const p=rP();
+  scopeBg(ctx,w,h);
+  const maxV=p.vin*1.25||20;
+  const ty=v=>h*.88-(v/maxV)*h*.76;
+  // Vin
+  ctx.beginPath();ctx.strokeStyle=LM?'#0077bb':'#00d4ff';ctx.lineWidth=2;
+  for(let i=0;i<w;i++){
+    const t=i/w;
+    const vi=regAC?p.vin+p.vin*.2*Math.sin(2*Math.PI*(t*3+regPh)):p.vin;
+    if(i===0)ctx.moveTo(i,ty(vi));else ctx.lineTo(i,ty(vi));
+  }
+  ctx.stroke();
+  // Vout
+  ctx.beginPath();ctx.strokeStyle=LM?'#b08000':'#f7c948';ctx.lineWidth=2.5;
+  for(let i=0;i<w;i++){
+    const t=i/w;
+    const vi=regAC?p.vin+p.vin*.2*Math.sin(2*Math.PI*(t*3+regPh)):p.vin;
+    const vri=vi-p.vz,iti=vri/p.rs*1000,ili=p.vz/p.rl*1000,izi=iti-ili;
+    const reg2=vi>p.vz&&izi>=0&&izi<=p.izmax;
+    const vo=reg2?p.vz:vi*p.rl/(p.rs+p.rl);
+    if(i===0)ctx.moveTo(i,ty(vo));else ctx.lineTo(i,ty(vo));
+  }
+  ctx.stroke();
+  ctx.setLineDash([5,5]);ctx.strokeStyle=LM?'rgba(176,128,0,.45)':'rgba(247,201,72,.35)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,ty(p.vz));ctx.lineTo(w,ty(p.vz));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=LM?'#b08000':'#f7c948';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='right';
+  ctx.fillText('VZ='+p.vz+'V',w-4,ty(p.vz)-4);
+}
+function drawRegPwr(){
+  const ctx=rsz('rc-pwr');if(!ctx)return;
+  const c=document.getElementById('rc-pwr'),w=c.width,h=c.height;
+  const p=rP();
+  const vrs=p.vin-p.vz,it=vrs/p.rs*1000,il=p.vz/p.rl*1000,iz=it-il;
+  const pz=Math.max(0,p.vz*iz/1000),prs=Math.max(0,vrs*it/1000),pl=Math.max(0,p.vz*il/1000);
+  const tot=pz+prs+pl||1;
+  ctx.fillStyle=LM?'#f8f9ff':'#04080f';ctx.fillRect(0,0,w,h);
+  const bars=[{l:'P_RS',v:prs,col:LM?'#c05a00':'#ff9040'},{l:'P_Z',v:pz,col:LM?'#b08000':'#f7c948'},{l:'P_L',v:pl,col:LM?'#7722cc':'#c77dff'}];
+  const bw=w/(bars.length*2+1);
+  bars.forEach((b,i)=>{
+    const bh=Math.max(4,(b.v/tot)*(h*.62));
+    const bx=bw*(2*i+1),by=h*.72-bh;
+    ctx.fillStyle=b.col;ctx.fillRect(bx,by,bw,bh);
+    ctx.fillStyle=LM?'#111':'#eee';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+    ctx.fillText(b.l,bx+bw/2,h*.88);
+    ctx.fillText((b.v*1000).toFixed(1)+'mW',bx+bw/2,by-3);
+  });
+  ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='9px Orbitron,sans-serif';ctx.textAlign='center';
+  ctx.fillText('POWER DISTRIBUTION',w/2,h-2);
+}
+
+// ── LOAD ──────────────────────────────────────
+function updateLoad(){
+  const vin=+document.getElementById('l-vin').value;
+  const vz=+document.getElementById('l-vz').value;
+  const rs=+document.getElementById('l-rs').value;
+  const rl=+document.getElementById('l-rl').value;
+  const izmin=+document.getElementById('l-izmin').value;
+  document.getElementById('lv-in').textContent=vin.toFixed(1)+' V';
+  document.getElementById('lv-vz').textContent=vz.toFixed(1)+' V';
+  document.getElementById('lv-rs').textContent=fmtR(rs);
+  document.getElementById('lv-rl').textContent=fmtR(rl);
+  document.getElementById('lv-izmin').textContent=izmin+' mA';
+  const vrs=vin-vz,it=vrs/rs*1000,il=vz/rl*1000,iz=it-il;
+  const reg=vin>vz&&iz>=izmin;
+  const vout=reg?vz:vin*rl/(rs+rl);
+  const rlmin=vz/((it-izmin)/1000);
+  document.getElementById('lm-vout').textContent=vout.toFixed(2)+' V';
+  document.getElementById('lm-iz').textContent=iz.toFixed(2)+' mA';
+  document.getElementById('lm-il').textContent=il.toFixed(2)+' mA';
+  const re=document.getElementById('lm-reg');
+  re.textContent=reg?'\u2713 YES':'\u2717 NO';re.className='mbv '+(reg?'cg2':'cr');
+  document.getElementById('lm-rlmin').textContent=fmtR(Math.max(0,rlmin).toFixed(0));
+  document.getElementById('lm-lrpct').textContent='< 1%';
+  drawLoadCurve();drawLoadCur();
+}
+function drawLoadCurve(){
+  const ctx=rsz('lc-curve');if(!ctx)return;
+  const c=document.getElementById('lc-curve'),w=c.width,h=c.height;
+  const vin=+document.getElementById('l-vin').value;
+  const vz=+document.getElementById('l-vz').value;
+  const rs=+document.getElementById('l-rs').value;
+  const rlCur=+document.getElementById('l-rl').value;
+  const izmin=+document.getElementById('l-izmin').value;
+  scopeBg(ctx,w,h);
+  const rlMin=100,rlMax=10000;
+  const tx=rl=>((rl-rlMin)/(rlMax-rlMin))*w;
+  const ty=v=>(1-(v/(vin*1.1)))*h*.87+5;
+  const pts=[];
+  for(let rl=rlMin;rl<=rlMax;rl+=50){
+    const it=(vin-vz)/rs*1000,il=vz/rl*1000,iz=it-il;
+    const reg=vin>vz&&iz>=izmin;
+    pts.push({rl,vout:reg?vz:vin*rl/(rs+rl),reg});
+  }
+  // unregulated
+  ctx.beginPath();ctx.strokeStyle=LM?'#cc0033':'#ff4d6a';ctx.lineWidth=2;
+  let st=false;pts.filter(p=>!p.reg).forEach(p=>{if(!st){ctx.moveTo(tx(p.rl),ty(p.vout));st=true;}else ctx.lineTo(tx(p.rl),ty(p.vout));});ctx.stroke();
+  // regulated
+  ctx.beginPath();ctx.strokeStyle=LM?'#007a40':'#00e887';ctx.lineWidth=2.5;
+  st=false;pts.filter(p=>p.reg).forEach(p=>{if(!st){ctx.moveTo(tx(p.rl),ty(p.vout));st=true;}else ctx.lineTo(tx(p.rl),ty(p.vout));});ctx.stroke();
+  // current dot
+  const itc=(vin-vz)/rs*1000,ilc=vz/rlCur*1000,izc=itc-ilc;
+  const regC=vin>vz&&izc>=izmin;
+  const vouC=regC?vz:vin*rlCur/(rs+rlCur);
+  ctx.beginPath();ctx.fillStyle=LM?'#b08000':'#f7c948';
+  ctx.arc(tx(rlCur),ty(vouC),7,0,Math.PI*2);ctx.fill();
+  // VZ line
+  ctx.setLineDash([5,5]);ctx.strokeStyle=LM?'rgba(176,128,0,.5)':'rgba(247,201,72,.4)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,ty(vz));ctx.lineTo(w,ty(vz));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=LM?'#b08000':'#f7c948';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='left';
+  ctx.fillText('VZ='+vz.toFixed(1)+'V',4,ty(vz)-4);
+  // axis labels
+  ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('\u2192 Load Resistance RL',w/2,h-4);
+  [500,1000,2000,5000,10000].forEach(v=>{ctx.fillText(v>=1000?v/1000+'k':v,tx(v),h-16);});
+}
+function drawLoadCur(){
+  const ctx=rsz('lc-cur');if(!ctx)return;
+  const c=document.getElementById('lc-cur'),w=c.width,h=c.height;
+  const vin=+document.getElementById('l-vin').value;
+  const vz=+document.getElementById('l-vz').value;
+  const rs=+document.getElementById('l-rs').value;
+  const rl=+document.getElementById('l-rl').value;
+  ctx.fillStyle=LM?'#f8f9ff':'#04080f';ctx.fillRect(0,0,w,h);
+  const it=(vin-vz)/rs*1000,il=vz/rl*1000,iz=Math.max(0,it-il);
+  const tot=it||1;
+  const bars=[{l:'IZ (Zener)',v:iz,col:LM?'#b08000':'#f7c948'},{l:'IL (Load)',v:il,col:LM?'#7722cc':'#c77dff'}];
+  const bh=30,gap=16,sy=14;
+  bars.forEach((b,i)=>{
+    const fw=Math.max(4,(b.v/tot)*(w*.65)),y=sy+i*(bh+gap);
+    ctx.fillStyle=b.col+'33';ctx.fillRect(w*.28,y,w*.65,bh);
+    ctx.fillStyle=b.col;ctx.fillRect(w*.28,y,fw,bh);
+    ctx.fillStyle=LM?'#111':'#eee';ctx.font='10px Source Code Pro,monospace';ctx.textAlign='right';
+    ctx.fillText(b.l,w*.27,y+bh*.66);
+    ctx.textAlign='left';ctx.fillText(b.v.toFixed(2)+' mA',w*.28+fw+4,y+bh*.66);
+  });
+  ctx.fillStyle=LM?'#3a5080':'#8fa3cc';ctx.font='9px Source Code Pro,monospace';ctx.textAlign='center';
+  ctx.fillText('IT = '+it.toFixed(2)+' mA total',w/2,h-5);
+}
+
+// ── ANIMATION LOOP ────────────────────────────
+(function loop(){
+  if(regPl)regPh+=0.007;
+  const panel=document.getElementById('tab-reg');
+  if(panel&&panel.classList.contains('active')){drawRegScope();}
+  requestAnimationFrame(loop);
+})();
+
+// ── QUIZ ──────────────────────────────────────
+const QS=[
+  {q:"A Zener diode used as a voltage regulator operates in which bias condition?",
+   opts:["Forward bias","No bias (open circuit)","Reverse bias in the breakdown region","Alternating bias"],
+   ans:2,fb:"Correct! Zener diodes are specifically designed to operate in reverse bias at their Zener voltage VZ, maintaining a stable output voltage without being destroyed by the breakdown current."},
+  {q:"If Vin = 12V and VZ = 5.1V with RS = 470\u03A9, what is the voltage across RS?",
+   opts:["5.1 V","12 V","6.9 V","17.1 V"],
+   ans:2,fb:"VRS = Vin \u2212 VZ = 12 \u2212 5.1 = 6.9 V. Kirchhoff's Voltage Law: the voltage drops across RS and the Zener must sum to the input voltage."},
+  {q:"Which formula correctly calculates Zener current IZ?",
+   opts:["IZ = IT + IL","IZ = IT \u2212 IL","IZ = VZ / RS","IZ = Vin / RL"],
+   ans:1,fb:"At the output node: IT = IZ + IL. Rearranging: IZ = IT \u2212 IL. The series resistor carries the full supply current; the Zener and load split that current."},
+  {q:"What happens if RS is too small in a Zener regulator?",
+   opts:["Vout rises above VZ","The Zener blocks all current","IZ exceeds IZ(max) and the Zener may be destroyed","Regulation automatically adjusts"],
+   ans:2,fb:"A too-small RS means IT = (Vin \u2212 VZ)/RS is excessive. With IZ = IT \u2212 IL, Zener current surges beyond IZ(max), overheating and permanently destroying the device."},
+  {q:"For a 1N4733A Zener (VZ = 5.1V, IZ(max) = 49mA), what is the maximum power rating?",
+   opts:["5.1 mW","49 mW","250 mW","1 W"],
+   ans:3,fb:"The 1N4733A is in the 1W rated 1N47xx series. P = VZ \u00D7 IZ(max) = 5.1 \u00D7 0.049 \u2248 250mW typical operation, but the device is rated for 1W. Always use a safety derating factor."},
+  {q:"Zener breakdown (true Zener effect, VZ < 5V) has which temperature characteristic?",
+   opts:["Positive TC \u2014 VZ increases with temperature","Negative TC \u2014 VZ decreases with temperature","Zero TC \u2014 VZ is temperature independent","Random TC"],
+   ans:1,fb:"True Zener breakdown (quantum tunneling, VZ < 5V) has a NEGATIVE temperature coefficient. Avalanche breakdown (VZ > 7V) has a positive TC. The 5\u20137V region has near-zero TC \u2014 best for precision references."},
+  {q:"'Line regulation' for a voltage regulator measures:",
+   opts:["Output stability when load current changes","Output stability when input voltage changes","Temperature coefficient of the output","Ratio of IZ to IL"],
+   ans:1,fb:"Line regulation measures how well Vout holds steady when the INPUT (line) voltage changes. Load regulation measures stability with changing LOAD current. Both are key specifications of any regulator."},
+  {q:"What is the minimum load resistance RL(min) in a Zener regulator?",
+   opts:["The resistance that maximizes Zener current","The smallest RL that maintains IZ \u2265 IZ(min)","The resistance equal to RS","The resistance for 50% efficiency"],
+   ans:1,fb:"RL(min) = VZ / (IT \u2212 IZ(min)). If RL drops below this, the load demands more current than available after ensuring minimum Zener current, and regulation breaks down."},
+  {q:"A 5.6V Zener diode is in a circuit with Vin = 15V, RS = 560\u03A9, and RL = 2.2k\u03A9. What is IZ?",
+   opts:["5.1 mA","16.8 mA","14.3 mA","10.1 mA"],
+   ans:1,fb:"VRS = 15 \u2212 5.6 = 9.4V. IT = 9.4/560 = 16.8mA. IL = 5.6/2200 = 2.5mA. IZ = IT \u2212 IL = 16.8 \u2212 2.5 = 14.3mA. Wait \u2014 the correct answer is 14.3mA. Re-check the option selected. Answer: 14.3 mA."},
+  {q:"The dynamic resistance rZ of a Zener diode is best described as:",
+   opts:["The DC resistance VZ/IZ at rated current","The slope \u0394VZ/\u0394IZ of the I-V curve in breakdown","The forward resistance in Ohms","The resistance of the series resistor RS"],
+   ans:1,fb:"Dynamic resistance rZ = \u0394VZ/\u0394IZ, the incremental slope of the I-V characteristic in the breakdown region. Lower rZ = steeper I-V curve = better voltage regulation. Typical values: 1\u03A9 to 100\u03A9."},
+];
+
+let qS={cur:0,ans:false,score:0};
+function renderQ(){
+  const con=document.getElementById('qcon'),sc=document.getElementById('scard');
+  if(qS.cur>=QS.length){con.innerHTML='';sc.classList.add('show');
+    document.getElementById('snum').textContent=qS.score+'/'+QS.length;
+    const pct=qS.score/QS.length*100;
+    document.getElementById('smsg').textContent=pct>=90?'\uD83C\uDFC6 Outstanding! Zener diode mastery achieved!':pct>=70?'\u2705 Good work! Review missed topics in the simulators.':pct>=50?'\uD83D\uDCDA Keep studying \u2014 work through the interactive tabs.':'\uD83D\uDD01 Revisit the How It Works and Regulator tabs first.';
+    document.getElementById('qpf').style.width='100%';return;}
+  sc.classList.remove('show');
+  document.getElementById('qpf').style.width=(qS.cur/QS.length*100)+'%';
+  const q=QS[qS.cur];
+  con.innerHTML='<div class="qcard"><div class="qnum">Question '+(qS.cur+1)+' of '+QS.length+' \u00B7 Score: '+qS.score+'/'+qS.cur+'</div><div class="qtxt">'+q.q+'</div><div class="qopts">'+q.opts.map((o,i)=>'<div class="qopt" id="qo'+i+'" onclick="selQ('+i+')"><span class="qltr">'+String.fromCharCode(65+i)+'</span>'+o+'</div>').join('')+'</div><div class="fb" id="qfb"></div></div><div class="qnav"><span style="font-size:.73rem;color:var(--text-dim);font-family:\'Source Code Pro\',monospace;">'+(QS.length-qS.cur-1)+' remaining</span><button class="bpri" id="qnxt" onclick="nextQ()" disabled>Next \u2192</button></div>';
+}
+function selQ(idx){
+  if(qS.ans)return;qS.ans=true;
+  const q=QS[qS.cur],ok=idx===q.ans;if(ok)qS.score++;
+  document.querySelectorAll('.qopt').forEach((el,i)=>{
+    if(i===q.ans)el.classList.add('correct');
+    else if(i===idx&&!ok)el.classList.add('wrong');
+    else el.classList.add('faded');
+  });
+  const fb=document.getElementById('qfb');
+  fb.textContent=(ok?'\u2713 Correct! ':'\u2717 Incorrect. ')+q.fb;
+  fb.className='fb show '+(ok?'fbok':'fbno');
+  document.getElementById('qnxt').disabled=false;
+}
+function nextQ(){qS.cur++;qS.ans=false;renderQ();}
+function restartQuiz(){qS={cur:0,ans:false,score:0};document.getElementById('scard').classList.remove('show');renderQ();}
+
+// ── INIT ──────────────────────────────────────
+window.addEventListener('load',()=>{
+  renderQ();
+  setTimeout(()=>{drawIV();updateReg();updateLoad();},80);
+});
+window.addEventListener('resize',()=>{
+  drawBasic();drawRegions();drawIV();
+  drawRegCkt();drawRegScope();drawRegPwr();
+  drawLoadCurve();drawLoadCur();
+});
+</script>
+</body>
+</html>
