@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FET & JFET Interactive Laboratory — ELT-120</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   CSS VARIABLES — DARK (default) & LIGHT
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #080c14;
+  --bg-panel:  #0c1220;
+  --bg-card:   #101828;
+  --bg-lift:   #16213a;
+  --bg-input:  #0b1422;
+  --border:    #1a2d4e;
+  --border-hi: #243d6a;
+  --tx1:       #dce8ff;
+  --tx2:       #7a99cc;
+  --tx3:       #364d72;
+  --tx4:       #243452;
+  --a1:        #38bdf8;   /* sky blue — main */
+  --a2:        #fb923c;   /* orange   */
+  --a3:        #4ade80;   /* green    */
+  --a4:        #f472b6;   /* pink     */
+  --a5:        #a78bfa;   /* violet   */
+  --a6:        #facc15;   /* yellow   */
+  --scope:     #04080f;
+  --sg:        rgba(56,189,248,0.05);
+  --sa:        rgba(56,189,248,0.15);
+  --glow1:     0 0 20px rgba(56,189,248,0.3);
+  --glow2:     0 0 16px rgba(251,146,60,0.3);
+  --glow3:     0 0 16px rgba(74,222,128,0.3);
+  --shadow:    0 4px 32px rgba(0,0,0,0.55);
+  --tr:        all 0.26s cubic-bezier(.4,0,.2,1);
+}
+body.lm {
+  --bg:        #f1f5fc;
+  --bg-panel:  #e4ecf8;
+  --bg-card:   #ffffff;
+  --bg-lift:   #edf3fd;
+  --bg-input:  #f8faff;
+  --border:    #c8d8f0;
+  --border-hi: #9ab4dc;
+  --tx1:       #0d1a35;
+  --tx2:       #2c4a7a;
+  --tx3:       #94a8c8;
+  --tx4:       #c0ceea;
+  --a1:        #0077b6;
+  --a2:        #c05000;
+  --a3:        #14803a;
+  --a4:        #be185d;
+  --a5:        #5b21b6;
+  --a6:        #92610a;
+  --scope:     #e8eef8;
+  --sg:        rgba(0,119,182,0.06);
+  --sa:        rgba(0,119,182,0.2);
+  --glow1:     0 0 12px rgba(0,119,182,0.18);
+  --glow2:     0 0 10px rgba(192,80,0,0.15);
+  --glow3:     0 0 10px rgba(20,128,58,0.15);
+  --shadow:    0 4px 24px rgba(80,110,180,0.12);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body {
+  background: var(--bg);
+  color: var(--tx1);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background .3s, color .3s;
+}
+
+/* Subtle dot-grid atmosphere */
+body::before {
+  content:'';
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: radial-gradient(circle, var(--sg) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+body.lm::before { background-image: radial-gradient(circle, rgba(0,80,160,0.04) 1px, transparent 1px); }
+
+.pw { position:relative; z-index:1; }
+
+/* ═══ HEADER ═══ */
+header {
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--a1);
+  box-shadow: var(--glow1);
+  padding: 0 1.5rem;
+  position: sticky; top:0; z-index:200;
+  transition: background .3s;
+}
+.hi {
+  max-width:1420px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.8rem 0; gap:1rem; flex-wrap:wrap;
+}
+.hbrand { display:flex; align-items:center; gap:.9rem; }
+.hico {
+  width:46px; height:46px; border-radius:10px; flex-shrink:0;
+  background: linear-gradient(135deg, var(--a1), var(--a5));
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; box-shadow:var(--glow1);
+}
+.htxt h1 {
+  font-family:'Syne',sans-serif; font-size:clamp(.95rem,2vw,1.35rem);
+  font-weight:800; letter-spacing:.5px; color:var(--a1);
+}
+.htxt p { font-family:'JetBrains Mono',monospace; font-size:.6rem; color:var(--tx2); letter-spacing:2px; text-transform:uppercase; margin-top:2px; }
+.hright { display:flex; align-items:center; gap:.65rem; flex-wrap:wrap; }
+
+/* Badges */
+.badge { padding:3px 10px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:.6rem; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+.b1 { background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.35); color:var(--a1); }
+.b2 { background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.3); color:var(--a5); }
+
+/* Theme toggle */
+.tt {
+  display:flex; align-items:center; gap:.45rem;
+  background:var(--bg-lift); border:1px solid var(--border);
+  border-radius:24px; padding:4px 11px; cursor:pointer;
+  font-family:'JetBrains Mono',monospace; font-size:.65rem; color:var(--tx2);
+  transition:var(--tr); user-select:none; white-space:nowrap;
+}
+.tt:hover { border-color:var(--a1); color:var(--a1); }
+.ttrack {
+  width:32px; height:17px; border-radius:9px;
+  background:var(--border-hi); position:relative; transition:background .25s; flex-shrink:0;
+}
+.ttrack.on { background:var(--a1); }
+.tthumb {
+  position:absolute; top:2px; left:2px;
+  width:13px; height:13px; border-radius:50%;
+  background:#fff; transition:left .25s;
+}
+.ttrack.on .tthumb { left:17px; }
+
+/* ═══ TABS ═══ */
+.tabbar {
+  background:var(--bg-panel); border-bottom:1px solid var(--border);
+  overflow-x:auto; transition:background .3s;
+}
+.tabbar::-webkit-scrollbar{height:2px;} .tabbar::-webkit-scrollbar-thumb{background:var(--a1);}
+.tnav { max-width:1420px; margin:0 auto; display:flex; padding:0 1.5rem; min-width:max-content; }
+.tbtn {
+  padding:.68rem 1.3rem; background:none; border:none;
+  border-bottom:3px solid transparent; color:var(--tx2);
+  font-family:'Syne',sans-serif; font-size:.7rem; font-weight:700;
+  letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+  transition:var(--tr); white-space:nowrap;
+}
+.tbtn:hover { color:var(--tx1); }
+.tbtn.active { color:var(--a1); border-bottom-color:var(--a1); }
+.tn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:17px; height:17px; border-radius:50%; font-size:.58rem;
+  background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3);
+  color:var(--a1); margin-right:5px;
+}
+
+/* ═══ MAIN ═══ */
+main { max-width:1420px; margin:0 auto; padding:1.8rem 1.5rem; }
+.tp { display:none; animation:pi .3s ease; }
+.tp.active { display:block; }
+@keyframes pi { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+/* ═══ LAYOUT PRIMITIVES ═══ */
+.sl { display:grid; grid-template-columns:275px 1fr; gap:1.3rem; align-items:start; }
+@media(max-width:900px){ .sl{ grid-template-columns:1fr; } }
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; }
+.g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:.9rem; }
+@media(max-width:880px){ .g2,.g3,.g4{ grid-template-columns:1fr; } }
+.mb1{margin-bottom:1rem;} .mb15{margin-bottom:1.5rem;} .mt1{margin-top:1rem;}
+.flex-col{display:flex;flex-direction:column;gap:1.1rem;}
+
+/* ═══ SECTION TITLE ═══ */
+.stitle {
+  font-family:'Syne',sans-serif; font-size:1.05rem; font-weight:800;
+  letter-spacing:1px; text-transform:uppercase; color:var(--tx1);
+  margin-bottom:1.1rem; display:flex; align-items:center; gap:.7rem;
+}
+.stitle::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+
+/* ═══ CARDS ═══ */
+.card {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:13px; overflow:hidden; box-shadow:var(--shadow);
+  transition:border-color .25s, var(--tr);
+}
+.card:hover { border-color:var(--border-hi); }
+.chdr {
+  background:var(--bg-lift); border-bottom:1px solid var(--border);
+  padding:.65rem 1.15rem; display:flex; align-items:center; justify-content:space-between;
+}
+.chdr h3 { font-family:'Syne',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }
+.sdot { width:7px;height:7px;border-radius:50%;background:var(--a3);box-shadow:var(--glow3);animation:bk 2.2s infinite; }
+@keyframes bk{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Info cards */
+.ic { background:var(--bg-card); border:1px solid var(--border); border-radius:13px; padding:1.2rem; box-shadow:var(--shadow); transition:border-color .25s; }
+.ic:hover { border-color:var(--border-hi); }
+.ic h3 { font-family:'Syne',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:.65rem; }
+.ic p,.ic li { font-size:.86rem; line-height:1.75; color:var(--tx2); }
+.ic ul { padding-left:1.1rem; } .ic li { margin-bottom:.28rem; } .ic strong { color:var(--tx1); }
+.bc1{border-left:4px solid var(--a1);} .bc2{border-left:4px solid var(--a2);}
+.bc3{border-left:4px solid var(--a3);} .bc4{border-left:4px solid var(--a4);}
+.bc5{border-left:4px solid var(--a5);} .bc6{border-left:4px solid var(--a6);}
+
+/* ═══ CONTROL PANEL ═══ */
+.cp {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:13px; padding:1.2rem; box-shadow:var(--shadow);
+  position:sticky; top:76px; transition:background .3s;
+}
+.cpt {
+  font-family:'Syne',sans-serif; font-size:.7rem; font-weight:800;
+  letter-spacing:2px; text-transform:uppercase; color:var(--a1);
+  margin-bottom:1rem; padding-bottom:.55rem; border-bottom:1px solid var(--border);
+}
+.cg { margin-bottom:1rem; }
+.cg label {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:.67rem; color:var(--tx3); text-transform:uppercase;
+  letter-spacing:1.2px; font-family:'JetBrains Mono',monospace; margin-bottom:.3rem;
+}
+.cg .val { font-family:'JetBrains Mono',monospace; font-size:.88rem; color:var(--a3); font-weight:600; }
+input[type=range] {
+  width:100%; -webkit-appearance:none; appearance:none;
+  height:3px; border-radius:2px; background:var(--border); outline:none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:14px;height:14px;border-radius:50%;
+  background:var(--a1); cursor:pointer; box-shadow:0 0 6px rgba(56,189,248,0.6);
+  transition:transform .1s;
+}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.35);}
+
+/* Toggle row */
+.tr2{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem;}
+.tog{
+  flex:1;min-width:55px;padding:.36rem .5rem;
+  background:var(--bg-lift);border:1px solid var(--border);
+  border-radius:7px;color:var(--tx2);font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;cursor:pointer;transition:var(--tr);text-align:center;
+}
+.tog:hover{border-color:var(--border-hi);color:var(--tx1);}
+.t1{background:rgba(56,189,248,0.1);border-color:var(--a1);color:var(--a1);}
+.t2{background:rgba(251,146,60,0.1);border-color:var(--a2);color:var(--a2);}
+.t3{background:rgba(74,222,128,0.1);border-color:var(--a3);color:var(--a3);}
+.t4{background:rgba(244,114,182,0.1);border-color:var(--a4);color:var(--a4);}
+.t5{background:rgba(167,139,250,0.1);border-color:var(--a5);color:var(--a5);}
+
+/* Metric boxes */
+.mets{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.95rem;padding-top:.95rem;border-top:1px solid var(--border);}
+.mb{background:var(--bg-lift);border-radius:8px;padding:.55rem .5rem;text-align:center;}
+.mbl{font-size:.56rem;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;font-family:'JetBrains Mono',monospace;display:block;margin-bottom:.17rem;}
+.mbv{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:600;}
+.c1{color:var(--a1)} .c2{color:var(--a2)} .c3{color:var(--a3)} .c4{color:var(--a4)} .c5{color:var(--a5)} .c6{color:var(--a6)}
+
+/* Anim row */
+.ar{display:flex;gap:.45rem;margin-top:.8rem;}
+.abtn{flex:1;padding:.38rem .55rem;background:var(--bg-lift);border:1px solid var(--border);border-radius:7px;color:var(--tx2);font-family:'JetBrains Mono',monospace;font-size:.63rem;cursor:pointer;transition:var(--tr);}
+.abtn:hover{border-color:var(--a1);color:var(--a1);}
+.abtn.act{border-color:var(--a3);color:var(--a3);background:rgba(74,222,128,0.07);}
+
+/* Canvas */
+canvas{display:block;width:100%;}
+.oscf{padding:.42rem 1.1rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--tx3);}
+.oscf span{color:var(--tx2);}
+
+/* ═══ HERO ═══ */
+.hero {
+  background:linear-gradient(135deg,rgba(56,189,248,0.07) 0%,rgba(167,139,250,0.05) 100%);
+  border:1px solid rgba(56,189,248,0.18); border-radius:16px;
+  padding:1.8rem 2.2rem; margin-bottom:1.4rem; position:relative; overflow:hidden;
+}
+.hero::after{content:'F';position:absolute;right:2rem;top:50%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-size:8rem;font-weight:800;color:rgba(56,189,248,0.04);pointer-events:none;}
+.hero h2{font-family:'Syne',sans-serif;font-size:clamp(1rem,2.2vw,1.4rem);font-weight:800;color:var(--a1);margin-bottom:.5rem;}
+.hero p{font-size:.88rem;color:var(--tx2);line-height:1.78;max-width:700px;}
+
+/* ═══ COMPARISON TABLE ═══ */
+.ctbl{width:100%;border-collapse:collapse;}
+.ctbl th{background:var(--bg-lift);font-family:'Syne',sans-serif;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);padding:.55rem 1rem;text-align:left;border-bottom:1px solid var(--border);}
+.ctbl td{padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,0.03);font-size:.83rem;}
+.ctbl tr:last-child td{border-bottom:none;}
+.ctbl tr:hover td{background:var(--bg-lift);}
+.feq{font-family:'JetBrains Mono',monospace;color:var(--a1);font-size:.84rem;}
+.fnote{font-size:.74rem;color:var(--tx3);}
+
+/* ═══ QUIZ ═══ */
+.qw{max-width:700px;margin:0 auto;}
+.qpb{height:3px;background:var(--border);border-radius:2px;margin-bottom:1.8rem;overflow:hidden;}
+.qpf{height:100%;background:linear-gradient(90deg,var(--a1),var(--a5));border-radius:2px;transition:width .4s ease;}
+.qcard{background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:1.6rem;margin-bottom:1.1rem;animation:pi .3s ease;box-shadow:var(--shadow);}
+.qnum{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-bottom:.42rem;}
+.qtxt{font-size:1rem;font-weight:600;font-family:'Syne',sans-serif;line-height:1.55;margin-bottom:1.1rem;}
+.qopts{display:flex;flex-direction:column;gap:.5rem;}
+.qopt{display:flex;align-items:center;gap:.68rem;padding:.75rem 1rem;border-radius:9px;cursor:pointer;background:var(--bg-lift);border:1px solid var(--border);font-size:.85rem;transition:var(--tr);}
+.qopt:hover{border-color:var(--border-hi);}
+.qopt.correct{border-color:var(--a3);background:rgba(74,222,128,0.08);color:var(--a3);}
+.qopt.wrong{border-color:var(--a4);background:rgba(244,114,182,0.08);color:var(--a4);}
+.qopt.faded{opacity:.35;}
+.qltr{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.66rem;flex-shrink:0;}
+.fb{padding:.78rem 1rem;border-radius:9px;font-size:.82rem;line-height:1.65;margin-top:.62rem;display:none;}
+.fb.show{display:block;animation:pi .25s ease;}
+.fbok{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.3);color:var(--a3);}
+.fbno{background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.3);color:#f9a8d4;}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:.7rem;}
+.bpri{padding:.58rem 1.3rem;background:rgba(56,189,248,0.1);border:1px solid var(--a1);border-radius:8px;color:var(--a1);font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--tr);}
+.bpri:hover{background:rgba(56,189,248,0.2);box-shadow:var(--glow1);}
+.bpri:disabled{opacity:.3;cursor:not-allowed;}
+.scard{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2.2rem 2rem;text-align:center;display:none;box-shadow:var(--shadow);}
+.scard.show{display:block;animation:pi .4s ease;}
+.sbig{font-family:'Syne',sans-serif;font-size:5rem;font-weight:800;color:var(--a1);line-height:1;}
+.ssub{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--tx3);letter-spacing:2px;text-transform:uppercase;margin-top:.3rem;}
+.smsg{font-size:.95rem;margin:1rem 0;color:var(--tx2);}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="pw">
+
+<!-- HEADER -->
+<header>
+<div class="hi">
+  <div class="hbrand">
+    <div class="hico">&#9889;</div>
+    <div class="htxt">
+      <h1>FET &amp; JFET Interactive Laboratory</h1>
+      <p>Field Effect Transistors &middot; ELT-120 &middot; MVCC</p>
+    </div>
+  </div>
+  <div class="hright">
+    <span class="badge b1">Semiconductor Devices</span>
+    <span class="badge b2">Voltage-Controlled</span>
+    <button class="tt" id="thmbtn" onclick="toggleTheme()">
+      <div class="ttrack" id="ttrack"><div class="tthumb"></div></div>
+      <span id="thlbl">LIGHT</span>
+    </button>
+  </div>
+</div>
+</header>
+
+<!-- TABS -->
+<div class="tabbar">
+<div class="tnav">
+  <button class="tbtn active" onclick="showTab('intro',this)"><span class="tn">1</span>Introduction</button>
+  <button class="tbtn" onclick="showTab('struct',this)"><span class="tn">2</span>Structure</button>
+  <button class="tbtn" onclick="showTab('drain',this)"><span class="tn">3</span>Drain Curves</button>
+  <button class="tbtn" onclick="showTab('transfer',this)"><span class="tn">4</span>Transfer Curve</button>
+  <button class="tbtn" onclick="showTab('bias',this)"><span class="tn">5</span>Bias Circuit</button>
+  <button class="tbtn" onclick="showTab('amp',this)"><span class="tn">6</span>Amplifier</button>
+  <button class="tbtn" onclick="showTab('formulas',this)"><span class="tn">7</span>Formulas</button>
+  <button class="tbtn" onclick="showTab('quiz',this)"><span class="tn">8</span>Quiz</button>
+</div>
+</div>
+
+<main>
+
+<!-- ═══════════════════ TAB 1: INTRO ═══════════════════ -->
+<div id="tab-intro" class="tp active">
+<div class="hero">
+  <h2>Field Effect Transistors (FETs)</h2>
+  <p>A <strong>Field Effect Transistor (FET)</strong> is a voltage-controlled semiconductor device where a small voltage at the <strong>Gate</strong> terminal controls a large current through the <strong>Drain-Source</strong> channel. Unlike bipolar transistors (BJTs) which are current-controlled, FETs have an extremely high input impedance &mdash; making them ideal for amplifiers, switches, and signal processing circuits.</p>
+</div>
+
+<div class="g2 mb15">
+  <div class="ic bc1">
+    <h3 style="color:var(--a1)">&#9889; FET vs BJT — Key Differences</h3>
+    <ul>
+      <li><strong>BJT:</strong> Current-controlled device (I<sub>B</sub> controls I<sub>C</sub>)</li>
+      <li><strong>FET:</strong> Voltage-controlled device (V<sub>GS</sub> controls I<sub>D</sub>)</li>
+      <li>FETs have <strong>much higher input impedance</strong> (M&Omega; to T&Omega;)</li>
+      <li>FETs are <strong>unipolar</strong> — only one carrier type (electrons OR holes)</li>
+      <li>FETs produce <strong>lower noise</strong> than BJTs</li>
+      <li>FETs are easier to fabricate in <strong>integrated circuits</strong></li>
+    </ul>
+  </div>
+  <div class="ic bc5">
+    <h3 style="color:var(--a5)">&#128295; FET Family Tree</h3>
+    <ul>
+      <li><strong>JFET</strong> (Junction FET) — Gate is a reverse-biased p-n junction</li>
+      <li><strong>MOSFET</strong> — Gate is insulated by a metal-oxide layer</li>
+      <li>&nbsp;&nbsp;&#8226; <strong>Depletion-mode MOSFET</strong> — channel exists at V<sub>GS</sub>=0</li>
+      <li>&nbsp;&nbsp;&#8226; <strong>Enhancement-mode MOSFET</strong> — channel formed by V<sub>GS</sub></li>
+      <li>N-channel: electrons are majority carriers (most common)</li>
+      <li>P-channel: holes are majority carriers (complementary circuits)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="stitle">Three FET Terminals</div>
+<div class="g3 mb15">
+  <div class="ic bc3">
+    <h3 style="color:var(--a3)">Source (S)</h3>
+    <p>The terminal from which majority carriers enter the channel. Acts like the emitter in a BJT. Always connected to the most negative voltage in an N-channel device. The channel current I<sub>D</sub> flows <em>into</em> the drain and <em>out of</em> the source.</p>
+  </div>
+  <div class="ic bc2">
+    <h3 style="color:var(--a2)">Drain (D)</h3>
+    <p>The terminal where majority carriers exit the channel. Connected to the supply voltage V<sub>DD</sub> through a drain resistor R<sub>D</sub>. The drain current I<sub>D</sub> is controlled by V<sub>GS</sub>. Acts like the collector in a BJT.</p>
+  </div>
+  <div class="ic bc1">
+    <h3 style="color:var(--a1)">Gate (G)</h3>
+    <p>The control terminal. A voltage V<sub>GS</sub> applied here controls channel width and therefore I<sub>D</sub>. In a JFET, the gate is a reverse-biased p-n junction. Gate draws <strong>essentially zero current</strong> — giving FETs their high input impedance.</p>
+  </div>
+</div>
+
+<div class="stitle">Key JFET Parameters Students Must Master</div>
+<div class="g4">
+  <div class="ic bc1">
+    <h3 style="color:var(--a1)">I<sub>DSS</sub></h3>
+    <p><strong>Drain-to-Source Saturation Current.</strong> Maximum drain current when V<sub>GS</sub> = 0V. Typical values: 1&ndash;20 mA. All JFET operation occurs between 0 and I<sub>DSS</sub>.</p>
+  </div>
+  <div class="ic bc2">
+    <h3 style="color:var(--a2)">V<sub>P</sub> (Pinch-off)</h3>
+    <p><strong>Pinch-off Voltage.</strong> The V<sub>GS</sub> value at which the channel is fully depleted and I<sub>D</sub> &rarr; 0. Negative for N-channel JFETs. Also equals the V<sub>DS</sub> where saturation begins at V<sub>GS</sub>=0.</p>
+  </div>
+  <div class="ic bc3">
+    <h3 style="color:var(--a3)">g<sub>m</sub></h3>
+    <p><strong>Transconductance.</strong> Ratio &Delta;I<sub>D</sub>/&Delta;V<sub>GS</sub>. Measured in Siemens (S) or mA/V. Key amplifier parameter: higher g<sub>m</sub> = higher voltage gain. Maximum at V<sub>GS</sub>=0.</p>
+  </div>
+  <div class="ic bc5">
+    <h3 style="color:var(--a5)">r<sub>DS(on)</sub></h3>
+    <p><strong>On-state Drain-Source Resistance.</strong> Resistance when device is fully ON (ohmic region). Critical for switching applications &mdash; lower r<sub>DS(on)</sub> means less power loss.</p>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 2: STRUCTURE ═══════════════════ -->
+<div id="tab-struct" class="tp">
+<div class="stitle">JFET Physical Structure &amp; Operation</div>
+<div class="g2 mb15">
+  <div class="card">
+    <div class="chdr"><h3 style="color:var(--a1)">N-Channel JFET Structure</h3><div class="sdot"></div></div>
+    <canvas id="cv-struct-n" height="240"></canvas>
+    <div class="oscf"><span>Depletion regions shown in</span><span style="color:var(--a4)">&#9644; pink</span><span>N-channel in</span><span style="color:var(--a3)">&#9644; green</span></div>
+  </div>
+  <div class="card">
+    <div class="chdr"><h3 style="color:var(--a2)">P-Channel JFET Structure</h3><div class="sdot"></div></div>
+    <canvas id="cv-struct-p" height="240"></canvas>
+    <div class="oscf"><span>P-channel in</span><span style="color:var(--a2)">&#9644; orange</span><span>Depletion regions in</span><span style="color:var(--a1)">&#9644; blue</span></div>
+  </div>
+</div>
+
+<div class="g3 mb15">
+  <div class="ic bc3">
+    <h3 style="color:var(--a3)">Ohmic Region (Linear)</h3>
+    <p>When V<sub>DS</sub> is small relative to V<sub>P</sub>, the channel acts as a voltage-controlled resistor. I<sub>D</sub> rises nearly linearly with V<sub>DS</sub>. The FET operates here as a <strong>variable resistor</strong> or analog switch.</p>
+  </div>
+  <div class="ic bc1">
+    <h3 style="color:var(--a1)">Saturation (Pinch-off) Region</h3>
+    <p>When V<sub>DS</sub> &ge; V<sub>GS</sub> &minus; V<sub>P</sub>, the channel pinches off at the drain. I<sub>D</sub> becomes nearly constant and independent of V<sub>DS</sub>. This is the <strong>normal amplifier operating region</strong>.</p>
+  </div>
+  <div class="ic bc4">
+    <h3 style="color:var(--a4)">Breakdown Region</h3>
+    <p>When V<sub>DS</sub> exceeds the avalanche breakdown voltage (BV<sub>DSS</sub>), I<sub>D</sub> increases rapidly. This region is <strong>destructive</strong> if sustained. Must always operate below BV<sub>DSS</sub>.</p>
+  </div>
+</div>
+
+<div class="g2">
+  <div class="ic bc5">
+    <h3 style="color:var(--a5)">&#9889; How Depletion Works (N-Channel)</h3>
+    <ul>
+      <li>The gate is P-type material alongside the N-type channel</li>
+      <li>Gate is reverse-biased: V<sub>GS</sub> is negative for N-channel</li>
+      <li>More negative V<sub>GS</sub> &rarr; wider depletion region &rarr; narrower channel</li>
+      <li>At V<sub>GS</sub> = V<sub>P</sub> (pinch-off): channel fully depleted, I<sub>D</sub> = 0</li>
+      <li>At V<sub>GS</sub> = 0: channel fully open, I<sub>D</sub> = I<sub>DSS</sub></li>
+      <li>Gate current I<sub>G</sub> &asymp; 0 (reverse-biased junction)</li>
+    </ul>
+  </div>
+  <div class="ic bc2">
+    <h3 style="color:var(--a2)">&#128300; Shockley's Equation</h3>
+    <p>The drain current in the saturation region is described by:</p><br>
+    <p style="font-family:'JetBrains Mono',monospace;color:var(--a1);font-size:.95rem;text-align:center;">I<sub>D</sub> = I<sub>DSS</sub> (1 &minus; V<sub>GS</sub>/V<sub>P</sub>)&sup2;</p><br>
+    <ul>
+      <li>Parabolic relationship between I<sub>D</sub> and V<sub>GS</sub></li>
+      <li>At V<sub>GS</sub> = 0: I<sub>D</sub> = I<sub>DSS</sub></li>
+      <li>At V<sub>GS</sub> = V<sub>P</sub>: I<sub>D</sub> = 0</li>
+      <li>Non-linear &mdash; unlike BJT's linear I<sub>C</sub> vs I<sub>B</sub></li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 3: DRAIN CURVES ═══════════════════ -->
+<div id="tab-drain" class="tp">
+<div class="stitle">Drain Characteristic Curves (I<sub>D</sub> vs V<sub>DS</sub>)</div>
+<div class="sl">
+  <div class="cp">
+    <div class="cpt">&#9881; Drain Parameters</div>
+    <div class="cg">
+      <label>I<sub>DSS</sub> <span class="val" id="dr-idss-v">10 mA</span></label>
+      <input type="range" id="dr-idss" min="2" max="20" step="0.5" value="10" oninput="drawDrain()">
+    </div>
+    <div class="cg">
+      <label>Pinch-off V<sub>P</sub> <span class="val" id="dr-vp-v">-4 V</span></label>
+      <input type="range" id="dr-vp" min="-8" max="-1" step="0.5" value="-4" oninput="drawDrain()">
+    </div>
+    <div class="cg">
+      <label>Operating V<sub>GS</sub> <span class="val" id="dr-vgs-v">0 V</span></label>
+      <input type="range" id="dr-vgs" min="-8" max="0" step="0.5" value="0" oninput="drawDrain()">
+    </div>
+    <div class="cg">
+      <label>Breakdown BV<sub>DSS</sub> <span class="val" id="dr-bv-v">25 V</span></label>
+      <input type="range" id="dr-bv" min="15" max="40" step="1" value="25" oninput="drawDrain()">
+    </div>
+    <div class="cg">
+      <label>Show Labels</label>
+      <div class="tr2"><button class="tog t1" id="dr-lbl-btn" onclick="toggleDrLbl()">ON</button></div>
+    </div>
+    <div class="mets">
+      <div class="mb"><span class="mbl">I<sub>DSS</sub></span><span class="mbv c1" id="drm-idss">10 mA</span></div>
+      <div class="mb"><span class="mbl">V<sub>P</sub></span><span class="mbv c2" id="drm-vp">-4 V</span></div>
+      <div class="mb"><span class="mbl">I<sub>D</sub> @ V<sub>GS</sub></span><span class="mbv c3" id="drm-id">10 mA</span></div>
+      <div class="mb"><span class="mbl">Region</span><span class="mbv c5" id="drm-reg">Sat.</span></div>
+    </div>
+  </div>
+  <div class="flex-col">
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--a1)">Drain Family of Curves &mdash; N-Channel JFET</h3><div class="sdot"></div></div>
+      <canvas id="cv-drain" height="360"></canvas>
+      <div class="oscf">
+        <span>X: V<sub>DS</sub> (V) &nbsp; Y: I<sub>D</sub> (mA)</span>
+        <span style="color:var(--a6)">&#9644; Operating point highlighted</span>
+        <span>Adjust V<sub>GS</sub> slider &uarr;</span>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ic bc1">
+        <h3 style="color:var(--a1)">Reading Drain Curves</h3>
+        <ul>
+          <li><strong>Each curve</strong> = constant V<sub>GS</sub> value</li>
+          <li><strong>Ohmic region</strong> (left): I<sub>D</sub> rises with V<sub>DS</sub></li>
+          <li><strong>Saturation</strong> (right): I<sub>D</sub> &asymp; constant</li>
+          <li><strong>Top curve</strong>: V<sub>GS</sub> = 0, I<sub>D</sub> = I<sub>DSS</sub></li>
+          <li><strong>Bottom curve</strong>: V<sub>GS</sub> = V<sub>P</sub>, I<sub>D</sub> &asymp; 0</li>
+        </ul>
+      </div>
+      <div class="ic bc2">
+        <h3 style="color:var(--a2)">Knee / Pinch-off Line</h3>
+        <p>The boundary between ohmic and saturation regions occurs at:</p><br>
+        <p style="font-family:'JetBrains Mono',monospace;color:var(--a1);font-size:.9rem;">V<sub>DS(sat)</sub> = V<sub>GS</sub> &minus; V<sub>P</sub></p><br>
+        <p>Above this line the device enters saturation. For amplifier design, the Q-point must lie in the saturation region.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 4: TRANSFER CURVE ═══════════════════ -->
+<div id="tab-transfer" class="tp">
+<div class="stitle">Transfer Characteristic (I<sub>D</sub> vs V<sub>GS</sub>)</div>
+<div class="sl">
+  <div class="cp">
+    <div class="cpt">&#9881; Transfer Parameters</div>
+    <div class="cg">
+      <label>I<sub>DSS</sub> <span class="val" id="tr-idss-v">10 mA</span></label>
+      <input type="range" id="tr-idss" min="2" max="20" step="0.5" value="10" oninput="drawTransfer()">
+    </div>
+    <div class="cg">
+      <label>Pinch-off V<sub>P</sub> <span class="val" id="tr-vp-v">-4 V</span></label>
+      <input type="range" id="tr-vp" min="-8" max="-1" step="0.5" value="-4" oninput="drawTransfer()">
+    </div>
+    <div class="cg">
+      <label>Q-point V<sub>GS</sub> <span class="val" id="tr-vgs-v">-2 V</span></label>
+      <input type="range" id="tr-vgs" min="-8" max="0" step="0.1" value="-2" oninput="drawTransfer()">
+    </div>
+    <div class="cg">
+      <label>Channel Type</label>
+      <div class="tr2">
+        <button class="tog t1" id="tr-n-btn" onclick="setTrCh('n')">N-Ch</button>
+        <button class="tog" id="tr-p-btn" onclick="setTrCh('p')">P-Ch</button>
+      </div>
+    </div>
+    <div class="mets">
+      <div class="mb"><span class="mbl">I<sub>DSS</sub></span><span class="mbv c1" id="trm-idss">10 mA</span></div>
+      <div class="mb"><span class="mbl">V<sub>P</sub></span><span class="mbv c2" id="trm-vp">-4 V</span></div>
+      <div class="mb"><span class="mbl">I<sub>D(Q)</sub></span><span class="mbv c3" id="trm-id">2.5 mA</span></div>
+      <div class="mb"><span class="mbl">g<sub>m</sub></span><span class="mbv c5" id="trm-gm">2.5 mS</span></div>
+    </div>
+  </div>
+  <div class="flex-col">
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--a1)">Transfer Characteristic &mdash; Shockley's Parabola</h3><div class="sdot"></div></div>
+      <canvas id="cv-transfer" height="360"></canvas>
+      <div class="oscf">
+        <span>X: V<sub>GS</sub> (V) &nbsp; Y: I<sub>D</sub> (mA)</span>
+        <span style="color:var(--a6)">&#9679; Q-point</span>
+        <span style="color:var(--a4)">&#9644; g<sub>m</sub> tangent line</span>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ic bc3">
+        <h3 style="color:var(--a3)">Transconductance g<sub>m</sub></h3>
+        <p style="font-family:'JetBrains Mono',monospace;color:var(--a1);font-size:.9rem;margin-bottom:.6rem;">g<sub>m</sub> = g<sub>m0</sub>(1 &minus; V<sub>GS</sub>/V<sub>P</sub>)</p>
+        <ul>
+          <li><strong>g<sub>m0</sub></strong> = 2I<sub>DSS</sub>/|V<sub>P</sub>| (max at V<sub>GS</sub>=0)</li>
+          <li>g<sub>m</sub> decreases as V<sub>GS</sub> goes more negative</li>
+          <li>Slope of tangent to parabola at Q-point</li>
+          <li>Controls amplifier voltage gain: A<sub>v</sub> = &minus;g<sub>m</sub>R<sub>D</sub></li>
+        </ul>
+      </div>
+      <div class="ic bc5">
+        <h3 style="color:var(--a5)">Shockley's Equation</h3>
+        <p style="font-family:'JetBrains Mono',monospace;color:var(--a1);font-size:.9rem;margin-bottom:.6rem;">I<sub>D</sub> = I<sub>DSS</sub>(1 &minus; V<sub>GS</sub>/V<sub>P</sub>)&sup2;</p>
+        <ul>
+          <li>Parabolic (square-law) characteristic</li>
+          <li>Valid for saturation region only</li>
+          <li>Two key endpoints: (0, I<sub>DSS</sub>) and (V<sub>P</sub>, 0)</li>
+          <li>Midpoint V<sub>GS</sub>: I<sub>D</sub> = I<sub>DSS</sub>/4</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 5: BIAS CIRCUIT ═══════════════════ -->
+<div id="tab-bias" class="tp">
+<div class="stitle">JFET Self-Bias Circuit Simulator</div>
+<div class="sl">
+  <div class="cp">
+    <div class="cpt">&#9881; Bias Parameters</div>
+    <div class="cg">
+      <label>V<sub>DD</sub> <span class="val" id="bi-vdd-v">15 V</span></label>
+      <input type="range" id="bi-vdd" min="5" max="30" step="0.5" value="15" oninput="updateBias()">
+    </div>
+    <div class="cg">
+      <label>R<sub>D</sub> <span class="val" id="bi-rd-v">1.5 k&Omega;</span></label>
+      <input type="range" id="bi-rd" min="100" max="5000" step="100" value="1500" oninput="updateBias()">
+    </div>
+    <div class="cg">
+      <label>R<sub>S</sub> <span class="val" id="bi-rs-v">500 &Omega;</span></label>
+      <input type="range" id="bi-rs" min="100" max="2000" step="50" value="500" oninput="updateBias()">
+    </div>
+    <div class="cg">
+      <label>R<sub>G</sub> <span class="val" id="bi-rg-v">1 M&Omega;</span></label>
+      <input type="range" id="bi-rg" min="100" max="10000" step="100" value="1000" oninput="updateBias()">
+    </div>
+    <div class="cg">
+      <label>I<sub>DSS</sub> <span class="val" id="bi-idss-v">10 mA</span></label>
+      <input type="range" id="bi-idss" min="2" max="20" step="0.5" value="10" oninput="updateBias()">
+    </div>
+    <div class="cg">
+      <label>V<sub>P</sub> <span class="val" id="bi-vp-v">-4 V</span></label>
+      <input type="range" id="bi-vp" min="-8" max="-1" step="0.5" value="-4" oninput="updateBias()">
+    </div>
+    <div class="mets">
+      <div class="mb"><span class="mbl">V<sub>GS(Q)</sub></span><span class="mbv c1" id="bim-vgs">&mdash;</span></div>
+      <div class="mb"><span class="mbl">I<sub>D(Q)</sub></span><span class="mbv c3" id="bim-id">&mdash;</span></div>
+      <div class="mb"><span class="mbl">V<sub>DS(Q)</sub></span><span class="mbv c2" id="bim-vds">&mdash;</span></div>
+      <div class="mb"><span class="mbl">V<sub>S</sub></span><span class="mbv c5" id="bim-vs">&mdash;</span></div>
+      <div class="mb"><span class="mbl">V<sub>D</sub></span><span class="mbv c6" id="bim-vd">&mdash;</span></div>
+      <div class="mb"><span class="mbl">Region</span><span class="mbv" id="bim-reg">&mdash;</span></div>
+    </div>
+  </div>
+  <div class="flex-col">
+    <div class="g2">
+      <div class="card">
+        <div class="chdr"><h3 style="color:var(--a1)">Self-Bias Circuit</h3><div class="sdot"></div></div>
+        <canvas id="cv-bias-ckt" height="260"></canvas>
+      </div>
+      <div class="card">
+        <div class="chdr"><h3 style="color:var(--a3)">Graphical Q-Point Solution</h3><div class="sdot"></div></div>
+        <canvas id="cv-bias-graph" height="260"></canvas>
+        <div class="oscf"><span>&#9644; <span style="color:var(--a1)">Transfer curve</span></span><span>&#9644; <span style="color:var(--a2)">Bias line</span></span><span>&#9679; <span style="color:var(--a6)">Q-point</span></span></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ic bc1">
+        <h3 style="color:var(--a1)">Self-Bias Analysis</h3>
+        <ul>
+          <li><strong>V<sub>GS</sub> = &minus;I<sub>D</sub> &times; R<sub>S</sub></strong> (self-bias equation)</li>
+          <li>No separate V<sub>GG</sub> supply needed &mdash; R<sub>S</sub> provides bias</li>
+          <li>V<sub>G</sub> = 0 (R<sub>G</sub> connects gate to ground, I<sub>G</sub> &asymp; 0)</li>
+          <li>V<sub>S</sub> = I<sub>D</sub> &times; R<sub>S</sub> (source voltage)</li>
+          <li>V<sub>D</sub> = V<sub>DD</sub> &minus; I<sub>D</sub> &times; R<sub>D</sub></li>
+          <li>V<sub>DS</sub> = V<sub>D</sub> &minus; V<sub>S</sub> = V<sub>DD</sub> &minus; I<sub>D</sub>(R<sub>D</sub>+R<sub>S</sub>)</li>
+        </ul>
+      </div>
+      <div class="ic bc2">
+        <h3 style="color:var(--a2)">Q-Point Design Tips</h3>
+        <ul>
+          <li>For maximum output swing: set I<sub>D(Q)</sub> &asymp; I<sub>DSS</sub>/2</li>
+          <li>Increase R<sub>S</sub> &rarr; more negative V<sub>GS</sub> &rarr; lower I<sub>D</sub></li>
+          <li>Decrease R<sub>S</sub> &rarr; less negative V<sub>GS</sub> &rarr; higher I<sub>D</sub></li>
+          <li>R<sub>G</sub> is large (1M&Omega;+) to ensure high input impedance</li>
+          <li>Saturation condition: V<sub>DS</sub> &gt; V<sub>GS</sub> &minus; V<sub>P</sub></li>
+          <li>Temperature stability: R<sub>S</sub> provides negative feedback</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 6: AMPLIFIER ═══════════════════ -->
+<div id="tab-amp" class="tp">
+<div class="stitle">Common-Source JFET Amplifier</div>
+<div class="sl">
+  <div class="cp">
+    <div class="cpt">&#9881; Amplifier Parameters</div>
+    <div class="cg">
+      <label>V<sub>DD</sub> <span class="val" id="am-vdd-v">15 V</span></label>
+      <input type="range" id="am-vdd" min="5" max="30" step="0.5" value="15" oninput="updateAmp()">
+    </div>
+    <div class="cg">
+      <label>R<sub>D</sub> <span class="val" id="am-rd-v">3.3 k&Omega;</span></label>
+      <input type="range" id="am-rd" min="500" max="10000" step="100" value="3300" oninput="updateAmp()">
+    </div>
+    <div class="cg">
+      <label>I<sub>DSS</sub> <span class="val" id="am-idss-v">10 mA</span></label>
+      <input type="range" id="am-idss" min="2" max="20" step="0.5" value="10" oninput="updateAmp()">
+    </div>
+    <div class="cg">
+      <label>V<sub>P</sub> <span class="val" id="am-vp-v">-4 V</span></label>
+      <input type="range" id="am-vp" min="-8" max="-1" step="0.5" value="-4" oninput="updateAmp()">
+    </div>
+    <div class="cg">
+      <label>Signal V<sub>in</sub> (mV pk) <span class="val" id="am-vin-v">100 mV</span></label>
+      <input type="range" id="am-vin" min="10" max="500" step="10" value="100" oninput="updateAmp()">
+    </div>
+    <div class="cg">
+      <label>Freq (Hz) <span class="val" id="am-freq-v">1 kHz</span></label>
+      <input type="range" id="am-freq" min="100" max="5000" step="100" value="1000" oninput="updateAmp()">
+    </div>
+    <div class="ar">
+      <button class="abtn act" id="am-play" onclick="toggleAmpPlay()">&#9208; PAUSE</button>
+      <button class="abtn" onclick="ampPhase=0">&#8635; RESET</button>
+    </div>
+    <div class="mets">
+      <div class="mb"><span class="mbl">g<sub>m</sub></span><span class="mbv c1" id="amm-gm">&mdash;</span></div>
+      <div class="mb"><span class="mbl">A<sub>v</sub></span><span class="mbv c2" id="amm-av">&mdash;</span></div>
+      <div class="mb"><span class="mbl">V<sub>out</sub> pk</span><span class="mbv c3" id="amm-vout">&mdash;</span></div>
+      <div class="mb"><span class="mbl">Phase</span><span class="mbv c4" id="amm-phase">180&deg;</span></div>
+    </div>
+  </div>
+  <div class="flex-col">
+    <div class="g2">
+      <div class="card">
+        <div class="chdr"><h3 style="color:var(--a1)">Common-Source Circuit</h3><div class="sdot"></div></div>
+        <canvas id="cv-amp-ckt" height="220"></canvas>
+      </div>
+      <div class="card">
+        <div class="chdr"><h3 style="color:var(--a3)">Load Line &amp; Q-Point</h3><div class="sdot"></div></div>
+        <canvas id="cv-amp-load" height="220"></canvas>
+        <div class="oscf"><span>&#9644; <span style="color:var(--a2)">DC load line</span></span><span>&#9679; <span style="color:var(--a6)">Q-point</span></span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="chdr"><h3 style="color:var(--a5)">Oscilloscope &mdash; V<sub>in</sub> vs V<sub>out</sub> (180&deg; Phase Inversion)</h3><div class="sdot"></div></div>
+      <canvas id="cv-amp-scope" height="180"></canvas>
+      <div class="oscf">
+        <span>&#9644; <span style="color:var(--a1)">V<sub>in</sub></span></span>
+        <span>&#9644; <span style="color:var(--a2)">V<sub>out</sub> (inverted &amp; amplified)</span></span>
+        <span id="amp-note">Common-source inverts signal</span>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="ic bc1">
+        <h3 style="color:var(--a1)">Common-Source Amplifier</h3>
+        <ul>
+          <li><strong>Voltage gain:</strong> A<sub>v</sub> = &minus;g<sub>m</sub>R<sub>D</sub></li>
+          <li><strong>Phase:</strong> 180&deg; inversion (like BJT common-emitter)</li>
+          <li><strong>Input impedance:</strong> Z<sub>in</sub> = R<sub>G</sub> (very high)</li>
+          <li><strong>Output impedance:</strong> Z<sub>out</sub> &asymp; R<sub>D</sub></li>
+          <li>Bypass capacitor on R<sub>S</sub> increases gain</li>
+        </ul>
+      </div>
+      <div class="ic bc3">
+        <h3 style="color:var(--a3)">Other JFET Configurations</h3>
+        <ul>
+          <li><strong>Common-Gate:</strong> No phase inversion, low Z<sub>in</sub>, high Z<sub>out</sub></li>
+          <li><strong>Common-Drain (Source Follower):</strong> V<sub>out</sub> follows V<sub>in</sub>, A<sub>v</sub>&asymp;1, very high Z<sub>in</sub></li>
+          <li>Source follower used as buffer between high-Z source and low-Z load</li>
+          <li>JFETs excel in RF amplifiers due to low noise</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 7: FORMULAS ═══════════════════ -->
+<div id="tab-formulas" class="tp">
+<div class="stitle">Formulas &amp; Reference</div>
+<div class="g2 mb15">
+  <div class="card">
+    <div class="chdr"><h3 style="color:var(--a1)">JFET Key Equations</h3></div>
+    <table class="ctbl">
+      <tr><th>Quantity</th><th>Formula</th><th>Notes</th></tr>
+      <tr><td>Drain current (sat.)</td><td class="feq">I_D = I_DSS(1 &minus; V_GS/V_P)&sup2;</td><td class="fnote">Shockley's equation</td></tr>
+      <tr><td>Transconductance</td><td class="feq">g_m = 2I_DSS/|V_P| &times; (1&minus;V_GS/V_P)</td><td class="fnote">Max at V_GS=0</td></tr>
+      <tr><td>g_m0 (max)</td><td class="feq">g_m0 = 2I_DSS / |V_P|</td><td class="fnote">At V_GS = 0</td></tr>
+      <tr><td>Self-bias V_GS</td><td class="feq">V_GS = &minus;I_D &times; R_S</td><td class="fnote">No separate V_GG needed</td></tr>
+      <tr><td>Drain voltage</td><td class="feq">V_D = V_DD &minus; I_D &times; R_D</td><td class="fnote">KVL drain loop</td></tr>
+      <tr><td>Saturation boundary</td><td class="feq">V_DS(sat) = V_GS &minus; V_P</td><td class="fnote">Pinch-off at drain</td></tr>
+      <tr><td>CS voltage gain</td><td class="feq">A_v = &minus;g_m &times; R_D</td><td class="fnote">180&deg; phase inversion</td></tr>
+      <tr><td>Input impedance</td><td class="feq">Z_in = R_G (typically 1M&Omega;+)</td><td class="fnote">Reverse-biased gate</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <div class="chdr"><h3 style="color:var(--a5)">FET Type Comparison</h3></div>
+    <table class="ctbl">
+      <tr><th>Parameter</th><th>N-Ch JFET</th><th>P-Ch JFET</th><th>N-Ch MOSFET (E)</th></tr>
+      <tr><td>V_GS control</td><td class="feq">Negative</td><td class="feq">Positive</td><td class="feq">Positive</td></tr>
+      <tr><td>I_D at V_GS=0</td><td class="feq">I_DSS</td><td class="feq">I_DSS</td><td class="feq">0 (off)</td></tr>
+      <tr><td>V_GS to turn off</td><td class="feq">V_P (neg.)</td><td class="feq">V_P (pos.)</td><td class="feq">V_T (threshold)</td></tr>
+      <tr><td>Gate current</td><td class="feq">&asymp;0 (pA)</td><td class="feq">&asymp;0 (pA)</td><td class="feq">&asymp;0 (pA)</td></tr>
+      <tr><td>Mode</td><td>Depletion</td><td>Depletion</td><td>Enhancement</td></tr>
+      <tr><td>Noise</td><td>Low</td><td>Low</td><td>Very Low</td></tr>
+      <tr><td>Applications</td><td>RF, audio</td><td>CMOS pair</td><td>Digital, power</td></tr>
+    </table>
+  </div>
+</div>
+<div class="g3">
+  <div class="ic bc3">
+    <h3 style="color:var(--a3)">&#9989; Design Checklist</h3>
+    <ul>
+      <li>V_GS between V_P and 0 for N-ch JFET?</li>
+      <li>V_DS &gt; V_DS(sat) for saturation?</li>
+      <li>I_D &lt; I_DSS at all times?</li>
+      <li>V_DD sufficient for desired V_DS(Q)?</li>
+      <li>R_G large enough for high Z_in?</li>
+      <li>Power dissipation P = V_DS &times; I_D &lt; P_max?</li>
+    </ul>
+  </div>
+  <div class="ic bc1">
+    <h3 style="color:var(--a1)">&#9889; Common JFET Types</h3>
+    <ul>
+      <li><strong>2N5457:</strong> N-ch, I_DSS 1&ndash;5 mA, V_P &minus;0.5 to &minus;6V</li>
+      <li><strong>2N5459:</strong> N-ch, I_DSS 4&ndash;16 mA, audio amp</li>
+      <li><strong>J201:</strong> N-ch, low I_DSS, guitar effects</li>
+      <li><strong>MPF102:</strong> N-ch, RF/VHF amplifier</li>
+      <li><strong>2N5460:</strong> P-ch, complementary circuits</li>
+      <li><strong>BF245:</strong> N-ch, low noise, HF amp</li>
+    </ul>
+  </div>
+  <div class="ic bc5">
+    <h3 style="color:var(--a5)">&#128260; JFET Applications</h3>
+    <ul>
+      <li>Low-noise RF &amp; audio amplifiers</li>
+      <li>Voltage-controlled resistors (ohmic region)</li>
+      <li>Analog switches and multiplexers</li>
+      <li>Sample-and-hold circuits</li>
+      <li>Constant-current sources</li>
+      <li>Electrometer/instrumentation inputs</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ TAB 8: QUIZ ═══════════════════ -->
+<div id="tab-quiz" class="tp">
+<div class="stitle">Knowledge Check</div>
+<div class="qw">
+  <div class="qpb"><div class="qpf" id="qpf" style="width:0%"></div></div>
+  <div id="qcon"></div>
+  <div class="scard" id="scard">
+    <div class="sbig" id="snum">0/10</div>
+    <div class="ssub">Final Score</div>
+    <div class="smsg" id="smsg"></div>
+    <button class="bpri" onclick="restartQuiz()" style="margin-top:1.5rem">&#8635; Retake Quiz</button>
+  </div>
+</div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ═══ THEME ═══════════════════════════════════
+let LM=false;
+function toggleTheme(){
+  LM=!LM;
+  document.body.classList.toggle('lm',LM);
+  document.getElementById('ttrack').classList.toggle('on',LM);
+  document.getElementById('thlbl').textContent=LM?'DARK':'LIGHT';
+  // Redraw all active canvases
+  requestAnimationFrame(()=>{
+    drawStructN();drawStructP();
+    drawDrain();drawTransfer();updateBias();updateAmp();
+  });
+}
+
+// ═══ TABS ════════════════════════════════════
+function showTab(id,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  setTimeout(()=>{
+    if(id==='struct'){drawStructN();drawStructP();}
+    if(id==='drain')drawDrain();
+    if(id==='transfer')drawTransfer();
+    if(id==='bias')updateBias();
+    if(id==='amp')updateAmp();
+  },30);
+}
+
+// ═══ CANVAS HELPERS ══════════════════════════
+function rsz(id){
+  const c=document.getElementById(id);if(!c)return null;
+  c.width=c.parentElement.clientWidth||600;
+  return c.getContext('2d');
+}
+function scopeBg(ctx,w,h){
+  ctx.fillStyle=LM?'#e8eef8':'#04080f'; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.07)':'rgba(56,189,248,0.05)'; ctx.lineWidth=1;
+  for(let i=1;i<10;i++){ctx.beginPath();ctx.moveTo(i*w/10,0);ctx.lineTo(i*w/10,h);ctx.stroke();}
+  for(let j=1;j<8;j++){ctx.beginPath();ctx.moveTo(0,j*h/8);ctx.lineTo(w,j*h/8);ctx.stroke();}
+}
+function plainBg(ctx,w,h){
+  ctx.fillStyle=LM?'#f8faff':'#04080f'; ctx.fillRect(0,0,w,h);
+}
+function tx1(){return LM?'#0d1a35':'#dce8ff';}
+function tx2(){return LM?'#2c4a7a':'#7a99cc';}
+function tx3(){return LM?'#94a8c8':'#364d72';}
+function a(n){const m={1:LM?'#0077b6':'#38bdf8',2:LM?'#c05000':'#fb923c',3:LM?'#14803a':'#4ade80',4:LM?'#be185d':'#f472b6',5:LM?'#5b21b6':'#a78bfa',6:LM?'#92610a':'#facc15'};return m[n];}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
+
+// ═══ TAB 2: STRUCTURE DIAGRAMS ════════════════
+function drawJFETStruct(canvId, pChannel){
+  const ctx=rsz(canvId); if(!ctx)return;
+  const c=document.getElementById(canvId),w=c.width,h=c.height;
+  plainBg(ctx,w,h);
+  const cx=w/2, chW=w*0.14, chH=h*0.55, chY=(h-chH)/2;
+  // Channel body
+  const chCol = pChannel ? a(2) : a(3);
+  const deplCol = pChannel ? a(1) : a(4);
+  ctx.fillStyle=chCol+'33'; ctx.strokeStyle=chCol; ctx.lineWidth=2;
+  rrect(ctx,cx-chW/2,chY,chW,chH,6); ctx.fill(); ctx.stroke();
+  // Depletion regions (gate areas)
+  const deplH=chH*0.3, deplW=w*0.22;
+  ctx.fillStyle=deplCol+'44'; ctx.strokeStyle=deplCol; ctx.lineWidth=1.5;
+  // Left gate region
+  rrect(ctx,cx-chW/2-deplW,chY+chH*0.15,deplW,deplH,5); ctx.fill(); ctx.stroke();
+  rrect(ctx,cx-chW/2-deplW,chY+chH*0.55,deplW,deplH,5); ctx.fill(); ctx.stroke();
+  // Right gate region
+  rrect(ctx,cx+chW/2,chY+chH*0.15,deplW,deplH,5); ctx.fill(); ctx.stroke();
+  rrect(ctx,cx+chW/2,chY+chH*0.55,deplW,deplH,5); ctx.fill(); ctx.stroke();
+  // Gate contacts
+  const gx1=cx-chW/2-deplW, gx2=cx+chW/2+deplW;
+  const gy1=chY+chH*0.25, gy2=chY+chH*0.65;
+  ctx.strokeStyle=deplCol; ctx.lineWidth=2;
+  // Gate wire left
+  ctx.beginPath(); ctx.moveTo(gx1,gy1+deplH/2); ctx.lineTo(gx1-25,gy1+deplH/2); ctx.lineTo(gx1-25,h*0.5); ctx.moveTo(gx1,gy2+deplH/2); ctx.lineTo(gx1-25,gy2+deplH/2); ctx.lineTo(gx1-25,h*0.5); ctx.stroke();
+  // Gate label
+  ctx.fillStyle=deplCol; ctx.font='bold 12px JetBrains Mono,monospace'; ctx.textAlign='right';
+  ctx.fillText('G',gx1-30,h*0.5+4);
+  // Drain (top) and Source (bottom) terminals
+  ctx.strokeStyle=a(1); ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,chY); ctx.lineTo(cx,chY-25); ctx.stroke();
+  ctx.fillStyle=a(1); ctx.textAlign='center';
+  ctx.fillText('D',cx,chY-32);
+  ctx.strokeStyle=a(3); ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx,chY+chH); ctx.lineTo(cx,chY+chH+25); ctx.stroke();
+  ctx.fillStyle=a(3); ctx.fillText('S',cx,chY+chH+40);
+  // Channel type label
+  ctx.fillStyle=chCol; ctx.font='11px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText(pChannel?'P-type':'N-type',cx,h/2+4);
+  // Depletion label
+  ctx.fillStyle=deplCol; ctx.font='9px JetBrains Mono,monospace';
+  ctx.fillText('Depletion',cx+chW/2+deplW/2+5,chY+chH*0.17);
+  ctx.fillText('Region',cx+chW/2+deplW/2+5,chY+chH*0.17+12);
+  // Title
+  ctx.fillStyle=tx1(); ctx.font='bold 11px Syne,sans-serif'; ctx.textAlign='center';
+  ctx.fillText(pChannel?'P-Channel JFET':'N-Channel JFET',w/2,h-10);
+  // Arrow showing current direction
+  ctx.strokeStyle=LM?'#444':'#aaa'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(cx+chW/2+8,chY+10); ctx.lineTo(cx+chW/2+8,chY+chH-10); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=LM?'#444':'#aaa'; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText(pChannel?'\u2191 ID':'\u2193 ID',cx+chW/2+12,h/2);
+}
+function drawStructN(){ drawJFETStruct('cv-struct-n',false); }
+function drawStructP(){ drawJFETStruct('cv-struct-p',true); }
+
+// ═══ TAB 3: DRAIN CURVES ══════════════════════
+let drLbl=true;
+function toggleDrLbl(){
+  drLbl=!drLbl;
+  const b=document.getElementById('dr-lbl-btn');
+  b.className='tog'+(drLbl?' t1':''); b.textContent=drLbl?'ON':'OFF';
+  drawDrain();
+}
+function drawDrain(){
+  const idss=+document.getElementById('dr-idss').value;
+  const vp=+document.getElementById('dr-vp').value;
+  const vgs=+document.getElementById('dr-vgs').value;
+  const bv=+document.getElementById('dr-bv').value;
+  document.getElementById('dr-idss-v').textContent=idss+' mA';
+  document.getElementById('dr-vp-v').textContent=vp+' V';
+  document.getElementById('dr-vgs-v').textContent=vgs+' V';
+  document.getElementById('dr-bv-v').textContent=bv+' V';
+  // Metrics
+  const idQ = vgs<=vp ? 0 : idss*Math.pow(1-vgs/vp,2);
+  document.getElementById('drm-idss').textContent=idss+' mA';
+  document.getElementById('drm-vp').textContent=vp+' V';
+  document.getElementById('drm-id').textContent=idQ.toFixed(2)+' mA';
+  const vdsSat=Math.max(0,vgs-vp);
+  document.getElementById('drm-reg').textContent=vdsSat<1?'Ohmic':'Sat.';
+
+  const ctx=rsz('cv-drain'); if(!ctx)return;
+  const c=document.getElementById('cv-drain'),w=c.width,h=c.height;
+  scopeBg(ctx,w,h);
+  const pad={l:55,r:30,t:25,b:40};
+  const pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
+  const maxV=bv*1.05, maxI=idss*1.15;
+  const tx=v=>pad.l+v/maxV*pw;
+  const ty=i=>h-pad.b-i/maxI*ph;
+  // Axes
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.3)':'rgba(56,189,248,0.2)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,h-pad.b);ctx.lineTo(w-pad.r,h-pad.b);ctx.stroke();
+  // Axis labels
+  ctx.fillStyle=tx2(); ctx.font='10px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('V\u209DS (V)',w/2,h-4);
+  ctx.save();ctx.translate(12,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('I\u209D (mA)',0,0);ctx.restore();
+  // Tick marks
+  [5,10,15,20,bv].filter((v,i,a)=>a.indexOf(v)===i&&v<=bv).forEach(v=>{
+    ctx.fillStyle=tx3(); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(v,tx(v),h-pad.b+14);
+  });
+  [0,idss*0.25,idss*0.5,idss*0.75,idss].forEach(i=>{
+    ctx.fillStyle=tx3(); ctx.textAlign='right';
+    ctx.fillText(i.toFixed(1),pad.l-5,ty(i)+4);
+  });
+  // Draw curves for each VGS step
+  const vgsSteps=[];
+  for(let v=0;v>=vp;v+=vp/5) vgsSteps.push(Math.max(v,vp));
+  vgsSteps.forEach((vgsi,idx)=>{
+    const frac=1-idx/vgsSteps.length;
+    const id0=vgsi<=vp?0:idss*Math.pow(1-vgsi/vp,2);
+    const isActive=Math.abs(vgsi-vgs)<0.01;
+    const alpha=isActive?1:(0.35+frac*0.35);
+    const col=isActive?a(6):a(1);
+    ctx.beginPath(); ctx.strokeStyle=col; ctx.lineWidth=isActive?2.5:1.5;
+    ctx.globalAlpha=alpha;
+    for(let v=0;v<=bv*0.98;v+=0.1){
+      const vdsSatI=Math.max(0,vgsi-vp);
+      let id;
+      if(v<=vdsSatI){ id=id0*(2*(v/Math.max(vdsSatI,0.01))-Math.pow(v/Math.max(vdsSatI,0.01),2)); }
+      else { id=id0*(1+0.02*(v-vdsSatI)); }
+      id=Math.max(0,Math.min(id,maxI));
+      if(v===0) ctx.moveTo(tx(v),ty(id)); else ctx.lineTo(tx(v),ty(id));
+    }
+    ctx.stroke();
+    if(drLbl){
+      ctx.fillStyle=col; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+      ctx.fillText('V\u2091\u209B='+vgsi.toFixed(1)+'V',tx(bv*0.7),ty(id0)-5);
+    }
+    ctx.globalAlpha=1;
+  });
+  // Pinch-off locus (dashed)
+  ctx.beginPath(); ctx.setLineDash([5,4]); ctx.strokeStyle=a(4); ctx.lineWidth=1.2; ctx.globalAlpha=0.6;
+  for(let vgsi=0;vgsi>=vp;vgsi-=0.1){
+    const vdsSat=Math.max(0,vgsi-vp);
+    const id0=vgsi<=vp?0:idss*Math.pow(1-vgsi/vp,2);
+    if(vgsi===0) ctx.moveTo(tx(vdsSat),ty(id0)); else ctx.lineTo(tx(vdsSat),ty(id0));
+  }
+  ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1;
+  if(drLbl){
+    ctx.fillStyle=a(4); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText('Pinch-off locus',tx(vp*-0.7),ty(idss*0.35));
+    ctx.fillText('Ohmic',tx(3),ty(idss*0.9));
+    ctx.fillText('Saturation',tx(bv*0.55),ty(idss*0.92));
+  }
+  // IDSS label
+  ctx.setLineDash([4,4]); ctx.strokeStyle=a(3); ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.l,ty(idss));ctx.lineTo(w-pad.r,ty(idss));ctx.stroke();ctx.setLineDash([]);
+  if(drLbl){ctx.fillStyle=a(3);ctx.font='9px JetBrains Mono,monospace';ctx.textAlign='left';ctx.fillText('I\u209DSS='+idss+'mA',pad.l+4,ty(idss)-4);}
+}
+
+// ═══ TAB 4: TRANSFER CURVE ════════════════════
+let trCh='n';
+function setTrCh(ch){
+  trCh=ch;
+  document.getElementById('tr-n-btn').className='tog'+(ch==='n'?' t1':'');
+  document.getElementById('tr-p-btn').className='tog'+(ch==='p'?' t2':'');
+  drawTransfer();
+}
+function drawTransfer(){
+  const idss=+document.getElementById('tr-idss').value;
+  const vp=+document.getElementById('tr-vp').value;
+  const vgsQ=+document.getElementById('tr-vgs').value;
+  document.getElementById('tr-idss-v').textContent=idss+' mA';
+  document.getElementById('tr-vp-v').textContent=vp+' V';
+  document.getElementById('tr-vgs-v').textContent=vgsQ+' V';
+  const idQ=vgsQ<=vp?0:idss*Math.pow(1-vgsQ/vp,2);
+  const gm0=2*idss/Math.abs(vp);
+  const gmQ=vgsQ<=vp?0:gm0*(1-vgsQ/vp);
+  document.getElementById('trm-idss').textContent=idss+' mA';
+  document.getElementById('trm-vp').textContent=vp+' V';
+  document.getElementById('trm-id').textContent=idQ.toFixed(2)+' mA';
+  document.getElementById('trm-gm').textContent=(gmQ*1000).toFixed(2)+' \u03BCS';
+
+  const ctx=rsz('cv-transfer'); if(!ctx)return;
+  const c=document.getElementById('cv-transfer'),w=c.width,h=c.height;
+  scopeBg(ctx,w,h);
+  const pad={l:55,r:25,t:25,b:40};
+  const pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
+  const vpAbs=Math.abs(vp), maxI=idss*1.15;
+  const tx=v=>pad.l+(v-vp)/(0-vp)*pw;  // map vp..0 to left..right
+  const ty=i=>h-pad.b-i/maxI*ph;
+  // Axes
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.3)':'rgba(56,189,248,0.2)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,h-pad.b);ctx.lineTo(w-pad.r,h-pad.b);ctx.stroke();
+  ctx.fillStyle=tx2(); ctx.font='10px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('V\u2091\u209B (V)',w/2,h-4);
+  ctx.save();ctx.translate(12,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('I\u209D (mA)',0,0);ctx.restore();
+  // X axis ticks (VGS from VP to 0)
+  for(let v=vp;v<=0;v+=vpAbs/4){
+    ctx.fillStyle=tx3(); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+    ctx.fillText(v.toFixed(1),tx(v),h-pad.b+14);
+  }
+  // Y axis ticks
+  [0,idss*0.25,idss*0.5,idss*0.75,idss].forEach(i=>{
+    ctx.fillStyle=tx3(); ctx.textAlign='right';
+    ctx.fillText(i.toFixed(1),pad.l-5,ty(i)+4);
+  });
+  // Shockley parabola
+  ctx.beginPath(); ctx.strokeStyle=a(1); ctx.lineWidth=2.5;
+  for(let v=vp;v<=0;v+=0.02){
+    const id=v<=vp?0:idss*Math.pow(1-v/vp,2);
+    if(v===vp)ctx.moveTo(tx(v),ty(id)); else ctx.lineTo(tx(v),ty(id));
+  }
+  ctx.stroke();
+  // Tangent (gm) line at Q-point
+  if(vgsQ>vp){
+    const slope=gmQ; // mA/V in this scale
+    const dvRange=vpAbs*0.25;
+    const v1=Math.max(vp,vgsQ-dvRange), v2=Math.min(0,vgsQ+dvRange);
+    const i1=idQ+slope*(v1-vgsQ);
+    const i2=idQ+slope*(v2-vgsQ);
+    ctx.beginPath(); ctx.setLineDash([5,4]); ctx.strokeStyle=a(4); ctx.lineWidth=1.5;
+    ctx.moveTo(tx(v1),ty(i1)); ctx.lineTo(tx(v2),ty(i2)); ctx.stroke(); ctx.setLineDash([]);
+    // Tangent label
+    ctx.fillStyle=a(4); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+    ctx.fillText('g\u2098 tangent',tx(vgsQ)+8,ty(idQ)-10);
+  }
+  // Q-point dot
+  ctx.beginPath(); ctx.arc(tx(vgsQ),ty(idQ),7,0,Math.PI*2);
+  ctx.fillStyle=a(6); ctx.fill();
+  ctx.strokeStyle=LM?'#fff':'#000'; ctx.lineWidth=1.5; ctx.stroke();
+  // Dashed lines to axes
+  ctx.setLineDash([4,4]); ctx.strokeStyle=a(6)+'80'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(tx(vgsQ),ty(idQ));ctx.lineTo(tx(vgsQ),h-pad.b);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(tx(vgsQ),ty(idQ));ctx.lineTo(pad.l,ty(idQ));ctx.stroke();
+  ctx.setLineDash([]);
+  // Key point labels
+  ctx.fillStyle=a(3); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('I\u209DSS='+idss+'mA',tx(0)+4,ty(idss)-4);
+  ctx.fillStyle=a(2); ctx.textAlign='center';
+  ctx.fillText('V\u209F',tx(vp),h-pad.b+14);
+  // IDSS/4 midpoint marker
+  const vmid=(vp/2);
+  const imid=idss*Math.pow(1-vmid/vp,2);
+  ctx.fillStyle=tx3(); ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='right';
+  ctx.fillText('I\u209DSS/4',pad.l-4,ty(idss/4)+3);
+}
+
+// ═══ TAB 5: BIAS CIRCUIT ═════════════════════
+function fmtR(v){return v>=1000?(v/1000).toFixed(1)+' k\u03A9':v+' \u03A9';}
+function fmtRM(v){return v>=1000?(v/1000).toFixed(0)+' M\u03A9':v+' k\u03A9';}
+
+function solveJFET(idss,vp,rs){
+  // Solve: ID = IDSS(1 - VGS/VP)^2, VGS = -ID*RS
+  // Substituting: ID = IDSS(1 + ID*RS/VP)^2
+  // Numerically iterate
+  let id=idss/2;
+  for(let i=0;i<200;i++){
+    const vgs=-id*rs/1000;
+    const idNew=vgs<=vp?0:idss*Math.pow(1-vgs/vp,2);
+    if(Math.abs(idNew-id)<0.00001) break;
+    id=id*0.5+idNew*0.5;
+  }
+  return Math.max(0,Math.min(id,idss));
+}
+
+function updateBias(){
+  const vdd=+document.getElementById('bi-vdd').value;
+  const rd=+document.getElementById('bi-rd').value;
+  const rs=+document.getElementById('bi-rs').value;
+  const rg=+document.getElementById('bi-rg').value;
+  const idss=+document.getElementById('bi-idss').value;
+  const vp=+document.getElementById('bi-vp').value;
+  document.getElementById('bi-vdd-v').textContent=vdd.toFixed(1)+' V';
+  document.getElementById('bi-rd-v').textContent=fmtR(rd);
+  document.getElementById('bi-rs-v').textContent=fmtR(rs);
+  document.getElementById('bi-rg-v').textContent=rg>=1000?(rg/1000).toFixed(0)+' M\u03A9':rg+' k\u03A9';
+  document.getElementById('bi-idss-v').textContent=idss+' mA';
+  document.getElementById('bi-vp-v').textContent=vp+' V';
+  const idQ=solveJFET(idss,vp,rs);
+  const vgsQ=-idQ*rs/1000;
+  const vdQ=vdd-idQ/1000*rd;
+  const vsQ=idQ/1000*rs;
+  const vdsQ=vdQ-vsQ;
+  const vdsSat=Math.max(0,vgsQ-vp);
+  const inSat=vdsQ>=vdsSat;
+  document.getElementById('bim-vgs').textContent=vgsQ.toFixed(2)+' V';
+  document.getElementById('bim-id').textContent=idQ.toFixed(2)+' mA';
+  document.getElementById('bim-vds').textContent=vdsQ.toFixed(2)+' V';
+  document.getElementById('bim-vs').textContent=vsQ.toFixed(2)+' V';
+  document.getElementById('bim-vd').textContent=vdQ.toFixed(2)+' V';
+  const re=document.getElementById('bim-reg');
+  re.textContent=inSat?'\u2713 Sat.':'\u26A0 Ohmic';
+  re.className='mbv '+(inSat?'c3':'c2');
+  drawBiasCkt(vdd,rd,rs,rg,idss,vp,idQ,vgsQ,vdsQ,vdQ,vsQ,inSat);
+  drawBiasGraph(idss,vp,rs,idQ,vgsQ);
+}
+
+function drawBiasCkt(vdd,rd,rs,rg,idss,vp,idQ,vgsQ,vdsQ,vdQ,vsQ,inSat){
+  const ctx=rsz('cv-bias-ckt'); if(!ctx)return;
+  const c=document.getElementById('cv-bias-ckt'),w=c.width,h=c.height;
+  plainBg(ctx,w,h);
+  const col=inSat?a(3):a(2);
+  const cx=w/2, top=30, bot=h-30;
+  // VDD supply
+  ctx.fillStyle=a(1); ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('V\u209DD='+vdd+'V',cx,top-10);
+  // Top wire
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,top);ctx.lineTo(cx,top+15);ctx.stroke();
+  // RD box
+  const rdY=top+15;
+  ctx.strokeStyle=a(2); ctx.lineWidth=1.5; ctx.strokeRect(cx-22,rdY,44,28);
+  ctx.fillStyle=a(2); ctx.font='10px JetBrains Mono,monospace';
+  ctx.fillText('RD',cx,rdY+12); ctx.fillText(fmtR(rd),cx,rdY+24);
+  // Wire to JFET drain
+  const dY=rdY+28+10;
+  ctx.strokeStyle=col; ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx,rdY+28);ctx.lineTo(cx,dY);ctx.stroke();
+  // JFET symbol
+  drawJFETSymbol(ctx,cx,dY+40,col,LM);
+  // RS box
+  const rsY=dY+90;
+  ctx.strokeStyle=a(5); ctx.lineWidth=1.5; ctx.strokeRect(cx-22,rsY,44,24);
+  ctx.fillStyle=a(5); ctx.font='10px JetBrains Mono,monospace';
+  ctx.fillText('RS',cx,rsY+12); ctx.fillText(fmtR(rs),cx,rsY+23);
+  // Bottom wire to GND
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,rsY+24);ctx.lineTo(cx,bot);ctx.stroke();
+  drawGnd(ctx,cx,bot);
+  // RG
+  const gx=cx-70, gy=dY+40;
+  ctx.strokeStyle=a(1); ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx-22,dY+40);ctx.lineTo(gx+30,gy);ctx.stroke();
+  ctx.strokeRect(gx-44,gy-12,44,24);
+  ctx.fillStyle=a(1); ctx.font='10px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('RG',gx-22,gy+4); ctx.fillText(fmtRM(rg),gx-22,gy+15);
+  ctx.strokeStyle=a(1); ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(gx-44,gy);ctx.lineTo(gx-60,gy);ctx.lineTo(gx-60,bot);ctx.stroke();
+  drawGnd(ctx,gx-60,bot);
+  // Labels
+  ctx.fillStyle=col; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('ID='+idQ.toFixed(2)+'mA',cx+8,dY+15);
+  ctx.fillStyle=tx2(); ctx.textAlign='right';
+  ctx.fillText('VGS='+vgsQ.toFixed(2)+'V',gx-50,dY+55);
+}
+
+function drawJFETSymbol(ctx,x,y,col,lm){
+  const lc=lm?'#c8d8f0':'#1a2d4e';
+  // Channel line (vertical)
+  ctx.strokeStyle=col; ctx.lineWidth=2.5;
+  ctx.beginPath();ctx.moveTo(x,y-30);ctx.lineTo(x,y+30);ctx.stroke();
+  // Gate arrow line
+  ctx.beginPath();ctx.moveTo(x-30,y);ctx.lineTo(x,y);ctx.stroke();
+  // Drain
+  ctx.strokeStyle=lc; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(x,y-20);ctx.lineTo(x+25,y-20);ctx.lineTo(x+25,y-45);ctx.stroke();
+  // Source
+  ctx.beginPath();ctx.moveTo(x,y+20);ctx.lineTo(x+25,y+20);ctx.lineTo(x+25,y+45);ctx.stroke();
+  ctx.fillStyle=col; ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('D',x+28,y-20); ctx.fillText('S',x+28,y+24); ctx.fillText('G',x-40,y+4);
+}
+
+function drawGnd(ctx,x,y){
+  ctx.strokeStyle=LM?'#5070a0':'#364d72'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+8);ctx.stroke();
+  for(let i=0;i<3;i++){const hw=11-i*3;ctx.beginPath();ctx.moveTo(x-hw,y+8+i*5);ctx.lineTo(x+hw,y+8+i*5);ctx.stroke();}
+}
+
+function drawBiasGraph(idss,vp,rs,idQ,vgsQ){
+  const ctx=rsz('cv-bias-graph'); if(!ctx)return;
+  const c=document.getElementById('cv-bias-graph'),w=c.width,h=c.height;
+  scopeBg(ctx,w,h);
+  const pad={l:50,r:20,t:20,b:38};
+  const pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
+  const maxI=idss*1.15;
+  const tx=v=>pad.l+(v-vp)/(0-vp)*pw;
+  const ty=i=>h-pad.b-i/maxI*ph;
+  // Axes
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.25)':'rgba(56,189,248,0.18)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,h-pad.b);ctx.lineTo(w-pad.r,h-pad.b);ctx.stroke();
+  ctx.fillStyle=tx2(); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('V\u2091\u209B (V)',w/2,h-4);
+  ctx.save();ctx.translate(12,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('I\u209D (mA)',0,0);ctx.restore();
+  // Transfer curve
+  ctx.beginPath(); ctx.strokeStyle=a(1); ctx.lineWidth=2;
+  for(let v=vp;v<=0.05;v+=0.02){
+    const id=v<=vp?0:idss*Math.pow(1-v/vp,2);
+    if(v===vp) ctx.moveTo(tx(v),ty(id)); else ctx.lineTo(tx(v),ty(id));
+  }
+  ctx.stroke();
+  // Self-bias line: VGS = -ID*RS  =>  ID = -VGS/RS
+  const rsMilli=rs/1000;
+  ctx.beginPath(); ctx.strokeStyle=a(2); ctx.lineWidth=1.8;
+  const v1=vp, id1=-vp/rs*1000;
+  const v2=0, id2=0;
+  ctx.moveTo(tx(v2),ty(id2)); ctx.lineTo(tx(Math.max(v1,vp-0.1)),ty(Math.min(id1,maxI))); ctx.stroke();
+  ctx.fillStyle=a(2); ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('Bias line',tx(vp*0.6),ty(idss*0.3)-8);
+  // Q-point
+  ctx.beginPath(); ctx.arc(tx(vgsQ),ty(idQ),6,0,Math.PI*2); ctx.fillStyle=a(6); ctx.fill();
+  ctx.fillStyle=a(6); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('Q('+vgsQ.toFixed(1)+'V, '+idQ.toFixed(1)+'mA)',tx(vgsQ)+10,ty(idQ)-6);
+  // IDSS
+  ctx.setLineDash([3,3]); ctx.strokeStyle=a(3)+'80'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.l,ty(idss));ctx.lineTo(w-pad.r,ty(idss));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=a(3); ctx.textAlign='right'; ctx.font='8px JetBrains Mono,monospace';
+  ctx.fillText('I\u209DSS',pad.l-3,ty(idss)+3);
+}
+
+// ═══ TAB 6: AMPLIFIER ════════════════════════
+let ampPlay=true, ampPhase=0;
+function toggleAmpPlay(){
+  ampPlay=!ampPlay;
+  const b=document.getElementById('am-play');
+  b.className='abtn'+(ampPlay?' act':'');
+  b.textContent=ampPlay?'\u23F8 PAUSE':'\u25B6 PLAY';
+}
+function updateAmp(){
+  const vdd=+document.getElementById('am-vdd').value;
+  const rd=+document.getElementById('am-rd').value;
+  const idss=+document.getElementById('am-idss').value;
+  const vp=+document.getElementById('am-vp').value;
+  const vin=+document.getElementById('am-vin').value;
+  const freq=+document.getElementById('am-freq').value;
+  document.getElementById('am-vdd-v').textContent=vdd.toFixed(1)+' V';
+  document.getElementById('am-rd-v').textContent=fmtR(rd);
+  document.getElementById('am-idss-v').textContent=idss+' mA';
+  document.getElementById('am-vp-v').textContent=vp+' V';
+  document.getElementById('am-vin-v').textContent=vin+' mV';
+  document.getElementById('am-freq-v').textContent=(freq>=1000?freq/1000+' k':freq)+' Hz';
+  // Q-point: self bias with RS = |VP|/(2*IDSS) for IDSS/2 operating point
+  const rsOpt=Math.abs(vp)/(idss/1000)*500; // rough centering
+  const idQ=solveJFET(idss,vp,rsOpt);
+  const vgsQ=-idQ*rsOpt/1000;
+  const gm0=2*idss/Math.abs(vp);
+  const gmQ=vgsQ<=vp?0:gm0*(1-vgsQ/vp);
+  const av=-gmQ*(rd/1000);
+  const voutPk=Math.abs(av)*vin;
+  document.getElementById('amm-gm').textContent=(gmQ).toFixed(2)+' mA/V';
+  document.getElementById('amm-av').textContent=av.toFixed(1);
+  document.getElementById('amm-vout').textContent=voutPk.toFixed(1)+' mV';
+  drawAmpCkt(vdd,rd,idss,vp,gmQ,av,idQ,vgsQ);
+  drawAmpLoad(vdd,rd,idss,vp,idQ,vgsQ);
+}
+
+function drawAmpCkt(vdd,rd,idss,vp,gm,av,idQ,vgsQ){
+  const ctx=rsz('cv-amp-ckt'); if(!ctx)return;
+  const c=document.getElementById('cv-amp-ckt'),w=c.width,h=c.height;
+  plainBg(ctx,w,h);
+  const cx=w*0.55, top=24, bot=h-22;
+  // VDD
+  ctx.fillStyle=a(1); ctx.font='bold 11px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('VDD='+vdd+'V',cx,top-5);
+  // RD
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,top+2);ctx.lineTo(cx,top+12);ctx.stroke();
+  ctx.strokeStyle=a(2); ctx.strokeRect(cx-20,top+12,40,26);
+  ctx.fillStyle=a(2); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('RD',cx,top+24); ctx.fillText(fmtR(rd),cx,top+35);
+  // Vout tap
+  const voutX=cx+48;
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,top+38);ctx.lineTo(cx,top+62);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,top+55);ctx.lineTo(voutX,top+55);ctx.stroke();
+  ctx.fillStyle=a(2); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('Vout',voutX+4,top+58);
+  // JFET symbol
+  drawJFETSymbol(ctx,cx,top+95,a(3),LM);
+  // Cin and Vin source
+  const vinX=w*0.18;
+  ctx.strokeStyle=a(1); ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx-22,top+95);ctx.lineTo(vinX+25,top+95);ctx.stroke();
+  ctx.strokeRect(vinX-25,top+78,50,34);
+  ctx.fillStyle=a(1); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('Vin',vinX,top+90); ctx.fillText('(AC)',vinX,top+103);
+  // RS
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,top+125);ctx.lineTo(cx,top+138);ctx.stroke();
+  ctx.strokeStyle=a(5); ctx.strokeRect(cx-20,top+138,40,24);
+  ctx.fillStyle=a(5); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('RS',cx,top+152);
+  ctx.strokeStyle=LM?'#c8d8f0':'#1a2d4e'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,top+162);ctx.lineTo(cx,bot);ctx.stroke();
+  drawGnd(ctx,cx,bot);
+  // Gain annotation
+  ctx.fillStyle=a(6); ctx.font='bold 10px JetBrains Mono,monospace'; ctx.textAlign='right';
+  ctx.fillText('Av='+av.toFixed(1),w-10,top+70);
+  ctx.fillStyle=tx2(); ctx.font='9px JetBrains Mono,monospace';
+  ctx.fillText('gm='+gm.toFixed(2)+'mA/V',w-10,top+84);
+}
+
+function drawAmpLoad(vdd,rd,idss,vp,idQ,vgsQ){
+  const ctx=rsz('cv-amp-load'); if(!ctx)return;
+  const c=document.getElementById('cv-amp-load'),w=c.width,h=c.height;
+  scopeBg(ctx,w,h);
+  const pad={l:48,r:18,t:22,b:36};
+  const pw=w-pad.l-pad.r, ph=h-pad.t-pad.b;
+  const maxV=vdd*1.1, maxI=idss*1.2;
+  const tx=v=>pad.l+v/maxV*pw;
+  const ty=i=>h-pad.b-i/maxI*ph;
+  // Axes
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.25)':'rgba(56,189,248,0.18)'; ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,h-pad.b);ctx.lineTo(w-pad.r,h-pad.b);ctx.stroke();
+  ctx.fillStyle=tx2(); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('V\u209DS (V)',w/2,h-4);
+  ctx.save();ctx.translate(10,h/2);ctx.rotate(-Math.PI/2);ctx.fillText('I\u209D (mA)',0,0);ctx.restore();
+  // Draw drain curves
+  for(let vgsi=0;vgsi>=vp;vgsi+=vp/4){
+    const id0=vgsi<=vp?0:idss*Math.pow(1-vgsi/vp,2);
+    const isQ=Math.abs(vgsi-vgsQ)<0.1;
+    ctx.beginPath(); ctx.strokeStyle=isQ?a(1):a(1)+'55'; ctx.lineWidth=isQ?2:1;
+    for(let v=0;v<=vdd;v+=0.2){
+      const vdsSat=Math.max(0,vgsi-vp);
+      let id=v<=vdsSat?id0*(2*(v/Math.max(vdsSat,0.01))-Math.pow(v/Math.max(vdsSat,0.01),2)):id0*(1+0.02*(v-vdsSat));
+      id=Math.max(0,Math.min(id,maxI));
+      if(v===0)ctx.moveTo(tx(v),ty(id));else ctx.lineTo(tx(v),ty(id));
+    }
+    ctx.stroke();
+  }
+  // DC load line: ID = (VDD - VDS)/RD
+  ctx.beginPath(); ctx.strokeStyle=a(2); ctx.lineWidth=2;
+  ctx.moveTo(tx(vdd),ty(0)); ctx.lineTo(tx(0),ty(vdd/(rd/1000))); ctx.stroke();
+  ctx.fillStyle=a(2); ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('Load line',tx(vdd*0.55),ty(vdd/(rd/1000)*0.55)-8);
+  // Q-point
+  const vdsQ=vdd-idQ/1000*rd;
+  ctx.beginPath(); ctx.arc(tx(vdsQ),ty(idQ),6,0,Math.PI*2); ctx.fillStyle=a(6); ctx.fill();
+  ctx.fillStyle=a(6); ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('Q',tx(vdsQ)+8,ty(idQ)-6);
+}
+
+function drawAmpScope(){
+  const ctx=rsz('cv-amp-scope'); if(!ctx)return;
+  const c=document.getElementById('cv-amp-scope'),w=c.width,h=c.height;
+  const vdd=+document.getElementById('am-vdd').value;
+  const rd=+document.getElementById('am-rd').value;
+  const idss=+document.getElementById('am-idss').value;
+  const vp=+document.getElementById('am-vp').value;
+  const vin=+document.getElementById('am-vin').value;
+  const rsOpt=Math.abs(vp)/(idss/1000)*500;
+  const idQ=solveJFET(idss,vp,rsOpt);
+  const vgsQ=-idQ*rsOpt/1000;
+  const gm0=2*idss/Math.abs(vp);
+  const gmQ=vgsQ<=vp?0:gm0*(1-vgsQ/vp);
+  const av=-gmQ*(rd/1000);
+  scopeBg(ctx,w,h);
+  const amp=Math.min(Math.abs(av)*vin,600);
+  const vin_norm=vin/1000;
+  const vout_norm=amp/1000;
+  const maxV=Math.max(vin_norm,vout_norm)*1.4;
+  const ty=v=>h/2-v/maxV*(h*0.38);
+  // Center line
+  ctx.strokeStyle=LM?'rgba(0,80,160,0.2)':'rgba(56,189,248,0.15)'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+  // Vin
+  ctx.beginPath(); ctx.strokeStyle=a(1); ctx.lineWidth=2;
+  for(let i=0;i<w;i++){
+    const t=i/w;
+    const v=vin_norm*Math.sin(2*Math.PI*(t*2.5+ampPhase));
+    if(i===0)ctx.moveTo(i,ty(v));else ctx.lineTo(i,ty(v));
+  }
+  ctx.stroke();
+  // Vout (inverted and amplified)
+  ctx.beginPath(); ctx.strokeStyle=a(2); ctx.lineWidth=2;
+  for(let i=0;i<w;i++){
+    const t=i/w;
+    const v=vout_norm*Math.sin(2*Math.PI*(t*2.5+ampPhase)+Math.PI);
+    if(i===0)ctx.moveTo(i,ty(v));else ctx.lineTo(i,ty(v));
+  }
+  ctx.stroke();
+  // Labels
+  ctx.fillStyle=a(1); ctx.font='9px JetBrains Mono,monospace'; ctx.textAlign='left';
+  ctx.fillText('Vin: '+vin+'mVpk',8,14);
+  ctx.fillStyle=a(2);
+  ctx.fillText('Vout: '+amp.toFixed(0)+'mVpk  Av='+av.toFixed(1),8,28);
+}
+
+(function ampLoop(){
+  if(ampPlay) ampPhase+=0.006;
+  const panel=document.getElementById('tab-amp');
+  if(panel&&panel.classList.contains('active')) drawAmpScope();
+  requestAnimationFrame(ampLoop);
+})();
+
+// ═══ QUIZ ════════════════════════════════════
+const QS=[
+  {q:"What type of device is a FET — voltage-controlled or current-controlled?",
+   opts:["Current-controlled, like a BJT","Voltage-controlled — V\u2091\u209B controls I\u209D","Power-controlled — wattage sets the operating point","Resistance-controlled — R\u209D\u209B controls I\u209D"],
+   ans:1,fb:"FETs are voltage-controlled devices. The gate-to-source voltage V\u2091\u209B controls the drain current I\u209D. This is the key distinction from BJTs, which are current-controlled (base current controls collector current)."},
+  {q:"In an N-channel JFET, what is the gate-to-source voltage (V_GS) when drain current equals I_DSS?",
+   opts:["V\u2091\u209B = V_P (pinch-off voltage)","V\u2091\u209B = V_DD","V\u2091\u209B = 0V","V\u2091\u209B = +5V"],
+   ans:2,fb:"When V\u2091\u209B = 0V, the N-channel is fully open and drain current reaches its maximum value I_DSS (Drain-to-Source Saturation Current). The gate is not biasing the junction at all, so the depletion region is at its minimum width."},
+  {q:"Shockley's equation for JFET drain current is: I_D = ?",
+   opts:["I_DSS \u00D7 (V_GS / V_P)","I_DSS \u00D7 (1 \u2212 V_GS/V_P)\u00B2","I_DSS / (1 + V_GS/V_P)","I_DSS \u00D7 e^(V_GS/V_T)"],
+   ans:1,fb:"I_D = I_DSS(1 \u2212 V_GS/V_P)\u00B2 is Shockley's equation. It's a parabolic (square-law) relationship. At V\u2091\u209B = 0: I_D = I_DSS. At V\u2091\u209B = V_P: I_D = 0. The curve is NOT linear \u2014 this creates harmonic distortion in amplifiers."},
+  {q:"What does the pinch-off voltage V_P represent?",
+   opts:["The supply voltage V_DD","The V\u2091\u209B at which I_D drops to zero","The V_DS at which the device breaks down","The voltage at the source terminal"],
+   ans:1,fb:"V_P (pinch-off voltage) is the V\u2091\u209B value at which the channel is completely depleted and I_D \u2192 0. For N-channel JFETs, V_P is negative (e.g., \u22124V). It's also the V_DS value where saturation begins when V\u2091\u209B = 0."},
+  {q:"In JFET self-bias, how is V_GS established?",
+   opts:["By a separate gate supply voltage V_GG","By the voltage divider R1-R2","By the voltage drop across source resistor R_S: V_GS = \u2212I_D \u00D7 R_S","By forward-biasing the gate junction"],
+   ans:2,fb:"In self-bias, V_GS = \u2212I_D \u00D7 R_S. Since I_G \u2248 0, the gate is at 0V through R_G. The source voltage VS = I_D \u00D7 R_S, making VGS = VG \u2212 VS = 0 \u2212 I_D\u22C5RS. The negative VGS automatically biases the N-channel JFET correctly."},
+  {q:"Transconductance g_m of a JFET is defined as:",
+   opts:["g_m = V_GS / I_D","g_m = \u0394I_D / \u0394V_GS","g_m = I_D / V_DS","g_m = \u0394V_DS / \u0394I_D"],
+   ans:1,fb:"Transconductance g_m = \u0394I_D / \u0394V\u2091\u209B (units: mA/V or Siemens). It measures how effectively the gate voltage controls drain current. Higher g_m means greater amplification. g_m is maximum at V\u2091\u209B = 0 and equals g_m0 = 2\u22C5I_DSS / |V_P|."},
+  {q:"What is the voltage gain of a common-source JFET amplifier?",
+   opts:["A_v = g_m \u00D7 R_S","A_v = +g_m \u00D7 R_D (no phase inversion)","A_v = \u2212g_m \u00D7 R_D (180\u00B0 phase inversion)","A_v = R_D / R_S"],
+   ans:2,fb:"The common-source voltage gain is A_v = \u2212g_m \u00D7 R_D. The negative sign indicates 180\u00B0 phase inversion \u2014 just like the common-emitter BJT amplifier. The output is inverted and amplified. Increasing R_D or g_m increases |A_v|."},
+  {q:"In which region does a JFET operate as a voltage-controlled resistor?",
+   opts:["Saturation (pinch-off) region","Ohmic (linear) region","Breakdown region","Cutoff region"],
+   ans:1,fb:"In the ohmic (linear) region, where V_DS < V_GS \u2212 V_P, the JFET acts as a voltage-controlled resistor. Drain current rises roughly linearly with V_DS. The drain-source resistance r_DS is controlled by V_GS. This region is used in analog switches and variable resistor applications."},
+  {q:"Why is the JFET input impedance extremely high?",
+   opts:["Because R_G is always less than 100\u03A9","Because the gate-channel junction is forward biased","Because the gate-channel junction is reverse biased, so I_G \u2248 0","Because the drain resistance is very large"],
+   ans:2,fb:"The gate-channel junction is reverse biased in normal JFET operation (V\u2091\u209B is negative for N-channel). A reverse-biased p-n junction passes only tiny leakage current (nA to pA range). Since I_G \u2248 0, the input impedance Z_in \u2248 R_G, which is typically 1M\u03A9 or more."},
+  {q:"A JFET has I_DSS = 12mA and V_P = \u22126V. What is I_D when V_GS = \u22123V?",
+   opts:["12 mA","6 mA","3 mA","1 mA"],
+   ans:2,fb:"Using Shockley's equation: I_D = I_DSS(1 \u2212 V\u2091\u209B/V_P)\u00B2 = 12(1 \u2212 (\u22123)/(\u22126))\u00B2 = 12(1 \u2212 0.5)\u00B2 = 12(0.5)\u00B2 = 12 \u00D7 0.25 = 3mA. At the midpoint V\u2091\u209B = V_P/2, I_D = I_DSS/4. This demonstrates the square-law (parabolic) nature of the JFET transfer characteristic."},
+];
+
+let qS={cur:0,ans:false,score:0};
+function renderQ(){
+  const con=document.getElementById('qcon'),sc=document.getElementById('scard');
+  if(qS.cur>=QS.length){
+    con.innerHTML=''; sc.classList.add('show');
+    document.getElementById('snum').textContent=qS.score+'/'+QS.length;
+    const pct=qS.score/QS.length*100;
+    document.getElementById('smsg').textContent=
+      pct>=90?'\uD83C\uDFC6 Outstanding! FET mastery achieved!':
+      pct>=70?'\u2705 Good work! Review missed topics in the simulators.':
+      pct>=50?'\uD83D\uDCDA Keep studying \u2014 work through the interactive tabs.':
+      '\uD83D\uDD01 Review all tabs, especially Drain Curves and Bias Circuit.';
+    document.getElementById('qpf').style.width='100%';
+    return;
+  }
+  sc.classList.remove('show');
+  document.getElementById('qpf').style.width=(qS.cur/QS.length*100)+'%';
+  const q=QS[qS.cur];
+  document.getElementById('qcon').innerHTML=`
+    <div class="qcard">
+      <div class="qnum">Question ${qS.cur+1} of ${QS.length} &middot; Score: ${qS.score}/${qS.cur}</div>
+      <div class="qtxt">${q.q}</div>
+      <div class="qopts">${q.opts.map((o,i)=>`<div class="qopt" id="qo${i}" onclick="selQ(${i})"><span class="qltr">${String.fromCharCode(65+i)}</span>${o}</div>`).join('')}</div>
+      <div class="fb" id="qfb"></div>
+    </div>
+    <div class="qnav">
+      <span style="font-size:.7rem;color:var(--tx3);font-family:'JetBrains Mono',monospace;">${QS.length-qS.cur-1} remaining</span>
+      <button class="bpri" id="qnxt" onclick="nextQ()" disabled>Next &rarr;</button>
+    </div>`;
+}
+function selQ(idx){
+  if(qS.ans)return; qS.ans=true;
+  const q=QS[qS.cur],ok=idx===q.ans; if(ok)qS.score++;
+  document.querySelectorAll('.qopt').forEach((el,i)=>{
+    if(i===q.ans)el.classList.add('correct');
+    else if(i===idx&&!ok)el.classList.add('wrong');
+    else el.classList.add('faded');
+  });
+  const fb=document.getElementById('qfb');
+  fb.textContent=(ok?'\u2713 Correct! ':'\u2717 Incorrect. ')+q.fb;
+  fb.className='fb show '+(ok?'fbok':'fbno');
+  document.getElementById('qnxt').disabled=false;
+}
+function nextQ(){qS.cur++;qS.ans=false;renderQ();}
+function restartQuiz(){qS={cur:0,ans:false,score:0};document.getElementById('scard').classList.remove('show');renderQ();}
+
+// ═══ INIT ════════════════════════════════════
+window.addEventListener('load',()=>{
+  renderQ();
+  setTimeout(()=>{drawStructN();drawStructP();drawDrain();drawTransfer();updateBias();updateAmp();},80);
+});
+window.addEventListener('resize',()=>{
+  drawStructN();drawStructP();drawDrain();drawTransfer();updateBias();updateAmp();
+});
+</script>
+</body>
+</html>
