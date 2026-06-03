@@ -26,6 +26,41 @@
     --glow-orange: 0 0 20px rgba(255,124,0,0.3);
   }
 
+  /* ── LIGHT MODE OVERRIDES ── */
+  body.light-mode {
+    --bg-dark: #f0f4fc;
+    --bg-panel: #e4eaf7;
+    --bg-card: #ffffff;
+    --bg-elevated: #edf1fb;
+    --accent-cyan: #0077aa;
+    --accent-green: #007a40;
+    --accent-orange: #c05000;
+    --accent-red: #cc0033;
+    --accent-yellow: #9a7700;
+    --accent-purple: #7722bb;
+    --text-primary: #111828;
+    --text-secondary: #3a5080;
+    --text-dim: #b0bcd8;
+    --border: #c8d4ec;
+    --glow-cyan: 0 0 12px rgba(0,119,170,0.18);
+    --glow-green: 0 0 12px rgba(0,122,64,0.18);
+    --glow-orange: 0 0 12px rgba(192,80,0,0.18);
+  }
+
+  body.light-mode::before {
+    background-image:
+      linear-gradient(rgba(0,119,170,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,119,170,0.05) 1px, transparent 1px);
+  }
+
+  body.light-mode header {
+    background: linear-gradient(135deg, #dce6f8 0%, #e8effe 50%, #dce6f8 100%);
+  }
+
+  body.light-mode .tab-bar { background: var(--bg-panel); }
+
+  body.light-mode canvas { background: #e8ecf8 !important; }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -34,6 +69,7 @@
     font-family: 'Exo 2', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.25s ease, color 0.25s ease;
   }
 
   /* Grid background */
@@ -728,6 +764,38 @@
   .anim-btn:hover { border-color: rgba(0,229,255,0.3); color: var(--accent-cyan); }
   .anim-btn.playing { border-color: var(--accent-green); color: var(--accent-green); background: rgba(0,255,136,0.08); }
 
+  /* ── THEME TOGGLE BUTTON ── */
+  .theme-toggle {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 5px 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .theme-toggle:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+  .tog-track {
+    width: 34px; height: 18px; border-radius: 9px;
+    background: var(--border);
+    position: relative; transition: background 0.25s ease; flex-shrink: 0;
+  }
+  .tog-track.lit { background: var(--accent-cyan); }
+  .tog-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; transition: left 0.25s ease;
+  }
+  .tog-track.lit .tog-thumb { left: 18px; }
+
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg-dark); }
@@ -807,6 +875,10 @@
     <div class="badge-row">
       <span class="badge badge-cyan">Electronics I</span>
       <span class="badge badge-green">AC → DC Conversion</span>
+      <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
+        <div class="tog-track" id="tog-track"><div class="tog-thumb"></div></div>
+        <span id="tog-label">LIGHT</span>
+      </button>
     </div>
   </div>
 </header>
@@ -1460,6 +1532,28 @@ let brState = { vp:12, freq:60, rl:10, cap:true, c:100, showDiodes:true, playing
 let animId = { hw:null, fw:null, br:null };
 
 // ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+// THEME TOGGLE
+// ══════════════════════════════════════════════
+let lightMode = false;
+function toggleTheme() {
+  lightMode = !lightMode;
+  document.body.classList.toggle('light-mode', lightMode);
+  const track = document.getElementById('tog-track');
+  const label = document.getElementById('tog-label');
+  track.classList.toggle('lit', lightMode);
+  label.textContent = lightMode ? 'DARK' : 'LIGHT';
+  // Redraw all active canvases so colors update
+  const active = document.querySelector('.tab-panel.active');
+  if (active) {
+    active.querySelectorAll('canvas').forEach(cv => {
+      const ctx = cv.getContext('2d');
+      if (ctx) ctx.clearRect(0, 0, cv.width, cv.height);
+    });
+  }
+  // The continuous animation loop redraws all canvases automatically
+}
+
 // TAB SWITCHING
 // ══════════════════════════════════════════════
 function switchTab(tab) {
@@ -1487,15 +1581,15 @@ function setupCanvas(id) {
 
 // Grid background for oscilloscopes
 function drawScopeGrid(ctx, w, h) {
-  ctx.fillStyle = '#080e1e';
+  ctx.fillStyle = lightMode ? '#e8ecf8' : '#080e1e';
   ctx.fillRect(0, 0, w, h);
-  ctx.strokeStyle = 'rgba(0,229,255,0.07)';
+  ctx.strokeStyle = lightMode ? 'rgba(0,100,180,0.09)' : 'rgba(0,229,255,0.07)';
   ctx.lineWidth = 1;
   const cols = 10, rows = 6;
   for (let i = 0; i <= cols; i++) { ctx.beginPath(); ctx.moveTo(i * w/cols, 0); ctx.lineTo(i * w/cols, h); ctx.stroke(); }
   for (let j = 0; j <= rows; j++) { ctx.beginPath(); ctx.moveTo(0, j * h/rows); ctx.lineTo(w, j * h/rows); ctx.stroke(); }
   // Center crosshairs
-  ctx.strokeStyle = 'rgba(0,229,255,0.15)';
+  ctx.strokeStyle = lightMode ? 'rgba(0,100,180,0.22)' : 'rgba(0,229,255,0.15)';
   ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(0, h/2); ctx.lineTo(w, h/2); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(w/2, 0); ctx.lineTo(w/2, h); ctx.stroke();
@@ -1682,7 +1776,7 @@ function drawHWCircuit() {
   resizeCanvas(canvas);
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
-  ctx.fillStyle = '#080e1e';
+  ctx.fillStyle = lightMode ? '#eef1fb' : '#080e1e';
   ctx.fillRect(0, 0, w, h);
 
   const s = hwState;
@@ -1691,14 +1785,14 @@ function drawHWCircuit() {
   const acVal = Math.sin(2 * Math.PI * phase);
   const conducting = acVal > 0;
 
-  const wireColor = conducting ? '#00ff88' : '#1e2d4a';
+  const wireColor = conducting ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a');
   const cx = w * 0.5, cy = midY;
 
   // AC Source
   const sx = w * 0.12, sy = midY;
   ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(sx, sy, 28, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = '#00e5ff'; ctx.font = '12px Share Tech Mono'; ctx.textAlign = 'center';
+  ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff'; ctx.font = '12px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText('AC', sx, sy + 4);
 
   // Wire to diode
@@ -1718,7 +1812,7 @@ function drawHWCircuit() {
   drawResistor(ctx, rx, midY, h * 0.18);
 
   // Return wire (bottom)
-  ctx.strokeStyle = '#1e2d4a'; ctx.lineWidth = 2;
+  ctx.strokeStyle = lightMode ? '#c8d4ec' : '#1e2d4a'; ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(rx, midY + h * 0.18);
   ctx.lineTo(rx, midY + h * 0.33);
@@ -1847,7 +1941,7 @@ function drawFWCircuit() {
   resizeCanvas(canvas);
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
-  ctx.fillStyle = '#080e1e';
+  ctx.fillStyle = lightMode ? '#eef1fb' : '#080e1e';
   ctx.fillRect(0, 0, w, h);
 
   const s = fwState;
@@ -1859,7 +1953,7 @@ function drawFWCircuit() {
   const tx = w * 0.15, ty = midY;
   ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
   ctx.strokeRect(tx - 25, ty - 35, 50, 70);
-  ctx.fillStyle = '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
+  ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText('CT', tx, ty); ctx.fillText('XFMR', tx, ty + 12);
 
   // Center tap
@@ -1868,14 +1962,14 @@ function drawFWCircuit() {
 
   // D1 (top)
   const d1x = w * 0.42, d1y = midY - 20;
-  ctx.strokeStyle = d1Active ? '#00ff88' : '#1e2d4a'; ctx.lineWidth = 2;
+  ctx.strokeStyle = d1Active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(tx + 25, ty - 22); ctx.lineTo(d1x - 18, d1y); ctx.stroke();
   drawDiode(ctx, d1x, d1y, d1Active);
   ctx.beginPath(); ctx.moveTo(d1x + 18, d1y); ctx.lineTo(w * 0.65, d1y); ctx.lineTo(w * 0.65, midY); ctx.stroke();
 
   // D2 (bottom)
   const d2x = w * 0.42, d2y = midY + 20;
-  ctx.strokeStyle = d2Active ? '#00ff88' : '#1e2d4a'; ctx.lineWidth = 2;
+  ctx.strokeStyle = d2Active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(tx + 25, ty + 22); ctx.lineTo(d2x - 18, d2y); ctx.stroke();
   drawDiode(ctx, d2x, d2y, d2Active);
   ctx.beginPath(); ctx.moveTo(d2x + 18, d2y); ctx.lineTo(w * 0.65, d2y); ctx.lineTo(w * 0.65, midY); ctx.stroke();
@@ -1883,7 +1977,7 @@ function drawFWCircuit() {
   // Load
   const rx = w * 0.72;
   drawResistor(ctx, rx, midY, h * 0.18);
-  ctx.strokeStyle = (d1Active || d2Active) ? '#00ff88' : '#1e2d4a'; ctx.lineWidth = 2;
+  ctx.strokeStyle = (d1Active || d2Active) ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(w * 0.65, midY); ctx.lineTo(rx, midY); ctx.stroke();
 
   // Return
@@ -2002,7 +2096,7 @@ function drawBRCircuit() {
   resizeCanvas(canvas);
   const ctx = canvas.getContext('2d');
   const w = canvas.width, h = canvas.height;
-  ctx.fillStyle = '#080e1e';
+  ctx.fillStyle = lightMode ? '#eef1fb' : '#080e1e';
   ctx.fillRect(0, 0, w, h);
 
   const s = brState;
@@ -2015,7 +2109,7 @@ function drawBRCircuit() {
   const sx = w * 0.1, sy = cy;
   ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(sx, sy, 22, 0, Math.PI * 2); ctx.stroke();
-  ctx.fillStyle = '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
+  ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText('~AC', sx, sy + 4);
 
   // Bridge diamond nodes
@@ -2036,7 +2130,7 @@ function drawBRCircuit() {
   function bridgeWire(x1, y1, x2, y2, active, label) {
     const midx = (x1 + x2) / 2, midy = (y1 + y2) / 2;
     const angle = Math.atan2(y2 - y1, x2 - x1);
-    ctx.strokeStyle = active ? '#00ff88' : '#1e2d4a'; ctx.lineWidth = active ? 2.5 : 1.5;
+    ctx.strokeStyle = active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = active ? 2.5 : 1.5;
     ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
     // Small diode triangle
     ctx.save();
@@ -2086,7 +2180,7 @@ function drawBRCircuit() {
 
   // Node dots
   [top, bot, lft, rgt].forEach(n => {
-    ctx.fillStyle = '#00e5ff';
+    ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff';
     ctx.beginPath(); ctx.arc(n.x, n.y, 3.5, 0, Math.PI*2); ctx.fill();
   });
 
