@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Math Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .timer {
+            color: #e74c3c;
+        }
+
+        .score {
+            color: #27ae60;
+        }
+
+        .question-area {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .question {
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        .binary-display {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 1.5em;
+        }
+
+        .answer-input {
+            font-size: 1.5em;
+            padding: 15px;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            margin: 0 10px;
+            width: 200px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .submit-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+        }
+
+        .start-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .instructions {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .final-score {
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .conversion-hint {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .game-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+            
+            .answer-input {
+                width: 150px;
+                margin: 10px 5px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 Binary Math Challenge</h1>
+            <p>Master binary numbers and arithmetic operations!</p>
+        </div>
+
+        <div class="game-container">
+            <div id="startScreen" class="start-screen">
+                <div class="instructions">
+                    <h3>🎯 How to Play:</h3>
+                    <ul>
+                        <li><strong>Convert:</strong> Transform numbers between binary (base-2) and decimal (base-10)</li>
+                        <li><strong>Add/Subtract:</strong> Perform arithmetic with binary numbers</li>
+                        <li><strong>Multiply/Divide:</strong> Advanced binary operations</li>
+                        <li><strong>Timer:</strong> You have 60 seconds per game session</li>
+                        <li><strong>Scoring:</strong> Correct answers earn points, wrong answers subtract points</li>
+                    </ul>
+                </div>
+                
+                <div class="instructions">
+                    <h3>💡 Binary Basics:</h3>
+                    <ul>
+                        <li>Binary uses only 0s and 1s (like computer language!)</li>
+                        <li>Each position represents a power of 2: 1, 2, 4, 8, 16, 32...</li>
+                        <li>Example: 1011₂ = 1×8 + 0×4 + 1×2 + 1×1 = 11₁₀</li>
+                        <li>To convert decimal to binary, divide by 2 repeatedly</li>
+                    </ul>
+                </div>
+
+                <button class="start-btn" onclick="startGame()">🚀 Start Challenge</button>
+            </div>
+
+            <div id="gameScreen" style="display: none;">
+                <div class="game-controls">
+                    <div class="mode-selector">
+                        <button class="mode-btn active" onclick="setMode('binary-to-decimal')">Binary → Decimal</button>
+                        <button class="mode-btn" onclick="setMode('decimal-to-binary')">Decimal → Binary</button>
+                        <button class="mode-btn" onclick="setMode('addition')">Binary Addition</button>
+                        <button class="mode-btn" onclick="setMode('subtraction')">Binary Subtraction</button>
+                        <button class="mode-btn" onclick="setMode('multiplication')">Binary Multiplication</button>
+                        <button class="mode-btn" onclick="setMode('division')">Binary Division</button>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-item timer">⏰ Time: <span id="timeLeft">60</span>s</div>
+                        <div class="stat-item score">⭐ Score: <span id="score">0</span></div>
+                        <div class="stat-item">🎯 Streak: <span id="streak">0</span></div>
+                    </div>
+                </div>
+
+                <div class="question-area">
+                    <div id="question" class="question"></div>
+                    <div id="conversionHint" class="conversion-hint" style="display: none;"></div>
+                    <div>
+                        <input type="text" id="answerInput" class="answer-input" placeholder="Your answer">
+                        <button class="submit-btn" onclick="checkAnswer()">Submit</button>
+                    </div>
+                    <div id="feedback" class="feedback" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div id="gameOverScreen" class="game-over" style="display: none;">
+                <h2>🎉 Time's Up!</h2>
+                <div class="final-score" id="finalScore">0</div>
+                <p id="gameOverMessage"></p>
+                <button class="start-btn" onclick="resetGame()">🔄 Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'binary-to-decimal';
+        let score = 0;
+        let streak = 0;
+        let timeLeft = 60;
+        let timer;
+        let currentAnswer;
+        let gameActive = false;
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            gameActive = true;
+            score = 0;
+            streak = 0;
+            timeLeft = 60;
+            updateDisplay();
+            generateQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(timer);
+            gameActive = false;
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('gameOverScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            let message = '';
+            if (score >= 200) message = 'Outstanding! You\'re a binary master! 🏆';
+            else if (score >= 150) message = 'Excellent work! Keep practicing! 🌟';
+            else if (score >= 100) message = 'Good job! You\'re getting the hang of it! 👍';
+            else if (score >= 50) message = 'Nice effort! Keep learning! 📚';
+            else message = 'Keep practicing - you\'ll improve! 💪';
+            
+            document.getElementById('gameOverMessage').textContent = message;
+        }
+
+        function resetGame() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            clearFeedback();
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            if (gameActive) generateQuestion();
+        }
+
+        function generateQuestion() {
+            clearFeedback();
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            
+            const hintElement = document.getElementById('conversionHint');
+            hintElement.style.display = 'none';
+
+            switch (currentMode) {
+                case 'binary-to-decimal':
+                    generateBinaryToDecimalQuestion();
+                    break;
+                case 'decimal-to-binary':
+                    generateDecimalToBinaryQuestion();
+                    break;
+                case 'addition':
+                    generateBinaryArithmeticQuestion('+');
+                    break;
+                case 'subtraction':
+                    generateBinaryArithmeticQuestion('-');
+                    break;
+                case 'multiplication':
+                    generateBinaryArithmeticQuestion('*');
+                    break;
+                case 'division':
+                    generateBinaryArithmeticQuestion('/');
+                    break;
+            }
+        }
+
+        function generateBinaryToDecimalQuestion() {
+            const decimal = Math.floor(Math.random() * 255) + 1;
+            const binary = decimal.toString(2);
+            currentAnswer = decimal;
+            
+            document.getElementById('question').innerHTML = `
+                Convert this binary number to decimal:
+                <div class="binary-display">${binary}₂ = ?₁₀</div>
+            `;
+            
+            showConversionHint(`Hint: Each position represents a power of 2. From right to left: 1, 2, 4, 8, 16...`);
+        }
+
+        function generateDecimalToBinaryQuestion() {
+            const decimal = Math.floor(Math.random() * 255) + 1;
+            const binary = decimal.toString(2);
+            currentAnswer = binary;
+            
+            document.getElementById('question').innerHTML = `
+                Convert this decimal number to binary:
+                <div class="binary-display">${decimal}₁₀ = ?₂</div>
+            `;
+            
+            showConversionHint(`Hint: Divide by 2 repeatedly and read remainders from bottom to top.`);
+        }
+
+        function generateBinaryArithmeticQuestion(operation) {
+            let num1, num2, result;
+            
+            switch (operation) {
+                case '+':
+                    num1 = Math.floor(Math.random() * 63) + 1;
+                    num2 = Math.floor(Math.random() * 63) + 1;
+                    result = num1 + num2;
+                    break;
+                case '-':
+                    num1 = Math.floor(Math.random() * 100) + 50;
+                    num2 = Math.floor(Math.random() * 49) + 1;
+                    result = num1 - num2;
+                    break;
+                case '*':
+                    num1 = Math.floor(Math.random() * 15) + 1;
+                    num2 = Math.floor(Math.random() * 15) + 1;
+                    result = num1 * num2;
+                    break;
+                case '/':
+                    result = Math.floor(Math.random() * 31) + 1;
+                    num2 = Math.floor(Math.random() * 7) + 2;
+                    num1 = result * num2;
+                    result = Math.floor(num1 / num2);
+                    break;
+            }
+            
+            const binary1 = num1.toString(2);
+            const binary2 = num2.toString(2);
+            const binaryResult = result.toString(2);
+            currentAnswer = binaryResult;
+            
+            document.getElementById('question').innerHTML = `
+                Solve this binary arithmetic:
+                <div class="binary-display">${binary1}₂ ${operation} ${binary2}₂ = ?₂</div>
+            `;
+            
+            showConversionHint(`Hint: You can convert to decimal, perform the operation, then convert back to binary.`);
+        }
+
+        function showConversionHint(hint) {
+            const hintElement = document.getElementById('conversionHint');
+            hintElement.textContent = hint;
+            hintElement.style.display = 'block';
+        }
+
+        function checkAnswer() {
+            if (!gameActive) return;
+            
+            const userAnswer = document.getElementById('answerInput').value.trim();
+            const isCorrect = userAnswer === currentAnswer.toString();
+            
+            const feedbackElement = document.getElementById('feedback');
+            feedbackElement.style.display = 'block';
+            
+            if (isCorrect) {
+                score += 10 + streak * 2;
+                streak++;
+                feedbackElement.className = 'feedback correct';
+                feedbackElement.textContent = `✅ Correct! +${10 + (streak-1) * 2} points`;
+            } else {
+                score = Math.max(0, score - 5);
+                streak = 0;
+                feedbackElement.className = 'feedback incorrect';
+                feedbackElement.textContent = `❌ Incorrect. The answer was: ${currentAnswer}`;
+            }
+            
+            updateDisplay();
+            
+            setTimeout(() => {
+                if (gameActive) generateQuestion();
+            }, 2000);
+        }
+
+        function clearFeedback() {
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('timeLeft').textContent = timeLeft;
+        }
+
+        // Allow Enter key to submit answer
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && gameActive) {
+                checkAnswer();
+            }
+        });
+
+        // Prevent form submission and focus on input when game starts
+        document.getElementById('answerInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
