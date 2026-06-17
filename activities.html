@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 | Simulator & Activity Hub</title>
+<style>
+/* ============================================================
+   DESIGN TOKENS — mirrors elt102-index.html
+   ============================================================ */
+:root {
+  --bg:           #ffffff;
+  --bg-soft:      #f6f8f6;
+  --bg-card:      #ffffff;
+  --border:       #dde8dd;
+  --border-dark:  #b8ccb8;
+  --text:         #111111;
+  --text-mid:     #3a4a3a;
+  --text-muted:   #5c6e5c;
+
+  --green-dark:   #1b5e20;
+  --green:        #2e7d32;
+  --green-mid:    #388e3c;
+  --green-light:  #4caf50;
+  --green-pale:   #e8f5e9;
+  --green-pale2:  #c8e6c9;
+
+  --amber:        #e65100;
+  --amber-mid:    #f57c00;
+  --amber-pale:   #fff3e0;
+  --amber-pale2:  #ffe0b2;
+
+  --blue:         #1565c0;
+  --blue-mid:     #1976d2;
+  --blue-pale:    #e3f2fd;
+  --blue-pale2:   #bbdefb;
+
+  --purple:       #6a1b9a;
+  --purple-pale:  #f3e5f5;
+  --purple-pale2: #e1bee7;
+
+  --teal:         #00695c;
+  --teal-pale:    #e0f2f1;
+  --teal-pale2:   #b2dfdb;
+
+  --red:          #b71c1c;
+  --red-pale:     #ffebee;
+
+  --shadow-sm:    0 1px 4px rgba(0,0,0,0.08);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:    0 8px 28px rgba(0,0,0,0.14);
+  --radius:       10px;
+  --radius-lg:    16px;
+}
+[data-theme="dark"] {
+  --bg:           #0c100c;
+  --bg-soft:      #131a13;
+  --bg-card:      #192019;
+  --border:       #283228;
+  --border-dark:  #364836;
+  --text:         #e8f0e8;
+  --text-mid:     #b8ccb8;
+  --text-muted:   #7a9a7a;
+  --green-dark:   #81c784;
+  --green:        #4caf50;
+  --green-mid:    #66bb6a;
+  --green-light:  #a5d6a7;
+  --green-pale:   #1a2e1a;
+  --green-pale2:  #1e3a1e;
+  --amber:        #ffcc80;
+  --amber-mid:    #ffb74d;
+  --amber-pale:   #2a1a00;
+  --amber-pale2:  #3a2200;
+  --blue:         #90caf9;
+  --blue-mid:     #64b5f6;
+  --blue-pale:    #0d1f35;
+  --blue-pale2:   #0a1a2e;
+  --purple:       #ce93d8;
+  --purple-pale:  #1f0d2a;
+  --purple-pale2: #2a1238;
+  --teal:         #80cbc4;
+  --teal-pale:    #0d2520;
+  --teal-pale2:   #0a1e1c;
+  --red:          #ef9a9a;
+  --red-pale:     #2a1010;
+  --shadow-sm:    0 1px 4px rgba(0,0,0,0.36);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.44);
+  --shadow-lg:    0 8px 28px rgba(0,0,0,0.55);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; font-size: 16px;
+  transition: background .3s, color .3s;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  background: var(--green-dark); color: #fff;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 2px 14px rgba(0,0,0,.28);
+}
+.header-inner {
+  max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 14px; flex-wrap: wrap;
+}
+.header-brand { display:flex; align-items:center; gap:14px; }
+.brand-chip {
+  background: rgba(255,255,255,.13); border: 2px solid rgba(255,255,255,.28);
+  border-radius: 8px; width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 11px; color: #fff;
+  flex-shrink: 0; text-align: center; line-height: 1.1;
+}
+.brand-text h1 { font-size: 1.05rem; font-weight: 700; }
+.brand-text p  { font-size: .73rem; opacity: .68; margin-top: 2px; }
+.header-controls { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.back-link {
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+  color: #fff; font-size: .8rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px; text-decoration: none;
+  transition: background .2s;
+}
+.back-link:hover { background: rgba(255,255,255,.24); }
+.page-badge {
+  background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.26);
+  font-size: .7rem; font-weight: 700;
+  padding: 4px 11px; border-radius: 20px;
+  letter-spacing: .06em; text-transform: uppercase; color: #fff;
+}
+.theme-toggle {
+  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22);
+  color: #fff; font-size: .8rem; font-weight: 600;
+  padding: 7px 15px; border-radius: 20px; cursor: pointer;
+  transition: background .2s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,.24); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: linear-gradient(140deg, #1b5e20 0%, #2e7d32 40%, #1565c020 70%, #e6510018 100%);
+  color: #fff; padding: 44px 24px 38px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+.hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+.hero-eyebrow {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .14em; opacity: .72; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.hero-eyebrow::before {
+  content:''; width:28px; height:2px;
+  background:rgba(255,255,255,.45); border-radius:1px;
+}
+.hero h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 8px; }
+.hero-sub { font-size: .97rem; opacity: .84; max-width: 620px; line-height: 1.65; }
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 14px; margin-top: 22px;
+}
+.hero-stat {
+  background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.22);
+  padding: 10px 18px; border-radius: var(--radius);
+  text-align: center;
+}
+.hero-stat .num { font-size: 1.6rem; font-weight: 900; line-height: 1; }
+.hero-stat .lbl { font-size: .68rem; opacity: .78; text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+.phase-pills {
+  display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+}
+.phase-pill {
+  padding: 6px 14px; border-radius: 8px; font-size: .78rem; font-weight: 700;
+  border: 1px solid rgba(255,255,255,.22);
+}
+.phase-pill.analog  { background: rgba(230,81,0,.3); }
+.phase-pill.digital { background: rgba(21,101,192,.3); }
+
+/* ============================================================
+   PAGE BODY
+   ============================================================ */
+.page-body {
+  max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px;
+}
+
+/* Progress strip */
+.progress-strip {
+  display: flex; gap: 3px; height: 7px; margin-bottom: 32px;
+}
+.ps-block { height: 100%; border-radius: 2px; flex: 1; }
+
+/* ============================================================
+   DAY BLOCK — the main organizational unit
+   ============================================================ */
+.day-block {
+  margin-bottom: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Day header */
+.day-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px;
+  color: #fff;
+}
+.day-header.analog-hdr  { background: linear-gradient(90deg, var(--amber), var(--amber-mid)); }
+.day-header.digital-hdr { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); }
+.day-header.mixed-hdr   { background: linear-gradient(90deg, var(--amber), var(--blue)); }
+.day-header.final-hdr   { background: linear-gradient(90deg, var(--green), var(--teal)); }
+
+.day-num {
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: rgba(0,0,0,.2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 1rem;
+}
+.day-header-text { flex: 1; }
+.day-header-text h3 { font-size: 1rem; font-weight: 700; }
+.day-header-text p  { font-size: .78rem; opacity: .85; margin-top: 2px; }
+.day-count {
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3);
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; padding: 4px 10px; border-radius: 20px;
+  flex-shrink: 0;
+}
+
+/* No-activity notice */
+.no-activity {
+  padding: 18px 22px;
+  background: var(--bg-soft);
+  font-size: .86rem; color: var(--text-muted);
+  font-style: italic;
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   ACTIVITY GRID inside each day block
+   ============================================================ */
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+.activity-card {
+  padding: 18px 20px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 8px;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  position: relative;
+  background: var(--bg-card);
+  text-decoration: none;
+  color: var(--text);
+}
+/* Remove right border on last in a row */
+.activity-card:last-child { border-right: none; }
+/* Hover state */
+.activity-card:hover {
+  background: var(--bg-soft);
+  transform: scale(1.01);
+  z-index: 2;
+  box-shadow: var(--shadow-md);
+}
+
+/* Activity icon */
+.act-icon {
+  font-size: 1.8rem;
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.act-icon.analog  { background: var(--amber-pale);  border: 1px solid var(--amber-pale2); }
+.act-icon.digital { background: var(--blue-pale);   border: 1px solid var(--blue-pale2); }
+.act-icon.opamp   { background: var(--purple-pale); border: 1px solid var(--purple-pale2); }
+.act-icon.control { background: var(--teal-pale);   border: 1px solid var(--teal-pale2); }
+
+/* Activity title & description */
+.act-title {
+  font-size: .9rem; font-weight: 700; color: var(--text); line-height: 1.3;
+}
+.act-desc {
+  font-size: .78rem; color: var(--text-muted); line-height: 1.5; flex: 1;
+}
+
+/* Type chip */
+.act-chip {
+  font-size: .62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; padding: 2px 8px; border-radius: 10px;
+  align-self: flex-start;
+}
+.chip-analog  { background: var(--amber-pale);  color: var(--amber);  border: 1px solid var(--amber-pale2); }
+.chip-digital { background: var(--blue-pale);   color: var(--blue);   border: 1px solid var(--blue-pale2); }
+.chip-opamp   { background: var(--purple-pale); color: var(--purple); border: 1px solid var(--purple-pale2); }
+.chip-control { background: var(--teal-pale);   color: var(--teal);   border: 1px solid var(--teal-pale2); }
+
+/* URL pill */
+.act-url {
+  font-size: .66rem; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px;
+  background: var(--bg-soft); border: 1px solid var(--border-dark);
+  color: var(--text-muted); font-family: 'Courier New', monospace;
+  align-self: flex-start; display: flex; align-items: center; gap: 4px;
+}
+.act-url::before { content: '🔗'; font-size: .7rem; }
+
+/* Launch arrow overlay */
+.act-launch {
+  position: absolute; top: 14px; right: 16px;
+  font-size: .85rem; color: var(--text-muted);
+  opacity: 0; transition: opacity .2s, transform .2s;
+}
+.activity-card:hover .act-launch { opacity: 1; transform: translateX(3px); }
+
+/* ============================================================
+   QUICK JUMP STRIP
+   ============================================================ */
+.quick-jump {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 20px;
+  margin-bottom: 32px;
+}
+.qj-label {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--text-muted); margin-bottom: 10px;
+}
+.qj-buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+.qj-btn {
+  background: var(--bg-card); border: 1px solid var(--border-dark);
+  color: var(--text-mid); font-size: .78rem; font-weight: 600;
+  padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  transition: background .2s, border-color .2s;
+  text-decoration: none; display: inline-block;
+}
+.qj-btn:hover { background: var(--green-pale); border-color: var(--green); color: var(--green-dark); }
+.qj-btn.analog  { border-left: 3px solid var(--amber); }
+.qj-btn.digital { border-left: 3px solid var(--blue); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg-soft); border-top: 1px solid var(--border);
+  padding: 20px 24px; text-align: center;
+  font-size: .76rem; color: var(--text-muted);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 720px) {
+  .hero h2 { font-size: 1.4rem; }
+  .activity-grid { grid-template-columns: 1fr; }
+  .activity-card { border-right: none; }
+  .hero-stats { gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-chip">ELT<br>102</div>
+      <div class="brand-text">
+        <h1>Simulator &amp; Activity Hub</h1>
+        <p>ELT 102 &mdash; Digital Logic &amp; Solid State Devices &mdash; MVCC</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <a class="back-link" href="index.html">&#8592; Course Home</a>
+      <span class="page-badge">20 Simulators</span>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">ELT 102 &mdash; Interactive Simulation Lab</div>
+    <h2>Circuit Simulators &amp; Activity Lab</h2>
+    <p class="hero-sub">Twenty interactive simulators organized by lesson day — from semiconductor P-N junction biasing through Op-Amp configurations, closed-loop control systems, and digital data converters. Click any card to launch the simulator.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">20</div><div class="lbl">Simulators</div></div>
+      <div class="hero-stat"><div class="num">14</div><div class="lbl">Lesson Days</div></div>
+      <div class="hero-stat"><div class="num">4</div><div class="lbl">Topic Domains</div></div>
+    </div>
+    <div class="phase-pills">
+      <div class="phase-pill analog">🔌 Days 1–7: Solid State &amp; Analog Circuits</div>
+      <div class="phase-pill digital">💡 Days 8–14: Digital Logic &amp; Converters</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE BODY
+     ============================================================ -->
+<div class="page-body">
+
+  <!-- Phase progress bar -->
+  <div class="progress-strip">
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--amber);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+    <div class="ps-block" style="background:var(--blue);"></div>
+  </div>
+
+  <!-- Quick Jump -->
+  <div class="quick-jump">
+    <div class="qj-label">Jump to Day</div>
+    <div class="qj-buttons">
+      <a class="qj-btn analog" href="#day1">Day 1</a>
+      <a class="qj-btn analog" href="#day2">Day 2</a>
+      <a class="qj-btn analog" href="#day3">Day 3</a>
+      <a class="qj-btn analog" href="#day4">Day 4</a>
+      <a class="qj-btn analog" href="#day5">Day 5</a>
+      <a class="qj-btn analog" href="#day6">Day 6</a>
+      <a class="qj-btn analog" href="#day7">Day 7</a>
+      <a class="qj-btn digital" href="#day8">Day 8</a>
+      <a class="qj-btn digital" href="#day9">Day 9</a>
+      <a class="qj-btn digital" href="#day10">Day 10</a>
+      <a class="qj-btn digital" href="#day11">Day 11</a>
+      <a class="qj-btn digital" href="#day12">Day 12</a>
+      <a class="qj-btn digital" href="#day13">Day 13</a>
+      <a class="qj-btn digital" href="#day14">Day 14</a>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 1 — Semiconductor Fundamentals & Diodes
+       =========================================================== -->
+  <div class="day-block" id="day1">
+    <div class="day-header analog-hdr">
+      <div class="day-num">1</div>
+      <div class="day-header-text">
+        <h3>Semiconductor Fundamentals &amp; Diodes</h3>
+        <p>P-N junction behavior, forward &amp; reverse bias, and diode characteristic curves</p>
+      </div>
+      <span class="day-count">1 Simulator</span>
+    </div>
+    <div class="activity-grid">
+      <div class="activity-card" onclick="launchSim('band.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon analog">⚡</div>
+        <div class="act-chip chip-analog">Analog</div>
+        <div class="act-title">Diodes &amp; Semiconductors</div>
+        <div class="act-desc">Explore the basic principles of semiconductors and diodes. Describe the atomic structure of a semiconductor. Demonstrate forward and reverse bias conditions and observe depletion region behavior.</div>
+        <div class="act-url">band.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 2 — Diode Applications & Power Supply Circuits
+       =========================================================== -->
+  <div class="day-block" id="day2">
+    <div class="day-header analog-hdr">
+      <div class="day-num">2</div>
+      <div class="day-header-text">
+        <h3>Diode Applications &amp; Power Supply Circuits</h3>
+        <p>Half-wave, full-wave, and bridge rectifiers — capacitive filtering and ripple voltage</p>
+      </div>
+      <span class="day-count">1 Simulator</span>
+    </div>
+    <div class="activity-grid">
+      <div class="activity-card" onclick="launchSim('rectifier.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon analog">🔧</div>
+        <div class="act-chip chip-analog">Analog</div>
+        <div class="act-title">Operation of Electronic Rectifiers</div>
+        <div class="act-desc">Explore half-wave, full-wave, and full-bridge rectifier configurations. Observe the effect of capacitive filtering on ripple voltage. Measure clipping behavior and DC output levels in AC-to-DC conversion circuits.</div>
+        <div class="act-url">rectifier.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 3 — Bipolar Junction Transistors (BJTs)
+       =========================================================== -->
+  <div class="day-block" id="day3">
+    <div class="day-header analog-hdr">
+      <div class="day-num">3</div>
+      <div class="day-header-text">
+        <h3>Bipolar Junction Transistors (BJTs)</h3>
+        <p>NPN and PNP operation, saturation / cutoff / active regions, DC load line analysis</p>
+      </div>
+      <span class="day-count">1 Simulator</span>
+    </div>
+    <div class="activity-grid">
+      <div class="activity-card" onclick="launchSim('transistor.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon analog">📈</div>
+        <div class="act-chip chip-analog">Analog</div>
+        <div class="act-title">PNP and NPN Transistors</div>
+        <div class="act-desc">Study the operation of bipolar junction transistors. Differentiate NPN and PNP device behavior. Explore transistor operation as an electronic switch (saturation/cutoff) and as a small-signal amplifier in the active region.</div>
+        <div class="act-url">transistor.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 4 — Field Effect Transistors & Thyristors
+       =========================================================== -->
+  <div class="day-block" id="day4">
+    <div class="day-header analog-hdr">
+      <div class="day-num">4</div>
+      <div class="day-header-text">
+        <h3>Field Effect Transistors &amp; Thyristors</h3>
+        <p>JFET vs. MOSFET (voltage-controlled), SCR and TRIAC triggering, high-power switching</p>
+      </div>
+      <span class="day-count">1 Simulator</span>
+    </div>
+    <div class="activity-grid">
+      <div class="activity-card" onclick="launchSim('fets.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon analog">👥</div>
+        <div class="act-chip chip-analog">Analog</div>
+        <div class="act-title">Field Effect Transistors (FETs)</div>
+        <div class="act-desc">Describe the operation of voltage-controlled Field Effect Transistors. Compare JFET and MOSFET structures, pinch-off characteristics, and transfer curves. Examine FET applications in high-impedance switching and amplification circuits.</div>
+        <div class="act-url">fets.html</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 5 — Transistor Amplifiers & Operational Amplifiers
+       =========================================================== -->
+  <div class="day-block" id="day5">
+    <div class="day-header analog-hdr">
+      <div class="day-num">5</div>
+      <div class="day-header-text">
+        <h3>Transistor Amplifiers &amp; Operational Amplifiers</h3>
+        <p>AC gain, coupling capacitors, ideal Op-Amp characteristics, inverting and non-inverting configurations</p>
+      </div>
+      <span class="day-count">8 Simulators</span>
+    </div>
+    <div class="activity-grid">
+
+      <div class="activity-card" onclick="launchSim('opamp-int.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">⚡</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Operational Amplifier — Introduction</div>
+        <div class="act-desc">Learn the foundational principles of operational amplifiers — ideal vs. real characteristics, open-loop and closed-loop gain, differential input, and input/output impedance concepts.</div>
+        <div class="act-url">opamp-int.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('opamp.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">🔧</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Op-Amp Operations</div>
+        <div class="act-desc">Explore various Op-Amp operations and configurations. Understand how different feedback network topologies affect amplifier gain, bandwidth, and overall circuit performance.</div>
+        <div class="act-url">opamp.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('invert.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">🔄</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Inverting Op-Amp</div>
+        <div class="act-desc">Explore the classic inverting amplifier configuration. Apply the virtual short concept to derive gain calculations. Observe 180° phase inversion and input/output relationships with varying feedback resistor values.</div>
+        <div class="act-url">invert.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('non-invert.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">📈</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Non-Inverting Op-Amp</div>
+        <div class="act-desc">Study the non-inverting amplifier circuit. Understand its high input impedance advantage, and calculate voltage gain using the voltage divider feedback principle with in-phase output.</div>
+        <div class="act-url">non-invert.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('follower.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">👥</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Op-Amp Voltage Follower</div>
+        <div class="act-desc">Understand the unity gain buffer configuration — its extremely high input impedance and near-zero output impedance. Explore practical applications in impedance matching and signal isolation.</div>
+        <div class="act-url">follower.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('integrator.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">∫</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Op-Amp Integrator</div>
+        <div class="act-desc">Learn how capacitive feedback creates an integrator circuit. Observe mathematical integration of input signals, ramp waveform generation from square wave inputs, and low-pass frequency-domain behavior.</div>
+        <div class="act-url">integrator.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('difopamp.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">∂</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Op-Amp Differentiator</div>
+        <div class="act-desc">Understand how the differentiator circuit responds to the rate of change of input signals. Explore edge detection, high-pass behavior, and practical applications in signal processing and waveform shaping.</div>
+        <div class="act-url">difopamp.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('compopamp.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon opamp">⚖️</div>
+        <div class="act-chip chip-opamp">Op-Amp</div>
+        <div class="act-title">Op-Amp Comparators</div>
+        <div class="act-desc">Explore voltage comparison circuits and threshold detection. See how Op-Amps produce digital-level outputs from analog inputs. Introduce hysteresis (Schmitt trigger) for noise-immune switching.</div>
+        <div class="act-url">compopamp.html</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 6 — Voltage Regulators, Optoelectronics & Control Systems
+       =========================================================== -->
+  <div class="day-block" id="day6">
+    <div class="day-header mixed-hdr">
+      <div class="day-num">6</div>
+      <div class="day-header-text">
+        <h3>Voltage Regulators, Optoelectronics &amp; Control Systems</h3>
+        <p>Zener voltage regulation · proportional, closed-loop, and PID control · practical washer control application</p>
+      </div>
+      <span class="day-count">5 Simulators</span>
+    </div>
+    <div class="activity-grid">
+
+      <div class="activity-card" onclick="launchSim('zener.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon analog">🔄</div>
+        <div class="act-chip chip-analog">Analog</div>
+        <div class="act-title">Zener Diodes &amp; Voltage Regulation</div>
+        <div class="act-desc">Explore Zener diode reverse-breakdown operation and voltage regulation behavior. Observe how Zener diodes maintain stable output voltage under varying load conditions and analyze regulator circuit design.</div>
+        <div class="act-url">zener.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('proportional.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon control">📊</div>
+        <div class="act-chip chip-control">Control</div>
+        <div class="act-title">Proportional Control</div>
+        <div class="act-desc">Learn the fundamentals of proportional control systems. Adjust gain settings and observe steady-state error behavior. Understand how a proportional controller responds proportionally to the magnitude of system deviations.</div>
+        <div class="act-url">proportional.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('closedloop.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon control">🔄</div>
+        <div class="act-chip chip-control">Control</div>
+        <div class="act-title">Closed Loop Control</div>
+        <div class="act-desc">Understand feedback control system architecture — error detection, correction loops, and system stability. Compare open-loop vs. closed-loop performance and see how negative feedback improves system accuracy.</div>
+        <div class="act-url">closedloop.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('pid.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon control">⚙️</div>
+        <div class="act-chip chip-control">Control</div>
+        <div class="act-title">PID Operations</div>
+        <div class="act-desc">Explore Proportional-Integral-Derivative control algorithms. Tune the three parameters and observe how each term affects system response — P eliminates offset proportionally, I eliminates steady-state error, D dampens overshoot.</div>
+        <div class="act-url">pid.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('washer.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon control">🌊</div>
+        <div class="act-chip chip-control">Applied</div>
+        <div class="act-title">Washer Control Systems</div>
+        <div class="act-desc">Practical application of control system concepts in a washing machine — including timing sequence logic, water level sensing and control, motor speed control, and automated multi-stage cycle management.</div>
+        <div class="act-url">washer.html</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 7 — Midterm Review & Transition to Digital
+       =========================================================== -->
+  <div class="day-block" id="day7">
+    <div class="day-header analog-hdr">
+      <div class="day-num">7</div>
+      <div class="day-header-text">
+        <h3>Midterm Review &amp; Transition to Digital</h3>
+        <p>Synthesize analog concepts · transistors forming logic gates · hardware troubleshooting</p>
+      </div>
+      <span class="day-count">Review Day</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>Exam 2 Day + Comprehensive Review.</strong> Use simulators from Days 1–6 to revisit any topic before your midterm. Recommended review path: <strong>band.html → rectifier.html → transistor.html → fets.html → opamp-int.html → zener.html → closedloop.html</strong>
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 8 — Number Systems & Boolean Algebra
+       =========================================================== -->
+  <div class="day-block" id="day8">
+    <div class="day-header digital-hdr">
+      <div class="day-num">8</div>
+      <div class="day-header-text">
+        <h3>Number Systems &amp; Boolean Algebra</h3>
+        <p>Binary, octal, hexadecimal conversions · 2's complement · Boolean algebra laws and simplification</p>
+      </div>
+      <span class="day-count">No Simulator</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>Problem-solving workshop day.</strong> Number systems and Boolean algebra are practiced through Lab 3A and Lab 3B worksheet exercises. No interactive simulator is assigned to this day — focus on manual conversion and Boolean simplification drills.
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 9 — Fundamental Logic Gates
+       =========================================================== -->
+  <div class="day-block" id="day9">
+    <div class="day-header digital-hdr">
+      <div class="day-num">9</div>
+      <div class="day-header-text">
+        <h3>Fundamental Logic Gates</h3>
+        <p>AND, NAND, OR, NOR truth tables · universal gates · 7400-series TTL/CMOS IC verification</p>
+      </div>
+      <span class="day-count">No Simulator</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>IC breadboard lab day (Exam 3).</strong> Logic gate simulators are embedded within the lesson page (lesson09.html). Physical 7408/7400/7432/7402 IC wiring and verification is conducted at the lab bench — Lab 4A and Lab 4B.
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 10 — Advanced Logic & Combinational Circuits
+       =========================================================== -->
+  <div class="day-block" id="day10">
+    <div class="day-header digital-hdr">
+      <div class="day-num">10</div>
+      <div class="day-header-text">
+        <h3>Advanced Logic &amp; Combinational Circuits</h3>
+        <p>XOR / XNOR gates · combinational circuit design · K-map minimization · fault isolation</p>
+      </div>
+      <span class="day-count">No Simulator</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>Combinational circuit design lab.</strong> XOR/XNOR logic and K-map exercises are practiced through lesson interactive activities and Lab 4C breadboard construction. No standalone external simulator is assigned to this day.
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 11 — Latches & Flip-Flops
+       =========================================================== -->
+  <div class="day-block" id="day11">
+    <div class="day-header digital-hdr">
+      <div class="day-num">11</div>
+      <div class="day-header-text">
+        <h3>Latches &amp; Flip-Flops</h3>
+        <p>RS latches · D flip-flops · JK flip-flops · timing diagrams · clock setup/hold times</p>
+      </div>
+      <span class="day-count">No Simulator</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>Sequential logic hardware day (Exam 4).</strong> Latch and flip-flop timing is captured on actual hardware in Labs 5A, 5B, and 5C. Lesson interactive activities cover state diagrams. No standalone external simulator is assigned to this day.
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 12 — Counters, Timers & Oscillators
+       =========================================================== -->
+  <div class="day-block" id="day12">
+    <div class="day-header digital-hdr">
+      <div class="day-num">12</div>
+      <div class="day-header-text">
+        <h3>Counters, Timers &amp; Oscillators</h3>
+        <p>Synchronous / asynchronous counters · 555 timer IC · astable &amp; monostable modes · duty cycle</p>
+      </div>
+      <span class="day-count">2 Simulators</span>
+    </div>
+    <div class="activity-grid">
+
+      <div class="activity-card" onclick="launchSim('updown.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon digital">🔢</div>
+        <div class="act-chip chip-digital">Digital</div>
+        <div class="act-title">Up-Down Binary Counter</div>
+        <div class="act-desc">Understand bidirectional counting circuits and mode control inputs. Observe how up-down counters increment or decrement based on direction control signals. Explore modulus, counter reset, and parallel load operations.</div>
+        <div class="act-url">updown.html</div>
+      </div>
+
+      <div class="activity-card" onclick="launchSim('johnson.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon digital">🔐</div>
+        <div class="act-chip chip-digital">Digital</div>
+        <div class="act-title">Johnson Decoder</div>
+        <div class="act-desc">Learn about Johnson (twisted ring) counter decoding. Observe how sequential shift-register states produce unique non-overlapping output combinations — essential for decade counter display driving and sequence detection.</div>
+        <div class="act-url">johnson.html</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 13 — Data Conversion: MUX, Encoders, Decoders, ADC/DAC
+       =========================================================== -->
+  <div class="day-block" id="day13">
+    <div class="day-header digital-hdr">
+      <div class="day-num">13</div>
+      <div class="day-header-text">
+        <h3>Data Conversion: Encoders, Decoders, MUX &amp; A/D–D/A</h3>
+        <p>Multiplexers · BCD-to-7-segment decoding · successive approximation ADC · R-2R ladder DAC</p>
+      </div>
+      <span class="day-count">1 Simulator</span>
+    </div>
+    <div class="activity-grid">
+
+      <div class="activity-card" onclick="launchSim('a-to-d.html')">
+        <span class="act-launch">→</span>
+        <div class="act-icon digital">🌊</div>
+        <div class="act-chip chip-digital">Digital</div>
+        <div class="act-title">Digital-to-Analog &amp; Analog-to-Digital Converter</div>
+        <div class="act-desc">Bridge the digital-analog boundary with D/A and A/D conversion techniques. Explore R-2R ladder DAC architecture, resolution, quantization error, and successive approximation ADC operation. Observe the relationship between bit depth and conversion accuracy.</div>
+        <div class="act-url">a-to-d.html</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===========================================================
+       DAY 14 — Course Review & Final Examination
+       =========================================================== -->
+  <div class="day-block" id="day14">
+    <div class="day-header final-hdr">
+      <div class="day-num">14</div>
+      <div class="day-header-text">
+        <h3>Course Review &amp; Final Examination</h3>
+        <p>Comprehensive integration review · analog-to-digital systems · troubleshooting paradigms</p>
+      </div>
+      <span class="day-count">Final Exam Day</span>
+    </div>
+    <div class="no-activity">
+      📋 <strong>Final Exam day — all simulators available for review.</strong> Recommended full review path for the comprehensive final:
+      <br><br>
+      <strong>Analog path:</strong> band.html → rectifier.html → zener.html → transistor.html → fets.html → opamp-int.html → invert.html → non-invert.html → closedloop.html → pid.html
+      <br><br>
+      <strong>Digital path:</strong> updown.html → johnson.html → a-to-d.html
+    </div>
+  </div>
+
+</div><!-- end page-body -->
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  ELT 102 Digital Logic &amp; Solid State Devices &nbsp;|&nbsp;
+  Simulator &amp; Activity Hub &nbsp;|&nbsp;
+  Moraine Valley Community College &nbsp;|&nbsp;
+  Department of Engineering &amp; Technology
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ---- THEME ---- */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('elt102-theme', next);
+}
+(function () {
+  const saved = localStorage.getItem('elt102-theme');
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.getElementById('themeBtn').textContent = '☀️ Light';
+  }
+})();
+
+/* ---- SIMULATOR LAUNCHER ---- */
+function launchSim(filename) {
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) {
+    window.location.href = filename;
+  } else {
+    window.open(filename, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+  }
+}
+</script>
+</body>
+</html>
