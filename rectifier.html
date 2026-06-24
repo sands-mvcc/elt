@@ -135,7 +135,7 @@
     font-family: 'Share Tech Mono', monospace;
   }
 
-  .badge-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .badge-row { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
 
   .badge {
     padding: 4px 12px;
@@ -859,10 +859,9 @@
   .osc-label span { color: var(--text-secondary); }
 </style>
 </head>
-<body>
+<body class="light-mode">
 <div class="page-wrapper">
 
-<!-- HEADER -->
 <header>
   <div class="header-inner">
     <div class="logo-area">
@@ -876,14 +875,13 @@
       <span class="badge badge-cyan">Electronics I</span>
       <span class="badge badge-green">AC → DC Conversion</span>
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light mode">
-        <div class="tog-track" id="tog-track"><div class="tog-thumb"></div></div>
-        <span id="tog-label">LIGHT</span>
+        <div class="tog-track lit" id="tog-track"><div class="tog-thumb"></div></div>
+        <span id="tog-label">DARK</span>
       </button>
     </div>
   </div>
 </header>
 
-<!-- TAB BAR -->
 <div class="tab-bar">
   <div class="tab-nav">
     <button class="tab-btn active" onclick="switchTab('intro')"><span class="tab-num">1</span>Introduction</button>
@@ -896,12 +894,8 @@
   </div>
 </div>
 
-<!-- MAIN -->
 <main>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 1: INTRODUCTION
-  ══════════════════════════════════════════════ -->
   <div id="tab-intro" class="tab-panel active">
     <div class="intro-hero">
       <h2>What is a Rectifier?</h2>
@@ -959,9 +953,6 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 2: HALF-WAVE
-  ══════════════════════════════════════════════ -->
   <div id="tab-half" class="tab-panel">
     <div class="section-title">Half-Wave Rectifier Simulator</div>
     <div class="sim-layout">
@@ -1033,7 +1024,6 @@
       </div>
 
       <div class="viz-panel">
-        <!-- Circuit Diagram -->
         <div class="circuit-card">
           <div class="circuit-header">
             <h3 style="color:var(--accent-orange)">Circuit Diagram</h3>
@@ -1042,7 +1032,6 @@
           <canvas id="hw-circuit" height="180"></canvas>
         </div>
 
-        <!-- Oscilloscope -->
         <div class="circuit-card">
           <div class="circuit-header">
             <h3 style="color:var(--accent-orange)">Oscilloscope — Waveform Display</h3>
@@ -1056,7 +1045,6 @@
           </div>
         </div>
 
-        <!-- How It Works -->
         <div class="info-card">
           <h3 style="color:var(--accent-orange)">⚙ How the Half-Wave Rectifier Works</h3>
           <p>During the <strong>positive half-cycle</strong> of AC input, the diode is forward-biased and conducts current to the load. During the <strong>negative half-cycle</strong>, the diode is reverse-biased and blocks current — the output is zero. The result is a pulsating DC with only <em>positive pulses</em>.</p>
@@ -1067,9 +1055,6 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 3: FULL-WAVE (CENTER-TAP)
-  ══════════════════════════════════════════════ -->
   <div id="tab-full" class="tab-panel">
     <div class="section-title">Full-Wave Center-Tap Rectifier Simulator</div>
     <div class="sim-layout">
@@ -1172,9 +1157,6 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 4: FULL-BRIDGE
-  ══════════════════════════════════════════════ -->
   <div id="tab-bridge" class="tab-panel">
     <div class="section-title">Full-Bridge Rectifier Simulator</div>
     <div class="sim-layout">
@@ -1276,9 +1258,6 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 5: COMPARISON
-  ══════════════════════════════════════════════ -->
   <div id="tab-compare" class="tab-panel">
     <div class="section-title">Side-by-Side Comparison</div>
 
@@ -1338,7 +1317,6 @@
       </div>
     </div>
 
-    <!-- Overlay comparison canvas -->
     <div class="circuit-card">
       <div class="circuit-header">
         <h3>Overlay Waveform Comparison</h3>
@@ -1353,9 +1331,6 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 6: FORMULAS
-  ══════════════════════════════════════════════ -->
   <div id="tab-formulas" class="tab-panel">
     <div class="section-title">Key Formulas & Equations</div>
     <div class="formula-grid">
@@ -1498,17 +1473,13 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════
-       TAB 7: QUIZ
-  ══════════════════════════════════════════════ -->
   <div id="tab-quiz" class="tab-panel">
     <div class="section-title">Knowledge Check</div>
     <div class="quiz-layout">
       <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress" style="width:0%"></div></div>
 
       <div id="quiz-questions-container">
-        <!-- Questions rendered by JS -->
-      </div>
+        </div>
 
       <div class="score-display" id="quiz-score">
         <div class="score-big" id="quiz-score-num">0/10</div>
@@ -1532,10 +1503,9 @@ let brState = { vp:12, freq:60, rl:10, cap:true, c:100, showDiodes:true, playing
 let animId = { hw:null, fw:null, br:null };
 
 // ══════════════════════════════════════════════
-// ══════════════════════════════════════════════
 // THEME TOGGLE
 // ══════════════════════════════════════════════
-let lightMode = false;
+let lightMode = true;
 function toggleTheme() {
   lightMode = !lightMode;
   document.body.classList.toggle('light-mode', lightMode);
@@ -1551,7 +1521,6 @@ function toggleTheme() {
       if (ctx) ctx.clearRect(0, 0, cv.width, cv.height);
     });
   }
-  // The continuous animation loop redraws all canvases automatically
 }
 
 // TAB SWITCHING
@@ -1867,6 +1836,34 @@ function updateFW() {
   document.getElementById('fw-m-eff').textContent = '81.2%';
 }
 
+// ══════════════════════════════════════════════
+// BRIDGE RECTIFIER SIMULATOR
+// ══════════════════════════════════════════════
+function updateBR() {
+  const s = brState;
+  s.vp = +document.getElementById('br-vp').value;
+  s.freq = +document.getElementById('br-freq').value;
+  s.rl = +document.getElementById('br-rl').value;
+  s.c = +document.getElementById('br-c').value;
+
+  document.getElementById('br-vp-val').textContent = s.vp + ' V';
+  document.getElementById('br-freq-val').textContent = s.freq + ' Hz';
+  document.getElementById('br-rl-val').textContent = (s.rl/10).toFixed(1) + ' kΩ';
+  document.getElementById('br-c-val').textContent = s.c + ' µF';
+
+  const vdc = (2 * s.vp - 1.4) / Math.PI;
+  const vrms = (s.vp - 1.4) / Math.SQRT2;
+  const il = (vdc / (s.rl * 100)).toFixed(2);
+  const acVal = Math.sin(2 * Math.PI * s.phase);
+
+  document.getElementById('br-m-vp').textContent = s.vp.toFixed(1) + ' V';
+  document.getElementById('br-m-vdc').textContent = vdc.toFixed(2) + ' V';
+  document.getElementById('br-m-vrms').textContent = vrms.toFixed(2) + ' V';
+  document.getElementById('br-m-ripple').textContent = '48%';
+  document.getElementById('br-m-active').textContent = acVal > 0 ? 'D1, D3' : 'D2, D4';
+  document.getElementById('br-m-eff').textContent = '81.2%';
+}
+
 function setFWCap(on) {
   fwState.cap = on;
   document.getElementById('fw-cap-on').className = 'toggle-btn ' + (on ? 'active-green' : '');
@@ -1883,6 +1880,9 @@ function toggleFWShow(which) {
   }
 }
 
+// ══════════════════════════════════════════════
+// REMAINING MODULE FUNCTIONS
+// ══════════════════════════════════════════════
 function toggleFWPlay() {
   fwState.playing = !fwState.playing;
   document.getElementById('fw-play-btn').className = 'anim-btn' + (fwState.playing ? ' playing' : '');
@@ -1949,42 +1949,35 @@ function drawFWCircuit() {
   const acVal = Math.sin(2 * Math.PI * s.phase);
   const d1Active = acVal > 0, d2Active = !d1Active;
 
-  // Transformer
   const tx = w * 0.15, ty = midY;
   ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
   ctx.strokeRect(tx - 25, ty - 35, 50, 70);
   ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText('CT', tx, ty); ctx.fillText('XFMR', tx, ty + 12);
 
-  // Center tap
   ctx.strokeStyle = '#445577'; ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(tx + 25, ty); ctx.lineTo(w * 0.7, ty + 35); ctx.stroke();
 
-  // D1 (top)
   const d1x = w * 0.42, d1y = midY - 20;
   ctx.strokeStyle = d1Active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(tx + 25, ty - 22); ctx.lineTo(d1x - 18, d1y); ctx.stroke();
   drawDiode(ctx, d1x, d1y, d1Active);
   ctx.beginPath(); ctx.moveTo(d1x + 18, d1y); ctx.lineTo(w * 0.65, d1y); ctx.lineTo(w * 0.65, midY); ctx.stroke();
 
-  // D2 (bottom)
   const d2x = w * 0.42, d2y = midY + 20;
   ctx.strokeStyle = d2Active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(tx + 25, ty + 22); ctx.lineTo(d2x - 18, d2y); ctx.stroke();
   drawDiode(ctx, d2x, d2y, d2Active);
   ctx.beginPath(); ctx.moveTo(d2x + 18, d2y); ctx.lineTo(w * 0.65, d2y); ctx.lineTo(w * 0.65, midY); ctx.stroke();
 
-  // Load
   const rx = w * 0.72;
   drawResistor(ctx, rx, midY, h * 0.18);
   ctx.strokeStyle = (d1Active || d2Active) ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(w * 0.65, midY); ctx.lineTo(rx, midY); ctx.stroke();
 
-  // Return
   ctx.strokeStyle = '#445577'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(rx, midY + h*0.18); ctx.lineTo(rx, midY + h*0.33); ctx.lineTo(tx, midY + h*0.33); ctx.lineTo(tx, ty + 35); ctx.stroke();
 
-  // Labels
   ctx.fillStyle = d1Active ? '#00ff88' : '#445577'; ctx.font = '9px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText(d1Active ? 'D1 ON' : 'D1 OFF', d1x, d1y - 20);
   ctx.fillStyle = d2Active ? '#00ff88' : '#445577';
@@ -1992,41 +1985,13 @@ function drawFWCircuit() {
   ctx.fillStyle = 'rgba(255,255,255,0.4)';
   ctx.fillText('RL', rx + 20, midY);
 
-  if (s.cap) {
+  if (fwState.cap) {
     const cpx = w * 0.84;
     drawCapacitor(ctx, cpx, midY, h * 0.18, '#b44fff');
     ctx.strokeStyle = '#b44fff'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(rx, midY); ctx.lineTo(cpx, midY); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cpx, midY + h*0.18); ctx.lineTo(rx, midY + h*0.18); ctx.stroke();
   }
-}
-
-// ══════════════════════════════════════════════
-// BRIDGE RECTIFIER SIMULATOR
-// ══════════════════════════════════════════════
-function updateBR() {
-  const s = brState;
-  s.vp = +document.getElementById('br-vp').value;
-  s.freq = +document.getElementById('br-freq').value;
-  s.rl = +document.getElementById('br-rl').value;
-  s.c = +document.getElementById('br-c').value;
-
-  document.getElementById('br-vp-val').textContent = s.vp + ' V';
-  document.getElementById('br-freq-val').textContent = s.freq + ' Hz';
-  document.getElementById('br-rl-val').textContent = (s.rl/10).toFixed(1) + ' kΩ';
-  document.getElementById('br-c-val').textContent = s.c + ' µF';
-
-  const vdc = (2 * s.vp - 1.4) / Math.PI;
-  const vrms = (s.vp - 1.4) / Math.SQRT2;
-  const il = (vdc / (s.rl * 100)).toFixed(2);
-  const acVal = Math.sin(2 * Math.PI * s.phase);
-
-  document.getElementById('br-m-vp').textContent = s.vp.toFixed(1) + ' V';
-  document.getElementById('br-m-vdc').textContent = vdc.toFixed(2) + ' V';
-  document.getElementById('br-m-vrms').textContent = vrms.toFixed(2) + ' V';
-  document.getElementById('br-m-ripple').textContent = '48%';
-  document.getElementById('br-m-active').textContent = acVal > 0 ? 'D1, D3' : 'D2, D4';
-  document.getElementById('br-m-eff').textContent = '81.2%';
 }
 
 function setBRCap(on) {
@@ -2058,7 +2023,6 @@ function drawBRScope() {
 
   drawScopeGrid(ctx, w, h);
 
-  // Input
   ctx.beginPath(); ctx.strokeStyle = 'rgba(0,229,255,0.7)'; ctx.lineWidth = 1.5;
   for (let i = 0; i < w; i++) {
     const t = (i / w) * 2.5 + s.phase;
@@ -2067,7 +2031,6 @@ function drawBRScope() {
   }
   ctx.stroke();
 
-  // Output
   ctx.beginPath(); ctx.strokeStyle = '#b44fff'; ctx.lineWidth = 2;
   const Vf = 1.4, tau = (s.rl * 1000) * (s.c * 1e-6);
   const dt = 2.5 / (s.freq * w);
@@ -2103,22 +2066,19 @@ function drawBRCircuit() {
   const acVal = Math.sin(2 * Math.PI * s.phase);
   const posHalf = acVal > 0;
   const cx = w * 0.5, cy = h * 0.5;
-  const bw = Math.min(w * 0.18, 80); // bridge half-width
+  const bw = Math.min(w * 0.18, 80);
 
-  // AC source (left)
   const sx = w * 0.1, sy = cy;
   ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.arc(sx, sy, 22, 0, Math.PI * 2); ctx.stroke();
   ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff'; ctx.font = '10px Share Tech Mono'; ctx.textAlign = 'center';
   ctx.fillText('~AC', sx, sy + 4);
 
-  // Bridge diamond nodes
   const top = { x: cx, y: cy - bw };
   const bot = { x: cx, y: cy + bw };
   const lft = { x: cx - bw, y: cy };
   const rgt = { x: cx + bw, y: cy };
 
-  // Wires AC source to bridge
   const aw1 = posHalf ? '#00ff88' : '#1e3050';
   const aw2 = !posHalf ? '#00ff88' : '#1e3050';
   ctx.strokeStyle = aw1; ctx.lineWidth = 2;
@@ -2126,13 +2086,11 @@ function drawBRCircuit() {
   ctx.strokeStyle = aw2; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(sx + 22, sy + 10); ctx.lineTo(lft.x + 1, lft.y); ctx.stroke();
 
-  // Helper: draw diagonal wire with optional diode symbol
   function bridgeWire(x1, y1, x2, y2, active, label) {
     const midx = (x1 + x2) / 2, midy = (y1 + y2) / 2;
     const angle = Math.atan2(y2 - y1, x2 - x1);
     ctx.strokeStyle = active ? (lightMode ? '#007a40' : '#00ff88') : (lightMode ? '#c8d4ec' : '#1e2d4a'); ctx.lineWidth = active ? 2.5 : 1.5;
     ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    // Small diode triangle
     ctx.save();
     ctx.translate(midx, midy);
     ctx.rotate(angle);
@@ -2152,16 +2110,11 @@ function drawBRCircuit() {
     }
   }
 
-  // D1: left→top (pos half)
   bridgeWire(lft.x, lft.y, top.x, top.y, posHalf, 'D1');
-  // D3: bot→right (pos half)
   bridgeWire(bot.x, bot.y, rgt.x, rgt.y, posHalf, 'D3');
-  // D4: left→bot (neg half)
   bridgeWire(lft.x, lft.y, bot.x, bot.y, !posHalf, 'D4');
-  // D2: top→right (neg half)
   bridgeWire(top.x, top.y, rgt.x, rgt.y, !posHalf, 'D2');
 
-  // Load
   const lx = w * 0.82;
   ctx.strokeStyle = posHalf || !posHalf ? '#00ff88' : '#1e2d4a'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(rgt.x, rgt.y); ctx.lineTo(lx, rgt.y); ctx.stroke();
@@ -2169,7 +2122,6 @@ function drawBRCircuit() {
   ctx.strokeStyle = '#445577'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(lx, rgt.y + bw * 0.9); ctx.lineTo(lx, bot.y); ctx.lineTo(bot.x, bot.y); ctx.stroke();
 
-  // Capacitor
   if (s.cap) {
     const cpx = lx + 22;
     drawCapacitor(ctx, cpx, rgt.y, bw * 0.9, '#b44fff');
@@ -2178,7 +2130,6 @@ function drawBRCircuit() {
     ctx.beginPath(); ctx.moveTo(cpx, rgt.y + bw * 0.9); ctx.lineTo(lx, rgt.y + bw * 0.9); ctx.stroke();
   }
 
-  // Node dots
   [top, bot, lft, rgt].forEach(n => {
     ctx.fillStyle = lightMode ? '#0077aa' : '#00e5ff';
     ctx.beginPath(); ctx.arc(n.x, n.y, 3.5, 0, Math.PI*2); ctx.fill();
@@ -2188,22 +2139,15 @@ function drawBRCircuit() {
   ctx.fillText('RL', lx + 18, rgt.y);
 }
 
-// ══════════════════════════════════════════════
-// SHARED DRAWING HELPERS
-// ══════════════════════════════════════════════
 function drawDiode(ctx, x, y, active) {
   const color = active ? '#00ff88' : '#445577';
   ctx.save();
   ctx.translate(x, y);
   ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 1.5;
-  // Anode wire
   ctx.beginPath(); ctx.moveTo(-18, 0); ctx.lineTo(-8, 0); ctx.stroke();
-  // Triangle
   ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(8, 0); ctx.lineTo(-8, 8); ctx.closePath();
   ctx.fill();
-  // Cathode bar
   ctx.beginPath(); ctx.moveTo(8, -8); ctx.lineTo(8, 8); ctx.stroke();
-  // Wire out
   ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(18, 0); ctx.stroke();
   ctx.restore();
 }
@@ -2214,7 +2158,6 @@ function drawResistor(ctx, x, y, h) {
   ctx.strokeRect(x - w, y - w/2, w * 2, h);
   ctx.beginPath(); ctx.moveTo(x, y - w/2); ctx.lineTo(x, y - 8); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x, y + h + 8); ctx.stroke();
-  // Zigzag inside
   ctx.strokeStyle = 'rgba(255,229,0,0.4)';
   const steps = 4;
   ctx.beginPath();
@@ -2229,20 +2172,13 @@ function drawResistor(ctx, x, y, h) {
 function drawCapacitor(ctx, x, y, h, color) {
   const gap = 5;
   ctx.strokeStyle = color; ctx.lineWidth = 1.5;
-  // Top plate
   ctx.beginPath(); ctx.moveTo(x - 12, y + h/2 - gap); ctx.lineTo(x + 12, y + h/2 - gap); ctx.stroke();
-  // Bottom plate
   ctx.beginPath(); ctx.moveTo(x - 12, y + h/2 + gap); ctx.lineTo(x + 12, y + h/2 + gap); ctx.stroke();
-  // Wires
   ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + h/2 - gap); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(x, y + h/2 + gap); ctx.lineTo(x, y + h); ctx.stroke();
 }
 
-// ══════════════════════════════════════════════
-// COMPARISON CANVASES
-// ══════════════════════════════════════════════
 function drawComparisons() {
-  // Mini waveforms for compare cards
   ['cmp-half', 'cmp-full', 'cmp-bridge'].forEach((id, idx) => {
     const canvas = document.getElementById(id);
     if (!canvas) return;
@@ -2253,7 +2189,6 @@ function drawComparisons() {
     const colors = [null, '#ff7c00', '#00ff88', '#b44fff'];
     drawScopeGrid(ctx, w, h);
 
-    // AC input faint
     ctx.beginPath(); ctx.strokeStyle = 'rgba(0,229,255,0.4)'; ctx.lineWidth = 1;
     for (let i = 0; i < w; i++) {
       const t = (i / w) * 3;
@@ -2276,7 +2211,6 @@ function drawComparisons() {
     ctx.stroke();
   });
 
-  // Overlay
   const oc = document.getElementById('cmp-overlay');
   if (!oc) return;
   oc.width = oc.parentElement.clientWidth;
@@ -2301,9 +2235,6 @@ function drawComparisons() {
   });
 }
 
-// ══════════════════════════════════════════════
-// MAIN ANIMATION LOOP
-// ══════════════════════════════════════════════
 function animate() {
   const speed = 0.003;
   if (hwState.playing) { hwState.phase += speed; drawHWCircuit(); drawHWScope(); updateHW(); }
@@ -2313,7 +2244,7 @@ function animate() {
 }
 
 // ══════════════════════════════════════════════
-// QUIZ
+// QUIZ ENGINE
 // ══════════════════════════════════════════════
 const questions = [
   {
@@ -2455,14 +2386,9 @@ function restartQuiz() {
   renderQuiz();
 }
 
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
 window.addEventListener('load', () => {
-  // Init display values
   updateHW(); updateFW(); updateBR();
   renderQuiz();
-  // Start animation
   animate();
 });
 
