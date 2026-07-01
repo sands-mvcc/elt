@@ -3,954 +3,991 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ELT 102 | Digital Logic & Solid State Devices</title>
+<title>ELT 102-350 | Digital Logic & Solid State Devices</title>
 <style>
-:root {
-  --bg:           #ffffff;
-  --bg-soft:      #f6f8f6;
-  --bg-card:      #ffffff;
-  --border:       #dde8dd;
-  --border-dark:  #b8ccb8;
-  --text:         #111111;
-  --text-mid:     #3a4a3a;
-  --text-muted:   #5c6e5c;
-  --green-dark:   #1b5e20;
-  --green:        #2e7d32;
-  --green-mid:    #388e3c;
-  --green-light:  #4caf50;
-  --green-pale:   #e8f5e9;
-  --green-pale2:  #c8e6c9;
-  --amber:        #e65100;
-  --amber-mid:    #f57c00;
-  --amber-pale:   #fff3e0;
-  --amber-pale2:  #ffe0b2;
-  --blue:         #1565c0;
-  --blue-mid:     #1976d2;
-  --blue-pale:    #e3f2fd;
-  --blue-pale2:   #bbdefb;
-  --purple:       #6a1b9a;
-  --purple-pale:  #f3e5f5;
-  --shadow-sm:    0 1px 4px rgba(0,0,0,0.08);
-  --shadow-md:    0 4px 16px rgba(0,0,0,0.10);
-  --shadow-lg:    0 8px 32px rgba(0,0,0,0.13);
-  --radius:       10px;
-  --radius-lg:    16px;
-}
-[data-theme="dark"] {
-  --bg:           #0c100c;
-  --bg-soft:      #131a13;
-  --bg-card:      #192019;
-  --border:       #283228;
-  --border-dark:  #364836;
-  --text:         #e8f0e8;
-  --text-mid:     #b8ccb8;
-  --text-muted:   #7a9a7a;
-  --green-dark:   #81c784;
-  --green:        #4caf50;
-  --green-mid:    #66bb6a;
-  --green-light:  #a5d6a7;
-  --green-pale:   #1a2e1a;
-  --green-pale2:  #1e3a1e;
-  --amber:        #ffcc80;
-  --amber-mid:    #ffb74d;
-  --amber-pale:   #2a1a00;
-  --amber-pale2:  #3a2200;
-  --blue:         #90caf9;
-  --blue-mid:     #64b5f6;
-  --blue-pale:    #0d1f35;
-  --blue-pale2:   #0a1a2e;
-  --purple:       #ce93d8;
-  --purple-pale:  #1f0d2a;
-  --shadow-sm:    0 1px 4px rgba(0,0,0,0.35);
-  --shadow-md:    0 4px 16px rgba(0,0,0,0.42);
-  --shadow-lg:    0 8px 32px rgba(0,0,0,0.55);
-}
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  font-size: 16px;
-  transition: background 0.3s, color 0.3s;
-}
-header {
-  background: var(--green-dark);
-  color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 200;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.28);
-}
-.header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 15px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-.header-brand { display: flex; align-items: center; gap: 14px; }
-.brand-chip {
-  background: rgba(255,255,255,0.13);
-  border: 2px solid rgba(255,255,255,0.28);
-  border-radius: 8px;
-  width: 46px; height: 46px;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 11px; letter-spacing: -0.5px;
-  color: #fff; flex-shrink: 0; line-height: 1.1; text-align: center;
-}
-.brand-text h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.01em; }
-.brand-text p  { font-size: 0.73rem; opacity: 0.68; margin-top: 2px; }
-.header-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.course-badge {
-  background: rgba(255,255,255,0.16);
-  border: 1px solid rgba(255,255,255,0.26);
-  font-size: 0.7rem; font-weight: 700;
-  padding: 4px 11px; border-radius: 20px;
-  letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
-}
-.theme-toggle {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.22);
-  color: #fff; font-size: 0.8rem; font-weight: 600;
-  padding: 7px 15px; border-radius: 20px; cursor: pointer;
-  transition: background 0.2s;
-}
-.theme-toggle:hover { background: rgba(255,255,255,0.24); }
-.hero {
-  background: linear-gradient(140deg, #1b5e20 0%, #2e7d32 40%, #1565c020 70%, #e6510018 100%);
-  color: #fff;
-  padding: 52px 24px 44px;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-}
-.hero-inner { max-width: 1200px; margin: 0 auto; position: relative; }
-.hero-eyebrow {
-  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.14em; opacity: 0.75; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.hero-eyebrow::before {
-  content: ''; display: block; width: 28px; height: 2px;
-  background: rgba(255,255,255,0.5); border-radius: 1px;
-}
-.hero h2 { font-size: 2.1rem; font-weight: 800; margin-bottom: 10px; line-height: 1.2; }
-.hero-sub { font-size: 1rem; opacity: 0.82; max-width: 620px; line-height: 1.65; }
-.hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-.hero-tag {
-  background: rgba(255,255,255,0.13);
-  border: 1px solid rgba(255,255,255,0.22);
-  font-size: 0.73rem; font-weight: 600;
-  padding: 5px 13px; border-radius: 20px;
-}
-.phase-pills { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
-.phase-pill {
-  padding: 8px 18px; border-radius: 8px;
-  font-size: 0.82rem; font-weight: 700;
-  border: 1px solid rgba(255,255,255,0.25);
-  backdrop-filter: blur(4px);
-}
-.phase-pill.analog  { background: rgba(230,81,0,0.28); }
-.phase-pill.digital { background: rgba(21,101,192,0.28); }
-.grade-strip {
-  background: var(--bg-soft);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
-}
-.grade-strip-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-}
-.grade-label {
-  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.1em; color: var(--text-muted);
-  margin-right: 4px;
-}
-.grade-item {
-  display: flex; align-items: center; gap: 6px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 6px 12px;
-  font-size: 0.78rem; color: var(--text-mid);
-}
-.grade-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.grade-item strong { color: var(--text); }
-.page-body { max-width: 1200px; margin: 0 auto; padding: 40px 24px 72px; }
-.section-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 20px; padding-bottom: 10px;
-  border-bottom: 2px solid var(--green-pale2);
-}
-.section-header h3 {
-  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.12em; color: var(--green);
-}
-.section-header::before {
-  content: ''; display: block;
-  width: 4px; height: 18px;
-  border-radius: 2px; flex-shrink: 0;
-}
-.section-header.analog-section::before  { background: var(--amber); }
-.section-header.digital-section::before { background: var(--blue); }
-.section-header.resource-section::before { background: var(--green); }
-.phase-label-pill {
-  font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
-  letter-spacing: 0.08em; padding: 3px 10px; border-radius: 12px;
-  margin-left: auto;
-}
-.analog-pill  { background: var(--amber-pale); color: var(--amber); border: 1px solid var(--amber-pale2); }
-.digital-pill { background: var(--blue-pale);  color: var(--blue);  border: 1px solid var(--blue-pale2); }
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 18px;
-  margin-bottom: 48px;
-}
-.resource-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 18px;
-  margin-bottom: 48px;
-}
-.lesson-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  position: relative;
-}
-.lesson-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.card-accent { height: 5px; background: var(--green); flex-shrink: 0; }
-.card-accent.analog  { background: linear-gradient(90deg, var(--amber), var(--amber-mid)); }
-.card-accent.digital { background: linear-gradient(90deg, var(--blue), var(--blue-mid)); }
-.card-accent.lab     { background: linear-gradient(90deg, var(--green), var(--green-light)); }
-.card-accent.exam    { background: linear-gradient(90deg, var(--purple), #9c27b0); }
-.card-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
-.card-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.card-day { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
-.card-type-badge { font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 10px; }
-.badge-analog  { background: var(--amber-pale);  color: var(--amber); }
-.badge-digital { background: var(--blue-pale);   color: var(--blue); }
-.badge-lab     { background: var(--green-pale);   color: var(--green-dark); }
-.badge-exam    { background: var(--purple-pale);  color: var(--purple); }
-.card-title { font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--text); }
-.card-subtitle { font-size: 0.8rem; color: var(--text-muted); line-height: 1.45; flex: 1; }
-.card-terms { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
-.term-chip {
-  font-size: 0.68rem; font-weight: 600;
-  padding: 2px 8px; border-radius: 10px;
-  background: var(--bg-soft); border: 1px solid var(--border);
-  color: var(--text-muted);
-}
-/* ── SIMULATOR LINKS ── */
-.sim-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--border-dark);
-}
-.sim-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s;
-  cursor: pointer;
-}
-.sim-link.analog-sim {
-  background: var(--amber-pale);
-  color: var(--amber);
-  border: 1px solid var(--amber-pale2);
-}
-.sim-link.analog-sim:hover { background: var(--amber-pale2); }
-.sim-link.digital-sim {
-  background: var(--blue-pale);
-  color: var(--blue);
-  border: 1px solid var(--blue-pale2);
-}
-.sim-link.digital-sim:hover { background: var(--blue-pale2); }
-.sim-link.green-sim {
-  background: var(--green-pale);
-  color: var(--green-dark);
-  border: 1px solid var(--green-pale2);
-}
-.sim-link.green-sim:hover { background: var(--green-pale2); }
-/* ── end sim links ── */
-.card-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 11px 20px;
-  border-top: 1px solid var(--border);
-  background: var(--bg-soft);
-  font-size: 0.72rem; color: var(--text-muted);
-}
-.card-footer-labs { display: flex; align-items: center; gap: 5px; }
-.lab-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--green-light); display: inline-block; }
-.card-arrow { font-size: 1rem; color: var(--text-muted); transition: transform 0.2s; }
-.lesson-card:hover .card-arrow { transform: translateX(4px); }
-.exam-flag {
-  font-size: 0.68rem; font-weight: 700;
-  padding: 2px 8px; border-radius: 10px;
-  background: var(--amber-pale); color: var(--amber);
-  border: 1px solid var(--amber-pale2);
-}
-.resource-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: var(--shadow-md);
-  cursor: pointer;
-}
-.resource-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-.resource-card.lab-card  { border-color: var(--green-pale2); }
-.resource-card.exam-card { border-color: #ce93d844; }
-.resource-body { padding: 28px 28px 20px; flex: 1; }
-.resource-icon { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
-.lab-card  .resource-icon { background: var(--green-pale);  border: 1px solid var(--green-pale2); }
-.exam-card .resource-icon { background: var(--purple-pale); border: 1px solid #ce93d844; }
-.resource-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; color: var(--text); }
-.resource-desc  { font-size: 0.86rem; color: var(--text-mid); line-height: 1.6; }
-.resource-tags  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-.resource-tag   { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-.lab-card  .resource-tag { background: var(--green-pale);  color: var(--green-dark); border: 1px solid var(--green-pale2); }
-.exam-card .resource-tag { background: var(--purple-pale); color: var(--purple);     border: 1px solid #ce93d844; }
-.resource-footer { padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); background: var(--bg-soft); font-size: 0.82rem; font-weight: 700; }
-.lab-card  .resource-footer { color: var(--green-dark); }
-.exam-card .resource-footer { color: var(--purple); }
-.progress-strip { display: flex; gap: 3px; margin-bottom: 28px; align-items: center; height: 8px; }
-.ps-block { height: 100%; border-radius: 2px; flex: 1; }
-footer { background: var(--bg-soft); border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; font-size: 0.76rem; color: var(--text-muted); }
-@media (max-width: 720px) {
-  .hero h2 { font-size: 1.5rem; }
-  .card-grid, .resource-grid { grid-template-columns: 1fr; }
-  .grade-strip-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .header-inner { gap: 8px; }
-  .brand-text h1 { font-size: 0.9rem; }
-}
+  /* ─── Design Tokens ─────────────────────────────────────────── */
+  :root {
+    --green-dark:   #1b5e20;
+    --green-mid:    #2e7d32;
+    --green-bright: #43a047;
+    --green-light:  #e8f5e9;
+    --green-accent: #00a86b;
+    --amber:        #f57f17;
+    --amber-light:  #fff8e1;
+    --blue-chip:    #0d47a1;
+    --chip-bg:      #e3f2fd;
+
+    --bg:           #f4f6f8;
+    --surface:      #ffffff;
+    --text:         #1a1a1a;
+    --text-muted:   #555;
+    --border:       #d0d0d0;
+    --header-bg:    #1b5e20;
+    --header-text:  #ffffff;
+    --card-hover:   #f0faf2;
+    --tag-semi:     #e8f5e9;
+    --tag-semi-txt: #1b5e20;
+    --tag-active:   #e3f2fd;
+    --tag-active-txt:#0d47a1;
+    --tag-logic:    #fff3e0;
+    --tag-logic-txt:#e65100;
+    --tag-digital:  #f3e5f5;
+    --tag-digital-txt:#6a1b9a;
+    --tag-exam:     #fce4ec;
+    --tag-exam-txt: #880e4f;
+    --tag-lab:      #e8eaf6;
+    --tag-lab-txt:  #283593;
+    --tag-tool:     #e0f7fa;
+    --tag-tool-txt: #006064;
+    --shadow:       0 2px 8px rgba(0,0,0,.10);
+    --radius:       10px;
+  }
+
+  body.dark {
+    --bg:          #121212;
+    --surface:     #1e1e1e;
+    --text:        #e8e8e8;
+    --text-muted:  #aaa;
+    --border:      #333;
+    --header-bg:   #0a3d0a;
+    --card-hover:  #1a2e1a;
+    --tag-semi:    #1a3a1a;
+    --tag-semi-txt:#81c784;
+    --tag-active:  #0d2240;
+    --tag-active-txt:#90caf9;
+    --tag-logic:   #2e1a00;
+    --tag-logic-txt:#ffb74d;
+    --tag-digital: #1a0a2e;
+    --tag-digital-txt:#ce93d8;
+    --tag-exam:    #2e0a18;
+    --tag-exam-txt:#f48fb1;
+    --tag-lab:     #0a0d2e;
+    --tag-lab-txt: #9fa8da;
+    --tag-tool:    #002a2e;
+    --tag-tool-txt:#80deea;
+    --amber-light: #1a1200;
+    --chip-bg:     #0d1f40;
+    --shadow:      0 2px 8px rgba(0,0,0,.4);
+  }
+
+  /* ─── Reset & Base ──────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background .25s, color .25s;
+    min-height: 100vh;
+  }
+
+  /* ─── Header ────────────────────────────────────────────────── */
+  header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,.3);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .brand-badge {
+    background: var(--green-accent);
+    color: #fff;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    letter-spacing: .5px;
+    white-space: nowrap;
+  }
+  .header-titles h1 {
+    font-family: Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: .2px;
+    line-height: 1.2;
+  }
+  .header-titles p {
+    font-size: .8rem;
+    opacity: .85;
+    margin-top: 2px;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .5px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  #toggle-btn {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: .8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  #toggle-btn:hover { background: rgba(255,255,255,.25); }
+
+  /* ─── Hero Strip ────────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, var(--green-mid) 0%, #1a3a1a 100%);
+    color: #fff;
+    padding: 36px 20px 30px;
+    text-align: center;
+  }
+  .hero h2 {
+    font-family: Georgia, serif;
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    font-size: .95rem;
+    opacity: .9;
+    max-width: 660px;
+    margin: 0 auto 18px;
+    line-height: 1.6;
+  }
+  .hero-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .hero-chip {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: .78rem;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .4px;
+  }
+
+  /* ─── Domain Bars ───────────────────────────────────────────── */
+  .domain-bar-section {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+  }
+  .domain-bar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .domain-bar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+  }
+  .domain-bar-item { display: flex; flex-direction: column; gap: 4px; }
+  .domain-bar-label {
+    font-size: .75rem;
+    font-weight: 600;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+  .domain-bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .domain-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .8s ease;
+  }
+  .fill-semi    { background: var(--green-bright); }
+  .fill-active  { background: #1976d2; }
+  .fill-logic   { background: #e65100; }
+  .fill-digital { background: #7b1fa2; }
+
+  /* ─── Main Container ────────────────────────────────────────── */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 48px;
+  }
+
+  /* ─── Section Headers ───────────────────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--green-bright);
+  }
+  .section-header h2 {
+    font-family: Georgia, serif;
+    font-size: 1.25rem;
+    color: var(--green-dark);
+  }
+  body.dark .section-header h2 { color: var(--green-bright); }
+  .section-header .sec-icon { font-size: 1.3rem; }
+  .section-sub {
+    font-size: .82rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* ─── Lesson Grid ───────────────────────────────────────────── */
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 14px;
+  }
+  .lesson-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: box-shadow .2s, transform .15s, background .15s;
+    box-shadow: var(--shadow);
+    position: relative;
+    border-left: 4px solid var(--green-bright);
+  }
+  .lesson-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    transform: translateY(-2px);
+    background: var(--card-hover);
+  }
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .day-badge {
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .topic-tag {
+    font-size: .68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: .4px;
+    white-space: nowrap;
+  }
+  .tag-semi    { background: var(--tag-semi);    color: var(--tag-semi-txt); }
+  .tag-active  { background: var(--tag-active);  color: var(--tag-active-txt); }
+  .tag-logic   { background: var(--tag-logic);   color: var(--tag-logic-txt); }
+  .tag-digital { background: var(--tag-digital); color: var(--tag-digital-txt); }
+  .tag-exam    { background: var(--tag-exam);    color: var(--tag-exam-txt); }
+  .tag-lab     { background: var(--tag-lab);     color: var(--tag-lab-txt); }
+  .tag-tool    { background: var(--tag-tool);    color: var(--tag-tool-txt); }
+
+  .card-title {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--green-dark);
+  }
+  body.dark .card-title { color: var(--green-bright); }
+  .card-subtitle {
+    font-size: .82rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .card-desc {
+    font-size: .84rem;
+    color: var(--text);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .card-keywords {
+    font-size: .76rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 7px;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .card-keywords strong { color: var(--green-mid); }
+  body.dark .card-keywords strong { color: var(--green-bright); }
+  .card-arrow {
+    font-size: .8rem;
+    color: var(--green-accent);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* ─── Resource Grid (2-col) ─────────────────────────────────── */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text);
+    transition: box-shadow .2s, transform .15s, background .15s;
+    box-shadow: var(--shadow);
+  }
+  .resource-card:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    transform: translateY(-2px);
+    background: var(--card-hover);
+  }
+  .resource-card .rc-type {
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--text-muted);
+  }
+  .resource-card .rc-icon-title {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .resource-card .rc-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .resource-card .rc-title {
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    line-height: 1.3;
+  }
+  body.dark .resource-card .rc-title { color: var(--green-bright); }
+  .resource-card .rc-desc { font-size: .83rem; color: var(--text); line-height: 1.5; }
+  .resource-card .rc-covers {
+    font-size: .76rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 7px;
+  }
+  .resource-card .rc-covers strong { color: var(--green-mid); }
+  body.dark .resource-card .rc-covers strong { color: var(--green-bright); }
+  .resource-card .rc-arrow {
+    font-size: .8rem;
+    color: var(--green-accent);
+    font-weight: 700;
+    text-align: right;
+  }
+
+  /* ─── CLO Section ───────────────────────────────────────────── */
+  .clo-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .clo-box h3 {
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    color: var(--green-dark);
+    margin-bottom: 14px;
+  }
+  body.dark .clo-box h3 { color: var(--green-bright); }
+  .clo-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .clo-list li {
+    display: flex;
+    gap: 12px;
+    font-size: .86rem;
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+  .clo-num {
+    background: var(--green-mid);
+    color: #fff;
+    font-weight: 700;
+    font-size: .72rem;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+  }
+
+  /* ─── Notice Banner ─────────────────────────────────────────── */
+  .notice-banner {
+    background: var(--amber-light);
+    border: 1px solid #ffe082;
+    border-left: 4px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: .85rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 24px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .notice-banner .nb-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── Footer ────────────────────────────────────────────────── */
+  footer {
+    background: var(--header-bg);
+    color: rgba(255,255,255,.8);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: .78rem;
+    line-height: 1.7;
+    letter-spacing: .3px;
+  }
+  footer span { color: var(--green-accent); font-weight: 600; }
+
+  /* ─── Responsive ────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .header-titles h1 { font-size: 1.1rem; }
+    .hero h2 { font-size: 1.3rem; }
+    .lesson-grid, .resource-grid { grid-template-columns: 1fr; }
+    .domain-bar-grid { grid-template-columns: 1fr 1fr; }
+  }
 </style>
 </head>
 <body>
 
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
 <header>
   <div class="header-inner">
     <div class="header-brand">
-      <div class="brand-chip">ELT<br>102</div>
-      <div class="brand-text">
+      <div class="brand-badge">ELT 102</div>
+      <div class="header-titles">
         <h1>Digital Logic &amp; Solid State Devices</h1>
-        <p>ELT 102 &mdash; Section 351 &mdash; Moraine Valley Community College</p>
+        <p>ELT 102-350 · Hybrid · MVCC Dept. of Engineering &amp; Technology</p>
       </div>
     </div>
-    <div class="header-controls">
-      <span class="course-badge">14-Day Intensive</span>
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+    <div class="header-right">
+      <button id="toggle-btn" onclick="toggleTheme()">🌙 Dark</button>
     </div>
   </div>
 </header>
 
+<!-- ═══════════════════════════ HERO ═════════════════════════════ -->
 <div class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">ELT 102 &mdash; 3 Credit / 4 Contact Hours</div>
-    <h2>Digital Logic &amp; Solid State Devices</h2>
-    <p class="hero-sub">A 14-day intensive journey from semiconductor fundamentals through digital logic systems — combining lecture, hands-on lab work, and practical application for careers in electronics and technology.</p>
-    <div class="hero-tags">
-      <span class="hero-tag">📐 2 hrs Lecture / 2 hrs Lab per session</span>
-      <span class="hero-tag">⚗️ 10 Lab Exercises</span>
-      <span class="hero-tag">📝 6 Module Exams + Final</span>
-      <span class="hero-tag">🏫 MVCC Dept. of Engineering &amp; Technology</span>
-    </div>
-    <div class="phase-pills">
-      <div class="phase-pill analog">🔌 Days 1–7: Solid State Devices &amp; Analog Circuits</div>
-      <div class="phase-pill digital">💡 Days 8–14: Digital Logic &amp; Integrated Circuits</div>
+  <h2>ELT 102-350 — Digital Logic &amp; Solid State Devices</h2>
+  <p>An 8-day intensive journey from semiconductor fundamentals through digital logic systems — combining lecture, hands-on lab work, and practical application for careers in electronics and technology.</p>
+  <div class="hero-chips">
+    <span class="hero-chip">🏫 Hybrid Course</span>
+    <span class="hero-chip">⏱️ 4 hrs In-Person / 4 hrs Online Weekly</span>
+    <span class="hero-chip">📖 2 hrs Lecture / 2 hrs Lab per Session</span>
+    <span class="hero-chip">🔬 10 Lab Exercises</span>
+    <span class="hero-chip">📝 4 Module Exams + Final</span>
+    <span class="hero-chip">🏛️ MVCC Engineering &amp; Technology</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ DOMAIN BARS ═══════════════════════ -->
+<div class="domain-bar-section">
+  <div class="domain-bar-inner">
+    <div class="domain-bar-grid">
+      <div class="domain-bar-item">
+        <div class="domain-bar-label"><span>Semiconductor Fundamentals</span><span>Lessons 1–2</span></div>
+        <div class="domain-bar-track"><div class="domain-bar-fill fill-semi" style="width:100%"></div></div>
+      </div>
+      <div class="domain-bar-item">
+        <div class="domain-bar-label"><span>Active Devices &amp; Amplifiers</span><span>Lessons 3–4</span></div>
+        <div class="domain-bar-track"><div class="domain-bar-fill fill-active" style="width:100%"></div></div>
+      </div>
+      <div class="domain-bar-item">
+        <div class="domain-bar-label"><span>Logic Fundamentals</span><span>Lessons 5–6</span></div>
+        <div class="domain-bar-track"><div class="domain-bar-fill fill-logic" style="width:100%"></div></div>
+      </div>
+      <div class="domain-bar-item">
+        <div class="domain-bar-label"><span>Digital Systems</span><span>Lessons 7–8</span></div>
+        <div class="domain-bar-track"><div class="domain-bar-fill fill-digital" style="width:100%"></div></div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="grade-strip">
-  <div class="grade-strip-inner">
-    <span class="grade-label">Grade Breakdown:</span>
-    <div class="grade-item"><span class="grade-dot" style="background:#4caf50;"></span><span><strong>Participation</strong> — 10%</span></div>
-    <div class="grade-item"><span class="grade-dot" style="background:#e65100;"></span><span><strong>Weekly Exams</strong> (×6) — 30%</span></div>
-    <div class="grade-item"><span class="grade-dot" style="background:#1565c0;"></span><span><strong>Lab Activities</strong> (×10) — 40%</span></div>
-    <div class="grade-item"><span class="grade-dot" style="background:#6a1b9a;"></span><span><strong>Final Exam</strong> — 20%</span></div>
-  </div>
-</div>
+<!-- ═══════════════════════════ MAIN ═════════════════════════════ -->
+<main>
 
-<main class="page-body">
-
-  <div class="progress-strip">
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--amber);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
-    <div class="ps-block" style="background:var(--blue);"></div>
+  <!-- Notice Banner -->
+  <div class="notice-banner">
+    <span class="nb-icon">📌</span>
+    <div>Select a lesson below to begin. Each lesson covers one day of instruction across both analog solid-state devices and digital logic systems. Lab files, simulators, and exam resources are accessible from the sections below.</div>
   </div>
 
-  <!-- PHASE 1 -->
-  <div class="section-header analog-section">
-    <h3>Phase 1 &mdash; Solid State Devices &amp; Analog Circuits</h3>
-    <span class="phase-label-pill analog-pill">Days 1–7</span>
+  <!-- ── LESSONS ─────────────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="sec-icon">📚</span>
+    <h2>Course Lessons — 8 Days</h2>
+  </div>
+  <p class="section-sub">Each lesson includes lecture content, interactive activities, embedded simulators, and links to the matching lab exercise.</p>
+
+  <div class="lesson-grid">
+
+    <!-- Lesson 1 -->
+    <a href="lesson01.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 1</span>
+        <span class="topic-tag tag-semi">Semiconductors</span>
+      </div>
+      <div class="card-title">Semiconductor Fundamentals &amp; Diodes</div>
+      <div class="card-desc">Atomic structure of semiconductor materials, P-N junction behavior, forward and reverse bias, and diode characteristic curves. Learn how diodes act as a switch, rectifier, and voltage regulator.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> P-N Junction, Doping, Forward Bias, Reverse Bias, Characteristic Curve</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 2 -->
+    <a href="lesson02.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 2</span>
+        <span class="topic-tag tag-semi">Semiconductors</span>
+      </div>
+      <div class="card-title">Diode Applications, Power Supply Circuits &amp; Optoelectronics</div>
+      <div class="card-subtitle">Rectifiers · Filters · Voltage Regulators · LEDs · Optocouplers</div>
+      <div class="card-desc">Half-wave and full-wave rectifier circuits, capacitive filter networks, ripple voltage, and oscilloscope measurement of AC/DC conversion. Includes voltage regulators, LEDs, photodiodes, optocouplers, and optical isolation circuit design.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> Rectifier, Ripple Voltage, Zener Diode, LED, Optocoupler, Optical Isolation</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 3 -->
+    <a href="lesson03.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 3</span>
+        <span class="topic-tag tag-active">Active Devices</span>
+      </div>
+      <div class="card-title">BJTs, FETs, MOSFETs, SCR &amp; TRIAC</div>
+      <div class="card-subtitle">Transistors · Thyristors · High-Power Switching</div>
+      <div class="card-desc">NPN and PNP transistor operation, three BJT configurations (Common Emitter, Base, Collector), and DC load line analysis for bias calculation. Also covers JFETs vs. MOSFETs, SCR and TRIAC triggering, and high-power switching applications.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> BJT, MOSFET, JFET, SCR, TRIAC, DC Load Line, Thyristor, Biasing</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 4 -->
+    <a href="lesson04.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 4</span>
+        <span class="topic-tag tag-active">Active Devices</span>
+      </div>
+      <div class="card-title">Transistor Amplifiers &amp; Op-Amps</div>
+      <div class="card-subtitle">Small-Signal AC · Voltage Gain · Operational Amplifiers</div>
+      <div class="card-desc">Small-signal AC amplifiers, voltage gain and impedance analysis for common-emitter circuits, and introduction to op-amp inverting and non-inverting configurations. Covers gain equations, virtual ground, and feedback fundamentals.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> Voltage Gain, Impedance, Common-Emitter, Op-Amp, Inverting, Non-Inverting, Feedback</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 5 -->
+    <a href="lesson05.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 5</span>
+        <span class="topic-tag tag-logic">Logic Fundamentals</span>
+      </div>
+      <div class="card-title">Number Systems, Logic Gates &amp; Boolean Algebra</div>
+      <div class="card-subtitle">Binary · Hex · Octal · AND · OR · NOT · NAND · NOR</div>
+      <div class="card-desc">Binary, octal, decimal, and hexadecimal conversions, arithmetic in base-N, signed binary (2's complement), and fundamental Boolean algebra laws. Introduction to AND, OR, NOT, NAND, NOR logic gates and truth table analysis.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> Binary, Hexadecimal, 2's Complement, Boolean Algebra, Truth Table, Logic Gate</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 6 -->
+    <a href="lesson06.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 6</span>
+        <span class="topic-tag tag-logic">Logic Fundamentals</span>
+      </div>
+      <div class="card-title">Advanced Logic, Combinational Circuits &amp; Flip-Flops</div>
+      <div class="card-subtitle">XOR · XNOR · Karnaugh Maps · Latches · Flip-Flops</div>
+      <div class="card-desc">XOR and XNOR gate functionality, combinational circuit design from truth tables, Karnaugh Map minimization, and multi-gate fault isolation techniques. Introduction to SR, D, and JK latches and flip-flops as fundamental sequential elements.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> XOR, XNOR, Karnaugh Map, Combinational Logic, SR Latch, D Flip-Flop, Sequential Logic</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 7 -->
+    <a href="lesson07.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 7</span>
+        <span class="topic-tag tag-digital">Digital Systems</span>
+      </div>
+      <div class="card-title">Encoders, Decoders, Multiplexers, A/D &amp; D/A Converters</div>
+      <div class="card-subtitle">MUX · DEMUX · ADC · DAC · BCD · 7-Segment</div>
+      <div class="card-desc">Priority encoders, binary decoders, 7-segment display drivers, BCD-to-decimal conversion, multiplexer and demultiplexer operation, and the fundamentals of analog-to-digital and digital-to-analog conversion including resolution and sampling.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> Encoder, Decoder, MUX, DEMUX, ADC, DAC, Resolution, Sampling Rate, BCD</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+    <!-- Lesson 8 -->
+    <a href="lesson08.html" class="lesson-card">
+      <div class="card-top">
+        <span class="day-badge">Day 8</span>
+        <span class="topic-tag tag-digital">Digital Systems</span>
+      </div>
+      <div class="card-title">Counters, Timers &amp; Oscillators</div>
+      <div class="card-subtitle">Ripple Counter · 555 Timer · Astable · Monostable · Crystal OSC</div>
+      <div class="card-desc">Asynchronous and synchronous counter design, modulus counters, up/down counting, the 555 timer in astable and monostable modes, RC time constant calculations, and oscillator circuits including crystal-controlled oscillators used in digital systems.</div>
+      <div class="card-keywords"><strong>Key terms:</strong> Ripple Counter, Synchronous Counter, 555 Timer, Astable, Monostable, Oscillator, RC Time Constant</div>
+      <div class="card-arrow">Launch Lesson →</div>
+    </a>
+
+  </div><!-- /lesson-grid -->
+
+  <!-- ── COURSE LEARNING OUTCOMES ───────────────────────────── -->
+  <div class="section-header">
+    <span class="sec-icon">🎯</span>
+    <h2>Course Learning Outcomes</h2>
+  </div>
+  <p class="section-sub">Upon successful completion of ELT 102-350, students will be able to:</p>
+  <div class="clo-box">
+    <h3>Student Learning Outcomes (SLOs)</h3>
+    <ul class="clo-list">
+      <li>
+        <span class="clo-num">1</span>
+        <span>Explain semiconductor physics including atomic structure, doping, and P-N junction behavior to analyze diode operation in forward and reverse bias conditions.</span>
+      </li>
+      <li>
+        <span class="clo-num">2</span>
+        <span>Design and analyze diode circuits including half-wave and full-wave rectifiers, capacitive filter networks, and voltage regulator stages, and measure waveforms using an oscilloscope.</span>
+      </li>
+      <li>
+        <span class="clo-num">3</span>
+        <span>Describe the operating characteristics of optoelectronic devices (LEDs, photodiodes, optocouplers) and select appropriate devices for optical isolation applications.</span>
+      </li>
+      <li>
+        <span class="clo-num">4</span>
+        <span>Analyze BJT, JFET, MOSFET, SCR, and TRIAC operation in switching and amplification circuits, applying DC load line analysis and biasing calculations.</span>
+      </li>
+      <li>
+        <span class="clo-num">5</span>
+        <span>Design and evaluate small-signal transistor amplifier circuits and operational amplifier configurations, calculating voltage gain, input/output impedance, and bandwidth.</span>
+      </li>
+      <li>
+        <span class="clo-num">6</span>
+        <span>Perform conversions between binary, octal, decimal, and hexadecimal number systems, apply signed binary arithmetic using 2's complement, and solve Boolean algebra expressions.</span>
+      </li>
+      <li>
+        <span class="clo-num">7</span>
+        <span>Design and minimize combinational logic circuits using truth tables, Boolean simplification, and Karnaugh Maps, and implement designs using standard gate ICs.</span>
+      </li>
+      <li>
+        <span class="clo-num">8</span>
+        <span>Analyze sequential logic circuits including SR, D, and JK flip-flops, and apply them to the design of registers, latches, and state machines.</span>
+      </li>
+      <li>
+        <span class="clo-num">9</span>
+        <span>Construct and test encoder, decoder, multiplexer, and A/D–D/A converter circuits, explaining the role of each in data conversion and digital communications systems.</span>
+      </li>
+      <li>
+        <span class="clo-num">10</span>
+        <span>Build and measure asynchronous/synchronous counter circuits and 555-based timer/oscillator circuits, calculating frequency, duty cycle, and RC time constants.</span>
+      </li>
+      <li>
+        <span class="clo-num">11</span>
+        <span>Demonstrate safe lab practices, accurate circuit construction on breadboards, and correct use of multimeters, oscilloscopes, and function generators to troubleshoot electronic circuits.</span>
+      </li>
+    </ul>
   </div>
 
-  <div class="card-grid">
-
-    <!-- Day 1 -->
-    <a class="lesson-card" href="lesson01.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 1</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Semiconductor Fundamentals &amp; Diodes</div>
-        <div class="card-subtitle">Atomic structure of semiconductor materials, P-N junction behavior, forward and reverse bias, and diode characteristic curves.</div>
-        <div class="card-terms">
-          <span class="term-chip">P-N Junction</span>
-          <span class="term-chip">Forward Bias</span>
-          <span class="term-chip">Reverse Bias</span>
-          <span class="term-chip">Depletion Region</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/zener.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⚡ Zener Diode Sim</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/band.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📊 Band Theory</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 1A Part 1 — Diode Biasing</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 2 -->
-    <a class="lesson-card" href="lesson02.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 2</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Diode Applications &amp; Power Supply Circuits</div>
-        <div class="card-subtitle">Half-wave and full-wave rectifier circuits, capacitive filter networks, ripple voltage, and oscilloscope measurement of AC/DC conversion.</div>
-        <div class="card-terms">
-          <span class="term-chip">Rectification</span>
-          <span class="term-chip">Full-Wave Bridge</span>
-          <span class="term-chip">Ripple Voltage</span>
-          <span class="term-chip">Capacitor Filter</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/rectifier.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔁 Rectifier Sim</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/recifiers.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⚙️ Rectifier Types</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/ripple.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">〰️ Ripple Voltage</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 1A Part 2 &amp; Lab 1B — Oscilloscope</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 3 -->
-    <a class="lesson-card" href="lesson03.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 3</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Bipolar Junction Transistors (BJTs)</div>
-        <div class="card-subtitle">NPN and PNP transistor operation, three BJT configurations (Common Emitter, Base, Collector), and DC load line analysis for bias calculation.</div>
-        <div class="card-terms">
-          <span class="term-chip">Transistor</span>
-          <span class="term-chip">Saturation</span>
-          <span class="term-chip">Cutoff</span>
-          <span class="term-chip">Active Region</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/transistor.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔌 BJT Transistor Sim</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;">
-            <span class="exam-flag">📝 Exam 1</span>
-            <span class="lab-pip" style="margin-left:4px;"></span>
-            <span>Lab 2A — BJT Switch</span>
-          </div>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 4 -->
-    <a class="lesson-card" href="lesson04.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 4</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Field Effect Transistors &amp; Thyristors</div>
-        <div class="card-subtitle">JFETs vs. MOSFETs (voltage-controlled devices), SCR and TRIAC triggering and conduction, and high-power switching applications.</div>
-        <div class="card-terms">
-          <span class="term-chip">JFET</span>
-          <span class="term-chip">MOSFET</span>
-          <span class="term-chip">Thyristor</span>
-          <span class="term-chip">SCR</span>
-          <span class="term-chip">TRIAC</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/fets.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⚡ FET Characteristics</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 2A Extended — FET Characteristics</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 5 -->
-    <a class="lesson-card" href="lesson05.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 5</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Transistor Amplifiers &amp; Op-Amps</div>
-        <div class="card-subtitle">Small-signal AC amplifiers, voltage gain and impedance analysis for common-emitter circuits, and introduction to Op-Amp inverting/non-inverting configurations.</div>
-        <div class="card-terms">
-          <span class="term-chip">AC Gain</span>
-          <span class="term-chip">Coupling Capacitor</span>
-          <span class="term-chip">Op-Amp</span>
-          <span class="term-chip">Differential Gain</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/opamp.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📡 Op-Amp Sim</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/invert.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔄 Inverting Amp</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/non-invert.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">➕ Non-Inverting Amp</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/difopamp.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⚖️ Differential Amp</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/follower.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">👣 Voltage Follower</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/compopamp.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔃 Comparator</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 2B Part 1 — Amplifiers &amp; Regulators</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 6 -->
-    <a class="lesson-card" href="lesson06.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 6</span>
-          <span class="card-type-badge badge-analog">Analog</span>
-        </div>
-        <div class="card-title">Voltage Regulators &amp; Optoelectronics</div>
-        <div class="card-subtitle">Linear voltage regulators under load, 78XX series IC regulators, LEDs, photodiodes, optocouplers, and optical isolation circuit design.</div>
-        <div class="card-terms">
-          <span class="term-chip">Voltage Regulation</span>
-          <span class="term-chip">Zener Diode</span>
-          <span class="term-chip">Optocoupler</span>
-          <span class="term-chip">LED</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/zener.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⚡ Zener Regulator</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/closedloop.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔁 Closed-Loop Control</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/integrator.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">∫ Integrator Circuit</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/opamp-int.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📈 Op-Amp Integrator</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 2B Part 2 — Regulated Power Supply</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 7 -->
-    <a class="lesson-card" href="lesson07.html">
-      <div class="card-accent analog"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 7</span>
-          <span class="card-type-badge badge-analog">Midpoint</span>
-        </div>
-        <div class="card-title">Midterm Review &amp; Transition to Digital</div>
-        <div class="card-subtitle">Synthesize analog/solid-state concepts, analyze integration of components into digital architectures, and bridge transistor switching to logic gate operation.</div>
-        <div class="card-terms">
-          <span class="term-chip">Hybrid Circuits</span>
-          <span class="term-chip">Interfacing</span>
-          <span class="term-chip">Solid-State Integration</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/activities.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📋 Review Activities</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/pid.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🎛️ PID Control</a>
-          <a class="sim-link analog-sim" href="https://sands-mvcc.github.io/elt/proportional.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📐 Proportional Control</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="exam-flag">📝 Exam 2</span>
-          <span style="margin-left:8px;">Hardware Troubleshooting Lab</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-  </div><!-- end analog card-grid -->
-
-  <!-- PHASE 2 -->
-  <div class="section-header digital-section">
-    <h3>Phase 2 &mdash; Digital Logic &amp; Integrated Circuits</h3>
-    <span class="phase-label-pill digital-pill">Days 8–14</span>
+  <!-- ── EXAM RESOURCES ─────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="sec-icon">🎓</span>
+    <h2>Exam Resources</h2>
   </div>
-
-  <div class="card-grid">
-
-    <!-- Day 8 -->
-    <a class="lesson-card" href="lesson08.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 8</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Number Systems &amp; Boolean Algebra</div>
-        <div class="card-subtitle">Binary, octal, decimal, and hexadecimal conversions, arithmetic in base-N, signed binary (2's complement), and fundamental Boolean algebra laws.</div>
-        <div class="card-terms">
-          <span class="term-chip">Binary</span>
-          <span class="term-chip">Radix</span>
-          <span class="term-chip">Hexadecimal</span>
-          <span class="term-chip">2's Complement</span>
-          <span class="term-chip">Boolean Expression</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/binary.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔢 Binary Converter</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/binaryop.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">➕ Binary Operations</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 3A &amp; 3B — Binary, Octal &amp; Hex Computation</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 9 -->
-    <a class="lesson-card" href="lesson09.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 9</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Fundamental Logic Gates</div>
-        <div class="card-subtitle">Truth tables and schematic symbols for AND, NAND, OR, NOR gates; universal gate demonstration; 7400-series TTL/CMOS IC datasheet analysis and verification.</div>
-        <div class="card-terms">
-          <span class="term-chip">Truth Table</span>
-          <span class="term-chip">Universal Gate</span>
-          <span class="term-chip">NAND</span>
-          <span class="term-chip">NOR</span>
-          <span class="term-chip">Propagation Delay</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/gates.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔁 Logic Gate Sim</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;">
-            <span class="exam-flag">📝 Exam 3</span>
-            <span class="lab-pip" style="margin-left:4px;"></span>
-            <span>Lab 4A &amp; 4B — AND/NAND, OR/NOR ICs</span>
-          </div>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 10 -->
-    <a class="lesson-card" href="lesson10.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 10</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Advanced Logic &amp; Combinational Circuits</div>
-        <div class="card-subtitle">XOR and XNOR gate functionality, combinational circuit design from truth tables, Karnaugh Map minimization, and multi-gate fault isolation techniques.</div>
-        <div class="card-terms">
-          <span class="term-chip">XOR</span>
-          <span class="term-chip">XNOR</span>
-          <span class="term-chip">Combinational Logic</span>
-          <span class="term-chip">Parity Generator</span>
-          <span class="term-chip">K-Map</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/gates.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔁 Logic Gate Sim</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="lab-pip"></span>
-          <span>Lab 4C — XOR &amp; XNOR Gates</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 11 -->
-    <a class="lesson-card" href="lesson11.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 11</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Latches &amp; Flip-Flops</div>
-        <div class="card-subtitle">Async latches vs. synchronous flip-flops, timing diagrams and state transitions for RS, D-type, and JK flip-flops, clock setup/hold times, and race condition resolution.</div>
-        <div class="card-terms">
-          <span class="term-chip">Clock Signal</span>
-          <span class="term-chip">Edge-Triggered</span>
-          <span class="term-chip">RS Latch</span>
-          <span class="term-chip">D Flip-Flop</span>
-          <span class="term-chip">JK Flip-Flop</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/flip.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔀 Flip-Flop Sim</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;">
-            <span class="exam-flag">📝 Exam 4</span>
-            <span class="lab-pip" style="margin-left:4px;"></span>
-            <span>Lab 5A, 5B, 5C — RS/D/JK Flip-Flops</span>
-          </div>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 12 -->
-    <a class="lesson-card" href="lesson12.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 12</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Counters, Timers &amp; Oscillators</div>
-        <div class="card-subtitle">Asynchronous (ripple) vs. synchronous Up/Down counters, 555 Timer IC in astable and monostable modes, frequency and duty cycle calculations.</div>
-        <div class="card-terms">
-          <span class="term-chip">Synchronous Counter</span>
-          <span class="term-chip">Modulus</span>
-          <span class="term-chip">555 Timer</span>
-          <span class="term-chip">Astable</span>
-          <span class="term-chip">Duty Cycle</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/counters.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔢 Counter Sim</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/updown.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">⬆️⬇️ Up/Down Counter</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/johnson.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔄 Johnson Counter</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/ripple.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">〰️ Ripple Counter</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;">
-            <span class="exam-flag">📝 Exam 5</span>
-            <span class="lab-pip" style="margin-left:4px;"></span>
-            <span>Lab 6A &amp; 6B — Counters &amp; 555 Timers</span>
-          </div>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 13 -->
-    <a class="lesson-card" href="lesson13.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 13</span>
-          <span class="card-type-badge badge-digital">Digital</span>
-        </div>
-        <div class="card-title">Data Conversion: Encoders, Decoders, MUX &amp; A/D–D/A</div>
-        <div class="card-subtitle">Multiplexers, demultiplexers, encoders/decoders, BCD-to-7-segment display interfacing, successive approximation ADC, and R-2R ladder DAC principles.</div>
-        <div class="card-terms">
-          <span class="term-chip">MUX</span>
-          <span class="term-chip">Encoder/Decoder</span>
-          <span class="term-chip">BCD</span>
-          <span class="term-chip">Seven-Segment</span>
-          <span class="term-chip">ADC</span>
-          <span class="term-chip">DAC</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/a-to-d.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📥 ADC Sim</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/dtoa.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📤 DAC Sim</a>
-          <a class="sim-link digital-sim" href="https://sands-mvcc.github.io/elt/washer.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">🖥️ 7-Seg Display</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <div style="display:flex;align-items:center;gap:6px;flex:1;">
-            <span class="exam-flag">📝 Exam 6</span>
-            <span class="lab-pip" style="margin-left:4px;"></span>
-            <span>Lab 7A, 7B, 7C — BCD, 7-Seg, ADC/DAC</span>
-          </div>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <!-- Day 14 -->
-    <a class="lesson-card" href="lesson14.html">
-      <div class="card-accent digital"></div>
-      <div class="card-body">
-        <div class="card-meta">
-          <span class="card-day">Day 14</span>
-          <span class="card-type-badge badge-digital">Final</span>
-        </div>
-        <div class="card-title">Course Review &amp; Final Examination</div>
-        <div class="card-subtitle">Comprehensive integration review of solid-state components, analog infrastructure, and digital processing workflows — device behaviors, troubleshooting, and digital/analog interfaces.</div>
-        <div class="card-terms">
-          <span class="term-chip">Solid-State Electronics</span>
-          <span class="term-chip">Digital Systems</span>
-          <span class="term-chip">System Integration</span>
-        </div>
-        <div class="sim-links">
-          <a class="sim-link green-sim" href="https://sands-mvcc.github.io/elt/activities.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📋 All Activities</a>
-          <a class="sim-link green-sim" href="https://sands-mvcc.github.io/elt/syllabus.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 Syllabus</a>
-        </div>
-      </div>
-      <div class="card-footer">
-        <div class="card-footer-labs">
-          <span class="exam-flag">📝 Final Exam — Comprehensive (Online, Open-Notes)</span>
-        </div>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-  </div><!-- end digital card-grid -->
-
-  <!-- RESOURCE CARDS -->
-  <div class="section-header resource-section">
-    <h3>Course Resources</h3>
-  </div>
+  <p class="section-sub">Module exams cover cumulative content from the corresponding lesson pair. Use the practice tools below to prepare for each assessment.</p>
 
   <div class="resource-grid">
-    <a class="resource-card lab-card" href="labs.html">
-      <div class="resource-body">
-        <div class="resource-icon">🔬</div>
-        <div class="resource-title">Lab Exercise Hub</div>
-        <div class="resource-desc">Access all 10 structured lab activities organized by module — from basic diode biasing to A/D conversion and 7-segment display design. Each lab includes pre-lab preparation, circuit schematics, measurement procedures, and post-lab analysis questions.</div>
-        <div class="resource-tags">
-          <span class="resource-tag">Lab 1A — Diodes &amp; Power Supplies</span>
-          <span class="resource-tag">Lab 1B — Oscilloscope Use</span>
-          <span class="resource-tag">Lab 2A — BJT &amp; FET Switching</span>
-          <span class="resource-tag">Lab 2B — Amplifiers &amp; Regulators</span>
-          <span class="resource-tag">Labs 3–7 — Digital Logic Series</span>
-        </div>
+
+    <a href="exam-info.html" class="resource-card">
+      <div class="rc-type">Reference</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">📋</span>
+        <div class="rc-title">ELT 102 Exam Information</div>
       </div>
-      <div class="resource-footer">Open Lab Hub →</div>
+      <div class="rc-desc">Overview of the four module exams and final examination — including format, topic coverage, approved reference materials, and grading policy.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Exam Dates · Format · Topic Weights · Grading Policy · Formula Sheet</div>
+      <div class="rc-arrow">→</div>
     </a>
-    <a class="resource-card exam-card" href="practice-exam.html">
-      <div class="resource-body">
-        <div class="resource-icon">📋</div>
-        <div class="resource-title">Practice Exam &amp; Review</div>
-        <div class="resource-desc">Prepare for all 6 module exams and the comprehensive final with scenario-based practice questions covering semiconductors, transistors, amplifiers, number systems, Boolean algebra, logic gates, flip-flops, counters, and data conversion circuits.</div>
-        <div class="resource-tags">
-          <span class="resource-tag">Exam 1 — Semiconductors &amp; Power Supplies</span>
-          <span class="resource-tag">Exam 2 — Transistors &amp; Amplifiers</span>
-          <span class="resource-tag">Exam 3 — Number Systems</span>
-          <span class="resource-tag">Exam 4 — Logic Gates</span>
-          <span class="resource-tag">Exam 5 — Latches &amp; Flip-Flops</span>
-          <span class="resource-tag">Exam 6 — Counters &amp; Timers</span>
-          <span class="resource-tag">Final Exam — Comprehensive Review</span>
-        </div>
+
+    <a href="practice-exam.html" class="resource-card">
+      <div class="rc-type">Assessment</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🧪</span>
+        <div class="rc-title">Practice Exam — Module 1</div>
       </div>
-      <div class="resource-footer">Open Practice Exams →</div>
+      <div class="rc-desc">Timed, scenario-based practice questions covering Semiconductor Fundamentals, Diodes, Rectifiers, and Power Supply Circuits. Includes instant feedback and review mode.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Lessons 1–2 · Timed · Scored · Answer Review</div>
+      <div class="rc-arrow">→</div>
     </a>
+
+    <a href="practice-exam2.html" class="resource-card">
+      <div class="rc-type">Assessment</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🧪</span>
+        <div class="rc-title">Practice Exam — Module 2</div>
+      </div>
+      <div class="rc-desc">Practice questions covering BJTs, FETs, Thyristors, Transistor Amplifiers, and Op-Amp configurations with circuit-analysis scenarios.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Lessons 3–4 · Timed · Scored · Answer Review</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="practice-exam3.html" class="resource-card">
+      <div class="rc-type">Assessment</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🧪</span>
+        <div class="rc-title">Practice Exam — Module 3</div>
+      </div>
+      <div class="rc-desc">Practice questions covering Number Systems, Boolean Algebra, Logic Gates, Karnaugh Maps, Combinational Circuits, and Flip-Flops.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Lessons 5–6 · Timed · Scored · Answer Review</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="practice-exam4.html" class="resource-card">
+      <div class="rc-type">Assessment</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🧪</span>
+        <div class="rc-title">Practice Exam — Module 4</div>
+      </div>
+      <div class="rc-desc">Practice questions covering Encoders, Decoders, MUX, A/D–D/A Converters, Counters, Timers, and Oscillator circuits.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Lessons 7–8 · Timed · Scored · Answer Review</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="final-review.html" class="resource-card">
+      <div class="rc-type">Cumulative Review</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🏆</span>
+        <div class="rc-title">Final Exam Review</div>
+      </div>
+      <div class="rc-desc">Comprehensive review spanning all eight lessons. Includes formula reference, key concept summaries, circuit identification exercises, and a full cumulative practice assessment.</div>
+      <div class="rc-covers"><strong>Covers:</strong> All Lessons · Formula Sheet · Circuit ID · Cumulative Quiz</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- ── LAB ACTIVITIES ─────────────────────────────────────── -->
+  <div class="section-header">
+    <span class="sec-icon">🔬</span>
+    <h2>Lab Activities</h2>
+  </div>
+  <p class="section-sub">10 hands-on lab exercises covering circuit construction, measurement, and analysis. Each lab is linked to its corresponding lesson and requires use of the Electronics Lab Kit.</p>
+
+  <div class="resource-grid">
+
+    <a href="labs.html" class="resource-card">
+      <div class="rc-type">Hands-On Lab Activity</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🖥️</span>
+        <div class="rc-title">Lab Exercise Hub — All 10 Labs</div>
+      </div>
+      <div class="rc-desc">Access all 10 lab exercises from a single launch page. Each lab includes a pre-lab reading, circuit diagram, step-by-step procedure, data table, and post-lab questions.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Labs 1–10 · Breadboard Builds · Oscilloscope Use · Data Tables · Post-Lab Questions</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab01.html" class="resource-card">
+      <div class="rc-type">Lab 1 · Semiconductor Devices</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">⚡</span>
+        <div class="rc-title">Diode Characteristic Curves</div>
+      </div>
+      <div class="rc-desc">Plot forward and reverse bias characteristic curves for Si and Ge diodes. Measure threshold voltage, dynamic resistance, and observe breakdown behavior using the DC power supply and DMM.</div>
+      <div class="rc-covers"><strong>Skills:</strong> DMM · Power Supply · Curve Tracing · Forward/Reverse Bias</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab02.html" class="resource-card">
+      <div class="rc-type">Lab 2 · Rectifier Circuits</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🔌</span>
+        <div class="rc-title">Rectifier &amp; Power Supply Analysis</div>
+      </div>
+      <div class="rc-desc">Build and compare half-wave and full-wave bridge rectifier circuits. Add capacitive filter stages and measure ripple voltage with the oscilloscope. Verify zener regulation performance.</div>
+      <div class="rc-covers"><strong>Skills:</strong> Oscilloscope · Bridge Rectifier · Filter · Ripple · Zener</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab03.html" class="resource-card">
+      <div class="rc-type">Lab 3 · BJT Transistors</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🔋</span>
+        <div class="rc-title">BJT Biasing &amp; DC Load Line</div>
+      </div>
+      <div class="rc-desc">Bias an NPN transistor in the common-emitter configuration. Plot the DC load line on the collector characteristics, identify the Q-point, and verify saturation vs. cutoff switching behavior.</div>
+      <div class="rc-covers"><strong>Skills:</strong> BJT Biasing · Load Line · Q-Point · CE Configuration · Switching</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab04.html" class="resource-card">
+      <div class="rc-type">Lab 4 · Amplifiers &amp; Op-Amps</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">📡</span>
+        <div class="rc-title">Common-Emitter Amplifier &amp; Op-Amp Configurations</div>
+      </div>
+      <div class="rc-desc">Measure voltage gain, input/output impedance, and phase inversion for a CE amplifier. Then configure an LM741 op-amp as both inverting and non-inverting amplifiers and verify gain equations.</div>
+      <div class="rc-covers"><strong>Skills:</strong> Gain Measurement · Impedance · CE Amp · Op-Amp · Inverting/Non-Inverting</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab05.html" class="resource-card">
+      <div class="rc-type">Lab 5 · Logic Gates</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🔢</span>
+        <div class="rc-title">Logic Gate Truth Table Verification</div>
+      </div>
+      <div class="rc-desc">Wire AND, OR, NOT, NAND, NOR, XOR, and XNOR gates using 7400-series ICs. Complete full truth tables using LED output indicators and verify Boolean identities with multi-gate combinations.</div>
+      <div class="rc-covers"><strong>Skills:</strong> 7400 ICs · Truth Tables · Logic Probe · Boolean Verification</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab06.html" class="resource-card">
+      <div class="rc-type">Lab 6 · Combinational Logic</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🗺️</span>
+        <div class="rc-title">Karnaugh Map Minimization &amp; Circuit Implementation</div>
+      </div>
+      <div class="rc-desc">Derive a minimized Boolean expression from a truth table using K-Map groupings. Implement the circuit on a breadboard using NAND-only logic and verify correct output with all input combinations.</div>
+      <div class="rc-covers"><strong>Skills:</strong> K-Map · NAND Logic · Circuit Implementation · Fault Isolation</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab07.html" class="resource-card">
+      <div class="rc-type">Lab 7 · Sequential Logic</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🔄</span>
+        <div class="rc-title">Flip-Flop Operation &amp; Register Design</div>
+      </div>
+      <div class="rc-desc">Construct and test SR, D, and JK flip-flop circuits using 74xx ICs. Demonstrate clocked operation, set/reset, and toggle modes. Chain flip-flops to build a 4-bit shift register.</div>
+      <div class="rc-covers"><strong>Skills:</strong> D Flip-Flop · JK Flip-Flop · Clock Signal · Shift Register</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab08.html" class="resource-card">
+      <div class="rc-type">Lab 8 · Encoders &amp; Decoders</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🖵</span>
+        <div class="rc-title">7-Segment Display Decoder &amp; Priority Encoder</div>
+      </div>
+      <div class="rc-desc">Wire a BCD-to-7-segment decoder IC to drive a common-cathode display. Design and test a priority encoder that translates switch inputs to a 3-bit binary output code.</div>
+      <div class="rc-covers"><strong>Skills:</strong> BCD Decoder · 7-Segment Display · Priority Encoder · IC Wiring</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab09.html" class="resource-card">
+      <div class="rc-type">Lab 9 · Counters</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🔁</span>
+        <div class="rc-title">Binary &amp; Decade Counter Circuits</div>
+      </div>
+      <div class="rc-desc">Build a 4-bit ripple counter using JK flip-flops and a synchronous decade counter using a 74160 IC. Observe waveforms with the oscilloscope and calculate count frequency vs. clock input.</div>
+      <div class="rc-covers"><strong>Skills:</strong> Ripple Counter · Synchronous Counter · 74160 · Frequency · Waveform Analysis</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="lab10.html" class="resource-card">
+      <div class="rc-type">Lab 10 · Timers &amp; Oscillators</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">⏲️</span>
+        <div class="rc-title">555 Timer — Astable &amp; Monostable Modes</div>
+      </div>
+      <div class="rc-desc">Configure a 555 timer in astable mode to generate a square wave; calculate and verify frequency and duty cycle from RC values. Switch to monostable mode and measure pulse width as a function of RC time constant.</div>
+      <div class="rc-covers"><strong>Skills:</strong> 555 Timer · Astable · Monostable · Duty Cycle · RC Time Constant · Oscilloscope</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+  </div>
+
+  <!-- ── CONTENT DEVELOPMENT TOOLS ─────────────────────────── -->
+  <div class="section-header">
+    <span class="sec-icon">🛠️</span>
+    <h2>Content Development Tools</h2>
+  </div>
+  <p class="section-sub">AI-assisted instructional design tools for generating lesson content, graphics, and assessment materials aligned to ELT 102 objectives.</p>
+
+  <div class="resource-grid">
+
+    <a href="gen-graphics.html" class="resource-card">
+      <div class="rc-type">Tool · Dev Tools</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">🎨</span>
+        <div class="rc-title">Graphics Generation</div>
+      </div>
+      <div class="rc-desc">Generate custom instructional graphics, schematic diagrams, waveform illustrations, and visual assets to support ELT 102 lesson content and lab procedures.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Schematics · Waveforms · Block Diagrams · Concept Visuals · Timing Diagrams</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
+    <a href="gen-content.html" class="resource-card">
+      <div class="rc-type">Tool · Dev Tools</div>
+      <div class="rc-icon-title">
+        <span class="rc-icon">✍️</span>
+        <div class="rc-title">Content Generation</div>
+      </div>
+      <div class="rc-desc">Generate lesson text, quiz questions, lab procedures, and study materials aligned to ELT 102 course objectives. Accelerate course development with AI-assisted instructional content.</div>
+      <div class="rc-covers"><strong>Covers:</strong> Lesson Text · Quiz Items · Lab Procedures · Study Guides · Glossary Terms</div>
+      <div class="rc-arrow">→</div>
+    </a>
+
   </div>
 
 </main>
 
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
 <footer>
-  ELT 102 Digital Logic &amp; Solid State Devices &nbsp;|&nbsp; Section 351 &nbsp;|&nbsp; Moraine Valley Community College &nbsp;|&nbsp; Department of Engineering &amp; Technology
+  <span>ELT 102-350</span> — Digital Logic &amp; Solid State Devices | 8-Day Hybrid Course<br>
+  Moraine Valley Community College · <span>Department of Engineering &amp; Technology</span><br>
+  2 hrs Lecture / 2 hrs Lab · 10 Lab Exercises · 4 Module Exams + Final
 </footer>
 
+<!-- ═══════════════════════════ SCRIPT ═══════════════════════════ -->
 <script>
-  function toggleTheme() {
-    const html = document.documentElement;
-    const isDark = html.getAttribute('data-theme') === 'dark';
-    const next = isDark ? 'light' : 'dark';
-    html.setAttribute('data-theme', next);
-    document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
-    localStorage.setItem('elt102-theme', next);
+  const STORAGE_KEY = 'elt102-theme';
+
+  function applyTheme(dark) {
+    document.body.classList.toggle('dark', dark);
+    document.getElementById('toggle-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
   }
+
+  function toggleTheme() {
+    const isDark = !document.body.classList.contains('dark');
+    localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+    applyTheme(isDark);
+  }
+
+  // On load — restore saved preference
   (function () {
-    const saved = localStorage.getItem('elt102-theme');
-    if (saved === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.getElementById('themeBtn').textContent = '☀️ Light';
-    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved === 'dark' || (!saved && prefersDark));
   })();
 </script>
 </body>
