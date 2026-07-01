@@ -3,1078 +3,1290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ELT 102 – Digital Logic / Solid State Devices | MVCC</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>ELT 102-350 | Course Syllabus | Fall 2026</title>
 <style>
-  :root {
-    --bg: #f5f2eb;
-    --bg2: #ede9e0;
-    --bg3: #e0dbd0;
-    --surface: #ffffff;
-    --border: #c8c0b0;
-    --text: #1a1814;
-    --text2: #4a4540;
-    --text3: #7a7268;
-    --accent: #006d77;
-    --accent2: #004d55;
-    --accent-light: #e8f4f5;
-    --accent2-light: #d0ebee;
-    --warn: #c44b00;
-    --warn-light: #fff0e8;
-    --highlight: #e8a82a;
-    --highlight-light: #fef8e8;
-    --nav-width: 260px;
-    --header-h: 64px;
-    --radius: 8px;
-    --mono: 'IBM Plex Mono', monospace;
-    --sans: 'IBM Plex Sans', sans-serif;
-    --serif: 'IBM Plex Serif', serif;
-    --shadow: 0 2px 12px rgba(0,0,0,0.08);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
-    --transition: 0.22s ease;
-  }
-  [data-theme="dark"] {
-    --bg: #0f1117;
-    --bg2: #181c26;
-    --bg3: #222735;
-    --surface: #1e2330;
-    --border: #2e3448;
-    --text: #e8e4dc;
-    --text2: #a8a49c;
-    --text3: #6a6660;
-    --accent: #4ecdc4;
-    --accent2: #38b2aa;
-    --accent-light: #0e2628;
-    --accent2-light: #0a1e20;
-    --warn: #ff8c42;
-    --warn-light: #2a1500;
-    --highlight: #ffd166;
-    --highlight-light: #2a2200;
-    --shadow: 0 2px 12px rgba(0,0,0,0.3);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
-  }
+/* ─── Design Tokens (matches index.html) ───────────────────────── */
+:root {
+  --green-dark:    #1b5e20;
+  --green-mid:     #2e7d32;
+  --green-bright:  #43a047;
+  --green-light:   #e8f5e9;
+  --green-accent:  #00a86b;
+  --amber:         #f57f17;
+  --amber-bg:      #fff8e1;
+  --amber-border:  #ffe082;
+  --red:           #c62828;
+  --red-bg:        #ffebee;
+  --blue:          #1565c0;
+  --blue-bg:       #e3f2fd;
+  --purple:        #6a1b9a;
+  --purple-bg:     #f3e5f5;
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  --bg:            #f4f6f8;
+  --surface:       #ffffff;
+  --text:          #1a1a1a;
+  --text-muted:    #555;
+  --border:        #d0d0d0;
+  --header-bg:     #1b5e20;
+  --header-text:   #ffffff;
+  --shadow:        0 2px 8px rgba(0,0,0,.10);
+  --radius:        10px;
+  --accordion-hdr: #f0faf2;
+}
 
-  body {
-    font-family: var(--sans);
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    transition: background var(--transition), color var(--transition);
-    overflow-x: hidden;
-  }
+body.dark {
+  --bg:           #121212;
+  --surface:      #1e1e1e;
+  --text:         #e8e8e8;
+  --text-muted:   #aaa;
+  --border:       #333;
+  --header-bg:    #0a3d0a;
+  --amber-bg:     #1a1200;
+  --amber-border: #5a4000;
+  --red-bg:       #2e0a0a;
+  --blue-bg:      #0a1a2e;
+  --purple-bg:    #1a0a2e;
+  --accordion-hdr:#1a2e1a;
+  --shadow:       0 2px 8px rgba(0,0,0,.4);
+}
 
-  /* ─── HEADER ─── */
-  #site-header {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    height: var(--header-h);
-    background: var(--accent);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px;
-    box-shadow: var(--shadow-lg);
-  }
-  .header-brand { display: flex; align-items: center; gap: 14px; }
-  .header-logo {
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid rgba(255,255,255,0.5);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 12px; font-weight: 600;
-    color: #fff; letter-spacing: -0.5px;
-  }
-  .header-title { color: #fff; }
-  .header-title h1 { font-size: 15px; font-weight: 700; letter-spacing: 0.3px; line-height: 1.2; }
-  .header-title p { font-size: 11px; opacity: 0.75; font-family: var(--mono); margin-top: 1px; }
-  .header-actions { display: flex; align-items: center; gap: 10px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background .25s, color .25s;
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
 
-  .btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 14px; border-radius: 6px; border: none;
-    font-family: var(--sans); font-size: 13px; font-weight: 500;
-    cursor: pointer; transition: all var(--transition); text-decoration: none;
-  }
-  .btn-ghost {
-    background: rgba(255,255,255,0.15);
-    color: #fff; border: 1px solid rgba(255,255,255,0.3);
-  }
-  .btn-ghost:hover { background: rgba(255,255,255,0.25); }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: var(--accent2); }
-  .btn-save {
-    background: var(--highlight); color: #1a1200;
-    font-weight: 600;
-  }
-  .btn-save:hover { filter: brightness(1.05); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
+/* ─── Header ────────────────────────────────────────────────────── */
+header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 3px 10px rgba(0,0,0,.3);
+}
+.header-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-badge {
+  background: var(--green-accent);
+  color: #fff;
+  font-family: Georgia, serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.header-titles h1 {
+  font-family: Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.header-titles p {
+  font-size: .78rem;
+  opacity: .85;
+  margin-top: 2px;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: .5px;
+}
+.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#toggle-btn {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  font-size: .8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background .2s;
+}
+#toggle-btn:hover { background: rgba(255,255,255,.25); }
+.nav-home {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  font-size: .8rem;
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.nav-home:hover { background: rgba(255,255,255,.22); }
 
-  /* ─── LAYOUT ─── */
-  #app { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+/* ─── Hero ──────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--green-mid) 0%, #1a3a1a 100%);
+  color: #fff;
+  padding: 30px 20px 24px;
+  text-align: center;
+}
+.hero h2 { font-family: Georgia, serif; font-size: 1.55rem; margin-bottom: 6px; }
+.hero p  { font-size: .9rem; opacity: .9; max-width: 620px; margin: 0 auto 14px; }
+.hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.hero-chip {
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.28);
+  color: #fff;
+  font-size: .75rem;
+  padding: 3px 11px;
+  border-radius: 14px;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+}
 
-  /* ─── SIDEBAR NAV ─── */
-  #sidebar {
-    width: var(--nav-width);
-    position: fixed; top: var(--header-h); left: 0; bottom: 0;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    overflow-y: auto; padding: 16px 0;
-    transition: transform var(--transition), background var(--transition);
-    z-index: 90;
-  }
-  #sidebar::-webkit-scrollbar { width: 4px; }
-  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  .nav-label {
-    font-family: var(--mono); font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1.5px;
-    color: var(--text3); padding: 12px 20px 6px;
-  }
-  .nav-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 20px; cursor: pointer;
-    font-size: 13.5px; color: var(--text2);
-    border-left: 3px solid transparent;
-    transition: all var(--transition);
-    text-decoration: none;
-  }
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-  .nav-item.active {
-    border-left-color: var(--accent);
-    background: var(--accent-light);
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .nav-item .nav-num {
-    width: 20px; height: 20px; border-radius: 4px;
-    background: var(--bg3); color: var(--text3);
-    font-family: var(--mono); font-size: 10px; font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .nav-item.active .nav-num { background: var(--accent); color: #fff; }
-  .nav-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+/* ─── TOC Jump Bar ───────────────────────────────────────────────── */
+.toc-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.toc-bar-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.toc-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: .72rem;
+  padding: 4px 11px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: .3px;
+}
+.toc-btn:hover { background: var(--green-light); color: var(--green-dark); border-color: var(--green-bright); }
+body.dark .toc-btn:hover { background: #1a2e1a; color: var(--green-bright); }
 
-  /* ─── MAIN CONTENT ─── */
-  #main {
-    margin-left: var(--nav-width);
-    flex: 1; padding: 32px 40px 60px;
-    max-width: calc(100% - var(--nav-width));
-    transition: margin var(--transition);
-  }
+/* ─── Main ──────────────────────────────────────────────────────── */
+main { max-width: 1000px; margin: 0 auto; padding: 28px 20px 52px; }
 
-  /* ─── EDIT MODE BANNER ─── */
-  #edit-banner {
-    display: none;
-    background: var(--highlight-light);
-    border: 1px solid var(--highlight);
-    border-radius: var(--radius);
-    padding: 10px 16px;
-    margin-bottom: 24px;
-    font-size: 13px; color: var(--text);
-    align-items: center; gap: 10px;
-  }
-  #edit-banner.visible { display: flex; }
-  #edit-banner strong { color: var(--warn); }
-  .edit-badge {
-    background: var(--highlight);
-    color: #1a1200; font-weight: 700;
-    font-size: 10px; font-family: var(--mono);
-    text-transform: uppercase; letter-spacing: 1px;
-    padding: 2px 7px; border-radius: 3px;
-  }
+/* ─── Section Header ─────────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 36px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--green-bright);
+  scroll-margin-top: 80px;
+}
+.section-header h2 { font-family: Georgia, serif; font-size: 1.18rem; color: var(--green-dark); }
+body.dark .section-header h2 { color: var(--green-bright); }
+.sec-icon { font-size: 1.25rem; }
 
-  /* ─── SECTION CARDS ─── */
-  .section-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: box-shadow var(--transition), background var(--transition), border-color var(--transition);
-    scroll-margin-top: calc(var(--header-h) + 24px);
-  }
-  .section-card:hover { box-shadow: var(--shadow); }
+/* ─── Info Cards Row ─────────────────────────────────────────────── */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.info-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.info-card .ic-label {
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--green-mid);
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  margin-bottom: 5px;
+}
+body.dark .info-card .ic-label { color: var(--green-bright); }
+.info-card .ic-value { font-size: .92rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.info-card .ic-sub { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
+.info-card .ic-icon { font-size: 1.4rem; margin-bottom: 6px; }
 
-  .section-header {
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px 20px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-  }
-  .section-header:hover { background: var(--bg3); }
-  .section-icon {
-    width: 36px; height: 36px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  .section-header h2 {
-    font-family: var(--serif); font-size: 17px; font-weight: 600;
-    flex: 1; color: var(--text);
-  }
-  .section-roman {
-    font-family: var(--mono); font-size: 11px;
-    color: var(--text3); margin-right: 2px;
-  }
-  .section-chevron {
-    font-size: 12px; color: var(--text3);
-    transition: transform var(--transition);
-  }
-  .section-card.collapsed .section-chevron { transform: rotate(-90deg); }
-  .section-body { padding: 20px; }
-  .section-card.collapsed .section-body { display: none; }
+/* ─── Faculty Card ───────────────────────────────────────────────── */
+.faculty-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green-bright);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.faculty-avatar {
+  width: 64px; height: 64px;
+  background: var(--green-mid);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.6rem; font-family: Georgia, serif; font-weight: 700;
+  flex-shrink: 0;
+}
+.faculty-info h3 { font-family: Georgia, serif; font-size: 1.05rem; color: var(--green-dark); margin-bottom: 8px; }
+body.dark .faculty-info h3 { color: var(--green-bright); }
+.faculty-details { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+.fd-row { display: flex; flex-direction: column; gap: 1px; }
+.fd-label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--text-muted); font-family: 'Arial Narrow', Arial, sans-serif; }
+.fd-val { font-size: .84rem; color: var(--text); }
+.fd-val a { color: var(--green-accent); text-decoration: none; }
+.fd-val a:hover { text-decoration: underline; }
 
-  /* ─── HERO CARD ─── */
-  #hero-card {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-    border: none; border-radius: var(--radius); margin-bottom: 24px;
-    padding: 28px 32px; color: #fff;
-    position: relative; overflow: hidden;
-  }
-  #hero-card::before {
-    content: 'ELT\A102'; white-space: pre;
-    position: absolute; right: -10px; top: -10px;
-    font-family: var(--mono); font-size: 80px; font-weight: 600;
-    opacity: 0.08; line-height: 0.9;
-    pointer-events: none;
-  }
-  #hero-card h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-  #hero-card p { font-size: 14px; opacity: 0.85; margin-bottom: 16px; }
-  .hero-meta { display: flex; flex-wrap: wrap; gap: 12px; }
-  .hero-chip {
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 20px; padding: 4px 12px;
-    font-size: 12px; font-weight: 500;
-    display: flex; align-items: center; gap: 6px;
-  }
+/* ─── Accordion ──────────────────────────────────────────────────── */
+.accordion { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 10px; }
+.accordion-btn {
+  width: 100%;
+  background: var(--accordion-hdr);
+  border: none;
+  text-align: left;
+  padding: 14px 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  transition: background .15s;
+  color: var(--text);
+}
+.accordion-btn:hover { background: var(--green-light); }
+body.dark .accordion-btn:hover { background: #1a3a1a; }
+.accordion-btn .acc-title {
+  font-family: Georgia, serif;
+  font-size: .96rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+body.dark .accordion-btn .acc-title { color: var(--green-bright); }
+.accordion-btn .acc-arrow {
+  color: var(--green-bright);
+  font-size: 1rem;
+  transition: transform .25s;
+  flex-shrink: 0;
+}
+.accordion-btn.open .acc-arrow { transform: rotate(180deg); }
+.accordion-body {
+  background: var(--surface);
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease, padding .25s;
+}
+.accordion-body.open { padding: 16px 18px 20px; max-height: 3000px; }
 
-  /* ─── INFO GRID ─── */
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .info-item { display: flex; flex-direction: column; gap: 2px; }
-  .info-label {
-    font-family: var(--mono); font-size: 10px;
-    text-transform: uppercase; letter-spacing: 1px; color: var(--text3);
-  }
-  .info-value { font-size: 14px; color: var(--text); font-weight: 500; }
-  .info-value a { color: var(--accent); text-decoration: none; }
-  .info-value a:hover { text-decoration: underline; }
+/* ─── Prose Content ──────────────────────────────────────────────── */
+.prose { font-size: .88rem; line-height: 1.7; color: var(--text); }
+.prose p { margin-bottom: 10px; }
+.prose ul, .prose ol { padding-left: 20px; margin-bottom: 10px; }
+.prose li { margin-bottom: 5px; }
+.prose strong { color: var(--green-dark); }
+body.dark .prose strong { color: var(--green-bright); }
 
-  /* ─── EDITABLE FIELDS ─── */
-  [contenteditable="true"] {
-    outline: none;
-    border-radius: 4px;
-    padding: 2px 4px;
-    margin: -2px -4px;
-    transition: background var(--transition), box-shadow var(--transition);
-  }
-  [contenteditable="true"]:focus {
-    background: var(--accent-light);
-    box-shadow: 0 0 0 2px var(--accent);
-  }
-  body.edit-mode [contenteditable="true"] {
-    background: var(--accent2-light);
-    box-shadow: inset 0 0 0 1px var(--border);
-    cursor: text;
-  }
-  body.edit-mode [contenteditable="true"]:hover {
-    background: var(--accent-light);
-    box-shadow: inset 0 0 0 1px var(--accent);
-  }
-  .edit-hint {
-    display: none;
-    font-size: 11px; color: var(--text3);
-    font-family: var(--mono); margin-top: 8px;
-    font-style: italic;
-  }
-  body.edit-mode .edit-hint { display: block; }
+/* ─── Policy Highlight Boxes ─────────────────────────────────────── */
+.policy-box {
+  border-radius: 8px;
+  padding: 13px 16px;
+  margin: 10px 0;
+  font-size: .85rem;
+  line-height: 1.6;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.policy-box .pb-icon { font-size: 1.15rem; flex-shrink: 0; margin-top: 1px; }
+.policy-box.amber { background: var(--amber-bg); border: 1px solid var(--amber-border); border-left: 4px solid var(--amber); }
+.policy-box.red   { background: var(--red-bg);   border: 1px solid #ffcdd2;           border-left: 4px solid var(--red); }
+.policy-box.blue  { background: var(--blue-bg);  border: 1px solid #bbdefb;           border-left: 4px solid var(--blue); }
+.policy-box.green { background: var(--green-light); border: 1px solid #c8e6c9;        border-left: 4px solid var(--green-mid); }
+.policy-box .pb-body strong { display: block; font-weight: 700; margin-bottom: 3px; }
 
-  /* ─── TABLES ─── */
-  .styled-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-  .styled-table th {
-    background: var(--bg2); color: var(--text2);
-    font-family: var(--mono); font-size: 11px;
-    text-transform: uppercase; letter-spacing: 1px;
-    padding: 10px 14px; text-align: left;
-    border-bottom: 2px solid var(--border);
-  }
-  .styled-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-  .styled-table tr:last-child td { border-bottom: none; }
-  .styled-table tr:hover td { background: var(--bg2); }
-  .week-num {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 28px; height: 28px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    font-family: var(--mono); font-size: 12px; font-weight: 600;
-  }
-  .week-final .week-num { background: var(--warn); }
+/* ─── Grading Visual ─────────────────────────────────────────────── */
+.grade-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 560px) { .grade-layout { grid-template-columns: 1fr; } }
 
-  /* ─── GRADE BARS ─── */
-  .grade-breakdown { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-  .grade-row { display: flex; align-items: center; gap: 12px; }
-  .grade-label { font-size: 13px; font-weight: 500; width: 200px; flex-shrink: 0; }
-  .grade-bar-track { flex: 1; height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; }
-  .grade-bar-fill { height: 100%; border-radius: 5px; transition: width 0.8s ease; }
-  .grade-pct { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent); width: 36px; text-align: right; }
+.grade-bars { display: flex; flex-direction: column; gap: 12px; }
+.grade-bar-item { display: flex; flex-direction: column; gap: 4px; }
+.grade-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: .82rem;
+  font-weight: 600;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+}
+.grade-bar-track { height: 14px; background: var(--border); border-radius: 7px; overflow: hidden; }
+.grade-bar-fill  { height: 100%; border-radius: 7px; transition: width 1s ease; }
+.fill-labs    { background: var(--green-bright); }
+.fill-exams   { background: #1976d2; }
+.fill-final   { background: var(--amber); }
+.fill-particip{ background: #7b1fa2; }
 
-  .grade-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 16px; }
-  .grade-chip {
-    text-align: center; padding: 10px 8px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--bg2);
-  }
-  .grade-chip .letter { font-size: 22px; font-weight: 700; font-family: var(--serif); color: var(--accent); }
-  .grade-chip .range { font-family: var(--mono); font-size: 10px; color: var(--text3); margin-top: 2px; }
+.grade-scale { display: flex; flex-direction: column; gap: 8px; }
+.grade-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.grade-letter {
+  font-family: Georgia, serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  width: 26px;
+  text-align: center;
+}
+.gl-a { color: var(--green-mid); }
+.gl-b { color: #1976d2; }
+.gl-c { color: #e65100; }
+.gl-d { color: var(--amber); }
+.gl-f { color: var(--red); }
+.grade-range { font-size: .83rem; color: var(--text-muted); }
+.grade-bar-mini { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.grade-mini-fill { height: 100%; border-radius: 4px; }
+.gm-a { background: var(--green-bright); width: 100%; }
+.gm-b { background: #1976d2;            width: 89%; }
+.gm-c { background: #e65100;            width: 79%; }
+.gm-d { background: var(--amber);       width: 69%; }
+.gm-f { background: var(--red);         width: 59%; }
 
-  /* ─── POLICY BLOCKS ─── */
-  .policy-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-  .policy-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .policy-label {
-    font-family: var(--mono); font-size: 11px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1px;
-    color: var(--accent); margin-bottom: 6px;
-  }
-  .policy-text { font-size: 13.5px; line-height: 1.7; color: var(--text2); }
+/* ─── Schedule Table ─────────────────────────────────────────────── */
+.schedule-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.schedule-table thead th {
+  background: var(--green-mid);
+  color: #fff;
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  font-size: .8rem;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.schedule-table thead th:first-child { border-radius: 8px 0 0 0; }
+.schedule-table thead th:last-child  { border-radius: 0 8px 0 0; }
+.schedule-table tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+.schedule-table tbody tr:hover { background: var(--accordion-hdr); }
+.schedule-table td { padding: 12px 14px; vertical-align: top; }
+.schedule-table tbody tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+.schedule-table tbody tr:last-child td:last-child  { border-radius: 0 0 8px 0; }
 
-  /* ─── ALERT BOX ─── */
-  .alert {
-    border-radius: var(--radius); padding: 12px 16px;
-    font-size: 13px; line-height: 1.6; margin-bottom: 12px;
-    display: flex; gap: 10px; align-items: flex-start;
-  }
-  .alert-warn { background: var(--warn-light); border-left: 4px solid var(--warn); }
-  .alert-info { background: var(--accent-light); border-left: 4px solid var(--accent); }
-  .alert-icon { font-size: 16px; flex-shrink: 0; }
+.week-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  background: var(--green-mid);
+  color: #fff;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: .85rem;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  flex-shrink: 0;
+}
+.week-date { font-size: .75rem; color: var(--text-muted); margin-top: 3px; text-align: center; }
+.week-cell { display: flex; flex-direction: column; align-items: center; gap: 1px; }
 
-  /* ─── OBJECTIVE TAGS ─── */
-  .obj-list { display: flex; flex-wrap: wrap; gap: 8px; }
-  .obj-tag {
-    background: var(--accent-light);
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    border-radius: 20px; padding: 5px 12px;
-    font-size: 12.5px; font-weight: 500;
-  }
+.topic-cell strong { color: var(--green-dark); display: block; margin-bottom: 4px; font-size: .88rem; }
+body.dark .topic-cell strong { color: var(--green-bright); }
 
-  /* ─── TOPIC GRID ─── */
-  .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .topic-item {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 12px; background: var(--bg2);
-    border-radius: 6px; border: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .topic-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.assign-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+.chip {
+  font-size: .72rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: .3px;
+}
+.chip-exam { background: var(--red-bg);   color: var(--red);   border: 1px solid #ffcdd2; }
+.chip-lab  { background: var(--blue-bg);  color: var(--blue);  border: 1px solid #bbdefb; }
+.chip-final{ background: var(--purple-bg);color: var(--purple);border: 1px solid #e1bee7; }
+body.dark .chip-exam  { background: #2e0a0a; border-color:#5a1010; }
+body.dark .chip-lab   { background: #0a1a2e; border-color:#1a3a5e; }
+body.dark .chip-final { background: #1a0a2e; border-color:#3a1a5e; }
 
-  /* ─── DATES HIGHLIGHT ─── */
-  .dates-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .date-card {
-    padding: 12px 14px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--bg2);
-  }
-  .date-card .date-label { font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
-  .date-card .date-value { font-size: 15px; font-weight: 600; color: var(--text); margin-top: 3px; }
-  .date-card.urgent { border-color: var(--warn); background: var(--warn-light); }
-  .date-card.urgent .date-value { color: var(--warn); }
+.due-cell { font-size: .82rem; color: var(--text-muted); white-space: nowrap; font-weight: 600; }
 
-  /* ─── ASSIGNMENTS IN SCHEDULE ─── */
-  .assign-list { margin: 0; padding-left: 0; list-style: none; }
-  .assign-list li { font-size: 12.5px; color: var(--text2); padding: 2px 0; }
-  .assign-list li::before { content: '›'; color: var(--accent); margin-right: 6px; font-weight: 700; }
+.table-wrap {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
 
-  /* ─── CONTACT ROW ─── */
-  .contact-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 0; border-bottom: 1px solid var(--border);
-  }
-  .contact-row:last-child { border-bottom: none; }
-  .contact-icon {
-    width: 34px; height: 34px; border-radius: 8px;
-    background: var(--accent-light); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .contact-key { font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
-  .contact-val { font-size: 14px; font-weight: 500; color: var(--text); }
+/* ─── Goal/Competency list ───────────────────────────────────────── */
+.goal-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.goal-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: .87rem; line-height: 1.55;
+}
+.goal-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green-bright);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.competency-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.competency-list li {
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: .87rem; line-height: 1.55;
+}
+.comp-num {
+  background: var(--green-mid); color: #fff;
+  font-weight: 700; font-size: .7rem;
+  min-width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+  font-family: 'Arial Narrow', Arial, sans-serif;
+}
 
-  /* ─── PRINT / EXPORT ─── */
-  @media print {
-    #site-header, #sidebar, #edit-banner, #edit-fab, .header-actions { display: none !important; }
-    #main { margin-left: 0 !important; padding: 16px !important; max-width: 100% !important; }
-    .section-card.collapsed .section-body { display: block !important; }
-    .section-card { box-shadow: none !important; break-inside: avoid; }
-  }
+/* ─── Textbook Card ──────────────────────────────────────────────── */
+.textbook-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.tb-icon { font-size: 2rem; flex-shrink: 0; }
+.tb-body { flex: 1; }
+.tb-body strong { font-size: .92rem; color: var(--green-dark); display: block; margin-bottom: 3px; }
+body.dark .tb-body strong { color: var(--green-bright); }
+.tb-body span { font-size: .82rem; color: var(--text-muted); }
+.tb-optional {
+  font-size: .68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .7px; color: var(--amber); background: var(--amber-bg);
+  border: 1px solid var(--amber-border); padding: 2px 8px; border-radius: 8px;
+  display: inline-block; margin-bottom: 5px;
+}
 
-  /* ─── FAB EDIT BUTTON ─── */
-  #edit-fab {
-    position: fixed; bottom: 28px; right: 28px;
-    width: 52px; height: 52px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    border: none; font-size: 22px;
-    cursor: pointer; box-shadow: var(--shadow-lg);
-    display: flex; align-items: center; justify-content: center;
-    transition: all var(--transition); z-index: 200;
-  }
-  #edit-fab:hover { background: var(--accent2); transform: scale(1.08); }
-  #edit-fab.active { background: var(--warn); }
+/* ─── Key Dates ──────────────────────────────────────────────────── */
+.key-dates { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.kd-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green-accent);
+  border-radius: 8px;
+  padding: 11px 14px;
+  box-shadow: var(--shadow);
+}
+.kd-item .kd-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--text-muted); font-family: 'Arial Narrow', Arial, sans-serif; }
+.kd-item .kd-date  { font-size: .95rem; font-weight: 700; color: var(--green-dark); margin-top: 2px; }
+body.dark .kd-item .kd-date { color: var(--green-bright); }
+.kd-item .kd-desc  { font-size: .78rem; color: var(--text-muted); margin-top: 2px; }
 
-  /* ─── MOBILE ─── */
-  #sidebar-toggle {
-    display: none; background: transparent;
-    border: 1px solid rgba(255,255,255,0.4);
-    color: #fff; padding: 6px 10px; border-radius: 6px;
-    cursor: pointer; font-size: 18px;
-  }
-  @media (max-width: 900px) {
-    #sidebar-toggle { display: block; }
-    #sidebar { transform: translateX(-100%); }
-    #sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
-    #main { margin-left: 0; max-width: 100%; padding: 20px 16px; }
-  }
+/* ─── Footer ─────────────────────────────────────────────────────── */
+footer {
+  background: var(--header-bg);
+  color: rgba(255,255,255,.8);
+  text-align: center;
+  padding: 18px 20px;
+  font-size: .78rem;
+  line-height: 1.7;
+  letter-spacing: .3px;
+}
+footer span { color: var(--green-accent); font-weight: 600; }
 
-  /* ─── SMOOTH SCROLL ─── */
-  html { scroll-behavior: smooth; }
+/* ─── Print ──────────────────────────────────────────────────────── */
+@media print {
+  header, .toc-bar, footer, #toggle-btn, .nav-home { display: none; }
+  .accordion-body { max-height: none !important; padding: 14px 0 !important; display: block !important; }
+  body { background: #fff; color: #000; }
+}
 
-  /* ─── DIVIDERS ─── */
-  .sub-heading {
-    font-family: var(--mono); font-size: 11px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1.2px;
-    color: var(--text3); margin-bottom: 10px; margin-top: 18px;
-  }
-  .sub-heading:first-child { margin-top: 0; }
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .header-titles h1 { font-size: 1rem; }
+  .hero h2 { font-size: 1.2rem; }
+  .faculty-details { grid-template-columns: 1fr; }
+  .faculty-card { grid-template-columns: 1fr; }
+  .schedule-table { font-size: .78rem; }
+  .schedule-table td { padding: 9px 10px; }
+}
 </style>
 </head>
 <body>
 
-<!-- ─── HEADER ─── -->
-<header id="site-header">
-  <div class="header-brand">
-    <button id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">☰</button>
-    <div class="header-logo">ELT<br>102</div>
-    <div class="header-title">
-      <h1>Digital Logic / Solid State Devices</h1>
-      <p>Moraine Valley Community College · Spring 2025</p>
+<!-- ═══ HEADER ═══════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-badge">ELT 102</div>
+      <div class="header-titles">
+        <h1>Course Syllabus — Fall 2026</h1>
+        <p>ELT 102-350 · Digital Logic &amp; Solid State Devices · Section 350</p>
+      </div>
     </div>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="toggleTheme()" id="theme-btn" title="Toggle dark/light mode">🌙 Dark Mode</button>
-    <button class="btn btn-ghost btn-sm" onclick="expandAll()">Expand All</button>
-    <button class="btn btn-ghost btn-sm" onclick="collapseAll()">Collapse All</button>
-    <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨 Print</button>
-    <button class="btn btn-save btn-sm" onclick="saveChanges()" id="save-btn" style="display:none">💾 Save Changes</button>
+    <div class="header-right">
+      <a href="index.html" class="nav-home">← Course Home</a>
+      <button id="toggle-btn" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
   </div>
 </header>
 
-<!-- ─── APP ─── -->
-<div id="app">
-
-  <!-- ─── SIDEBAR ─── -->
-  <nav id="sidebar">
-    <div class="nav-label">Quick Navigation</div>
-    <a class="nav-item active" onclick="scrollTo('hero')" href="#hero">
-      <span class="nav-num">★</span> Overview
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-faculty')" href="#sec-faculty">
-      <span class="nav-num">I</span> Faculty Info
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-course')" href="#sec-course">
-      <span class="nav-num">II</span> Course ID
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-texts')" href="#sec-texts">
-      <span class="nav-num">III</span> Textbooks
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-goals')" href="#sec-goals">
-      <span class="nav-num">IV</span> Course Goals
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-outcomes')" href="#sec-outcomes">
-      <span class="nav-num">V</span> Competencies
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-policies')" href="#sec-policies">
-      <span class="nav-num">VI</span> Policies
-    </a>
-    <a class="nav-item" onclick="scrollTo('sec-grading')" href="#sec-grading">
-      <span class="nav-num">VII</span> Grading
-    </a>
-    <div class="nav-divider"></div>
-    <div class="nav-label">Schedule</div>
-    <a class="nav-item" onclick="scrollTo('sec-schedule')" href="#sec-schedule">
-      <span class="nav-num">📅</span> Weekly Schedule
-    </a>
-    <div class="nav-divider"></div>
-    <div class="nav-label">Tools</div>
-    <a class="nav-item" onclick="toggleEditMode()" href="javascript:void(0)" id="nav-edit-btn">
-      <span class="nav-num">✏️</span> Edit Syllabus
-    </a>
-  </nav>
-
-  <!-- ─── MAIN ─── -->
-  <main id="main">
-
-    <!-- Edit Banner -->
-    <div id="edit-banner">
-      <span class="edit-badge">Edit Mode</span>
-      <span>Click on any <strong>highlighted field</strong> to modify it. Changes are saved to your browser. Click <strong>Save Changes</strong> to export.</span>
-      <button class="btn btn-save btn-sm" style="margin-left:auto" onclick="saveChanges()">💾 Save</button>
-    </div>
-
-    <!-- ─── HERO ─── -->
-    <div id="hero" style="scroll-margin-top: calc(var(--header-h) + 16px)">
-      <div id="hero-card">
-        <h1 contenteditable="false" id="e-course-title">ELT 102 – Digital Logic &amp; Solid State Devices</h1>
-        <p contenteditable="false" id="e-semester">Spring 2025 · Section 351 · Tuesdays 5:30–8:50 PM</p>
-        <div class="hero-meta">
-          <span class="hero-chip">🏫 Moraine Valley Community College</span>
-          <span class="hero-chip">📚 3 Credit Hours</span>
-          <span class="hero-chip">🔬 2 Lecture + 2 Lab</span>
-          <span class="hero-chip">📋 Prereq: ELT 101</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── I. FACULTY INFO ─── -->
-    <div class="section-card" id="sec-faculty">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#e8f4f5">👨‍🏫</div>
-        <h2><span class="section-roman">I.</span> Faculty Information</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="contact-row">
-          <div class="contact-icon">🧑</div>
-          <div><div class="contact-key">Instructor</div><div class="contact-val" contenteditable="false" id="e-name">Dr. John Sands</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">📍</div>
-          <div><div class="contact-key">Office Location</div><div class="contact-val" contenteditable="false" id="e-office">T906</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">🕐</div>
-          <div><div class="contact-key">Office Hours</div><div class="contact-val" contenteditable="false" id="e-hours">Tuesday 5:00 PM – 8:50 PM</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">📮</div>
-          <div><div class="contact-key">Mailbox</div><div class="contact-val" contenteditable="false" id="e-mailbox">T116</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">📞</div>
-          <div><div class="contact-key">Office Phone</div><div class="contact-val" contenteditable="false" id="e-phone">(708) 974-5426</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">✉️</div>
-          <div><div class="contact-key">Email</div><div class="contact-val"><a href="mailto:sands@morainevalley.edu" contenteditable="false" id="e-email">sands@morainevalley.edu</a> — include <strong>ELT102</strong> in subject</div></div>
-        </div>
-        <div class="contact-row">
-          <div class="contact-icon">🖥</div>
-          <div><div class="contact-key">Canvas LMS</div><div class="contact-val"><a href="https://canvas.morainevalley.edu" target="_blank" contenteditable="false" id="e-canvas">canvas.morainevalley.edu</a></div></div>
-        </div>
-        <p class="edit-hint">✏️ Click any field above to update it for your section.</p>
-      </div>
-    </div>
-
-    <!-- ─── II. COURSE IDENTIFICATION ─── -->
-    <div class="section-card" id="sec-course">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#f0ece8">📋</div>
-        <h2><span class="section-roman">II.</span> Course Identification</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="info-grid" style="margin-bottom:20px">
-          <div class="info-item"><span class="info-label">Course Number</span><span class="info-value" contenteditable="false" id="e-cnum">ELT 102</span></div>
-          <div class="info-item"><span class="info-label">Section</span><span class="info-value" contenteditable="false" id="e-section">351</span></div>
-          <div class="info-item"><span class="info-label">Credit Hours</span><span class="info-value" contenteditable="false" id="e-credits">3</span></div>
-          <div class="info-item"><span class="info-label">Contact Hours</span><span class="info-value">4 (2 Lecture + 2 Lab)</span></div>
-          <div class="info-item"><span class="info-label">Meeting Days &amp; Time</span><span class="info-value" contenteditable="false" id="e-days">Tuesdays, 5:30 PM – 8:50 PM</span></div>
-          <div class="info-item"><span class="info-label">Department</span><span class="info-value">CIT – Electronics</span></div>
-          <div class="info-item"><span class="info-label">Prerequisite</span><span class="info-value">ELT 101</span></div>
-          <div class="info-item"><span class="info-label">Corequisite</span><span class="info-value">None</span></div>
-        </div>
-
-        <div class="dates-grid" style="margin-bottom:20px">
-          <div class="date-card urgent">
-            <div class="date-label">⚠ Last Day – Drop/Refund</div>
-            <div class="date-value" contenteditable="false" id="e-drop-refund">January 24, 2025</div>
-          </div>
-          <div class="date-card urgent">
-            <div class="date-label">⚠ Last Day – W Grade</div>
-            <div class="date-value" contenteditable="false" id="e-drop-w">January 31, 2025</div>
-          </div>
-        </div>
-
-        <div class="sub-heading">Catalog Description</div>
-        <p style="font-size:13.5px; line-height:1.75; color:var(--text2)" contenteditable="false" id="e-catalog">
-          This course provides a practical approach to the study of digital and integrated devices. Topics include logic gates, flip-flops, latches, counters, encoders/decoders, multiplexers, arithmetic circuits, oscillators, timers, analog-to-digital circuits, digital-to-analog circuits, solid-state memory, and operational amplifiers. The study of solid-state circuits and devices covers diodes, transistors, FETs, thyristors, and optoelectronic devices. Common circuits include power supplies, amplifiers, solid-state switches, and regulators.
-        </p>
-        <p class="edit-hint">✏️ Click any field to update for your section. Dates highlighted in orange require special attention.</p>
-      </div>
-    </div>
-
-    <!-- ─── III. TEXTBOOKS ─── -->
-    <div class="section-card" id="sec-texts">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#fef8e8">📖</div>
-        <h2><span class="section-roman">III.</span> Textbooks &amp; Reading List</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="alert alert-info">
-          <span class="alert-icon">ℹ️</span>
-          <div>These texts are <strong>optional</strong> for this course. Lecture notes and lab materials will be provided through Canvas.</div>
-        </div>
-        <div style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;">
-          <div class="info-label" style="margin-bottom:8px">Optional Texts</div>
-          <p style="font-size:14px; font-weight:500; color:var(--text)" contenteditable="false" id="e-textbook">Electricity and Electronics — Gerrish, Duggar &amp; Roberts, 12th Edition</p>
-          <p style="font-size:13px; color:var(--text2); margin-top:4px" contenteditable="false" id="e-workbook">Student Workbook — Gerrish, Duggar, Roberts &amp; Barker, 12th Edition</p>
-        </div>
-        <p class="edit-hint">✏️ Update textbook titles and editions as needed for your section.</p>
-      </div>
-    </div>
-
-    <!-- ─── IV. COURSE GOALS ─── -->
-    <div class="section-card" id="sec-goals">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#e8f4f5">🎯</div>
-        <h2><span class="section-roman">IV.</span> Program / Course Goals</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="topic-grid">
-          <div class="topic-item"><span class="topic-dot"></span>Number Systems</div>
-          <div class="topic-item"><span class="topic-dot"></span>Logic Gates</div>
-          <div class="topic-item"><span class="topic-dot"></span>Flip-flops &amp; Latches</div>
-          <div class="topic-item"><span class="topic-dot"></span>Counters</div>
-          <div class="topic-item"><span class="topic-dot"></span>Encoders / Decoders</div>
-          <div class="topic-item"><span class="topic-dot"></span>Multiplexers</div>
-          <div class="topic-item"><span class="topic-dot"></span>A-to-D and D-to-A Circuits</div>
-          <div class="topic-item"><span class="topic-dot"></span>Solid-State Memory</div>
-          <div class="topic-item"><span class="topic-dot"></span>Diodes, BJTs, UJT, FETs, Thyristors</div>
-          <div class="topic-item"><span class="topic-dot"></span>Optoelectronic Devices</div>
-          <div class="topic-item"><span class="topic-dot"></span>Power Supplies</div>
-          <div class="topic-item"><span class="topic-dot"></span>Amplifiers</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── V. COMPETENCIES ─── -->
-    <div class="section-card" id="sec-outcomes">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#f0ece8">🏆</div>
-        <h2><span class="section-roman">V.</span> Course End Competencies</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="sub-heading">Upon Completion, Students Will Be Able To:</div>
-        <div class="obj-list">
-          <span class="obj-tag">Demonstrate logic gates, counters, encoders/decoders &amp; arithmetic circuits</span>
-          <span class="obj-tag">Explain oscillators, timers &amp; op-amps</span>
-          <span class="obj-tag">Explain flip-flops, latches, A/D, D/A &amp; multiplexers</span>
-          <span class="obj-tag">Demonstrate proper troubleshooting procedures</span>
-          <span class="obj-tag">Demonstrate semiconductor device operation</span>
-          <span class="obj-tag">Explain BJTs, UJT, FETs &amp; thyristors</span>
-          <span class="obj-tag">Explain optoelectronic device operation</span>
-          <span class="obj-tag">Identify component ratings &amp; operating parameters</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── VI. POLICIES ─── -->
-    <div class="section-card" id="sec-policies">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#fff0e8">📜</div>
-        <h2><span class="section-roman">VI.</span> Classroom Policies &amp; Procedures</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-
-        <div class="alert alert-warn">
-          <span class="alert-icon">⚠️</span>
-          <div>A student who does not officially withdraw may receive a grade of <strong>'F'</strong> depending on course progress or attendance. Dates: Drop with refund — <strong>Jan 24, 2025</strong>; Drop with 'W' — <strong>Jan 31, 2025</strong>.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">📅 Attendance Policy</div>
-          <div class="policy-text" contenteditable="false" id="e-attendance">For classes at the school, you are expected to be on time and attend all classes. There is a 5-point penalty for missing class and a 1-point penalty for being late — both deducted from participation points.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">🔬 Lab Policy</div>
-          <div class="policy-text">Attend all lab sessions and participate in lab activities. No word-for-word collaboration on lab discussion questions and conclusions — each student must write their own answers, otherwise only half the points are awarded. Team assignments are the exception.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">📝 Exam Policy</div>
-          <div class="policy-text">Take all weekly exams by due dates. There will be <strong>no test make-ups</strong> without prior arrangements. The Final Exam will be online — you may use your notes and textbook.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">🔄 Make-Up Policy</div>
-          <div class="policy-text" contenteditable="false" id="e-makeup">Chapter Review Questions and quizzes may be completed after the due date with a penalty of 10% per day. If you miss class, hands-on labs must be completed before moving on to labs for the next module.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">⭐ Extra Credit</div>
-          <div class="policy-text">Extra credit is <strong>not provided</strong> in this course.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">🛡 Academic Integrity / Cheating &amp; Plagiarism</div>
-          <div class="policy-text">The CIT Department upholds MVCC's Code of Academic Integrity. Students are expected to complete all work reflecting professional ethics and standards.<br><br>
-          <strong>Penalties:</strong> A first offense results in a grade of "0" or "F" for the work with no opportunity to redo it. A second offense results in an "F" for the course, and a report is submitted to the Dean of Science, Business and Computer Technology.<br><br>
-          <em>Cheating</em> includes unauthorized assistance, information sharing, and use of cloud services to store/share academic materials. <em>Plagiarism</em> includes submitting another's work — or AI-generated work — as your own without permission or citation.</div>
-        </div>
-
-        <div class="policy-item">
-          <div class="policy-label">🏥 Safety / Impaired Concentration</div>
-          <div class="policy-text">Students with impaired ability to concentrate may risk jeopardizing safety in the lab. Discuss any condition that could impair concentration with the instructor <em>prior to</em> operating equipment or performing laboratory procedures. Failure to notify the instructor may violate the Code of Student Conduct.</div>
-        </div>
-
-        <div class="policy-item" style="border-bottom:none; padding-bottom:0">
-          <div class="policy-label">🏛 Testing Center</div>
-          <div class="policy-text">The Testing Center will <strong>not</strong> be used in this course.</div>
-        </div>
-
-        <p class="edit-hint">✏️ Click any policy text to customize it for your section.</p>
-      </div>
-    </div>
-
-    <!-- ─── VII. GRADING ─── -->
-    <div class="section-card" id="sec-grading">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#fef8e8">📊</div>
-        <h2><span class="section-roman">VII.</span> Grading Policies &amp; Procedures</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body">
-        <div class="sub-heading">Grade Breakdown</div>
-        <div class="grade-breakdown">
-          <div class="grade-row">
-            <span class="grade-label">Labs / Activities (10)</span>
-            <div class="grade-bar-track"><div class="grade-bar-fill" style="width:40%; background: var(--accent)"></div></div>
-            <span class="grade-pct">40%</span>
-          </div>
-          <div class="grade-row">
-            <span class="grade-label">Weekly Exams (6)</span>
-            <div class="grade-bar-track"><div class="grade-bar-fill" style="width:30%; background: #3aafa9"></div></div>
-            <span class="grade-pct">30%</span>
-          </div>
-          <div class="grade-row">
-            <span class="grade-label">Final Exam</span>
-            <div class="grade-bar-track"><div class="grade-bar-fill" style="width:20%; background: var(--highlight)"></div></div>
-            <span class="grade-pct">20%</span>
-          </div>
-          <div class="grade-row">
-            <span class="grade-label">Participation</span>
-            <div class="grade-bar-track"><div class="grade-bar-fill" style="width:10%; background: #9ecbcc"></div></div>
-            <span class="grade-pct">10%</span>
-          </div>
-        </div>
-
-        <div class="sub-heading">Letter Grade Scale</div>
-        <div class="grade-scale">
-          <div class="grade-chip"><div class="letter">A</div><div class="range">90–100+</div></div>
-          <div class="grade-chip"><div class="letter">B</div><div class="range">80–89.9</div></div>
-          <div class="grade-chip"><div class="letter">C</div><div class="range">70–79.9</div></div>
-          <div class="grade-chip"><div class="letter">D</div><div class="range">60–69.9</div></div>
-          <div class="grade-chip"><div class="letter" style="color:var(--warn)">F</div><div class="range">Below 60</div></div>
-        </div>
-
-        <div class="alert alert-info" style="margin-top:16px">
-          <span class="alert-icon">💡</span>
-          <div>Participation (10%) includes attendance and punctuality. A 5-point penalty applies for each missed class; a 1-point penalty applies for each late arrival.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── SCHEDULE ─── -->
-    <div class="section-card" id="sec-schedule">
-      <div class="section-header" onclick="toggleSection(this)">
-        <div class="section-icon" style="background:#e8f4f5">📅</div>
-        <h2>Course Schedule — Spring 2025</h2>
-        <span class="section-chevron">▾</span>
-      </div>
-      <div class="section-body" style="padding:0">
-        <table class="styled-table">
-          <thead>
-            <tr>
-              <th style="width:60px">Week</th>
-              <th>Topic</th>
-              <th>Assignments &amp; Activities</th>
-              <th style="width:80px">Due Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="week-num">1</span></td>
-              <td><strong>Semiconductors and Power Supplies</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>1A – Diodes and Power Supplies</li>
-                  <li>1B – Using the Oscilloscope</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">1/20</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">2</span></td>
-              <td><strong>Transistors, Amplifiers and Regulators</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 1 – Semiconductors &amp; Power Supplies</li>
-                  <li>2A – Wiring and Testing Transistor</li>
-                  <li>2B – Using Amplifiers and Regulators</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">1/27</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">3</span></td>
-              <td><strong>Digital Logic and Number Systems</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 2 – Transistors, Amplifiers &amp; Regulators</li>
-                  <li>3A – Converting Binary, Octal and Hex</li>
-                  <li>3B – Computation with Binary and Hex</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">2/3</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">4</span></td>
-              <td><strong>Integrated Circuits and Logic Gates</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 3 – Number Systems</li>
-                  <li>4A – AND and NAND Gates</li>
-                  <li>4B – OR and NOR Gates</li>
-                  <li>4C – XOR and XNOR Gates</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">2/10</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">5</span></td>
-              <td><strong>Latches and Flip-Flops</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 4 – Logic Gates</li>
-                  <li>5A – RS Latches and Flip-Flops</li>
-                  <li>5B – D Type Flip-Flops</li>
-                  <li>5C – JK Flip-Flops</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">2/17</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">6</span></td>
-              <td><strong>Counters, Timers and Oscillators</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 5 – Latches and Flip-Flops</li>
-                  <li>6A – UP/Down Counters</li>
-                  <li>6B – 555 Timers</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">2/24</span></td>
-            </tr>
-            <tr>
-              <td><span class="week-num">7</span></td>
-              <td><strong>Encoders, Decoders, A/D, D/A</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Exam 6 – Counters and Timers</li>
-                  <li>7A – BCD Decoders</li>
-                  <li>7B – Seven Segment Decoders</li>
-                  <li>7C – Analog-to-Digital / Digital-to-Analog</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px">3/3</span></td>
-            </tr>
-            <tr class="week-final">
-              <td><span class="week-num week-final">8</span></td>
-              <td><strong style="color:var(--warn)">⭐ Final Exam</strong></td>
-              <td>
-                <ul class="assign-list">
-                  <li>Online — open notes &amp; textbook</li>
-                  <li>Covers all course material</li>
-                </ul>
-              </td>
-              <td><span style="font-family:var(--mono);font-size:12px;color:var(--warn);font-weight:700">3/6</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <p style="text-align:center; font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:28px">
-      ELT 102 Interactive Syllabus · Moraine Valley Community College · Spring 2025<br>
-      This syllabus is subject to change. Students will be notified of any modifications via Canvas.
-    </p>
-
-  </main>
+<!-- ═══ HERO ══════════════════════════════════════════════════════ -->
+<div class="hero">
+  <h2>ELT 102-350 — Digital Logic &amp; Solid State Devices</h2>
+  <p>Fall 2026 Official Course Syllabus · Moraine Valley Community College · Dept. of Engineering &amp; Technology</p>
+  <div class="hero-chips">
+    <span class="hero-chip">📅 Tuesdays 5:00 – 8:30 PM</span>
+    <span class="hero-chip">🏛️ 3 Credit Hours</span>
+    <span class="hero-chip">🔬 2 hrs Lecture / 2 hrs Lab</span>
+    <span class="hero-chip">📋 Prerequisite: ELT 101</span>
+    <span class="hero-chip">🖥️ Hybrid Course</span>
+    <span class="hero-chip">📅 Begins Aug 25, 2026</span>
+  </div>
 </div>
 
-<!-- FAB -->
-<button id="edit-fab" onclick="toggleEditMode()" title="Toggle Edit Mode">✏️</button>
+<!-- ═══ TOC BAR ════════════════════════════════════════════════════ -->
+<div class="toc-bar">
+  <div class="toc-bar-inner">
+    <button class="toc-btn" onclick="scrollTo('sec-course')">📋 Course Info</button>
+    <button class="toc-btn" onclick="scrollTo('sec-faculty')">👨‍🏫 Instructor</button>
+    <button class="toc-btn" onclick="scrollTo('sec-description')">📖 Description</button>
+    <button class="toc-btn" onclick="scrollTo('sec-outcomes')">🎯 Outcomes</button>
+    <button class="toc-btn" onclick="scrollTo('sec-text')">📚 Textbook</button>
+    <button class="toc-btn" onclick="scrollTo('sec-schedule')">📅 Schedule</button>
+    <button class="toc-btn" onclick="scrollTo('sec-grading')">📊 Grading</button>
+    <button class="toc-btn" onclick="scrollTo('sec-policies')">📜 Policies</button>
+    <button class="toc-btn" onclick="scrollTo('sec-integrity')">⚖️ Integrity</button>
+    <button class="toc-btn" onclick="scrollTo('sec-dates')">🗓️ Key Dates</button>
+  </div>
+</div>
 
+<!-- ═══ MAIN ══════════════════════════════════════════════════════ -->
+<main>
+
+  <!-- ── COURSE IDENTIFICATION ─────────────────────────────────── -->
+  <div class="section-header" id="sec-course">
+    <span class="sec-icon">📋</span>
+    <h2>Course Identification</h2>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="ic-label">Course Number &amp; Section</div>
+      <div class="ic-value">ELT 102 — Section 350</div>
+      <div class="ic-sub">Digital Logic / Solid State Devices</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Semester</div>
+      <div class="ic-value">Fall 2026</div>
+      <div class="ic-sub">Begins Aug 25, 2026</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Meeting Day &amp; Time</div>
+      <div class="ic-value">Tuesday 5:00 – 8:30 PM</div>
+      <div class="ic-sub">Hybrid — In-Person &amp; Online</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Credit Hours</div>
+      <div class="ic-value">3 Credit Hours</div>
+      <div class="ic-sub">4 Total Contact Hours per Week</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Contact Hours Breakdown</div>
+      <div class="ic-value">2 hrs Lecture / 2 hrs Lab</div>
+      <div class="ic-sub">Per weekly session</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Department</div>
+      <div class="ic-value">CIT — Electronics</div>
+      <div class="ic-sub">MVCC Engineering &amp; Technology</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Prerequisite</div>
+      <div class="ic-value">ELT 101</div>
+      <div class="ic-sub">Corequisite: None</div>
+    </div>
+    <div class="info-card">
+      <div class="ic-label">Canvas LMS</div>
+      <div class="ic-value">Canvas.morainevalley.edu</div>
+      <div class="ic-sub">Course portal for assignments &amp; grades</div>
+    </div>
+  </div>
+
+  <!-- ── INSTRUCTOR ─────────────────────────────────────────────── -->
+  <div class="section-header" id="sec-faculty">
+    <span class="sec-icon">👨‍🏫</span>
+    <h2>Faculty Information</h2>
+  </div>
+
+  <div class="faculty-card">
+    <div class="faculty-avatar">JS</div>
+    <div class="faculty-info">
+      <h3>Dr. John Sands</h3>
+      <div class="faculty-details">
+        <div class="fd-row">
+          <span class="fd-label">Office Location</span>
+          <span class="fd-val">Room T800A</span>
+        </div>
+        <div class="fd-row">
+          <span class="fd-label">Mailbox</span>
+          <span class="fd-val">T116</span>
+        </div>
+        <div class="fd-row">
+          <span class="fd-label">Office Hours</span>
+          <span class="fd-val">Tuesday 5:00 PM – 8:30 PM</span>
+        </div>
+        <div class="fd-row">
+          <span class="fd-label">Office Phone</span>
+          <span class="fd-val">(708) 974-5426</span>
+        </div>
+        <div class="fd-row">
+          <span class="fd-label">Email</span>
+          <span class="fd-val"><a href="mailto:sands@morainevalley.edu">sands@morainevalley.edu</a></span>
+        </div>
+        <div class="fd-row">
+          <span class="fd-label">Canvas</span>
+          <span class="fd-val"><a href="https://canvas.morainevalley.edu" target="_blank">Canvas.morainevalley.edu</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CATALOG DESCRIPTION ────────────────────────────────────── -->
+  <div class="section-header" id="sec-description">
+    <span class="sec-icon">📖</span>
+    <h2>Catalog Description</h2>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn open" onclick="toggleAccordion(this)">
+      <span class="acc-title">📄 ELT 102 — Official Catalog Description</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body open">
+      <div class="prose">
+        <p>This course provides a practical approach to the study of digital and integrated devices. The course will include the study of logic gates, flip-flops, latches, counters, encoders/decoders, multiplexers, arithmetic circuits, oscillators, timers, analog-to-digital circuits, digital-to-analog circuits, solid-state memory, and operational amplifiers.</p>
+        <p>In addition, the course covers solid-state circuits and devices — including the study of diodes, transistors, FETs, thyristors, and optoelectronic devices. Examination of common circuits will include power supplies, amplifiers, solid-state switches, and regulators.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span class="acc-title">🎯 Program Goals &amp; Major Topics</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+      <div class="prose">
+        <ul class="goal-list">
+          <li><span class="goal-dot"></span><span>Number Systems and Binary Arithmetic</span></li>
+          <li><span class="goal-dot"></span><span>Logic Gates (AND, OR, NOT, NAND, NOR, XOR, XNOR)</span></li>
+          <li><span class="goal-dot"></span><span>Flip-Flops &amp; Latches (SR, D-Type, JK)</span></li>
+          <li><span class="goal-dot"></span><span>Counters — Asynchronous and Synchronous</span></li>
+          <li><span class="goal-dot"></span><span>Encoders and Decoders</span></li>
+          <li><span class="goal-dot"></span><span>Multiplexers and Demultiplexers</span></li>
+          <li><span class="goal-dot"></span><span>A-to-D and D-to-A Conversion Circuits</span></li>
+          <li><span class="goal-dot"></span><span>Solid-State Memory</span></li>
+          <li><span class="goal-dot"></span><span>Diodes, Bipolar Transistors (BJT/UJT), FETs, and Thyristors</span></li>
+          <li><span class="goal-dot"></span><span>Optoelectronic Devices (LEDs, Photodiodes, Optocouplers)</span></li>
+          <li><span class="goal-dot"></span><span>Power Supplies and Voltage Regulators</span></li>
+          <li><span class="goal-dot"></span><span>Amplifiers and Operational Amplifiers (Op-Amps)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COURSE END COMPETENCIES ───────────────────────────────── -->
+  <div class="section-header" id="sec-outcomes">
+    <span class="sec-icon">🎯</span>
+    <h2>Course End Competencies</h2>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn open" onclick="toggleAccordion(this)">
+      <span class="acc-title">✅ Official Course Outline Objectives</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body open">
+      <ul class="competency-list">
+        <li>
+          <span class="comp-num">1</span>
+          <span>Demonstrate the proper operation of logic gates, counters, encoders/decoders, and arithmetic circuits.</span>
+        </li>
+        <li>
+          <span class="comp-num">2</span>
+          <span>Explain the operation of oscillators, timers, and operational amplifiers.</span>
+        </li>
+        <li>
+          <span class="comp-num">3</span>
+          <span>Explain the operation of flip-flops, latches, A-to-D, D-to-A circuits, solid-state memory, and multiplexers.</span>
+        </li>
+        <li>
+          <span class="comp-num">4</span>
+          <span>Demonstrate proper troubleshooting procedures and practices for digital circuit systems.</span>
+        </li>
+        <li>
+          <span class="comp-num">5</span>
+          <span>Demonstrate the proper operation of semiconductor devices.</span>
+        </li>
+        <li>
+          <span class="comp-num">6</span>
+          <span>Explain the operation of BJTs, UJT, FETs, and thyristors.</span>
+        </li>
+        <li>
+          <span class="comp-num">7</span>
+          <span>Explain the operation of opto-electronic devices including LEDs, photodiodes, and optocouplers.</span>
+        </li>
+        <li>
+          <span class="comp-num">8</span>
+          <span>Identify operating parameters and component ratings of common electronic devices.</span>
+        </li>
+        <li>
+          <span class="comp-num">9</span>
+          <span>Demonstrate proper troubleshooting procedures and practices for analog/solid-state circuits.</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── TEXTBOOK ────────────────────────────────────────────────── -->
+  <div class="section-header" id="sec-text">
+    <span class="sec-icon">📚</span>
+    <h2>Textbooks &amp; Reading List</h2>
+  </div>
+
+  <div class="textbook-card">
+    <div class="tb-icon">📗</div>
+    <div class="tb-body">
+      <span class="tb-optional">Optional</span>
+      <strong>Electricity and Electronics — Gerrish, Duggar &amp; Roberts, 12th Edition</strong>
+      <span>Student Workbook by Gerrish, Duggar, Roberts &amp; Barker, 12th Edition also available.</span>
+    </div>
+  </div>
+
+  <div class="policy-box green" style="margin-top:12px;">
+    <span class="pb-icon">💡</span>
+    <div class="pb-body">The textbook is <strong>optional</strong> for this course. All required content is delivered through course lessons, lab activities, and Canvas. Students who benefit from a printed reference are encouraged to obtain a copy.</div>
+  </div>
+
+  <!-- ── SCHEDULE ────────────────────────────────────────────────── -->
+  <div class="section-header" id="sec-schedule">
+    <span class="sec-icon">📅</span>
+    <h2>Course Schedule — Fall 2026</h2>
+  </div>
+
+  <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:14px;">All sessions meet Tuesdays 5:00–8:30 PM. Exam and lab assignments are due by the end of the session on the listed date.</p>
+
+  <div class="table-wrap">
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Topic</th>
+          <th>Assignments &amp; Activities</th>
+          <th>Due</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">1</div>
+              <div class="week-date">8/25</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Semiconductors &amp; Diodes</strong>
+            Semiconductor fundamentals, P-N junction behavior, forward/reverse bias, diode characteristic curves, and introduction to the oscilloscope.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-lab">Lab 1A — Diodes, Power Supplies &amp; Oscilloscope</span>
+            </div>
+          </td>
+          <td class="due-cell">8/25</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">2</div>
+              <div class="week-date">9/1</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Diode Applications</strong>
+            Half-wave and full-wave rectifiers, capacitive filters, ripple voltage, voltage regulators, LEDs, photodiodes, and optoelectronic devices.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-exam">Exam 1 — Semiconductors &amp; Power Supplies</span>
+              <span class="chip chip-lab">Lab 2A — LEDs &amp; Phototransistors</span>
+            </div>
+          </td>
+          <td class="due-cell">9/1</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">3</div>
+              <div class="week-date">9/8</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>BJTs, FETs, MOSFETs, SCR &amp; TRIAC</strong>
+            NPN/PNP transistor operation, BJT configurations, DC load line analysis, JFETs vs. MOSFETs, thyristor triggering, and high-power switching.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-lab">Lab 3A — Wiring &amp; Testing NPN vs. PNP Transistors</span>
+            </div>
+          </td>
+          <td class="due-cell">9/8</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">4</div>
+              <div class="week-date">9/15</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Integrated Circuits &amp; Logic Gates</strong>
+            Transistor amplifiers (common-emitter), voltage gain and impedance analysis, op-amp inverting/non-inverting configurations, and introduction to IC logic families.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-exam">Exam 2 — Transistors, Amplifiers &amp; Regulators</span>
+              <span class="chip chip-lab">Lab 4A — Using Amplifiers &amp; Regulators</span>
+            </div>
+          </td>
+          <td class="due-cell">9/15</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">5</div>
+              <div class="week-date">9/22</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Number Systems, Logic Gates &amp; Boolean Algebra</strong>
+            Binary, octal, decimal, and hexadecimal conversions; 2's complement; Boolean algebra laws; AND, OR, NOT, NAND, NOR, XOR, XNOR gate operation and truth tables.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-lab">Lab 5A — NOT, AND, NAND, OR, NOR, XOR &amp; XNOR Gates</span>
+            </div>
+          </td>
+          <td class="due-cell">9/22</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">6</div>
+              <div class="week-date">9/29</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Latches &amp; Flip-Flops</strong>
+            Combinational circuit design, Karnaugh Map minimization, SR latches, D-type and JK flip-flops, clocked operation, and introduction to sequential logic.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-exam">Exam 3 — Number Systems &amp; Logic Gates</span>
+              <span class="chip chip-lab">Lab 6A — RS Latches &amp; Flip-Flops</span>
+              <span class="chip chip-lab">Lab 6B — D-Type &amp; JK Flip-Flops</span>
+            </div>
+          </td>
+          <td class="due-cell">9/29</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">7</div>
+              <div class="week-date">10/6</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Encoders, Decoders, A/D, D/A &amp; Multiplexers</strong>
+            Priority encoders, BCD-to-7-segment decoders, MUX/DEMUX operation, analog-to-digital and digital-to-analog conversion, resolution, and sampling rate fundamentals.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-exam">Exam 4 — Latches &amp; Flip-Flops</span>
+              <span class="chip chip-lab">Lab 7A — BCD Decoders</span>
+              <span class="chip chip-lab">Lab 7B — A-to-D &amp; D-to-A Conversion</span>
+            </div>
+          </td>
+          <td class="due-cell">10/6</td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="week-cell">
+              <div class="week-badge">8</div>
+              <div class="week-date">10/13</div>
+            </div>
+          </td>
+          <td class="topic-cell">
+            <strong>Counters, Timers &amp; Oscillators</strong>
+            Asynchronous and synchronous counters, modulus counters, 555 timer (astable and monostable), RC time constant calculations, and crystal oscillator circuits.
+          </td>
+          <td>
+            <div class="assign-chips">
+              <span class="chip chip-final">🏆 Final Exam</span>
+              <span class="chip chip-lab">Lab 8A — 555 Timer, Astable &amp; Monostable Modes</span>
+            </div>
+          </td>
+          <td class="due-cell">10/13</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── GRADING ─────────────────────────────────────────────────── -->
+  <div class="section-header" id="sec-grading">
+    <span class="sec-icon">📊</span>
+    <h2>Grading Policies</h2>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn open" onclick="toggleAccordion(this)">
+      <span class="acc-title">📊 Grade Breakdown &amp; Scale</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body open">
+      <div class="grade-layout">
+
+        <div>
+          <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:12px;">Your final grade is calculated from four weighted components:</p>
+          <div class="grade-bars">
+            <div class="grade-bar-item">
+              <div class="grade-bar-label">
+                <span>🔬 Lab Activities (10 labs)</span>
+                <span style="color:var(--green-bright);font-weight:700;">40%</span>
+              </div>
+              <div class="grade-bar-track"><div class="grade-bar-fill fill-labs" style="width:40%"></div></div>
+            </div>
+            <div class="grade-bar-item">
+              <div class="grade-bar-label">
+                <span>📝 Weekly Exams (4 module exams)</span>
+                <span style="color:#1976d2;font-weight:700;">30%</span>
+              </div>
+              <div class="grade-bar-track"><div class="grade-bar-fill fill-exams" style="width:30%"></div></div>
+            </div>
+            <div class="grade-bar-item">
+              <div class="grade-bar-label">
+                <span>🏆 Final Exam</span>
+                <span style="color:var(--amber);font-weight:700;">20%</span>
+              </div>
+              <div class="grade-bar-track"><div class="grade-bar-fill fill-final" style="width:20%"></div></div>
+            </div>
+            <div class="grade-bar-item">
+              <div class="grade-bar-label">
+                <span>🙋 Participation &amp; Attendance</span>
+                <span style="color:#7b1fa2;font-weight:700;">10%</span>
+              </div>
+              <div class="grade-bar-track"><div class="grade-bar-fill fill-particip" style="width:10%"></div></div>
+            </div>
+          </div>
+
+          <div class="policy-box amber" style="margin-top:14px;">
+            <span class="pb-icon">⚠️</span>
+            <div class="pb-body">
+              <strong>No Extra Credit</strong>
+              Extra credit is not provided in this course. Focus on completing all lab exercises and exams to their fullest extent.
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:12px;">Letter grades are assigned by total point percentage:</p>
+          <div class="grade-scale">
+            <div class="grade-row">
+              <span class="grade-letter gl-a">A</span>
+              <div class="grade-bar-mini"><div class="grade-mini-fill gm-a"></div></div>
+              <span class="grade-range">90 – 100+ points</span>
+            </div>
+            <div class="grade-row">
+              <span class="grade-letter gl-b">B</span>
+              <div class="grade-bar-mini"><div class="grade-mini-fill gm-b"></div></div>
+              <span class="grade-range">80 – 89.9 points</span>
+            </div>
+            <div class="grade-row">
+              <span class="grade-letter gl-c">C</span>
+              <div class="grade-bar-mini"><div class="grade-mini-fill gm-c"></div></div>
+              <span class="grade-range">70 – 79.9 points</span>
+            </div>
+            <div class="grade-row">
+              <span class="grade-letter gl-d">D</span>
+              <div class="grade-bar-mini"><div class="grade-mini-fill gm-d"></div></div>
+              <span class="grade-range">60 – 69.9 points</span>
+            </div>
+            <div class="grade-row">
+              <span class="grade-letter gl-f">F</span>
+              <div class="grade-bar-mini"><div class="grade-mini-fill gm-f"></div></div>
+              <span class="grade-range">Below 60 points</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CLASSROOM POLICIES ─────────────────────────────────────── -->
+  <div class="section-header" id="sec-policies">
+    <span class="sec-icon">📜</span>
+    <h2>Classroom Policies &amp; Procedures</h2>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn open" onclick="toggleAccordion(this)">
+      <span class="acc-title">🙋 Attendance &amp; Participation</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body open">
+      <div class="policy-box amber">
+        <span class="pb-icon">⏰</span>
+        <div class="pb-body">
+          <strong>Attendance is expected at all class sessions.</strong>
+          A <strong>5-point penalty</strong> is deducted from participation points for missing class. A <strong>1-point penalty</strong> is applied for arriving late. Emergency, family, and work-related situations are handled individually — please email the instructor as soon as possible.
+        </div>
+      </div>
+      <div class="prose" style="margin-top:10px;">
+        <p>Attendance, being on time, and turning in work on time represents <strong>10% of your final grade</strong>. If you cannot attend class, email the instructor in advance.</p>
+        <p>A student who does not officially withdraw from a course may receive a grade of <strong>'F'</strong> depending on course progress or attendance, which becomes part of the student's permanent record.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span class="acc-title">📋 Assignment &amp; Exam Policies</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+      <div class="prose">
+        <ul>
+          <li>Turn in completed assignments when due. If you have a legitimate reason for not completing work on time (family emergency or severe illness), discuss this with the instructor <em>prior</em> to the due date.</li>
+          <li>There will be <strong>no test make-ups</strong> without prior arrangements.</li>
+          <li>The <strong>Final Exam will be online</strong>. You may use your notes and textbook.</li>
+        </ul>
+      </div>
+      <div class="policy-box blue" style="margin-top:10px;">
+        <span class="pb-icon">🔁</span>
+        <div class="pb-body">
+          <strong>Make-Up Policy</strong>
+          Chapter review questions and quizzes may be completed after the due date, but with a penalty of <strong>10% per day</strong>. If you miss class, hands-on labs must be completed <em>before</em> moving on to labs for the next module.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span class="acc-title">🔬 Lab Policies</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+      <div class="prose">
+        <ul>
+          <li>Attend <strong>all lab sessions</strong> and participate fully in each lab activity. Labs constitute <strong>40%</strong> of the final grade.</li>
+          <li><strong>No word-for-word collaboration</strong> on lab discussion questions and conclusions. Each student must write their own answers; otherwise only half the points are awarded. Team assignments will be designated as exceptions.</li>
+          <li>Lab reports must be submitted individually and reflect your own circuit observations, data, and analysis.</li>
+        </ul>
+      </div>
+      <div class="policy-box amber" style="margin-top:10px;">
+        <span class="pb-icon">⚠️</span>
+        <div class="pb-body">
+          <strong>Lab Safety Notice</strong>
+          Students with any condition that may impair their ability to concentrate must discuss this with the instructor <em>before</em> operating equipment or performing a laboratory procedure. Failure to notify the instructor may be a violation of the Code of Student Conduct.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACADEMIC INTEGRITY ─────────────────────────────────────── -->
+  <div class="section-header" id="sec-integrity">
+    <span class="sec-icon">⚖️</span>
+    <h2>Academic Integrity</h2>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn open" onclick="toggleAccordion(this)">
+      <span class="acc-title">⚖️ Departmental Statement of Academic Integrity</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body open">
+      <div class="prose">
+        <p>The faculty of the Computer Integrated Technologies Department believe that the Moraine Valley Community College Code of Academic Integrity is important because of the professional, academic, and ethical requirements that align the departmental curriculum to the expectations of the occupational environment that our students will be entering.</p>
+        <p>Students are expected to complete all course requirements in a way that reflects the values of the Code of Academic Integrity and encourages others to do the same. Adherence to the Code of Academic Integrity will enable students to participate gainfully in a collegiate learning environment with a high degree of professional ethics and standards.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion">
+    <button class="accordion-btn" onclick="toggleAccordion(this)">
+      <span class="acc-title">🚫 Cheating &amp; Plagiarism — Range of Sanctions</span>
+      <span class="acc-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+      <div class="policy-box red">
+        <span class="pb-icon">🚫</span>
+        <div class="pb-body">
+          <strong>First Offense:</strong>
+          A grade of <strong>"0" or "F"</strong> for the assignment, quiz, exam, lab, or writing task. No redo will be permitted.
+        </div>
+      </div>
+      <div class="policy-box red" style="margin-top:8px;">
+        <span class="pb-icon">🚨</span>
+        <div class="pb-body">
+          <strong>Second Offense:</strong>
+          An <strong>"F" for the entire course</strong>. The instructor will file the required Cheating and Plagiarism Violation Report Form with the Dean of Science, Business and Computer Technology.
+        </div>
+      </div>
+      <div class="prose" style="margin-top:12px;">
+        <p><strong>Cheating includes, but is not limited to:</strong></p>
+        <ul>
+          <li>Use of any unauthorized assistance during quizzes, tests, labs, presentations, or examinations</li>
+          <li>Reuse of any work created by another person as your own</li>
+          <li>Information sharing via electronic devices, cloud storage, or web 2.0 technologies</li>
+          <li>Use of any agency or AI tool to complete work submitted as your own without proper citation</li>
+        </ul>
+        <p style="margin-top:10px;"><strong>Plagiarism:</strong> Submitting material produced by an agency or another person as your own work without permission or proper citation. If you need clarification, ask the instructor.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KEY DATES ──────────────────────────────────────────────── -->
+  <div class="section-header" id="sec-dates">
+    <span class="sec-icon">🗓️</span>
+    <h2>Key Dates — Fall 2026</h2>
+  </div>
+
+  <div class="key-dates">
+    <div class="kd-item">
+      <div class="kd-label">Course Begins</div>
+      <div class="kd-date">August 25, 2026</div>
+      <div class="kd-desc">Week 1 — Semiconductors &amp; Diodes</div>
+    </div>
+    <div class="kd-item">
+      <div class="kd-label">Exam 1</div>
+      <div class="kd-date">September 1, 2026</div>
+      <div class="kd-desc">Semiconductors &amp; Power Supplies</div>
+    </div>
+    <div class="kd-item">
+      <div class="kd-label">Exam 2</div>
+      <div class="kd-date">September 15, 2026</div>
+      <div class="kd-desc">Transistors, Amplifiers &amp; Regulators</div>
+    </div>
+    <div class="kd-item">
+      <div class="kd-label">Exam 3</div>
+      <div class="kd-date">September 29, 2026</div>
+      <div class="kd-desc">Number Systems &amp; Logic Gates</div>
+    </div>
+    <div class="kd-item">
+      <div class="kd-label">Exam 4</div>
+      <div class="kd-date">October 6, 2026</div>
+      <div class="kd-desc">Latches &amp; Flip-Flops</div>
+    </div>
+    <div class="kd-item" style="border-left-color:var(--purple);">
+      <div class="kd-label">Final Exam</div>
+      <div class="kd-date" style="color:var(--purple);">October 13, 2026</div>
+      <div class="kd-desc">Comprehensive — All Topics (Online)</div>
+    </div>
+    <div class="kd-item" style="border-left-color:var(--amber);">
+      <div class="kd-label">Last Day — Refund</div>
+      <div class="kd-date" style="color:var(--amber);">See Registrar</div>
+      <div class="kd-desc">Drop with tuition refund deadline</div>
+    </div>
+    <div class="kd-item" style="border-left-color:var(--red);">
+      <div class="kd-label">Last Day — W Grade</div>
+      <div class="kd-date" style="color:var(--red);">See Registrar</div>
+      <div class="kd-desc">Drop with 'W' on transcript deadline</div>
+    </div>
+  </div>
+
+  <div class="policy-box blue" style="margin-top:20px;">
+    <span class="pb-icon">ℹ️</span>
+    <div class="pb-body">For official withdrawal deadlines, refer to the MVCC Academic Calendar at <strong>morainevalley.edu</strong> or contact the Office of Admissions and Records.</div>
+  </div>
+
+</main>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  <span>ELT 102-350</span> — Digital Logic &amp; Solid State Devices | Fall 2026 Syllabus<br>
+  Moraine Valley Community College · <span>Department of Engineering &amp; Technology</span><br>
+  Instructor: Dr. John Sands · sands@morainevalley.edu · Office T800A · (708) 974-5426
+</footer>
+
+<!-- ═══ SCRIPT ════════════════════════════════════════════════════ -->
 <script>
-// ─── THEME ───────────────────────────────────────────────────────────────────
-let isDark = localStorage.getItem('elt102-theme') === 'dark';
-applyTheme();
+  const STORAGE_KEY = 'elt102-theme';
 
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  document.getElementById('theme-btn').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-  localStorage.setItem('elt102-theme', isDark ? 'dark' : 'light');
-}
-function toggleTheme() { isDark = !isDark; applyTheme(); }
-
-// ─── SECTIONS ────────────────────────────────────────────────────────────────
-function toggleSection(header) {
-  const card = header.closest('.section-card');
-  card.classList.toggle('collapsed');
-}
-function expandAll() {
-  document.querySelectorAll('.section-card.collapsed').forEach(c => c.classList.remove('collapsed'));
-}
-function collapseAll() {
-  document.querySelectorAll('.section-card:not(.collapsed)').forEach(c => c.classList.add('collapsed'));
-}
-
-// ─── EDIT MODE ───────────────────────────────────────────────────────────────
-let editMode = false;
-
-function toggleEditMode() {
-  editMode = !editMode;
-  document.body.classList.toggle('edit-mode', editMode);
-  document.getElementById('edit-banner').classList.toggle('visible', editMode);
-  document.getElementById('edit-fab').classList.toggle('active', editMode);
-  document.getElementById('edit-fab').textContent = editMode ? '✅' : '✏️';
-  document.getElementById('save-btn').style.display = editMode ? 'inline-flex' : 'none';
-  document.getElementById('nav-edit-btn').querySelector('.nav-num').textContent = editMode ? '✅' : '✏️';
-
-  // Toggle contenteditable on all editable elements
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    el.contentEditable = editMode ? 'true' : 'false';
-  });
-  if (editMode) {
-    expandAll();
-    document.getElementById('sec-faculty').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function applyTheme(dark) {
+    document.body.classList.toggle('dark', dark);
+    document.getElementById('toggle-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
   }
-}
 
-// ─── SAVE (download as HTML) ─────────────────────────────────────────────────
-function saveChanges() {
-  // Disable editing for save
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    el.contentEditable = 'false';
-  });
-  const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  const blob = new Blob([html], { type: 'text/html' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'ELT102_Syllabus_Custom.html';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  // Re-enable if still in edit mode
-  if (editMode) {
-    document.querySelectorAll('[contenteditable]').forEach(el => {
-      el.contentEditable = 'true';
-    });
+  function toggleTheme() {
+    const isDark = !document.body.classList.contains('dark');
+    localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+    applyTheme(isDark);
   }
-  // Toast feedback
-  showToast('✅ Syllabus saved as HTML file!');
-}
 
-// ─── TOAST ───────────────────────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  Object.assign(t.style, {
-    position: 'fixed', bottom: '90px', right: '28px',
-    background: 'var(--accent)', color: '#fff',
-    padding: '10px 18px', borderRadius: '8px',
-    fontFamily: 'var(--sans)', fontSize: '14px',
-    boxShadow: 'var(--shadow-lg)', zIndex: '9999',
-    opacity: '0', transition: 'opacity 0.3s ease',
-    pointerEvents: 'none'
-  });
-  document.body.appendChild(t);
-  requestAnimationFrame(() => { t.style.opacity = '1'; });
-  setTimeout(() => {
-    t.style.opacity = '0';
-    setTimeout(() => t.remove(), 400);
-  }, 2800);
-}
-
-// ─── NAV ACTIVE STATE ─────────────────────────────────────────────────────────
-function scrollTo(id) {
-  const el = document.getElementById(id);
-  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  // Find nav item that matches
-  const items = document.querySelectorAll('.nav-item');
-  items.forEach(item => {
-    if (item.getAttribute('href') === '#' + id) item.classList.add('active');
-  });
-  if (window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
-}
-
-// Scroll spy
-const sections = ['hero','sec-faculty','sec-course','sec-texts','sec-goals','sec-outcomes','sec-policies','sec-grading','sec-schedule'];
-const navHrefs = ['#hero','#sec-faculty','#sec-course','#sec-texts','#sec-goals','#sec-outcomes','#sec-policies','#sec-grading','#sec-schedule'];
-
-window.addEventListener('scroll', () => {
-  let current = sections[0];
-  sections.forEach(id => {
+  function scrollTo(id) {
     const el = document.getElementById(id);
-    if (el && el.getBoundingClientRect().top < 120) current = id;
-  });
-  document.querySelectorAll('.nav-item[href]').forEach(item => {
-    item.classList.remove('active');
-    if (item.getAttribute('href') === '#' + current) item.classList.add('active');
-  });
-}, { passive: true });
-
-// ─── SIDEBAR TOGGLE (mobile) ──────────────────────────────────────────────────
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-  const sb = document.getElementById('sidebar');
-  if (window.innerWidth <= 900 && sb.classList.contains('open') && !sb.contains(e.target) && !e.target.closest('#sidebar-toggle')) {
-    sb.classList.remove('open');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
-});
 
-// ─── AUTO-SAVE to localStorage ────────────────────────────────────────────────
-document.addEventListener('input', e => {
-  if (e.target.contentEditable === 'true' && e.target.id) {
-    localStorage.setItem('elt102-' + e.target.id, e.target.innerHTML);
+  function toggleAccordion(btn) {
+    const body = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    btn.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
   }
-});
 
-// Restore from localStorage on load
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[id][contenteditable]').forEach(el => {
-    const saved = localStorage.getItem('elt102-' + el.id);
-    if (saved) el.innerHTML = saved;
-  });
-});
-
-// ─── GRADE BAR ANIMATION ─────────────────────────────────────────────────────
-const gradeObs = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.grade-bar-fill').forEach(bar => {
-        const w = bar.style.width;
-        bar.style.width = '0';
-        setTimeout(() => { bar.style.width = w; }, 100);
-      });
-      gradeObs.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.3 });
-document.querySelectorAll('.grade-breakdown').forEach(el => gradeObs.observe(el));
+  // Restore saved theme (shared with index.html via same key)
+  (function () {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved === 'dark' || (!saved && prefersDark));
+  })();
 </script>
 </body>
 </html>
