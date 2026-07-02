@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Lesson 1: Semiconductor Fundamentals &amp; Diodes</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+.sans{font-family:'Arial Narrow',Arial,sans-serif;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ GRAPHER ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+#ivCanvas{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:16px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl label .val{color:var(--green-dark);font-weight:bold;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);}
+.ctrl select{width:100%;padding:7px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);font-family:'Arial Narrow',Arial,sans-serif;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.85rem;line-height:1.7;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.readout .r-bd{color:#a86e00;font-weight:bold;}
+[data-theme="dark"] .readout .r-bd{color:var(--amber);}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.g-btn{flex:1;min-width:80px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;} .tab-pane{padding:20px 16px;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Lesson 1 of 8</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson01.html">Lesson 1</a> &nbsp;›&nbsp;
+  Semiconductor Fundamentals &amp; Diodes
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 1 · Solid State Foundations</span>
+  <h1>Semiconductor Fundamentals &amp; Diodes</h1>
+  <p class="sub">Atomic structure of semiconductor materials, P-N junction behavior, forward and reverse bias, and diode characteristic curves — how a diode acts as a switch, rectifier, and voltage regulator.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 Hours Study</span>
+    <span>📋 9 Core Topics</span>
+    <span>📈 Interactive I-V Grapher</span>
+    <span>🧪 Lab-Ready Concepts</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lesson, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Describe</strong> the atomic structure of silicon and germanium, including valence electrons and covalent bonding in the crystal lattice.</li>
+      <li><strong>Differentiate</strong> intrinsic and extrinsic semiconductors, and explain how donor and acceptor doping create N-type and P-type materials.</li>
+      <li><strong>Explain</strong> the formation of the depletion region and barrier potential at a P-N junction.</li>
+      <li><strong>Analyze</strong> diode behavior under forward bias, reverse bias, and reverse breakdown conditions.</li>
+      <li><strong>Interpret</strong> the diode I-V characteristic curve, identifying the knee (threshold) voltage, forward operating region, and breakdown region.</li>
+      <li><strong>Apply</strong> the practical diode models (ideal, 0.7 V constant-drop, and piecewise-linear) to solve basic DC resistor-diode circuits.</li>
+      <li><strong>Explain</strong> how a diode operates as an electronic switch and as a half-wave or full-wave rectifier.</li>
+      <li><strong>Describe</strong> Zener diode operation in reverse breakdown and its use as a shunt voltage regulator.</li>
+      <li><strong>Predict</strong> how temperature affects forward voltage and reverse leakage current using the interactive I-V curve grapher.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc open" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition.</p>
+
+      <div class="cat-label">Semiconductor Physics</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Semiconductor</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A material such as silicon or germanium whose conductivity lies between a conductor and an insulator, and which can be precisely controlled through doping, temperature, and applied voltage.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Valence Electron</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An electron in the outermost shell of an atom. Silicon and germanium each have four valence electrons, which determines how they bond into a crystal lattice.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Covalent Bond</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The sharing of valence electrons between neighboring atoms. Each silicon atom shares its four valence electrons with four neighbors, producing an effective full shell of eight.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Intrinsic Semiconductor</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A pure, undoped semiconductor crystal. The only charge carriers are thermally generated electron-hole pairs, so conductivity is low and strongly temperature dependent.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Doping</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The controlled addition of impurity atoms to an intrinsic crystal to dramatically increase the number of free charge carriers, creating extrinsic N-type or P-type material.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">N-Type Material</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Silicon doped with pentavalent (donor) atoms such as phosphorus, arsenic, or antimony. The fifth valence electron is loosely bound, so free electrons are the majority carriers.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">P-Type Material</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Silicon doped with trivalent (acceptor) atoms such as boron, gallium, or indium. Each impurity leaves a vacancy in the bond structure, so holes are the majority carriers.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Hole</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A vacancy in a covalent bond that behaves as a mobile positive charge carrier. Holes move as neighboring valence electrons jump into the vacancy.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Majority / Minority Carriers</div><div class="cat">Semiconductor Physics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Majority carriers are the dominant charge carriers created by doping (electrons in N-type, holes in P-type). Minority carriers are the thermally generated opposite type, responsible for leakage current.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">The P-N Junction</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">P-N Junction</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The boundary formed within a single crystal where P-type and N-type regions meet. It is the fundamental building block of diodes, transistors, and integrated circuits.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Depletion Region</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The thin zone at the junction emptied of mobile carriers by diffusion and recombination. It contains fixed ions that create an internal electric field opposing further diffusion.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Barrier Potential</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The internal voltage across the depletion region that must be overcome before significant forward current flows — approximately 0.7 V for silicon and 0.3 V for germanium at room temperature.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Forward Bias</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The condition where the external source's positive terminal connects to the anode (P-side). The depletion region narrows and current flows freely once the barrier potential is exceeded.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Reverse Bias</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The condition where the positive terminal connects to the cathode (N-side). The depletion region widens, blocking all current except a tiny minority-carrier leakage current.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Reverse Breakdown</div><div class="cat">The P-N Junction</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The condition where reverse voltage exceeds the diode's rated limit and current increases sharply via avalanche or Zener mechanisms. Destructive for rectifiers; intentional and useful in Zener diodes.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Diode Behavior &amp; the I-V Curve</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Diode</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A two-terminal semiconductor device built around a single P-N junction that conducts current easily in one direction (anode to cathode) and blocks it in the other.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Anode &amp; Cathode</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The anode is the P-side terminal; the cathode is the N-side terminal, marked with a band on the diode body. Conventional current flows anode → cathode when forward biased.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">I-V Characteristic Curve</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The graph of diode current versus applied voltage. It shows the exponential forward region, the flat reverse-leakage region, and the steep breakdown region — the diode's complete "fingerprint."</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Knee (Threshold) Voltage</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The forward voltage at which current begins to rise rapidly on the I-V curve — the visible "bend." Approximately 0.7 V for silicon, 0.3 V for germanium, and 1.8–3.3 V for LEDs.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Shockley Diode Equation</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>I = I<sub>S</sub>(e<sup>V/nV<sub>T</sub></sup> − 1). The mathematical model of the exponential I-V relationship, where I<sub>S</sub> is saturation current, n is the ideality factor, and V<sub>T</sub> ≈ 26 mV at room temperature.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Dynamic Resistance</div><div class="cat">Diode Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The small-signal resistance of a conducting diode, equal to the inverse slope of the I-V curve at the operating point: r<sub>d</sub> ≈ 26 mV / I<sub>D</sub>. It decreases as forward current increases.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Applications: Switch, Rectifier &amp; Regulator</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Rectifier</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A diode circuit that converts AC into pulsating DC by allowing current flow during only one polarity of the input waveform. The first stage of nearly every power supply.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Half-Wave Rectifier</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A single-diode circuit that passes only one half-cycle of the AC input, producing output at the line frequency (60 Hz ripple from a 60 Hz source). Simple but inefficient.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Full-Wave Bridge Rectifier</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A four-diode arrangement that inverts the negative half-cycles, so both halves of the AC input contribute to the output. Ripple frequency doubles (120 Hz), making filtering easier.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The residual AC variation remaining on a rectified and filtered DC output. Reduced by larger filter capacitors, higher ripple frequency, or active regulation.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Zener Diode</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A diode engineered to operate safely in reverse breakdown at a precise voltage (V<sub>Z</sub>). It holds a nearly constant voltage across its terminals, making it ideal for shunt regulation and reference circuits.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Voltage Regulator</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A circuit that maintains a constant output voltage despite changes in input voltage or load current. A Zener diode with a series resistor forms the simplest shunt regulator.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Light-Emitting Diode (LED)</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A diode that emits photons when forward biased. Forward voltage depends on emission color (≈1.8 V red to ≈3.3 V blue/white) and always requires a series current-limiting resistor.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Peak Inverse Voltage (PIV)</div><div class="cat">Applications</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The maximum reverse voltage a diode must withstand in a circuit without breaking down. A rectifier diode's PIV rating must exceed the peak reverse voltage it will experience.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CORE CONTENT ================= -->
+<section id="content">
+  <h2 class="sec-title">Core Lesson Content</h2>
+  <div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="showTab(0,this)">1. Intro</button>
+    <button class="tab-btn" onclick="showTab(1,this)">2. Atomic Structure</button>
+    <button class="tab-btn" onclick="showTab(2,this)">3. Doping</button>
+    <button class="tab-btn" onclick="showTab(3,this)">4. P-N Junction</button>
+    <button class="tab-btn" onclick="showTab(4,this)">5. Bias Conditions</button>
+    <button class="tab-btn" onclick="showTab(5,this)">6. I-V Curve</button>
+    <button class="tab-btn" onclick="showTab(6,this)">7. Diode as Switch</button>
+    <button class="tab-btn" onclick="showTab(7,this)">8. Rectification</button>
+    <button class="tab-btn" onclick="showTab(8,this)">9. Zener Regulation</button>
+  </div>
+
+  <!-- TAB 1: INTRO -->
+  <div class="tab-pane show">
+    <h3>Why Semiconductors Changed Everything</h3>
+    <p>Welcome to <strong>Lesson 1: Semiconductor Fundamentals &amp; Diodes</strong>. Every digital device you will study in this course — logic gates, flip-flops, microprocessors, memory — is built from billions of P-N junctions. Before you can analyze a NAND gate or bias a transistor, you must understand the single junction that started it all: the <strong>diode</strong>.</p>
+    <p>Conductors (copper, aluminum) have loosely bound electrons and conduct freely. Insulators (glass, rubber) hold their electrons tightly and block current. <strong>Semiconductors sit in between</strong> — and, critically, their conductivity can be engineered with atomic precision. That controllability is the foundation of all modern electronics.</p>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Pro Tip: Think Like a Technician</div>
+      When troubleshooting on the bench, you rarely solve the Shockley equation. You use the practical model: a silicon diode drops <strong>about 0.7 V when conducting</strong> and acts as an <strong>open circuit when reverse biased</strong>. Master the physics here so the shortcut makes sense later.
+    </div>
+    <p>This lesson builds in a deliberate sequence: atoms → crystals → doping → the junction → bias → the characteristic curve → real applications. Each stage depends on the one before it, so resist the urge to skip ahead.</p>
+    <h4>Try It Live</h4>
+    <div class="sim-links">
+      <a class="sim-chip" href="#grapher">📈 Diode I-V Curve Grapher (below)</a>
+      <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt/index.html" target="_blank" rel="noopener">🧰 ELT 102 Simulator Library</a>
+    </div>
+  </div>
+
+  <!-- TAB 2: ATOMIC STRUCTURE -->
+  <div class="tab-pane">
+    <h3>Atomic Structure of Semiconductor Materials</h3>
+    <p>Silicon (atomic number 14) and germanium (atomic number 32) share one crucial property: <strong>exactly four valence electrons</strong> in their outermost shell. Atoms seek a full outer shell of eight electrons, and a silicon atom achieves this by <strong>covalently bonding</strong> with four neighboring atoms — each pair of atoms sharing one electron apiece.</p>
+    <p>The result is a highly ordered, repeating three-dimensional structure called a <strong>crystal lattice</strong>. In a perfect lattice at absolute zero, every valence electron is locked into a bond: there are no free carriers, and the crystal is an insulator.</p>
+    <h4>Thermal Energy and Electron-Hole Pairs</h4>
+    <p>At room temperature, thermal energy occasionally breaks a covalent bond. The freed electron becomes a mobile negative carrier, and it leaves behind a vacancy — a <strong>hole</strong> — that behaves as a mobile <em>positive</em> carrier as neighboring electrons hop into it. In pure (intrinsic) silicon these <strong>electron-hole pairs</strong> are the only carriers, so conduction is weak and rises with temperature.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Property</th><th>Conductor (Cu)</th><th>Semiconductor (Si)</th><th>Insulator (Glass)</th></tr>
+      <tr><td>Valence electrons</td><td>1</td><td>4</td><td>8 (effectively full)</td></tr>
+      <tr><td>Energy gap to conduction</td><td>Overlapping bands</td><td>≈1.1 eV (Si)</td><td>&gt;5 eV</td></tr>
+      <tr><td>Carriers at room temp</td><td>Enormous</td><td>Few (intrinsic) — tunable by doping</td><td>Essentially none</td></tr>
+      <tr><td>Effect of heat</td><td>Resistance rises</td><td>Resistance falls</td><td>Negligible</td></tr>
+    </table></div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out</div>
+      Semiconductors have a <strong>negative temperature coefficient of resistance</strong> — the opposite of copper wire. Heat creates more electron-hole pairs, so a hot diode leaks more and drops <em>less</em> forward voltage (about −2 mV/°C). You will see this live in the grapher below.
+    </div>
+    <h4>Silicon vs. Germanium</h4>
+    <p>Germanium powered the first transistors, but silicon dominates today: it tolerates higher temperatures, leaks far less, forms a stable native oxide (essential for chip fabrication), and is the second most abundant element in Earth's crust. Germanium survives in niche roles where its lower 0.3 V barrier potential is an advantage.</p>
+  </div>
+
+  <!-- TAB 3: DOPING -->
+  <div class="tab-pane">
+    <h3>Doping: Engineering Conductivity</h3>
+    <p>Intrinsic silicon is nearly useless on its own. The breakthrough of solid-state electronics is <strong>doping</strong> — deliberately adding roughly one impurity atom per ten million silicon atoms to control exactly how many carriers exist and what charge they carry.</p>
+    <h4>N-Type: Donor Atoms (Pentavalent)</h4>
+    <p>Add an atom with <strong>five</strong> valence electrons — phosphorus, arsenic, or antimony. Four electrons form covalent bonds with neighboring silicon; the fifth has no bond to join and becomes a free electron with almost no energy required. Each donor atom "donates" one carrier. In N-type material, <strong>electrons are the majority carriers</strong> and thermally generated holes are the minority carriers.</p>
+    <h4>P-Type: Acceptor Atoms (Trivalent)</h4>
+    <p>Add an atom with <strong>three</strong> valence electrons — boron, gallium, or indium. It can complete only three of the four bonds, leaving a vacancy that readily "accepts" an electron from a neighbor. Each acceptor atom creates one mobile hole. In P-type material, <strong>holes are the majority carriers</strong> and electrons are the minority carriers.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Property</th><th>N-Type</th><th>P-Type</th></tr>
+      <tr><td>Dopant valence</td><td>5 (pentavalent)</td><td>3 (trivalent)</td></tr>
+      <tr><td>Common dopants</td><td>Phosphorus, arsenic, antimony</td><td>Boron, gallium, indium</td></tr>
+      <tr><td>Dopant name</td><td>Donor</td><td>Acceptor</td></tr>
+      <tr><td>Majority carrier</td><td>Free electron (−)</td><td>Hole (+)</td></tr>
+      <tr><td>Minority carrier</td><td>Hole</td><td>Electron</td></tr>
+      <tr><td>Net charge of material</td><td>Neutral</td><td>Neutral</td></tr>
+    </table></div>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      A classic trap: doped material is still <strong>electrically neutral</strong>. Every donor atom brings its own proton along with its extra electron. "N" and "P" describe the <em>mobile carrier type</em>, not a net static charge on the crystal.
+    </div>
+  </div>
+
+  <!-- TAB 4: P-N JUNCTION -->
+  <div class="tab-pane">
+    <h3>The P-N Junction and the Depletion Region</h3>
+    <p>A junction is not made by gluing P and N pieces together — it is formed by diffusing or implanting dopants into <strong>a single continuous crystal</strong>, creating adjacent P and N regions with an atomically clean boundary.</p>
+    <h4>What Happens at the Instant of Formation</h4>
+    <ol class="styled">
+      <li><strong>Diffusion:</strong> Free electrons near the boundary diffuse from the N-side into the P-side, where they recombine with holes (and vice versa).</li>
+      <li><strong>Fixed ions remain:</strong> Each departed electron leaves behind a positively charged donor ion on the N-side; each filled hole creates a negatively charged acceptor ion on the P-side. These ions are locked in the lattice and cannot move.</li>
+      <li><strong>Depletion region forms:</strong> A thin zone straddling the junction is now "depleted" of mobile carriers — only fixed ions remain.</li>
+      <li><strong>Barrier potential develops:</strong> The wall of fixed positive ions facing fixed negative ions creates an internal electric field, and therefore a voltage, that opposes further diffusion. Equilibrium is reached at approximately <strong>0.7 V for silicon</strong> and <strong>0.3 V for germanium</strong>.</li>
+    </ol>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Mental Model</div>
+      Picture the depletion region as a <strong>toll gate</strong>. The barrier potential is the toll price: no charge crosses until an external source "pays" at least 0.7 V. Forward bias lowers the gate; reverse bias raises it higher.
+    </div>
+    <p>The width of the depletion region — and therefore how the junction behaves — is controlled entirely by the polarity and magnitude of the external voltage. That is the subject of the next tab.</p>
+  </div>
+
+  <!-- TAB 5: BIAS -->
+  <div class="tab-pane">
+    <h3>Forward and Reverse Bias</h3>
+    <h4>Forward Bias: The Closed Gate Opens</h4>
+    <p>Connect the source's <strong>positive terminal to the anode (P-side)</strong> and negative terminal to the cathode (N-side). The external field pushes majority carriers toward the junction: electrons and holes flood the depletion region, narrowing it. Once the applied voltage exceeds the barrier potential (≈0.7 V Si), the junction conducts and current rises <strong>exponentially</strong>. The diode itself continues to drop roughly 0.7 V; the series resistor must limit the current.</p>
+    <div class="formula">Forward current (loop analysis):&nbsp;&nbsp; I<sub>D</sub> = (V<sub>SOURCE</sub> − 0.7 V) / R<sub>SERIES</sub></div>
+    <h4>Reverse Bias: The Gate Slams Shut</h4>
+    <p>Reverse the source: <strong>positive terminal to the cathode</strong>. Majority carriers are pulled <em>away</em> from the junction, widening the depletion region until it supports the entire applied voltage. Only a tiny <strong>reverse leakage current</strong> (nanoamps in silicon) flows, carried by thermally generated minority carriers. For circuit analysis, a reverse-biased diode is an <strong>open switch</strong>.</p>
+    <h4>Reverse Breakdown</h4>
+    <p>Push reverse voltage past the diode's rating and the field accelerates minority carriers hard enough to knock loose additional electrons in a chain reaction — <strong>avalanche breakdown</strong>. Current spikes almost vertically. In rectifier diodes this usually destroys the part; in Zener diodes it is the intended, precisely engineered operating mode.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Condition</th><th>Polarity (Anode)</th><th>Depletion Region</th><th>Current</th><th>Circuit Model</th></tr>
+      <tr><td><strong>Forward bias</strong></td><td>Positive (&gt; +0.7 V vs cathode)</td><td>Narrows / collapses</td><td>Large, exponential</td><td>Closed switch + 0.7 V drop</td></tr>
+      <tr><td><strong>Reverse bias</strong></td><td>Negative</td><td>Widens</td><td>≈0 (nA leakage)</td><td>Open switch</td></tr>
+      <tr><td><strong>Breakdown</strong></td><td>Negative, beyond rating</td><td>Field-punctured</td><td>Large (must be limited)</td><td>Constant-voltage source (V<sub>Z</sub>)</td></tr>
+    </table></div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out</div>
+      A forward-biased diode with <strong>no series resistance</strong> is a blown diode. The exponential curve means a few tenths of a volt above the knee can push current past the maximum rating almost instantly. Always calculate the limiting resistor first.
+    </div>
+  </div>
+
+  <!-- TAB 6: I-V CURVE -->
+  <div class="tab-pane">
+    <h3>The Diode I-V Characteristic Curve</h3>
+    <p>The characteristic curve is the diode's complete behavioral fingerprint: current (vertical axis) plotted against applied voltage (horizontal axis). Learn to read its three regions and you can predict the diode's behavior in any circuit.</p>
+    <ul class="styled">
+      <li><strong>Forward region (upper right):</strong> Nearly zero current until the <strong>knee voltage</strong> (~0.7 V Si), then an exponential rise. Above the knee, voltage stays almost constant while current varies enormously.</li>
+      <li><strong>Reverse region (lower left, flat):</strong> A nearly horizontal line hugging the axis — only leakage current (I<sub>S</sub>) flows, which roughly doubles every 10 °C.</li>
+      <li><strong>Breakdown region (far lower left):</strong> A near-vertical plunge at the breakdown voltage where reverse current increases without limit.</li>
+    </ul>
+    <h4>The Shockley Equation</h4>
+    <div class="formula">I<sub>D</sub> = I<sub>S</sub> ( e<sup>V<sub>D</sub> / (n·V<sub>T</sub>)</sup> − 1 )&nbsp;&nbsp;&nbsp;where&nbsp; V<sub>T</sub> = kT/q ≈ 26 mV at 25 °C</div>
+    <p><strong>I<sub>S</sub></strong> is the reverse saturation (leakage) current, <strong>n</strong> is the ideality factor (1–2, depending on construction), and <strong>V<sub>T</sub></strong> is the thermal voltage, which grows with absolute temperature. Two practical consequences: forward voltage <em>drops</em> about 2 mV for every 1 °C rise, and leakage roughly <em>doubles</em> every 10 °C.</p>
+    <h4>Three Practical Diode Models</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Model</th><th>Forward Assumption</th><th>When to Use</th></tr>
+      <tr><td><strong>Ideal</strong></td><td>Perfect closed switch (0 V drop)</td><td>Quick logic-level reasoning; V<sub>SOURCE</sub> ≫ 0.7 V</td></tr>
+      <tr><td><strong>Constant-drop (2nd approx.)</strong></td><td>Closed switch + fixed 0.7 V</td><td>Standard bench and homework analysis — the default</td></tr>
+      <tr><td><strong>Piecewise-linear (3rd approx.)</strong></td><td>0.7 V + small bulk resistance r<sub>B</sub></td><td>Precision work, high currents, curve fitting</td></tr>
+    </table></div>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      If a problem gives you a silicon diode in series with a resistor and a supply over ~2 V, use the constant-drop model: subtract 0.7 V from the supply and apply Ohm's law to the resistor. That single habit solves most Lesson 1 circuit questions.
+    </div>
+    <p><strong>Now scroll down to the Interactive I-V Curve Grapher</strong> and manipulate every parameter in this equation yourself — temperature, ideality factor, saturation current, and breakdown voltage.</p>
+    <div class="sim-links">
+      <a class="sim-chip" href="#grapher">📈 Open the I-V Curve Grapher</a>
+    </div>
+  </div>
+
+  <!-- TAB 7: SWITCH -->
+  <div class="tab-pane">
+    <h3>The Diode as an Electronic Switch</h3>
+    <p>Strip away the physics and a diode is a <strong>voltage-controlled one-way valve</strong>: forward bias closes the switch, reverse bias opens it. No moving parts, switching in nanoseconds, controlled entirely by polarity. This is the conceptual bridge between analog devices and the digital logic you will study for the rest of ELT 102.</p>
+    <h4>Analysis Procedure for Diode Switching Circuits</h4>
+    <ol class="styled">
+      <li><strong>Guess the state</strong> of each diode (ON or OFF) from the polarity of sources.</li>
+      <li><strong>Replace</strong> each ON diode with a 0.7 V drop and each OFF diode with an open circuit.</li>
+      <li><strong>Solve</strong> the resulting linear circuit with Ohm's and Kirchhoff's laws.</li>
+      <li><strong>Verify:</strong> every "ON" diode must show forward current &gt; 0; every "OFF" diode must show anode-cathode voltage &lt; 0.7 V. If a check fails, flip that assumption and re-solve.</li>
+    </ol>
+    <h4>Diode Logic — a Preview of Digital</h4>
+    <p>Two diodes with a shared resistor form primitive logic: a <strong>diode AND gate</strong> outputs HIGH only when both inputs are HIGH; a <strong>diode OR gate</strong> outputs HIGH when either input is HIGH. Early computers were literally built this way (diode-resistor logic). Understanding why the 0.7 V drop degrades the logic levels — and why transistors were needed to restore them — sets up Lesson 5 perfectly.</p>
+    <h4>Other Switching Roles</h4>
+    <ul class="styled">
+      <li><strong>Clippers (limiters):</strong> chop off waveform portions above or below a set level — input protection on nearly every IC pin.</li>
+      <li><strong>Clampers:</strong> shift a waveform's DC level without changing its shape.</li>
+      <li><strong>Flyback (freewheeling) diodes:</strong> placed across relay coils and motor windings to safely discharge inductive kickback that would otherwise destroy switching transistors.</li>
+      <li><strong>Reverse-polarity protection:</strong> a single series diode prevents damage when a battery is installed backwards — at the cost of a 0.7 V drop.</li>
+    </ul>
+  </div>
+
+  <!-- TAB 8: RECTIFICATION -->
+  <div class="tab-pane">
+    <h3>The Diode as a Rectifier</h3>
+    <p>The wall outlet delivers AC; nearly every electronic device needs DC. <strong>Rectification</strong> — converting AC to pulsating DC — is the diode's most important industrial job and the first stage of every linear power supply: <em>transformer → rectifier → filter → regulator</em>.</p>
+    <h4>Half-Wave Rectifier</h4>
+    <p>One diode in series with the load. During the positive half-cycle the diode conducts and the load sees the input (minus 0.7 V); during the negative half-cycle the diode blocks and the output is zero. The output is DC — it never changes polarity — but it is very rough: 60 Hz pulses with dead gaps between them.</p>
+    <div class="formula">V<sub>PEAK(out)</sub> = V<sub>PEAK(in)</sub> − 0.7 V&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;V<sub>AVG</sub> ≈ 0.318 × V<sub>PEAK(out)</sub>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;f<sub>ripple</sub> = f<sub>in</sub></div>
+    <h4>Full-Wave Bridge Rectifier</h4>
+    <p>Four diodes arranged so that on each half-cycle, two conduct and steer current through the load in the <em>same direction</em>. The negative half-cycles are flipped upward instead of discarded.</p>
+    <div class="formula">V<sub>PEAK(out)</sub> = V<sub>PEAK(in)</sub> − 1.4 V (two diode drops)&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;V<sub>AVG</sub> ≈ 0.637 × V<sub>PEAK(out)</sub>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;f<sub>ripple</sub> = 2 × f<sub>in</sub></div>
+    <p>Doubling the ripple frequency to 120 Hz is the hidden win: the filter capacitor recharges twice as often, so a much smaller capacitor achieves the same smoothness.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Parameter</th><th>Half-Wave</th><th>Full-Wave Bridge</th></tr>
+      <tr><td>Diodes required</td><td>1</td><td>4</td></tr>
+      <tr><td>Diode drops in path</td><td>0.7 V</td><td>1.4 V</td></tr>
+      <tr><td>Ripple frequency (60 Hz in)</td><td>60 Hz</td><td>120 Hz</td></tr>
+      <tr><td>Average DC output</td><td>0.318 × V<sub>PK</sub></td><td>0.637 × V<sub>PK</sub></td></tr>
+      <tr><td>Transformer utilization</td><td>Poor</td><td>Excellent</td></tr>
+      <tr><td>Typical use</td><td>Cheap chargers, signal detection</td><td>Virtually all power supplies</td></tr>
+    </table></div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out: PIV</div>
+      In a half-wave rectifier with a filter capacitor, the blocking diode can see nearly <strong>2 × V<sub>PEAK</sub></strong> of reverse voltage. Always select a diode whose PIV rating comfortably exceeds the worst-case reverse voltage — a 1N4007 (1000 V PIV) costs the same pennies as a 1N4001 (50 V PIV).
+    </div>
+  </div>
+
+  <!-- TAB 9: ZENER -->
+  <div class="tab-pane">
+    <h3>The Zener Diode as a Voltage Regulator</h3>
+    <p>Every diode breaks down in reverse eventually — the Zener diode is simply built to do it <strong>on purpose, at a precise voltage, and survive</strong>. Heavy doping produces a thin depletion region that breaks down sharply at a designed value (V<sub>Z</sub>), available from about 2.4 V to 200 V.</p>
+    <h4>How Shunt Regulation Works</h4>
+    <p>Place the Zener in <strong>reverse bias</strong>, in parallel (shunt) with the load, fed through a series resistor R<sub>S</sub>. Once the input exceeds V<sub>Z</sub>, the Zener enters breakdown and clamps the output at V<sub>Z</sub>. If the input rises or the load draws less current, the Zener simply absorbs the surplus current; R<sub>S</sub> soaks up the excess voltage. The output barely moves.</p>
+    <div class="formula">V<sub>OUT</sub> = V<sub>Z</sub>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;I<sub>S</sub> = (V<sub>IN</sub> − V<sub>Z</sub>) / R<sub>S</sub>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;I<sub>Z</sub> = I<sub>S</sub> − I<sub>LOAD</sub></div>
+    <h4>Worked Example</h4>
+    <p>A 5.1 V Zener (1N4733A) regulates a 9 V input through R<sub>S</sub> = 180 Ω, feeding a load drawing 10 mA:</p>
+    <ul class="styled">
+      <li>Series current: I<sub>S</sub> = (9 − 5.1) / 180 = <strong>21.7 mA</strong></li>
+      <li>Zener current: I<sub>Z</sub> = 21.7 − 10 = <strong>11.7 mA</strong> ✓ (above the ~5 mA minimum needed to stay in breakdown)</li>
+      <li>Zener power: P<sub>Z</sub> = 5.1 × 0.0117 = <strong>60 mW</strong> ✓ (well under the 1 W rating)</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Two failure modes to check on every Zener problem: (1) If load current rises so high that I<sub>Z</sub> falls below its minimum, the Zener <strong>drops out of regulation</strong> and V<sub>OUT</sub> sags. (2) If the load is disconnected, the Zener absorbs <em>all</em> of I<sub>S</sub> — verify its power rating can handle that worst case.
+    </div>
+    <h4>Avalanche vs. Zener Mechanisms</h4>
+    <p>Below about 5 V, true <strong>Zener tunneling</strong> dominates (negative temperature coefficient). Above about 6 V, <strong>avalanche multiplication</strong> dominates (positive coefficient). Around 5.6 V the two effects nearly cancel — which is why 5.6 V Zeners make unusually temperature-stable references.</p>
+    <p>Set the breakdown slider in the grapher below to 5.1 V and watch the reverse region of the curve become a vertical regulation wall.</p>
+    <div class="sim-links">
+      <a class="sim-chip" href="#grapher">📈 Model a Zener in the Grapher</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE GRAPHER ================= -->
+<section id="grapher">
+  <h2 class="sec-title">📈 Interactive Diode I-V Curve Grapher</h2>
+  <p>This grapher plots the full characteristic curve live from the <strong>Shockley diode equation</strong>, plus a modeled breakdown region. Drag the <strong>Applied Voltage</strong> slider to move the green operating point along the curve and watch the diode switch between OFF, ON, and BREAKDOWN. Then raise the temperature and watch the knee slide left while leakage grows — exactly the behavior described in the lesson.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas id="ivCanvas" width="720" height="480" role="img" aria-label="Diode current versus voltage characteristic curve with adjustable parameters"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Diode Type <span class="val" id="typeVal"></span></label>
+          <select id="dType" onchange="presetType()">
+            <option value="si" selected>Silicon rectifier (1N4001-style)</option>
+            <option value="ge">Germanium (1N34A-style)</option>
+            <option value="led">Red LED</option>
+            <option value="zener">5.1 V Zener (1N4733A-style)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Applied Voltage V<sub>D</sub> <span class="val" id="vdVal">0.00 V</span></label>
+          <input type="range" id="vd" min="-8" max="1.2" step="0.01" value="0" oninput="draw()">
+        </div>
+        <div class="ctrl">
+          <label>Temperature <span class="val" id="tVal">25 °C</span></label>
+          <input type="range" id="temp" min="-25" max="125" step="1" value="25" oninput="draw()">
+        </div>
+        <div class="ctrl">
+          <label>Ideality Factor n <span class="val" id="nVal">1.5</span></label>
+          <input type="range" id="nf" min="1" max="2" step="0.05" value="1.5" oninput="draw()">
+        </div>
+        <div class="ctrl">
+          <label>Saturation Current I<sub>S</sub> <span class="val" id="isVal">10 nA</span></label>
+          <input type="range" id="isat" min="-10" max="-6" step="0.1" value="-8" oninput="draw()">
+        </div>
+        <div class="ctrl">
+          <label>Breakdown Voltage <span class="val" id="bvVal">−6.0 V</span></label>
+          <input type="range" id="bv" min="2" max="8" step="0.1" value="6" oninput="draw()">
+        </div>
+        <div class="readout" id="readout" aria-live="polite"></div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="animSweep()">▶ Sweep Curve</button>
+          <button class="g-btn" onclick="resetGrapher()">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Guided Explorations</div>
+    <strong>1. Find the knee:</strong> With Silicon selected, sweep V<sub>D</sub> upward and note where current first reaches 1 mA — that's your practical knee voltage. <strong>2. Temperature drift:</strong> Park V<sub>D</sub> at 0.65 V, then slide temperature from 25 °C to 100 °C. Current explodes even though voltage never changed — this is thermal runaway's origin. <strong>3. Compare materials:</strong> Switch to Germanium and measure how far left the knee moves. <strong>4. Zener wall:</strong> Select the Zener preset, sweep V<sub>D</sub> to −6 V, and watch the operating point slam into the vertical regulation region at exactly −5.1 V.
+  </div>
+  <div class="sim-links">
+    <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt/index.html" target="_blank" rel="noopener">🧰 More ELT 102 Circuit Simulators</a>
+  </div>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="acc open" id="factsAcc">
+    <button class="acc-head" onclick="toggleAcc('factsAcc')">Key Facts Reference Box <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <div class="facts">
+        <div class="fact"><div class="f-label">Si / Ge Valence Electrons</div><div class="f-val">4 (both) — the defining trait</div></div>
+        <div class="fact"><div class="f-label">Barrier Potential</div><div class="f-val">Si ≈ 0.7 V | Ge ≈ 0.3 V</div></div>
+        <div class="fact"><div class="f-label">N-Type Dopants (Donors)</div><div class="f-val">P, As, Sb — pentavalent</div></div>
+        <div class="fact"><div class="f-label">P-Type Dopants (Acceptors)</div><div class="f-val">B, Ga, In — trivalent</div></div>
+        <div class="fact"><div class="f-label">Forward Bias Rule</div><div class="f-val">+ to anode (P) | narrows depletion</div></div>
+        <div class="fact"><div class="f-label">Reverse Bias Rule</div><div class="f-val">+ to cathode (N) | widens depletion</div></div>
+        <div class="fact"><div class="f-label">Shockley Equation</div><div class="f-val">I = I<sub>S</sub>(e<sup>V/nVT</sup> − 1)</div></div>
+        <div class="fact"><div class="f-label">Thermal Voltage V<sub>T</sub></div><div class="f-val">≈ 26 mV @ 25 °C</div></div>
+        <div class="fact"><div class="f-label">V<sub>F</sub> Temp Coefficient</div><div class="f-val">≈ −2 mV per °C</div></div>
+        <div class="fact"><div class="f-label">Leakage vs. Temp</div><div class="f-val">Doubles every ≈10 °C</div></div>
+        <div class="fact"><div class="f-label">Half-Wave Output</div><div class="f-val">V<sub>AVG</sub> = 0.318 V<sub>PK</sub> | ripple = f<sub>in</sub></div></div>
+        <div class="fact"><div class="f-label">Full-Wave Bridge Output</div><div class="f-val">V<sub>AVG</sub> = 0.637 V<sub>PK</sub> | ripple = 2f<sub>in</sub></div></div>
+        <div class="fact"><div class="f-label">Bridge Diode Drops</div><div class="f-val">2 × 0.7 V = 1.4 V per half-cycle</div></div>
+        <div class="fact"><div class="f-label">Zener Operating Mode</div><div class="f-val">Reverse breakdown (intentional)</div></div>
+        <div class="fact"><div class="f-label">Shunt Regulator Currents</div><div class="f-val">I<sub>Z</sub> = I<sub>S</sub> − I<sub>LOAD</sub></div></div>
+        <div class="fact"><div class="f-label">Most Stable Zener Voltage</div><div class="f-val">≈ 5.6 V (mechanisms cancel)</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Test your understanding with ten questions. Select your answers and click "Submit Answers" for your score and detailed feedback.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+      <div class="score-box" id="scoreBox"><div class="big">Score: 0 / 10</div><p>Please complete all questions to view your results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="https://sands-mvcc.github.io/elt/index.html">← Course Home</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 ELT 102 Home</a>
+  <a href="lesson02.html">Next: Lesson 2 →</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Lesson 1: Semiconductor Fundamentals &amp; Diodes<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  var t = localStorage.getItem('elt-theme');
+  if(t==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d = document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  draw();
+}
+
+/* ============ ACCORDION ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+
+/* ============ TABS ============ */
+function showTab(i, btn){
+  var panes = document.querySelectorAll('.tab-pane');
+  var btns = document.querySelectorAll('.tab-btn');
+  panes.forEach(function(p,idx){ p.classList.toggle('show', idx===i); });
+  btns.forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ GRAPHER ============ */
+var cv = document.getElementById('ivCanvas'), cx = cv.getContext('2d');
+var animId = null;
+
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function params(){
+  var T = parseFloat(document.getElementById('temp').value);      // °C
+  var n = parseFloat(document.getElementById('nf').value);
+  var Is25 = Math.pow(10, parseFloat(document.getElementById('isat').value)); // A at 25°C
+  var Vbr = parseFloat(document.getElementById('bv').value);       // positive number
+  var Vd = parseFloat(document.getElementById('vd').value);
+  var Tk = T + 273.15;
+  var VT = 8.617e-5 * Tk;                       // kT/q in volts
+  var Is = Is25 * Math.pow(2, (T-25)/10);       // leakage doubles per 10°C
+  return {T:T, n:n, Is:Is, Vbr:Vbr, Vd:Vd, VT:VT};
+}
+
+function idiode(V, p){
+  // Forward/reverse Shockley with soft breakdown model
+  var i = p.Is * (Math.exp(V/(p.n*p.VT)) - 1);
+  if(V < -p.Vbr*0.94){
+    // exponential avalanche onset near -Vbr
+    i -= 0.002 * (Math.exp((-V - p.Vbr*0.94)/(0.02*p.Vbr)) - 1);
+  }
+  return i;
+}
+
+// axis scaling: x from -Vmax..+1.2, y in mA with asymmetric compression
+var XMIN=-8, XMAX=1.2, YMAX=60, YMIN=-60; // mA display range
+
+function sx(v){ var pad=52; return pad + (v-XMIN)/(XMAX-XMIN)*(cv.width-pad-14); }
+function sy(imA){
+  var mid = cv.height/2;
+  var s = Math.sign(imA)*Math.pow(Math.abs(imA)/YMAX,0.5); // sqrt compression for readability
+  return mid - s*(mid-30);
+}
+
+function draw(){
+  var p = params();
+  document.getElementById('vdVal').textContent = p.Vd.toFixed(2)+' V';
+  document.getElementById('tVal').textContent = p.T+' °C';
+  document.getElementById('nVal').textContent = p.n.toFixed(2);
+  var isv = p.Is;
+  document.getElementById('isVal').textContent = isv>=1e-6 ? (isv*1e6).toFixed(1)+' µA' : (isv*1e9).toFixed(1)+' nA';
+  document.getElementById('bvVal').textContent = '−'+p.Vbr.toFixed(1)+' V';
+
+  var axis = css('--text-muted')||'#5a6b7d', grid = css('--border')||'#d7dfe9';
+  var curveC = css('--navy')||'#0047AB', ptC = css('--green')||'#00a86b';
+  var bg = css('--card')||'#ffffff', txt = css('--text')||'#1c2733';
+
+  cx.fillStyle = bg; cx.fillRect(0,0,cv.width,cv.height);
+
+  // grid + labels
+  cx.strokeStyle = grid; cx.lineWidth = 1; cx.font = '11px Arial'; cx.fillStyle = axis;
+  for(var gv=Math.ceil(XMIN); gv<=1; gv++){
+    var x = sx(gv);
+    cx.beginPath(); cx.moveTo(x,20); cx.lineTo(x,cv.height-24); cx.stroke();
+    cx.fillText(gv+' V', x-12, cv.height-8);
+  }
+  [50,20,5,1,-1,-5,-20,-50].forEach(function(im){
+    var y = sy(im);
+    cx.beginPath(); cx.moveTo(46,y); cx.lineTo(cv.width-14,y); cx.stroke();
+    cx.fillText((im>0?'+':'')+im+' mA', 4, y+4);
+  });
+
+  // axes
+  cx.strokeStyle = axis; cx.lineWidth = 1.6;
+  cx.beginPath(); cx.moveTo(sx(0),20); cx.lineTo(sx(0),cv.height-24); cx.stroke();
+  cx.beginPath(); cx.moveTo(46,sy(0)); cx.lineTo(cv.width-14,sy(0)); cx.stroke();
+  cx.fillStyle = txt; cx.font = 'bold 12px Arial';
+  cx.fillText('V (volts) →', cv.width-90, sy(0)-8);
+  cx.save(); cx.translate(sx(0)+10,34); cx.fillText('I (mA) ↑',0,0); cx.restore();
+
+  // region labels
+  cx.fillStyle = axis; cx.font = 'italic 11px Georgia';
+  cx.fillText('FORWARD REGION', sx(0.35), 40);
+  cx.fillText('REVERSE / LEAKAGE', sx(-6.4), sy(0)-10);
+  cx.fillText('BREAKDOWN', sx(-p.Vbr)-34, cv.height-56);
+
+  // knee marker line at ~0.7 (Si visual aid)
+  cx.setLineDash([4,4]); cx.strokeStyle = ptC; cx.lineWidth = 1;
+  cx.beginPath(); cx.moveTo(sx(0.7),20); cx.lineTo(sx(0.7),cv.height-24); cx.stroke();
+  cx.setLineDash([]);
+  cx.fillStyle = ptC; cx.fillText('0.7 V', sx(0.7)+3, 30);
+
+  // curve
+  cx.strokeStyle = curveC; cx.lineWidth = 2.6; cx.beginPath();
+  var first = true;
+  for(var v=XMIN; v<=XMAX; v+=0.005){
+    var imA = idiode(v,p)*1000;
+    if(imA>YMAX) imA=YMAX; if(imA<YMIN) imA=YMIN;
+    var X=sx(v), Y=sy(imA);
+    if(first){ cx.moveTo(X,Y); first=false; } else cx.lineTo(X,Y);
+  }
+  cx.stroke();
+
+  // operating point
+  var iop = idiode(p.Vd,p)*1000;
+  var iopClamped = Math.max(YMIN, Math.min(YMAX, iop));
+  cx.fillStyle = ptC;
+  cx.beginPath(); cx.arc(sx(p.Vd), sy(iopClamped), 7, 0, Math.PI*2); cx.fill();
+  cx.strokeStyle = bg; cx.lineWidth=2; cx.stroke();
+
+  // readout
+  var state, cls;
+  if(p.Vd <= -p.Vbr*0.94){ state='BREAKDOWN'; cls='r-bd'; }
+  else if(iop >= 0.5){ state='ON (conducting)'; cls='r-on'; }
+  else { state='OFF (blocking)'; cls='r-off'; }
+  var iDisp = Math.abs(iop)>=1 ? iop.toFixed(2)+' mA'
+            : Math.abs(iop)>=0.001 ? (iop*1000).toFixed(2)+' µA'
+            : (iop*1e6).toFixed(3)+' nA';
+  var rd = iop>0.5 ? (p.n*p.VT/(iop/1000)).toFixed(1)+' Ω' : '—';
+  document.getElementById('readout').innerHTML =
+    'V<sub>D</sub> = '+p.Vd.toFixed(2)+' V<br>'+
+    'I<sub>D</sub> = '+iDisp+'<br>'+
+    'State: <span class="'+cls+'">'+state+'</span><br>'+
+    'V<sub>T</sub> = '+(p.VT*1000).toFixed(1)+' mV<br>'+
+    'r<sub>d</sub> ≈ '+rd;
+}
+
+function presetType(){
+  var t = document.getElementById('dType').value;
+  var nf=document.getElementById('nf'), is=document.getElementById('isat'), bv=document.getElementById('bv');
+  if(t==='si'){ nf.value=1.5; is.value=-8; bv.value=6; }
+  if(t==='ge'){ nf.value=1.1; is.value=-6.3; bv.value=4; }
+  if(t==='led'){ nf.value=2.0; is.value=-10; bv.value=5; }
+  if(t==='zener'){ nf.value=1.3; is.value=-8; bv.value=5.1; }
+  draw();
+}
+
+function resetGrapher(){
+  if(animId){ cancelAnimationFrame(animId); animId=null; }
+  document.getElementById('dType').value='si';
+  document.getElementById('vd').value=0;
+  document.getElementById('temp').value=25;
+  presetType();
+}
+
+function animSweep(){
+  if(animId){ cancelAnimationFrame(animId); animId=null; return; }
+  var vd = document.getElementById('vd');
+  var v = parseFloat(vd.min);
+  function step(){
+    v += 0.035;
+    if(v > parseFloat(vd.max)){ animId=null; return; }
+    vd.value = v; draw();
+    animId = requestAnimationFrame(step);
+  }
+  animId = requestAnimationFrame(step);
+}
+
+/* ============ QUIZ ============ */
+var QUIZ = [
+ {q:"A technician needs to explain why silicon is used to build diodes. Which atomic property makes silicon (and germanium) suitable as a semiconductor?",
+  o:["It has one loosely bound valence electron, like copper.","It has exactly four valence electrons, allowing a covalent crystal lattice whose conductivity can be precisely controlled by doping.","It has a full outer shell of eight electrons, making it perfectly stable.","It naturally contains free holes without any doping."],
+  a:1, e:"Four valence electrons allow each atom to covalently bond with four neighbors, forming a crystal lattice. That structure is nearly insulating when pure but becomes precisely conductive when doped — the essential semiconductor property."},
+ {q:"Phosphorus (5 valence electrons) is diffused into a pure silicon crystal. What material results, and what is the majority carrier?",
+  o:["P-type material; holes are the majority carrier.","N-type material; holes are the majority carrier.","N-type material; free electrons are the majority carrier.","Intrinsic material; electron-hole pairs are the only carriers."],
+  a:2, e:"A pentavalent (donor) atom bonds with four neighbors and contributes its fifth electron as a free carrier. The result is N-type material with electrons as majority carriers."},
+ {q:"At the instant a P-N junction is formed, electrons diffuse across the boundary and recombine with holes. What structure does this create?",
+  o:["A permanent short circuit across the junction.","A depletion region of fixed ions with a barrier potential of about 0.7 V (silicon).","A widened conduction band with zero resistance.","A layer of mobile carriers that conducts in both directions."],
+  a:1, e:"Diffusion strips the junction area of mobile carriers, leaving fixed positive ions on the N-side and fixed negative ions on the P-side. This depletion region establishes the ≈0.7 V barrier potential in silicon."},
+ {q:"A silicon diode's anode is connected through a resistor to +5 V and its cathode to ground. Which statement is correct?",
+  o:["The diode is reverse biased and blocks all current.","The diode is forward biased; the depletion region narrows and it conducts, dropping about 0.7 V.","The diode is in breakdown and will be destroyed.","The diode conducts with zero voltage drop."],
+  a:1, e:"Positive to the anode is forward bias. Once the applied voltage exceeds the 0.7 V barrier, the depletion region collapses and current flows, with the diode maintaining ≈0.7 V across itself."},
+ {q:"A 1N4001 diode in a circuit shows +12 V on its cathode relative to its anode. Approximately how much current flows, and why?",
+  o:["A large forward current, limited only by the resistor.","Zero current in either direction under all conditions.","Only nanoamps of leakage current, because reverse bias widens the depletion region.","Exactly 0.7 V divided by the circuit resistance."],
+  a:2, e:"Positive on the cathode is reverse bias. The depletion region widens and blocks conduction; only a tiny minority-carrier leakage current (nA range for silicon) flows — effectively an open switch."},
+ {q:"On a diode I-V characteristic curve, what does the 'knee' represent?",
+  o:["The point where the diode enters reverse breakdown.","The maximum current rating of the diode.","The forward voltage (~0.7 V Si) where current begins rising exponentially.","The temperature at which the diode fails."],
+  a:2, e:"The knee is the visible bend where forward current transitions from nearly zero to an exponential rise — approximately 0.7 V for silicon and 0.3 V for germanium."},
+ {q:"Using the constant-drop model: a 10 V source drives a silicon diode in series with a 1 kΩ resistor (forward biased). What is the circuit current?",
+  o:["10 mA","9.3 mA","0.7 mA","0.93 mA"],
+  a:1, e:"Subtract the 0.7 V diode drop: I = (10 − 0.7) / 1000 = 9.3 mA. This constant-drop calculation is the workhorse of practical diode analysis."},
+ {q:"A power supply uses a full-wave bridge rectifier fed by a 60 Hz transformer. What is the ripple frequency of the output, and why does it matter?",
+  o:["60 Hz; ripple frequency always matches the line.","120 Hz; both half-cycles reach the load, so the filter capacitor recharges twice as often and can be smaller.","30 Hz; the bridge divides the frequency in half.","0 Hz; a bridge rectifier produces pure DC without filtering."],
+  a:1, e:"The bridge steers both half-cycles through the load in the same direction, doubling the pulse rate to 120 Hz. Higher ripple frequency means the filter capacitor discharges for less time between peaks, so a smaller capacitor achieves the same smoothness."},
+ {q:"A 5.1 V Zener regulator has V-IN = 12 V, R-S = 330 Ω, and a load drawing 15 mA. What is the Zener current, and is the circuit regulating?",
+  o:["20.9 mA through the Zener; yes, regulating normally.","5.9 mA through the Zener; yes, regulating normally.","0 mA; the Zener never conducts under reverse bias.","36 mA; no, the Zener is forward biased."],
+  a:1, e:"I-S = (12 − 5.1)/330 ≈ 20.9 mA total. The load takes 15 mA, leaving I-Z = 20.9 − 15 = 5.9 mA flowing through the Zener — enough to keep it in breakdown and holding the output at 5.1 V."},
+ {q:"In the interactive grapher, raising the temperature from 25 °C to 100 °C while holding V-D at 0.65 V causes the current to increase dramatically. Which TWO physical effects explain this?",
+  o:["The barrier potential increases and leakage decreases.","Forward voltage required drops (~−2 mV/°C) and saturation current roughly doubles every 10 °C.","The depletion region permanently widens with heat.","The ideality factor drops to zero at high temperature."],
+  a:1, e:"Heat generates more electron-hole pairs: the effective knee slides left about 2 mV per °C, and I-S roughly doubles every 10 °C. Both effects raise current at a fixed voltage — the seed of thermal runaway."}
+];
+
+(function buildQuiz(){
+  var w = document.getElementById('quizWrap');
+  var letters = ['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d = document.createElement('div'); d.className='quiz-q';
+    var h = '<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h += '<label class="opt" id="q'+qi+'o'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+letters[oi]+'. '+opt+'</label>';
+    });
+    h += '<div class="explain" id="ex'+qi+'"><strong>Explanation:</strong> '+item.e+'</div>';
+    d.innerHTML = h; w.appendChild(d);
+  });
+})();
+
+function gradeQuiz(){
+  var score=0, answered=0;
+  QUIZ.forEach(function(item,qi){
+    var sel = document.querySelector('input[name=q'+qi+']:checked');
+    for(var oi=0; oi<4; oi++){ document.getElementById('q'+qi+'o'+oi).classList.remove('correct','incorrect'); }
+    if(sel){
+      answered++;
+      var v = parseInt(sel.value);
+      if(v===item.a){ score++; document.getElementById('q'+qi+'o'+v).classList.add('correct'); }
+      else{
+        document.getElementById('q'+qi+'o'+v).classList.add('incorrect');
+        document.getElementById('q'+qi+'o'+item.a).classList.add('correct');
+      }
+      document.getElementById('ex'+qi).classList.add('show');
+    }
+  });
+  var box = document.getElementById('scoreBox');
+  if(answered < QUIZ.length){
+    box.innerHTML = '<div class="big">Score: '+score+' / 10</div><p>You have answered '+answered+' of 10 questions. Complete all questions for a full evaluation.</p>';
+  } else {
+    var msg = score>=9 ? '🏆 Outstanding — you have mastered semiconductor fundamentals!'
+            : score>=7 ? '✅ Solid work. Review the explanations for any missed items, then re-run the grapher explorations.'
+            : score>=5 ? '📘 Getting there. Revisit the P-N Junction and Bias tabs, then retake the quiz.'
+            : '🔁 Review the full lesson content and the guided grapher explorations before retaking this check.';
+    box.innerHTML = '<div class="big">Score: '+score+' / 10</div><p>'+msg+'</p>';
+  }
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+/* init */
+draw();
+</script>
+</body>
+</html>
