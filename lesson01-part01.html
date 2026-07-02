@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Simulator: Atomic Structure of Semiconductor Materials</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:44px 24px 38px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:2.2rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:780px;margin:0 auto 20px;font-size:1.06rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:46px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:16px;}
+h3{color:var(--navy);margin:22px 0 10px;font-size:1.2rem;}
+p{margin-bottom:14px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+ul.styled{margin:0 0 16px 26px;}
+ul.styled li{margin-bottom:8px;}
+
+/* ============ SIM PANELS ============ */
+.sim{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:18px 0;}
+.sim-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:840px){.sim-grid{grid-template-columns:1fr;}}
+canvas.simcv{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl label .val{color:var(--green-dark);font-weight:bold;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:70px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.toggle-row{display:flex;align-items:center;gap:10px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.92rem;font-weight:bold;color:var(--navy);margin-bottom:15px;}
+.toggle-row input{accent-color:var(--green);width:18px;height:18px;cursor:pointer;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .hi{color:var(--green-dark);font-weight:bold;}
+.readout .lo{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.g-btn{flex:1;min-width:86px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+.bar-wrap{margin-top:12px;}
+.bar-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:3px;display:flex;justify-content:space-between;}
+.bar{height:14px;background:var(--card-alt);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.bar > div{height:100%;width:0%;transition:width .25s;border-radius:8px;}
+.bar .b-cond{background:linear-gradient(90deg,var(--green),var(--green-dark));}
+.bar .b-res{background:linear-gradient(90deg,var(--amber),var(--red));}
+.bar .b-cur{background:linear-gradient(90deg,var(--navy),var(--green));}
+
+/* ============ CALLOUTS / TABLES ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+
+/* ============ LEGEND ============ */
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 0;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;color:var(--text-muted);}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block;}
+.dot.e{background:#2a7fff;}
+.dot.h{background:transparent;border:2px dashed var(--red);}
+.dot.v{background:var(--green);}
+.dot.n{background:#8899aa;}
+
+/* ============ FOOT NAV / FOOTER ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.7rem;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Simulator · Lesson 1 Companion</span>
+  <button class="theme-btn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson01.html">Lesson 1</a> &nbsp;›&nbsp;
+  Atomic Structure Simulator
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Interactive Simulator · Unit 1</span>
+  <h1>Atomic Structure of Semiconductor Materials</h1>
+  <p class="sub">Explore why four valence electrons make silicon special: orbit real atoms, heat a covalent crystal lattice until bonds break, watch electron-hole pairs drift in an electric field, and see the energy band gap that separates conductors, semiconductors, and insulators.</p>
+  <div class="meta-chips">
+    <span>⚛ Bohr Atom Explorer</span>
+    <span>🔥 Thermal Lattice Simulator</span>
+    <span>📊 Energy Band Diagram</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= SIM 1: BOHR ATOM ================= -->
+<section id="atom">
+  <h2 class="sec-title">⚛ Simulator 1: Bohr Atom Explorer</h2>
+  <p>Silicon (Z=14) and germanium (Z=32) look very different at first glance — until you count the <strong>outermost shell</strong>. Both hold <strong>exactly four valence electrons</strong>, and that single shared trait is what makes them semiconductors. Compare them against copper (one loosely bound valence electron — a conductor) and argon (a full octet stand-in for insulators like glass).</p>
+  <div class="sim">
+    <div class="sim-grid">
+      <div>
+        <canvas class="simcv" id="atomCv" width="720" height="470" role="img" aria-label="Animated Bohr model of the selected atom showing electron shells with valence electrons highlighted"></canvas>
+        <div class="legend">
+          <span><span class="dot n"></span> Inner-shell electron</span>
+          <span><span class="dot v"></span> Valence electron</span>
+          <span style="color:var(--navy);font-weight:bold;">● Nucleus (Z protons)</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Select Element</label>
+          <div class="seg" id="atomSeg">
+            <button class="active" onclick="setAtom('cu',this)">Cu (29)</button>
+            <button onclick="setAtom('si',this)">Si (14)</button>
+            <button onclick="setAtom('ge',this)">Ge (32)</button>
+            <button onclick="setAtom('ar',this)">Ar (18)</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Orbit Speed <span class="val" id="spdVal">1.0×</span></label>
+          <input type="range" id="atomSpd" min="0" max="3" step="0.1" value="1" oninput="document.getElementById('spdVal').textContent=this.value+'×'">
+        </div>
+        <div class="readout" id="atomRead"></div>
+        <div class="callout co-tip" style="margin:14px 0 0;">
+          <div class="co-title">🎯 What to Notice</div>
+          Every atom wants a <strong>full outer shell of eight</strong>. Copper's lone valence electron escapes easily (conductor). Argon is already full (insulator). Silicon and germanium sit at exactly <strong>four</strong> — halfway — so they solve the problem by <em>sharing</em> with four neighbors. That's Simulator 2.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SIM 2: CRYSTAL LATTICE ================= -->
+<section id="lattice">
+  <h2 class="sec-title">🔥 Simulator 2: Crystal Lattice &amp; Thermal Electron-Hole Pairs</h2>
+  <p>Each silicon atom covalently bonds with four neighbors, sharing one electron apiece to reach an effective octet. At <strong>absolute zero every electron is locked in a bond</strong> — the crystal is a perfect insulator. Drag the temperature up and watch thermal energy snap bonds: each break frees a mobile <strong>electron (−)</strong> and leaves behind a <strong>hole (+)</strong> that wanders as neighboring electrons hop into it. Switch on the electric field to turn that random motion into <strong>drift current</strong>.</p>
+  <div class="sim">
+    <div class="sim-grid">
+      <div>
+        <canvas class="simcv" id="latCv" width="720" height="500" role="img" aria-label="Animated silicon crystal lattice showing covalent bonds breaking with temperature, generating free electrons and holes"></canvas>
+        <div class="legend">
+          <span><span class="dot v"></span> Shared bond electron</span>
+          <span><span class="dot e"></span> Free electron (−)</span>
+          <span><span class="dot h"></span> Hole (+)</span>
+          <span>⚡ Broken bond flash</span>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Material</label>
+          <div class="seg" id="matSeg">
+            <button class="active" onclick="setMat('si',this)">Silicon</button>
+            <button onclick="setMat('ge',this)">Germanium</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Temperature <span class="val" id="latTVal">300 K (27 °C)</span></label>
+          <input type="range" id="latT" min="0" max="600" step="5" value="300" oninput="latTLabel()">
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="fieldChk" onchange="draw2()">
+          <label for="fieldChk" style="cursor:pointer;">Apply Electric Field (drift →)</label>
+        </div>
+        <div class="readout" id="latRead" aria-live="polite"></div>
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Conductivity</span><span id="condPct">0%</span></div>
+          <div class="bar"><div class="b-cond" id="condBar"></div></div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Resistance (note: falls with heat!)</span><span id="resPct">100%</span></div>
+          <div class="bar"><div class="b-res" id="resBar"></div></div>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Drift Current</span><span id="curVal">0 µA</span></div>
+          <div class="bar"><div class="b-cur" id="curBar"></div></div>
+        </div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="latPreset(0)">❄ 0 K</button>
+          <button class="g-btn" onclick="latPreset(300)">🌡 Room</button>
+          <button class="g-btn" onclick="latPreset(500)">🔥 Hot</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-warn">
+    <div class="co-title">⚠️ Watch Out: Negative Temperature Coefficient</div>
+    Watch the two bars as you heat the lattice: conductivity <strong>rises</strong> and resistance <strong>falls</strong> — the exact opposite of copper wire. Heat creates more electron-hole pairs, so a hot diode leaks more and drops less forward voltage (about <strong>−2 mV/°C</strong>). Now switch to <strong>Germanium</strong> at the same temperature: its smaller band gap (0.67 eV vs 1.1 eV) means far more broken bonds — which is exactly why germanium leaks more and lost the fabrication war to silicon.
+  </div>
+</section>
+
+<!-- ================= SIM 3: ENERGY BANDS ================= -->
+<section id="bands">
+  <h2 class="sec-title">📊 Simulator 3: Energy Band Diagram</h2>
+  <p>The lattice view shows <em>where</em> carriers come from; the band diagram shows <em>why</em>. Electrons in the <strong>valence band</strong> are locked in bonds. To conduct, one must jump the <strong>forbidden energy gap</strong> into the <strong>conduction band</strong>. Copper's bands overlap (no gap at all), silicon asks ≈1.1 eV, germanium ≈0.67 eV, and glass demands more than 5 eV — a wall thermal energy essentially never climbs.</p>
+  <div class="sim">
+    <div class="sim-grid">
+      <div>
+        <canvas class="simcv" id="bandCv" width="720" height="440" role="img" aria-label="Energy band diagrams comparing conductor, germanium, silicon, and insulator, with animated electrons jumping the band gap"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Thermal Energy <span class="val" id="bandTVal">300 K</span></label>
+          <input type="range" id="bandT" min="0" max="600" step="5" value="300" oninput="document.getElementById('bandTVal').textContent=this.value+' K'">
+        </div>
+        <div class="readout" id="bandRead"></div>
+        <div class="callout co-pro" style="margin:14px 0 0;">
+          <div class="co-title">💡 Reading the Diagram</div>
+          Each ⇡ flash is a valence electron gaining enough thermal energy to cross the gap, leaving a hole behind. Count the jump rates: copper conducts at any temperature, germanium jumps more often than silicon, and glass essentially never jumps. The gap height <em>is</em> the material's electrical personality.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARISON TABLE ================= -->
+<section id="compare">
+  <h2 class="sec-title">Material Comparison Reference</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Property</th><th>Conductor (Cu)</th><th>Semiconductor (Si)</th><th>Semiconductor (Ge)</th><th>Insulator (Glass)</th></tr>
+    <tr><td><strong>Valence electrons</strong></td><td>1</td><td>4</td><td>4</td><td>8 (effectively full)</td></tr>
+    <tr><td><strong>Energy gap to conduction</strong></td><td>Overlapping bands</td><td>≈1.1 eV</td><td>≈0.67 eV</td><td>&gt;5 eV</td></tr>
+    <tr><td><strong>Carriers at room temp</strong></td><td>Enormous</td><td>Few (intrinsic) — tunable by doping</td><td>More than Si (leakier)</td><td>Essentially none</td></tr>
+    <tr><td><strong>Effect of heat</strong></td><td>Resistance rises</td><td>Resistance falls</td><td>Resistance falls (faster)</td><td>Negligible</td></tr>
+    <tr><td><strong>Barrier potential (as diode)</strong></td><td>—</td><td>≈0.7 V</td><td>≈0.3 V</td><td>—</td></tr>
+  </table></div>
+  <h3>Silicon vs. Germanium: Why Silicon Won</h3>
+  <ul class="styled">
+    <li><strong>Temperature tolerance:</strong> silicon's wider gap keeps leakage manageable at operating temperatures where germanium devices drown in thermally generated carriers.</li>
+    <li><strong>Stable native oxide:</strong> SiO₂ grows naturally on silicon and is the insulating backbone of chip fabrication — germanium's oxide is unstable and water-soluble.</li>
+    <li><strong>Abundance:</strong> silicon is the second most abundant element in Earth's crust.</li>
+    <li><strong>Germanium's niche:</strong> its lower 0.3 V barrier potential still earns it roles in low-drop signal detection and some high-speed/photonic applications.</li>
+  </ul>
+</section>
+
+<!-- ================= GUIDED EXPLORATIONS ================= -->
+<section id="explore">
+  <h2 class="sec-title">🧭 Guided Explorations</h2>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Try These, In Order</div>
+    <strong>1. Count to four:</strong> In Simulator 1, cycle Cu → Si → Ge → Ar and read the valence count on each. Predict which conducts, which insulates, and which two can be "tuned." <strong>2. Absolute zero:</strong> In Simulator 2, press ❄ 0 K and confirm the perfect-insulator claim — every electron locked, zero current, resistance pegged at 100%. <strong>3. Generate a pair:</strong> Slide to ~300 K and watch for a bond-break flash; follow the freed electron (blue) and the hole (dashed red) it left behind. <strong>4. Make current flow:</strong> Turn on the electric field and watch electrons drift one way while holes drift the other — both motions add to the same current direction. <strong>5. The germanium problem:</strong> At 400 K, compare Si and Ge carrier counts, then explain in one sentence why early germanium transistors failed on hot days. <strong>6. Band gap intuition:</strong> In Simulator 3, find the temperature where silicon starts jumping regularly but glass still hasn't jumped once.
+  </div>
+  <div class="callout co-tip">
+    <div class="co-title">🎯 Check Your Understanding</div>
+    Before returning to the lesson, you should be able to answer: Why does sharing four electrons produce an effective octet? Why is a hole considered a <em>positive mobile carrier</em> if it's just a vacancy? Why does semiconductor resistance fall with heat while copper's rises? And why does Ge's 0.67 eV gap make it both more sensitive <em>and</em> less reliable than Si?
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson01.html">← Back to Lesson 1</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 ELT 102 Home</a>
+  <a href="lesson01.html#grapher">Next Tool: I-V Curve Grapher →</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Simulator: Atomic Structure of Semiconductor Materials<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME (shared elt-theme key) ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d = document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ================================================================
+   SIMULATOR 1 — BOHR ATOM EXPLORER
+================================================================ */
+var ATOMS = {
+  cu:{sym:'Cu', name:'Copper', Z:29, shells:[2,8,18,1], cls:'CONDUCTOR',
+      note:'1 loosely bound valence electron escapes with almost no energy — enormous free-carrier population.'},
+  si:{sym:'Si', name:'Silicon', Z:14, shells:[2,8,4], cls:'SEMICONDUCTOR',
+      note:'4 valence electrons — bonds covalently with 4 neighbors to reach an effective octet.'},
+  ge:{sym:'Ge', name:'Germanium', Z:32, shells:[2,8,18,4], cls:'SEMICONDUCTOR',
+      note:'Also exactly 4 valence electrons — same lattice chemistry as silicon, smaller band gap.'},
+  ar:{sym:'Ar', name:'Argon (insulator stand-in)', Z:18, shells:[2,8,8], cls:'INSULATOR',
+      note:'Outer shell already full (octet). No electrons to give, none to accept — essentially no carriers.'}
+};
+var curAtom = 'cu';
+var aCv = document.getElementById('atomCv'), aCx = aCv.getContext('2d');
+
+function setAtom(k, btn){
+  curAtom = k;
+  document.querySelectorAll('#atomSeg button').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  atomReadout();
+}
+function atomReadout(){
+  var a = ATOMS[curAtom];
+  var val = a.shells[a.shells.length-1];
+  document.getElementById('atomRead').innerHTML =
+    'Element : <span class="hi">'+a.name+' ('+a.sym+')</span><br>'+
+    'Atomic # (Z) : '+a.Z+'<br>'+
+    'Shell config : '+a.shells.join(' - ')+'<br>'+
+    'Valence e⁻ : <span class="hi">'+val+'</span><br>'+
+    'Class : <span class="'+(a.cls==='SEMICONDUCTOR'?'hi':'lo')+'">'+a.cls+'</span><br><br>'+
+    a.note;
+}
+atomReadout();
+
+function drawAtom(t){
+  var a = ATOMS[curAtom];
+  var spd = parseFloat(document.getElementById('atomSpd').value);
+  var W=aCv.width, H=aCv.height, cxp=W/2, cyp=H/2;
+  var bg=css('--card'), border=css('--border'), navy=css('--navy'), green=css('--green'),
+      grey='#8899aa', txt=css('--text');
+  aCx.fillStyle=bg; aCx.fillRect(0,0,W,H);
+
+  var nShells=a.shells.length;
+  var rStep = Math.min(52, (Math.min(W,H)/2 - 55)/nShells);
+  var r0 = 52;
+
+  // nucleus
+  var grad=aCx.createRadialGradient(cxp,cyp,4,cxp,cyp,26);
+  grad.addColorStop(0,navy); grad.addColorStop(1,css('--navy-dark')||navy);
+  aCx.fillStyle=grad;
+  aCx.beginPath(); aCx.arc(cxp,cyp,26,0,Math.PI*2); aCx.fill();
+  aCx.fillStyle='#fff'; aCx.font='bold 15px Georgia'; aCx.textAlign='center';
+  aCx.fillText(a.sym, cxp, cyp+1);
+  aCx.font='10px Arial'; aCx.fillText(a.Z+'p⁺', cxp, cyp+14);
+
+  for(var s=0;s<nShells;s++){
+    var r=r0+s*rStep;
+    aCx.strokeStyle=border; aCx.lineWidth=1;
+    aCx.beginPath(); aCx.arc(cxp,cyp,r,0,Math.PI*2); aCx.stroke();
+    var n=a.shells[s], isVal=(s===nShells-1);
+    var w=(2*Math.PI)/n;
+    var speed=spd*(0.0009-(s*0.00016));
+    for(var e=0;e<n;e++){
+      var ang=e*w + t*speed + s*0.7;
+      var ex=cxp+r*Math.cos(ang), ey=cyp+r*Math.sin(ang);
+      aCx.fillStyle=isVal?green:grey;
+      aCx.beginPath(); aCx.arc(ex,ey,isVal?6.5:4,0,Math.PI*2); aCx.fill();
+      if(isVal){ aCx.strokeStyle=bg; aCx.lineWidth=1.5; aCx.stroke(); }
+    }
+    // shell label
+    aCx.fillStyle=css('--text-muted'); aCx.font='10px Arial';
+    aCx.fillText((isVal?'valence: ':'')+n+'e⁻', cxp, cyp-r-6);
+  }
+  // caption
+  aCx.fillStyle=txt; aCx.font='italic 13px Georgia';
+  aCx.fillText(a.name+' — outer shell holds '+a.shells[nShells-1]+' of 8 desired electrons', cxp, H-14);
+  aCx.textAlign='left';
+}
+
+/* ================================================================
+   SIMULATOR 2 — CRYSTAL LATTICE & ELECTRON-HOLE PAIRS
+================================================================ */
+var lCv=document.getElementById('latCv'), lCx=lCv.getContext('2d');
+var COLS=6, ROWS=5, X0=95, Y0=80, DX=106, DY=92, AR=17;
+var MAT={ si:{sym:'Si', Eg:1.10}, ge:{sym:'Ge', Eg:0.67} };
+var curMat='si';
+var bonds=[], electrons=[], holes=[];
+
+function atomXY(r,c){ return {x:X0+c*DX, y:Y0+r*DY}; }
+function buildBonds(){
+  bonds=[]; electrons=[]; holes=[];
+  for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+    if(c<COLS-1) bonds.push({a:[r,c],b:[r,c+1],broken:false,flash:0,ph:Math.random()*6.28});
+    if(r<ROWS-1) bonds.push({a:[r,c],b:[r+1,c],broken:false,flash:0,ph:Math.random()*6.28});
+  }
+}
+buildBonds();
+
+function setMat(k,btn){
+  curMat=k;
+  document.querySelectorAll('#matSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function latTLabel(){
+  var T=parseInt(document.getElementById('latT').value);
+  document.getElementById('latTVal').textContent=T+' K ('+(T-273)+' °C)';
+}
+latTLabel();
+function latPreset(T){ document.getElementById('latT').value=T; latTLabel(); }
+
+function stepLattice(){
+  var T=parseInt(document.getElementById('latT').value);
+  var Eg=MAT[curMat].Eg;
+  var maxPairs=14;
+  // thermal generation: Arrhenius-style, tuned for visualization
+  if(T>0 && electrons.length<maxPairs){
+    var p = 0.9*Math.exp(-Eg*900/T); // per frame, whole lattice
+    if(Math.random()<p){
+      var intact=bonds.filter(function(b){return !b.broken;});
+      if(intact.length){
+        var b=intact[Math.floor(Math.random()*intact.length)];
+        b.broken=true; b.flash=1;
+        var A=atomXY(b.a[0],b.a[1]), B=atomXY(b.b[0],b.b[1]);
+        var mx=(A.x+B.x)/2, my=(A.y+B.y)/2;
+        electrons.push({x:mx,y:my,vx:(Math.random()-.5)*1.6,vy:(Math.random()-.5)*1.6});
+        holes.push({x:mx,y:my,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,hop:0});
+      }
+    }
+  }
+  var field=document.getElementById('fieldChk').checked;
+  var L=40, Rt=lCv.width-40;
+  // move electrons (fast, drift toward + plate = left when field on)
+  electrons.forEach(function(e){
+    e.vx+=(Math.random()-.5)*.5; e.vy+=(Math.random()-.5)*.5;
+    var sp=Math.hypot(e.vx,e.vy); if(sp>2.4){e.vx*=2.4/sp;e.vy*=2.4/sp;}
+    if(field) e.vx-=0.22;
+    e.x+=e.vx; e.y+=e.vy;
+    if(e.y<40){e.y=40;e.vy*=-1;} if(e.y>lCv.height-30){e.y=lCv.height-30;e.vy*=-1;}
+    if(field){ if(e.x<L) e.x=Rt; } // circuit continuity wrap
+    else { if(e.x<L){e.x=L;e.vx*=-1;} if(e.x>Rt){e.x=Rt;e.vx*=-1;} }
+    if(e.x>Rt){ if(field){} else {e.x=Rt;e.vx*=-1;} }
+    if(field && e.x>Rt) e.x=Rt;
+  });
+  // move holes (slow, drift toward − plate = right)
+  holes.forEach(function(h){
+    h.vx+=(Math.random()-.5)*.2; h.vy+=(Math.random()-.5)*.2;
+    var sp=Math.hypot(h.vx,h.vy); if(sp>0.9){h.vx*=0.9/sp;h.vy*=0.9/sp;}
+    if(field) h.vx+=0.10;
+    h.x+=h.vx; h.y+=h.vy;
+    if(h.y<40){h.y=40;h.vy*=-1;} if(h.y>lCv.height-30){h.y=lCv.height-30;h.vy*=-1;}
+    if(field){ if(h.x>Rt) h.x=L; }
+    else { if(h.x<L){h.x=L;h.vx*=-1;} if(h.x>Rt){h.x=Rt;h.vx*=-1;} }
+  });
+  // recombination
+  for(var i=electrons.length-1;i>=0;i--){
+    for(var j=holes.length-1;j>=0;j--){
+      if(Math.hypot(electrons[i].x-holes[j].x, electrons[i].y-holes[j].y)<15){
+        electrons.splice(i,1); holes.splice(j,1);
+        var brk=bonds.filter(function(b){return b.broken;});
+        if(brk.length){ var b=brk[Math.floor(Math.random()*brk.length)]; b.broken=false; b.flash=0; }
+        break;
+      }
+    }
+  }
+  // extra recombination pressure at low temp so cooling actually clears carriers
+  if(electrons.length>0 && Math.random() < 0.004 + (600-T)*0.00002){
+    electrons.pop(); holes.pop();
+    var brk2=bonds.filter(function(b){return b.broken;});
+    if(brk2.length) brk2[Math.floor(Math.random()*brk2.length)].broken=false;
+  }
+  bonds.forEach(function(b){ if(b.flash>0) b.flash-=0.03; });
+}
+
+function draw2(){ /* immediate visual refresh hook for the field checkbox */ }
+
+function drawLattice(t){
+  stepLattice();
+  var W=lCv.width,H=lCv.height;
+  var bg=css('--card'), border=css('--border'), navy=css('--navy'), green=css('--green'),
+      red=css('--red'), amber=css('--amber'), muted=css('--text-muted');
+  var field=document.getElementById('fieldChk').checked;
+  var T=parseInt(document.getElementById('latT').value);
+  lCx.fillStyle=bg; lCx.fillRect(0,0,W,H);
+
+  // field plates
+  if(field){
+    lCx.fillStyle=red; lCx.fillRect(10,40,8,H-70);
+    lCx.fillStyle=navy; lCx.fillRect(W-18,40,8,H-70);
+    lCx.font='bold 14px Arial'; lCx.fillStyle=red; lCx.fillText('+',11,32);
+    lCx.fillStyle=navy; lCx.fillText('−',W-16,32);
+    lCx.strokeStyle=amber; lCx.lineWidth=2;
+    lCx.beginPath(); lCx.moveTo(W/2-40,24); lCx.lineTo(W/2+40,24);
+    lCx.lineTo(W/2+32,18); lCx.moveTo(W/2+40,24); lCx.lineTo(W/2+32,30); lCx.stroke();
+    lCx.fillStyle=muted; lCx.font='11px Arial'; lCx.fillText('E field / conventional current →', W/2-78, 14);
+  }
+
+  // bonds
+  bonds.forEach(function(b){
+    var A=atomXY(b.a[0],b.a[1]), B=atomXY(b.b[0],b.b[1]);
+    if(b.broken){
+      lCx.strokeStyle=border; lCx.setLineDash([3,5]); lCx.lineWidth=1;
+      lCx.beginPath(); lCx.moveTo(A.x,A.y); lCx.lineTo(B.x,B.y); lCx.stroke();
+      lCx.setLineDash([]);
+      if(b.flash>0){
+        lCx.fillStyle='rgba(232,160,32,'+b.flash+')';
+        lCx.beginPath(); lCx.arc((A.x+B.x)/2,(A.y+B.y)/2, 14+8*(1-b.flash),0,Math.PI*2); lCx.fill();
+      }
+    } else {
+      lCx.strokeStyle=border; lCx.lineWidth=2;
+      lCx.beginPath(); lCx.moveTo(A.x,A.y); lCx.lineTo(B.x,B.y); lCx.stroke();
+      // two shared electrons sliding along the bond
+      var horiz=A.y===B.y;
+      for(var k=0;k<2;k++){
+        var f=0.5+0.28*Math.sin(t*0.002+b.ph+k*Math.PI);
+        var ex=A.x+(B.x-A.x)*f, ey=A.y+(B.y-A.y)*f;
+        var ox=horiz?0:5*(k?1:-1), oy=horiz?5*(k?1:-1):0;
+        lCx.fillStyle=green;
+        lCx.beginPath(); lCx.arc(ex+ox,ey+oy,4,0,Math.PI*2); lCx.fill();
+      }
+    }
+  });
+
+  // atoms
+  var sym=MAT[curMat].sym;
+  for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+    var p=atomXY(r,c);
+    lCx.fillStyle=css('--card-alt');
+    lCx.strokeStyle=navy; lCx.lineWidth=2;
+    lCx.beginPath(); lCx.arc(p.x,p.y,AR,0,Math.PI*2); lCx.fill(); lCx.stroke();
+    lCx.fillStyle=navy; lCx.font='bold 12px Georgia'; lCx.textAlign='center';
+    lCx.fillText(sym,p.x,p.y+4); lCx.textAlign='left';
+  }
+
+  // free electrons
+  electrons.forEach(function(e){
+    lCx.fillStyle='#2a7fff';
+    lCx.beginPath(); lCx.arc(e.x,e.y,5.5,0,Math.PI*2); lCx.fill();
+    lCx.fillStyle='#fff'; lCx.font='bold 9px Arial'; lCx.textAlign='center';
+    lCx.fillText('−',e.x,e.y+3); lCx.textAlign='left';
+  });
+  // holes
+  holes.forEach(function(h){
+    lCx.strokeStyle=red; lCx.lineWidth=2; lCx.setLineDash([3,3]);
+    lCx.beginPath(); lCx.arc(h.x,h.y,7,0,Math.PI*2); lCx.stroke(); lCx.setLineDash([]);
+    lCx.fillStyle=red; lCx.font='bold 10px Arial'; lCx.textAlign='center';
+    lCx.fillText('+',h.x,h.y+3.5); lCx.textAlign='left';
+  });
+
+  // readouts & bars
+  var pairs=electrons.length, maxPairs=14;
+  var cond=Math.round(pairs/maxPairs*100);
+  var state = T===0 ? 'PERFECT INSULATOR' : pairs===0 ? 'Insulating (no carriers yet)' : pairs<5 ? 'Weak intrinsic conduction' : pairs<10 ? 'Moderate conduction' : 'Strong thermal conduction';
+  var cur = field ? (pairs*1.7).toFixed(1) : '0.0';
+  document.getElementById('latRead').innerHTML=
+    'Material : <span class="hi">'+(curMat==='si'?'Silicon (Eg = 1.10 eV)':'Germanium (Eg = 0.67 eV)')+'</span><br>'+
+    'Temp : '+T+' K ('+(T-273)+' °C)<br>'+
+    'Electron-hole pairs : <span class="hi">'+pairs+'</span><br>'+
+    'Broken bonds : '+bonds.filter(function(b){return b.broken;}).length+' / '+bonds.length+'<br>'+
+    'State : <span class="'+(pairs>0?'hi':'lo')+'">'+state+'</span>';
+  document.getElementById('condBar').style.width=cond+'%';
+  document.getElementById('condPct').textContent=cond+'%';
+  document.getElementById('resBar').style.width=(100-cond)+'%';
+  document.getElementById('resPct').textContent=(100-cond)+'%';
+  document.getElementById('curBar').style.width=Math.min(100,pairs/maxPairs*100*(field?1:0))+'%';
+  document.getElementById('curVal').textContent=cur+' µA';
+}
+
+/* ================================================================
+   SIMULATOR 3 — ENERGY BAND DIAGRAM
+================================================================ */
+var bCv=document.getElementById('bandCv'), bCx=bCv.getContext('2d');
+var PANELS=[
+  {name:'Copper', Eg:0, tag:'CONDUCTOR'},
+  {name:'Germanium', Eg:0.67, tag:'SEMI'},
+  {name:'Silicon', Eg:1.10, tag:'SEMI'},
+  {name:'Glass', Eg:5.5, tag:'INSULATOR'}
+];
+var jumpers=[]; var jumpCounts=[0,0,0,0];
+
+function drawBands(t){
+  var W=bCv.width,H=bCv.height;
+  var bg=css('--card'), border=css('--border'), navy=css('--navy'), green=css('--green'),
+      muted=css('--text-muted'), amber=css('--amber');
+  var T=parseInt(document.getElementById('bandT').value);
+  bCx.fillStyle=bg; bCx.fillRect(0,0,W,H);
+  var pw=(W-40)/4;
+
+  PANELS.forEach(function(pn,i){
+    var x=20+i*pw+8, w=pw-16;
+    var vTop=H-120, vH=70;                       // valence band
+    var gapPix = pn.Eg===0 ? -14 : Math.min(150, 26+pn.Eg*24); // overlap for Cu
+    var cBot=vTop-gapPix, cTop=cBot-60;          // conduction band
+
+    // conduction band
+    bCx.fillStyle='rgba(0,71,171,.18)';
+    bCx.strokeStyle=navy; bCx.lineWidth=1.5;
+    bCx.fillRect(x,cTop,w,60); bCx.strokeRect(x,cTop,w,60);
+    bCx.fillStyle=navy; bCx.font='10px Arial'; bCx.textAlign='center';
+    bCx.fillText('CONDUCTION', x+w/2, cTop+14);
+
+    // valence band
+    bCx.fillStyle='rgba(0,168,107,.20)';
+    bCx.strokeStyle=green;
+    bCx.fillRect(x,vTop,w,vH); bCx.strokeRect(x,vTop,w,vH);
+    bCx.fillStyle=green; bCx.fillText('VALENCE', x+w/2, vTop+vH-8);
+
+    // gap label
+    if(pn.Eg>0){
+      bCx.fillStyle=muted; bCx.font='bold 11px Arial';
+      bCx.fillText(pn.Eg>5?'> 5 eV':pn.Eg.toFixed(2)+' eV', x+w/2, vTop-gapPix/2+4);
+      bCx.strokeStyle=border; bCx.setLineDash([2,3]);
+      bCx.strokeRect(x,cBot,w,gapPix); bCx.setLineDash([]);
+    } else {
+      bCx.fillStyle=amber; bCx.font='bold 10px Arial';
+      bCx.fillText('BANDS OVERLAP', x+w/2, vTop-2);
+    }
+
+    // resident valence electrons jitter
+    bCx.fillStyle=green;
+    for(var e=0;e<8;e++){
+      var ex=x+10+((e*37)%(w-20))+3*Math.sin(t*0.003+e+i);
+      var ey=vTop+14+((e*23)%(vH-24));
+      bCx.beginPath(); bCx.arc(ex,ey,3.5,0,Math.PI*2); bCx.fill();
+    }
+    // permanent conduction carriers for copper
+    if(pn.Eg===0){
+      bCx.fillStyle='#2a7fff';
+      for(var q=0;q<6;q++){
+        var qx=x+10+((q*53 + t*0.06)% (w-20));
+        var qy=cTop+18+((q*19)%30);
+        bCx.beginPath(); bCx.arc(qx,qy,3.5,0,Math.PI*2); bCx.fill();
+      }
+    }
+
+    // thermal jump generation
+    if(pn.Eg>0 && T>0){
+      var p = 0.06*Math.exp(-pn.Eg*900/T);
+      if(Math.random()<p && jumpers.filter(function(j){return j.p===i;}).length<5){
+        jumpers.push({p:i, x:x+12+Math.random()*(w-24), y:vTop+10, y0:vTop+10, y1:cTop+30, f:0, life:1});
+        jumpCounts[i]++;
+      }
+    }
+    // panel labels
+    bCx.fillStyle=css('--text'); bCx.font='bold 12px Georgia';
+    bCx.fillText(pn.name, x+w/2, H-26);
+    bCx.fillStyle=muted; bCx.font='9px Arial';
+    bCx.fillText(pn.tag+' · jumps: '+jumpCounts[i], x+w/2, H-12);
+    bCx.textAlign='left';
+  });
+
+  // animate jumpers
+  for(var j=jumpers.length-1;j>=0;j--){
+    var jp=jumpers[j];
+    if(jp.f<1){ jp.f+=0.03; }
+    else { jp.life-=0.008; }
+    var y=jp.y0+(jp.y1-jp.y0)*Math.min(1,jp.f);
+    bCx.globalAlpha=Math.max(0,jp.life);
+    bCx.fillStyle='#2a7fff';
+    bCx.beginPath(); bCx.arc(jp.x + (jp.f>=1? Math.sin(t*0.004+j)*8 :0), y, 4.5, 0, Math.PI*2); bCx.fill();
+    if(jp.f<1){
+      bCx.strokeStyle=amber; bCx.lineWidth=1.5;
+      bCx.beginPath(); bCx.moveTo(jp.x,jp.y0); bCx.lineTo(jp.x,y); bCx.stroke();
+      // hole left behind
+      bCx.strokeStyle=css('--red'); bCx.setLineDash([2,2]);
+      bCx.beginPath(); bCx.arc(jp.x,jp.y0,5,0,Math.PI*2); bCx.stroke(); bCx.setLineDash([]);
+    }
+    bCx.globalAlpha=1;
+    if(jp.life<=0) jumpers.splice(j,1);
+  }
+
+  document.getElementById('bandRead').innerHTML=
+    'Thermal energy : '+T+' K<br>'+
+    'Cu gap : <span class="hi">none (overlap)</span><br>'+
+    'Ge gap : 0.67 eV — jumps: <span class="hi">'+jumpCounts[1]+'</span><br>'+
+    'Si gap : 1.10 eV — jumps: <span class="hi">'+jumpCounts[2]+'</span><br>'+
+    'Glass gap : &gt;5 eV — jumps: <span class="lo">'+jumpCounts[3]+'</span>';
+}
+
+/* ============ MASTER LOOP ============ */
+function loop(t){
+  drawAtom(t);
+  drawLattice(t);
+  drawBands(t);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
