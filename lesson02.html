@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Lesson 2: Diode Applications, Power Supply Circuits &amp; Optoelectronics</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+.sans{font-family:'Arial Narrow',Arial,sans-serif;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ GRAPHER / SCOPE ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl label .val{color:var(--green-dark);font-weight:bold;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:60px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.trace-toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px;}
+.trace-toggles label{display:inline-flex;align-items:center;gap:5px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;font-weight:bold;cursor:pointer;border:1px solid var(--border);border-radius:16px;padding:4px 12px;}
+.trace-toggles input{accent-color:var(--green);}
+.tt-in{color:#8899aa;} .tt-rect{color:var(--navy);} .tt-filt{color:var(--green-dark);} .tt-reg{color:#a86e00;}
+[data-theme="dark"] .tt-reg{color:var(--amber);}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.readout .r-bd{color:#a86e00;font-weight:bold;}
+[data-theme="dark"] .readout .r-bd{color:var(--amber);}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.g-btn{flex:1;min-width:80px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+.toggle-row{display:flex;align-items:center;gap:10px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.92rem;font-weight:bold;color:var(--navy);margin-bottom:15px;}
+.toggle-row input{accent-color:var(--green);width:18px;height:18px;cursor:pointer;}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;} .tab-pane{padding:20px 16px;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Lesson 2 of 8</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson02.html">Lesson 2</a> &nbsp;›&nbsp;
+  Diode Applications, Power Supply Circuits &amp; Optoelectronics
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 1 · Solid State Foundations</span>
+  <h1>Diode Applications, Power Supply Circuits &amp; Optoelectronics</h1>
+  <p class="sub">Half-wave and full-wave rectifier circuits, capacitive filter networks, ripple voltage, and oscilloscope measurement of AC/DC conversion — plus voltage regulators, LEDs, photodiodes, optocouplers, and optical isolation circuit design.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 Hours Study</span>
+    <span>📋 9 Core Topics</span>
+    <span>📈 Power Supply Scope Sim</span>
+    <span>💡 Optocoupler Isolation Sim</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lesson, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Analyze</strong> half-wave, center-tapped full-wave, and bridge rectifier circuits, calculating peak output voltage, average DC value, ripple frequency, and required PIV rating.</li>
+      <li><strong>Explain</strong> how a capacitive filter converts pulsating DC into smooth DC through repeated charge and discharge cycles.</li>
+      <li><strong>Calculate</strong> ripple voltage using V<sub>r(pp)</sub> ≈ I<sub>LOAD</sub> / (f<sub>ripple</sub> × C) and select an appropriate filter capacitor for a given load.</li>
+      <li><strong>Measure</strong> AC/DC conversion on an oscilloscope, using DC coupling to view total waveforms and AC coupling to zoom in on ripple.</li>
+      <li><strong>Describe</strong> the complete linear power supply chain — transformer → rectifier → filter → regulator — and the role of each stage.</li>
+      <li><strong>Evaluate</strong> voltage regulator behavior, including dropout voltage, line regulation, and load regulation for three-terminal regulators such as the 7805.</li>
+      <li><strong>Design</strong> an LED drive circuit, selecting the series current-limiting resistor from supply voltage, LED forward voltage, and target current.</li>
+      <li><strong>Differentiate</strong> photodiode operating modes (photovoltaic vs. photoconductive) and phototransistor behavior in light-sensing circuits.</li>
+      <li><strong>Apply</strong> optocouplers to achieve galvanic isolation, calculating current transfer ratio (CTR) and explaining why common-mode noise cannot cross the optical barrier.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS (collapsed by default) ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition.</p>
+
+      <div class="cat-label">Rectification</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Rectification</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The conversion of AC into pulsating DC using one or more diodes that permit current flow in only one direction. The first electronic stage of every linear power supply.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Half-Wave Rectifier</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A single-diode circuit that passes only one half-cycle of the AC input. Output ripple frequency equals the line frequency (60 Hz from a 60 Hz source), and V<sub>AVG</sub> ≈ 0.318 × V<sub>PK</sub>.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Center-Tapped Full-Wave</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A two-diode rectifier using a center-tapped transformer secondary. Each diode conducts on alternate half-cycles, but each sees only half the total secondary voltage — and must withstand a PIV of 2V<sub>PK</sub>.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Bridge Rectifier</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A four-diode arrangement that steers both AC half-cycles through the load in the same direction. Uses the full secondary voltage, needs no center tap, and each diode's PIV requirement is only ≈V<sub>PK</sub>.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Pulsating DC</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Rectifier output that never reverses polarity but still varies strongly in amplitude — a series of half-sine humps. It is DC by polarity but useless for most electronics until filtered.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple Frequency</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The repetition rate of the output pulses: equal to line frequency for half-wave (60 Hz) and twice line frequency for any full-wave circuit (120 Hz). Higher ripple frequency makes filtering easier.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Peak Inverse Voltage (PIV)</div><div class="cat">Rectification</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The maximum reverse voltage a rectifier diode must survive. With a filter capacitor, a half-wave diode sees nearly 2 × V<sub>PK</sub>; bridge diodes see ≈ V<sub>PK</sub>. Always select diodes with comfortable PIV margin.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Filtering &amp; Regulation</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Filter Capacitor</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A large electrolytic capacitor across the rectifier output that charges to the peak on each pulse and supplies the load between pulses, converting pulsating DC into nearly smooth DC.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple Voltage</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The residual sawtooth variation on filtered DC, caused by the capacitor discharging between charging peaks. Approximated by V<sub>r(pp)</sub> ≈ I<sub>LOAD</sub> / (f<sub>ripple</sub> × C).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Surge (Inrush) Current</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The large initial current at power-on when the discharged filter capacitor looks like a momentary short circuit. Rectifier diodes must be rated to survive this repetitive surge.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Voltage Regulator</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The final power supply stage that holds output voltage constant despite input ripple and load changes. Three-terminal linear regulators (78xx/79xx series) are the classic implementation.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Dropout Voltage</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The minimum input-to-output voltage difference a linear regulator needs to maintain regulation — about 2 V for a standard 7805. If the filtered input dips below V<sub>OUT</sub> + dropout, ripple breaks through.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Line Regulation</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A regulator's ability to hold output voltage constant when the <em>input</em> voltage changes. Specified as output change per volt of input change (mV/V).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Load Regulation</div><div class="cat">Filtering &amp; Regulation</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A regulator's ability to hold output voltage constant when <em>load current</em> changes from minimum to maximum. Specified in mV or as a percentage of nominal output.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Optoelectronics</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Light-Emitting Diode (LED)</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A P-N junction that emits photons when forward biased, as carriers recombine across the junction. Forward voltage depends on color (≈1.8 V red to ≈3.3 V blue/white); brightness tracks forward current.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Current-Limiting Resistor</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The mandatory series resistor that sets LED current: R = (V<sub>SUPPLY</sub> − V<sub>F</sub>) / I<sub>LED</sub>. Without it, the LED's exponential I-V curve allows destructive current at any voltage above V<sub>F</sub>.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Photodiode</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A P-N junction operated so that incident light generates electron-hole pairs in the depletion region, producing a current proportional to light intensity. The LED's functional inverse.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Photovoltaic vs. Photoconductive</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Photovoltaic mode: zero bias; the diode generates voltage like a tiny solar cell (accurate, slow). Photoconductive mode: reverse biased; light modulates leakage current (fast, slightly noisier) — the choice for data links.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Phototransistor</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A transistor whose base current is supplied by incident light instead of a wire. It behaves like a photodiode with built-in current gain — more sensitive than a photodiode, but slower.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Optocoupler (Optoisolator)</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An LED and a photodetector sealed in one package with no electrical connection between them. Signals cross as light; voltages, ground differences, and noise cannot — typical isolation ratings are 2.5–5 kV.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Current Transfer Ratio (CTR)</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The optocoupler's "gain": output collector current divided by LED forward current, expressed as a percentage. CTR = (I<sub>C</sub> / I<sub>F</sub>) × 100%. Typical values run 20–300% and degrade with LED aging.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Galvanic (Optical) Isolation</div><div class="cat">Optoelectronics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Complete electrical separation between two circuit sections that still exchange signals. Protects low-voltage logic from high-voltage circuits, breaks ground loops, and blocks common-mode noise.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Oscilloscope Measurement</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">DC Coupling</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Scope input mode that displays the complete signal — DC level plus any AC variation. Use it to measure the actual output voltage of each power supply stage.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">AC Coupling</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Scope input mode that blocks the DC component through an internal capacitor, letting you crank up vertical sensitivity to examine millivolts of ripple riding on volts of DC.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Peak-to-Peak Voltage (V<sub>PP</sub>)</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The total vertical span of a waveform from lowest trough to highest crest. Ripple is almost always specified and measured as a peak-to-peak value.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Timebase (s/div)</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The horizontal scale of the oscilloscope. To verify ripple frequency, measure one ripple period in divisions, multiply by s/div, and take the reciprocal: 8.33 ms → 120 Hz confirms full-wave rectification.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CORE CONTENT ================= -->
+<section id="content">
+  <h2 class="sec-title">Core Lesson Content</h2>
+  <div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="showTab(0,this)">1. Intro</button>
+    <button class="tab-btn" onclick="showTab(1,this)">2. Half-Wave</button>
+    <button class="tab-btn" onclick="showTab(2,this)">3. Full-Wave</button>
+    <button class="tab-btn" onclick="showTab(3,this)">4. Capacitive Filtering</button>
+    <button class="tab-btn" onclick="showTab(4,this)">5. Regulation</button>
+    <button class="tab-btn" onclick="showTab(5,this)">6. Scope Measurement</button>
+    <button class="tab-btn" onclick="showTab(6,this)">7. LEDs</button>
+    <button class="tab-btn" onclick="showTab(7,this)">8. Photodiodes</button>
+    <button class="tab-btn" onclick="showTab(8,this)">9. Optocouplers</button>
+  </div>
+
+  <!-- TAB 1: INTRO -->
+  <div class="tab-pane show">
+    <h3>From Wall Outlet to Working Circuit</h3>
+    <p>Lesson 1 gave you the diode as a device; Lesson 2 puts it to work. The centerpiece is the <strong>linear power supply chain</strong> that hides inside nearly every piece of electronics you own:</p>
+    <div class="formula">120 VAC → TRANSFORMER → RECTIFIER → FILTER → REGULATOR → clean DC</div>
+    <ul class="styled">
+      <li><strong>Transformer:</strong> steps the line voltage down to a safe, usable AC level and provides isolation from the mains.</li>
+      <li><strong>Rectifier:</strong> diodes convert AC into pulsating DC (this lesson's first half).</li>
+      <li><strong>Filter:</strong> a large capacitor smooths the pulses into DC with a small residual ripple.</li>
+      <li><strong>Regulator:</strong> an active circuit flattens the last of the ripple and holds the output rock-steady.</li>
+    </ul>
+    <p>The second half of the lesson turns the diode's light-emitting and light-sensing cousins — <strong>LEDs, photodiodes, phototransistors, and optocouplers</strong> — into practical circuits, ending with optical isolation design, one of the most important safety techniques in industrial electronics.</p>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Pro Tip: One Story, Four Waveforms</div>
+      The fastest way to understand a power supply is to watch the waveform transform at each stage. That's precisely what the <strong>Power Supply Oscilloscope Simulator</strong> below does — four traces, one circuit, every parameter under your control.
+    </div>
+    <h4>Try It Live</h4>
+    <div class="sim-links">
+      <a class="sim-chip" href="#psim">📈 Power Supply Oscilloscope Sim (below)</a>
+      <a class="sim-chip" href="#osim">💡 Optocoupler Isolation Sim (below)</a>
+      <a class="sim-chip alt" href="lesson01.html">↩ Review Lesson 1: Diode Fundamentals</a>
+    </div>
+  </div>
+
+  <!-- TAB 2: HALF-WAVE -->
+  <div class="tab-pane">
+    <h3>The Half-Wave Rectifier</h3>
+    <p>The simplest possible rectifier: <strong>one diode in series</strong> between the transformer secondary and the load. During the positive half-cycle the diode is forward biased and the load sees the input minus one diode drop. During the negative half-cycle the diode blocks completely and the output sits at zero.</p>
+    <div class="formula">V<sub>PK(out)</sub> = V<sub>PK(in)</sub> − 0.7 V&nbsp;&nbsp;|&nbsp;&nbsp;V<sub>AVG</sub> ≈ 0.318 × V<sub>PK(out)</sub>&nbsp;&nbsp;|&nbsp;&nbsp;f<sub>ripple</sub> = f<sub>in</sub> (60 Hz)</div>
+    <h4>Worked Example</h4>
+    <p>A 12.6 V<sub>RMS</sub> transformer secondary feeds a half-wave rectifier: V<sub>PK(in)</sub> = 12.6 × 1.414 = 17.8 V, so V<sub>PK(out)</sub> = 17.8 − 0.7 = <strong>17.1 V</strong> and V<sub>AVG</sub> = 0.318 × 17.1 ≈ <strong>5.4 V</strong>. Two-thirds of the available energy is simply discarded during the blocked half-cycle.</p>
+    <h4>Why It's Rarely Used for Power</h4>
+    <ul class="styled">
+      <li><strong>Wasted half-cycle:</strong> the transformer works only 50% of the time — poor utilization.</li>
+      <li><strong>Low ripple frequency:</strong> 60 Hz gaps are long, demanding a huge filter capacitor.</li>
+      <li><strong>DC core saturation:</strong> one-directional secondary current can magnetize the transformer core.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Spot a half-wave output instantly on a scope: humps separated by <strong>flat dead zones</strong>, repeating at the line frequency. Full-wave output has no dead zones — every hump touches the next.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#psim">📈 Set the sim to HALF and count the dead zones</a></div>
+  </div>
+
+  <!-- TAB 3: FULL-WAVE -->
+  <div class="tab-pane">
+    <h3>Full-Wave Rectifiers: Center-Tapped and Bridge</h3>
+    <h4>Center-Tapped Full-Wave (2 Diodes)</h4>
+    <p>A transformer with a grounded center tap splits the secondary into two half-windings of opposite phase. One diode conducts on each half-cycle, so the load receives both halves — but each half-winding provides only <strong>half the total secondary voltage</strong>, and each diode must block a PIV of <strong>2 V<sub>PK</sub></strong>.</p>
+    <h4>The Bridge Rectifier (4 Diodes)</h4>
+    <p>Four diodes in a diamond steer current so that <strong>both half-cycles drive the load in the same direction</strong>. On each half-cycle two diodes conduct in series (1.4 V total drop). The bridge uses the full secondary voltage, requires no center tap, and each diode's PIV is only ≈V<sub>PK</sub> — which is why it dominates modern designs.</p>
+    <div class="formula">Bridge: V<sub>PK(out)</sub> = V<sub>PK(in)</sub> − 1.4 V&nbsp;&nbsp;|&nbsp;&nbsp;V<sub>AVG</sub> ≈ 0.637 × V<sub>PK(out)</sub>&nbsp;&nbsp;|&nbsp;&nbsp;f<sub>ripple</sub> = 2 × f<sub>in</sub> (120 Hz)</div>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Parameter</th><th>Half-Wave</th><th>Center-Tapped FW</th><th>Bridge FW</th></tr>
+      <tr><td>Diodes</td><td>1</td><td>2</td><td>4</td></tr>
+      <tr><td>Diode drops in path</td><td>0.7 V</td><td>0.7 V</td><td>1.4 V</td></tr>
+      <tr><td>Uses full secondary V?</td><td>Yes</td><td>No (half per side)</td><td>Yes</td></tr>
+      <tr><td>Diode PIV required</td><td>≈2 V<sub>PK</sub> (with filter)</td><td>≈2 V<sub>PK</sub></td><td>≈V<sub>PK</sub></td></tr>
+      <tr><td>Ripple frequency</td><td>60 Hz</td><td>120 Hz</td><td>120 Hz</td></tr>
+      <tr><td>V<sub>AVG</sub> (unfiltered)</td><td>0.318 V<sub>PK</sub></td><td>0.637 V<sub>PK</sub></td><td>0.637 V<sub>PK</sub></td></tr>
+      <tr><td>Typical use</td><td>Signal detection, cheap chargers</td><td>Legacy designs, dual supplies</td><td>Virtually everything modern</td></tr>
+    </table></div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out</div>
+      The doubled ripple frequency is the full-wave circuit's quiet superpower: at 120 Hz the filter capacitor's discharge gap is half as long, so <strong>the same capacitor produces half the ripple</strong> — or you can use half the capacitance for the same result. Verify this in the simulator by switching HALF ↔ FULL with everything else fixed.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#psim">📈 Compare HALF vs FULL ripple live</a></div>
+  </div>
+
+  <!-- TAB 4: FILTERING -->
+  <div class="tab-pane">
+    <h3>Capacitive Filter Networks and Ripple Voltage</h3>
+    <p>Pulsating DC becomes usable DC through one elegantly simple mechanism: a <strong>reservoir capacitor</strong> across the rectifier output. Each incoming pulse charges the capacitor to the peak through the conducting diode. Between pulses the diode is reverse biased (the capacitor voltage exceeds the falling input), so the <strong>capacitor alone supplies the load</strong>, discharging slowly through it. The result is DC with a small sawtooth ripple riding on top.</p>
+    <h4>The Ripple Equation</h4>
+    <div class="formula">V<sub>r(pp)</sub> ≈ I<sub>LOAD</sub> / (f<sub>ripple</sub> × C)&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;V<sub>DC</sub> ≈ V<sub>PK</sub> − V<sub>r(pp)</sub>/2</div>
+    <p>Every term teaches a design lever: more load current → more ripple; bigger capacitor → less ripple; and full-wave's 120 Hz → half the ripple of half-wave for free.</p>
+    <h4>Worked Example</h4>
+    <p>A bridge rectifier (f<sub>ripple</sub> = 120 Hz) charges a 1000 µF capacitor feeding a 100 mA load: V<sub>r(pp)</sub> = 0.1 / (120 × 0.001) = <strong>0.83 V</strong> of ripple. Swap in a half-wave rectifier (60 Hz) and ripple doubles to 1.67 V. Drop the capacitor to 100 µF and it balloons to 8.3 V — the supply is barely DC anymore.</p>
+    <h4>Design Consequences</h4>
+    <ul class="styled">
+      <li><strong>Surge current:</strong> at power-on the empty capacitor charges from zero — a brief near-short. Diodes need adequate surge (I<sub>FSM</sub>) ratings.</li>
+      <li><strong>Diode conduction angle:</strong> with a large capacitor, diodes conduct only in short gulps at each peak, so peak diode current far exceeds the average load current.</li>
+      <li><strong>PIV increase:</strong> the charged capacitor holds the cathode near +V<sub>PK</sub> while the input swings to −V<sub>PK</sub>, so a half-wave diode sees nearly 2 V<sub>PK</sub> reverse.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Given any three of {V<sub>r</sub>, I<sub>LOAD</sub>, f<sub>ripple</sub>, C}, you can find the fourth. The most common exam form: "What capacitor keeps ripple under X volts?" → C = I / (f × V<sub>r</sub>).
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#psim">📈 Drag the capacitor slider and watch the ripple equation come alive</a></div>
+  </div>
+
+  <!-- TAB 5: REGULATION -->
+  <div class="tab-pane">
+    <h3>Voltage Regulators: The Final Polish</h3>
+    <p>Filtered DC still isn't good enough for logic chips and sensors: it sags when the line voltage dips, rises when the load lightens, and always carries some ripple. A <strong>voltage regulator</strong> is an active circuit that compares its output against an internal reference and continuously adjusts to hold it constant.</p>
+    <h4>The Three-Terminal Linear Regulator (78xx / 79xx)</h4>
+    <p>The classic 7805 takes any input from about 7 V to 25 V and produces a fixed <strong>+5.0 V</strong>, with built-in current limiting and thermal shutdown. Its rules are simple:</p>
+    <ul class="styled">
+      <li><strong>Headroom:</strong> input must stay at least the <strong>dropout voltage (~2 V)</strong> above the output — including at the bottom of every ripple trough. A 7805 needs its input to never dip below ≈7 V.</li>
+      <li><strong>Power dissipation:</strong> the excess voltage times load current becomes heat: P = (V<sub>IN</sub> − V<sub>OUT</sub>) × I<sub>LOAD</sub>. A 12 V input at 1 A wastes 7 W — hence heat sinks.</li>
+      <li><strong>Ripple rejection:</strong> a healthy regulator attenuates input ripple by 60–80 dB, turning volts of sawtooth into millivolts.</li>
+    </ul>
+    <div class="formula">Regulation OK when: V<sub>IN(min)</sub> = V<sub>PK</sub> − V<sub>r(pp)</sub> ≥ V<sub>OUT</sub> + V<sub>DROPOUT</sub></div>
+    <h4>Zener Shunt vs. Three-Terminal Series</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Property</th><th>Zener Shunt (Lesson 1)</th><th>Three-Terminal Linear (7805)</th></tr>
+      <tr><td>Complexity</td><td>1 diode + 1 resistor</td><td>1 IC + 2 small capacitors</td></tr>
+      <tr><td>Efficiency</td><td>Poor (burns current constantly)</td><td>Moderate (burns headroom only)</td></tr>
+      <tr><td>Load capability</td><td>Tens of mA</td><td>1–1.5 A (78xx family)</td></tr>
+      <tr><td>Protection</td><td>None</td><td>Current limit + thermal shutdown</td></tr>
+      <tr><td>Best use</td><td>References, small bias rails</td><td>General-purpose supply rails</td></tr>
+    </table></div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out: Dropout in Action</div>
+      In the simulator, enable the <strong>5 V regulator</strong>, then shrink the filter capacitor until the ripple troughs dive below 7 V. Watch the "regulated" trace develop dips — <strong>ripple breakthrough</strong> — the classic symptom of an undersized filter capacitor feeding a linear regulator.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#psim">📈 Trigger dropout deliberately in the sim</a></div>
+  </div>
+
+  <!-- TAB 6: SCOPE -->
+  <div class="tab-pane">
+    <h3>Oscilloscope Measurement of AC/DC Conversion</h3>
+    <p>The oscilloscope is how a technician <em>sees</em> a power supply working. A systematic stage-by-stage probe sequence turns troubleshooting from guesswork into diagnosis.</p>
+    <h4>The Four-Point Probe Sequence</h4>
+    <ol class="styled">
+      <li><strong>Transformer secondary (DC coupling):</strong> a clean sine wave at the expected V<sub>PK</sub>. Missing or distorted → transformer/line problem.</li>
+      <li><strong>Rectifier output, capacitor disconnected (DC coupling):</strong> pulsating DC humps. Count the humps: gaps at 60 Hz → half-wave behavior (in a bridge, that means a failed diode!).</li>
+      <li><strong>Filter output (DC coupling, then AC coupling):</strong> DC coupling shows the average level; switching to <strong>AC coupling</strong> lets you magnify the millivolt-to-volt sawtooth ripple for measurement.</li>
+      <li><strong>Regulator output (AC coupling, high sensitivity):</strong> should be nearly flat. Visible ripple here means dropout — check upstream.</li>
+    </ol>
+    <h4>Reading Ripple Like a Pro</h4>
+    <ul class="styled">
+      <li><strong>Amplitude:</strong> measure ripple as <strong>V<sub>PP</sub></strong> (trough to crest) on AC coupling.</li>
+      <li><strong>Frequency:</strong> one ripple period of 16.7 ms → 60 Hz (half-wave); 8.33 ms → 120 Hz (full-wave). This single measurement identifies the rectifier topology — or exposes a dead bridge diode when a "120 Hz" supply shows 60 Hz ripple.</li>
+      <li><strong>Shape:</strong> healthy capacitor ripple is a <strong>sawtooth</strong> (slow discharge, fast recharge). A ripple that looks like the raw humps means the capacitor has failed open or dried out.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Pro Tip</div>
+      The simulator below is drawn as a four-channel scope on purpose: toggle traces on and off exactly as you'd move a probe through a real supply, and practice reading V<sub>PP</sub> and ripple period from the graticule before you ever touch the bench version.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#psim">📈 Practice the probe sequence on the sim</a></div>
+  </div>
+
+  <!-- TAB 7: LEDS -->
+  <div class="tab-pane">
+    <h3>Light-Emitting Diodes</h3>
+    <p>An LED is a P-N junction engineered so that forward-current recombination releases energy as <strong>photons</strong> instead of heat. The emitted color is set by the semiconductor's band gap — which also sets the forward voltage.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Color</th><th>Typical V<sub>F</sub></th><th>Typical Material</th></tr>
+      <tr><td>Infrared (remote controls, optocouplers)</td><td>1.2–1.5 V</td><td>GaAs</td></tr>
+      <tr><td>Red</td><td>1.8–2.2 V</td><td>AlGaAs</td></tr>
+      <tr><td>Yellow / Green</td><td>2.0–2.4 V</td><td>AlGaInP / GaP</td></tr>
+      <tr><td>Blue / White</td><td>3.0–3.6 V</td><td>InGaN</td></tr>
+    </table></div>
+    <h4>Designing the Drive Circuit</h4>
+    <p>An LED is still a diode: above V<sub>F</sub> its current rises exponentially, so it must <strong>never</strong> be connected directly across a supply. The series resistor does the current-setting:</p>
+    <div class="formula">R = (V<sub>SUPPLY</sub> − V<sub>F</sub>) / I<sub>LED</sub></div>
+    <p><strong>Worked example:</strong> drive a red LED (V<sub>F</sub> = 2.0 V) at 15 mA from a 5 V rail: R = (5 − 2.0) / 0.015 = 200 Ω → use the standard <strong>220 Ω</strong> value, giving I = 3.0/220 ≈ 13.6 mA. Check resistor power: P = I²R = 0.041 W — an eighth-watt part is fine.</p>
+    <ul class="styled">
+      <li><strong>Brightness control:</strong> proportional to current — but dimming is best done with PWM (rapid switching), not analog current reduction, to keep color stable.</li>
+      <li><strong>Reverse fragility:</strong> most LEDs tolerate only ≈5 V reverse. On AC, pair the LED with an antiparallel diode.</li>
+      <li><strong>Polarity ID:</strong> the flat spot and the shorter lead mark the cathode.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      LED resistor problems are two-step Ohm's law: subtract V<sub>F</sub>, divide by target current, then round to the nearest standard value and recompute the actual current. Show that recomputation — it's usually the point of the question.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#osim">💡 Drive the LED in the optocoupler sim and watch the glow track current</a></div>
+  </div>
+
+  <!-- TAB 8: PHOTODIODES -->
+  <div class="tab-pane">
+    <h3>Photodiodes and Phototransistors</h3>
+    <p>Run the LED story backwards: when photons strike a P-N junction's depletion region, they generate electron-hole pairs, and the junction's built-in field sweeps them out as a <strong>photocurrent proportional to light intensity</strong>. That is a photodiode.</p>
+    <h4>Two Operating Modes</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Mode</th><th>Bias</th><th>Character</th><th>Best For</th></tr>
+      <tr><td><strong>Photovoltaic</strong></td><td>Zero bias</td><td>Generates its own voltage (a tiny solar cell); very linear, low noise, but slow</td><td>Light meters, precision sensing, solar cells</td></tr>
+      <tr><td><strong>Photoconductive</strong></td><td>Reverse bias</td><td>Light modulates the leakage current; wider depletion region → much faster response</td><td>Data links, fiber optics, encoders, optocouplers</td></tr>
+    </table></div>
+    <p>Note the beautiful continuity with Lesson 1: the "leakage current" we dismissed as a nuisance in rectifiers becomes the <strong>signal</strong> in a photoconductive photodiode. Dark current — the leakage with no light present — is now the noise floor.</p>
+    <h4>The Phototransistor</h4>
+    <p>Replace the base wire of a transistor with a light window: photons generate the base current, and the transistor multiplies it by its gain (β). The result is <strong>50–500× more sensitivity</strong> than a bare photodiode, traded against slower response. Phototransistors are the standard detector inside low-cost optocouplers, slotted optical switches, and reflective object sensors.</p>
+    <ul class="styled">
+      <li><strong>Common circuit:</strong> phototransistor + pull-up resistor = light-controlled logic level. Dark → output HIGH; illuminated → output LOW.</li>
+      <li><strong>Applications:</strong> encoder wheels (RPM counting), paper detectors in printers, IR remote receivers, safety light curtains.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Mental Model</div>
+      LED and photodiode are <strong>mirror twins</strong>: one converts current to photons, the other converts photons to current. Seal the twins face-to-face in an opaque package and you've built the next tab's device — the optocoupler.
+    </div>
+  </div>
+
+  <!-- TAB 9: OPTOCOUPLERS -->
+  <div class="tab-pane">
+    <h3>Optocouplers and Optical Isolation Design</h3>
+    <p>An <strong>optocoupler</strong> (optoisolator) packages an infrared LED and a photodetector face-to-face across a transparent insulating barrier. The signal crosses as <em>light</em>; electricity cannot cross at all. Typical parts withstand <strong>2,500–5,000 V</strong> between input and output.</p>
+    <h4>Why Isolate?</h4>
+    <ul class="styled">
+      <li><strong>Safety:</strong> lets a 5 V microcontroller monitor or control mains-voltage circuits with no galvanic path for a fault to travel.</li>
+      <li><strong>Ground loop elimination:</strong> two systems with different ground potentials can exchange data without circulating currents.</li>
+      <li><strong>Common-mode noise rejection:</strong> volts of noise between the two grounds simply never appear at the output — light doesn't carry it.</li>
+    </ul>
+    <h4>The Key Specification: CTR</h4>
+    <div class="formula">CTR = (I<sub>C</sub> / I<sub>F</sub>) × 100%&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;I<sub>C(out)</sub> = I<sub>F(LED)</sub> × CTR</div>
+    <p>A 4N35 with CTR = 100% delivers 10 mA of output collector current for 10 mA of LED drive. CTR varies with LED current and temperature, and <strong>degrades as the LED ages</strong> — good designs assume the minimum datasheet CTR and drive the output well into saturation for digital signaling.</p>
+    <h4>Design Procedure (Digital Isolation)</h4>
+    <ol class="styled">
+      <li>Choose the LED forward current (typically 5–15 mA) and compute the input resistor: R<sub>IN</sub> = (V<sub>LOGIC</sub> − V<sub>F</sub>) / I<sub>F</sub>.</li>
+      <li>From minimum CTR, find the guaranteed output current: I<sub>C</sub> = I<sub>F</sub> × CTR<sub>min</sub>.</li>
+      <li>Size the output pull-up so the phototransistor saturates: R<sub>OUT</sub> ≥ V<sub>CC</sub> / I<sub>C</sub>.</li>
+      <li>Verify speed: phototransistor couplers manage ~10–50 kHz; use logic-output couplers (6N137-class) for fast data.</li>
+    </ol>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out</div>
+      An optocoupler's input side and output side must have <strong>completely separate grounds and supplies</strong> — tying the grounds together out of habit destroys the entire purpose of the part. In the simulator below, inject common-mode noise and watch it violently shake the input side while the isolated output stays perfectly clean.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#osim">💡 Open the Optocoupler Isolation Sim</a></div>
+  </div>
+</section>
+
+<!-- ================= SIM 1: POWER SUPPLY SCOPE ================= -->
+<section id="psim">
+  <h2 class="sec-title">📈 Interactive Power Supply Oscilloscope Simulator</h2>
+  <p>A four-channel virtual scope probing every stage of a live power supply. The waveforms are computed numerically — the capacitor really charges through the diodes and really discharges through your load, so the ripple you see obeys V<sub>r(pp)</sub> ≈ I/(fC) exactly. Toggle traces like moving a probe; the readout is your DMM.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="psCv" width="720" height="460" role="img" aria-label="Oscilloscope display showing AC input, rectified, filtered, and regulated waveforms of a simulated power supply"></canvas>
+        <div class="trace-toggles">
+          <label class="tt-in"><input type="checkbox" id="trIn" checked onchange="dirty()">CH1 AC Input</label>
+          <label class="tt-rect"><input type="checkbox" id="trRect" checked onchange="dirty()">CH2 Rectified</label>
+          <label class="tt-filt"><input type="checkbox" id="trFilt" checked onchange="dirty()">CH3 Filtered</label>
+          <label class="tt-reg"><input type="checkbox" id="trReg" checked onchange="dirty()">CH4 Regulated</label>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Rectifier Topology</label>
+          <div class="seg" id="rectSeg">
+            <button onclick="setRect('none',this)">None</button>
+            <button onclick="setRect('half',this)">Half-Wave</button>
+            <button class="active" onclick="setRect('full',this)">Full Bridge</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Input Peak Voltage <span class="val" id="vpkVal">17 V</span></label>
+          <input type="range" id="vpk" min="8" max="24" step="0.5" value="17" oninput="dirty()">
+        </div>
+        <div class="ctrl">
+          <label>Filter Capacitor <span class="val" id="capVal">470 µF</span></label>
+          <input type="range" id="cap" min="0" max="7" step="1" value="4" oninput="dirty()">
+        </div>
+        <div class="ctrl">
+          <label>Load Resistance <span class="val" id="rlVal">220 Ω</span></label>
+          <input type="range" id="rl" min="1" max="5" step="0.05" value="2.34" oninput="dirty()">
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="regChk" onchange="dirty()">
+          <label for="regChk" style="cursor:pointer;">Enable 5 V Regulator (7805, 2 V dropout)</label>
+        </div>
+        <div class="readout" id="psRead" aria-live="polite"></div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="psPreset('clean')">✔ Clean 5V Design</button>
+          <button class="g-btn" onclick="psPreset('ripple')">⚠ Undersized Cap</button>
+          <button class="g-btn" onclick="psPreset('reset')">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Guided Explorations</div>
+    <strong>1. Dead zones:</strong> Set rectifier to HALF with capacitor at 0 µF — count the flat gaps and confirm 60 Hz ripple in the readout. Switch to FULL BRIDGE and watch the gaps fill in at 120 Hz. <strong>2. The ripple equation live:</strong> With FULL bridge and a 100 Ω load, step the capacitor 100 → 220 → 470 → 1000 µF and record V<sub>r(pp)</sub> each time — it should roughly halve as C doubles. <strong>3. Half vs. full, same cap:</strong> Fix C = 470 µF and toggle HALF ↔ FULL: ripple doubles and halves before your eyes. <strong>4. Dropout hunt:</strong> Enable the regulator, then lower the capacitor until CH4 develops dips — note the readout flipping from REGULATING to DROPOUT the instant the trough crosses 7 V. <strong>5. Load test:</strong> With everything healthy, drag the load from 1 kΩ down to 50 Ω and watch ripple grow linearly with current.
+  </div>
+</section>
+
+<!-- ================= SIM 2: OPTOCOUPLER ================= -->
+<section id="osim">
+  <h2 class="sec-title">💡 Interactive Optocoupler Isolation Simulator</h2>
+  <p>A live optocoupler: your input signal drives the infrared LED (watch it glow with current), light crosses the isolation barrier, and the phototransistor reconstructs the signal on a completely separate circuit. Then inject <strong>common-mode noise</strong> onto the input-side ground — it shakes the input trace violently, yet the isolated output never flinches. That is optical isolation, visualized.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="ocCv" width="720" height="430" role="img" aria-label="Optocoupler simulation showing input signal, LED, isolation barrier, phototransistor, and clean isolated output waveform"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Input Signal</label>
+          <div class="seg" id="sigSeg">
+            <button class="active" onclick="setSig('square',this)">Square</button>
+            <button onclick="setSig('data',this)">Data Pulses</button>
+            <button onclick="setSig('sine',this)">Sine</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>LED Drive Current <span class="val" id="ifVal">10 mA</span></label>
+          <input type="range" id="ifled" min="1" max="20" step="0.5" value="10" oninput="dirty2()">
+        </div>
+        <div class="ctrl">
+          <label>Current Transfer Ratio <span class="val" id="ctrVal">100%</span></label>
+          <input type="range" id="ctr" min="20" max="200" step="5" value="100" oninput="dirty2()">
+        </div>
+        <div class="toggle-row">
+          <input type="checkbox" id="noiseChk" onchange="dirty2()">
+          <label for="noiseChk" style="cursor:pointer;">Inject Common-Mode Noise (input-side ground)</label>
+        </div>
+        <div class="readout" id="ocRead" aria-live="polite"></div>
+        <div class="callout co-tip" style="margin:14px 0 0;">
+          <div class="co-title">🎯 What to Notice</div>
+          Output current = I<sub>F</sub> × CTR. Drop the LED drive below ~3 mA or the CTR below ~40% and the output can no longer reach a clean logic level — the readout flags <strong>WEAK COUPLING</strong>, exactly the failure mode of an aged optocoupler.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="acc open" id="factsAcc">
+    <button class="acc-head" onclick="toggleAcc('factsAcc')">Key Facts Reference Box <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <div class="facts">
+        <div class="fact"><div class="f-label">Power Supply Chain</div><div class="f-val">Transformer → Rectifier → Filter → Regulator</div></div>
+        <div class="fact"><div class="f-label">RMS to Peak</div><div class="f-val">V<sub>PK</sub> = 1.414 × V<sub>RMS</sub></div></div>
+        <div class="fact"><div class="f-label">Half-Wave Output</div><div class="f-val">V<sub>AVG</sub> = 0.318 V<sub>PK</sub> | 60 Hz ripple</div></div>
+        <div class="fact"><div class="f-label">Full-Wave Output</div><div class="f-val">V<sub>AVG</sub> = 0.637 V<sub>PK</sub> | 120 Hz ripple</div></div>
+        <div class="fact"><div class="f-label">Bridge Diode Drops</div><div class="f-val">2 × 0.7 V = 1.4 V per half-cycle</div></div>
+        <div class="fact"><div class="f-label">Ripple Equation</div><div class="f-val">V<sub>r(pp)</sub> ≈ I / (f × C)</div></div>
+        <div class="fact"><div class="f-label">Filtered DC Level</div><div class="f-val">V<sub>DC</sub> ≈ V<sub>PK</sub> − V<sub>r</sub>/2</div></div>
+        <div class="fact"><div class="f-label">Half-Wave Diode PIV</div><div class="f-val">≈ 2 × V<sub>PK</sub> (with filter cap)</div></div>
+        <div class="fact"><div class="f-label">Bridge Diode PIV</div><div class="f-val">≈ V<sub>PK</sub></div></div>
+        <div class="fact"><div class="f-label">7805 Dropout</div><div class="f-val">≈ 2 V (needs V<sub>IN</sub> ≥ 7 V)</div></div>
+        <div class="fact"><div class="f-label">Regulator Heat</div><div class="f-val">P = (V<sub>IN</sub> − V<sub>OUT</sub>) × I<sub>LOAD</sub></div></div>
+        <div class="fact"><div class="f-label">LED Resistor</div><div class="f-val">R = (V<sub>S</sub> − V<sub>F</sub>) / I<sub>LED</sub></div></div>
+        <div class="fact"><div class="f-label">LED V<sub>F</sub> by Color</div><div class="f-val">IR 1.2 | Red 2.0 | Blue/White 3.3 V</div></div>
+        <div class="fact"><div class="f-label">Photodiode Modes</div><div class="f-val">Photovoltaic (0 bias) | Photoconductive (reverse)</div></div>
+        <div class="fact"><div class="f-label">Optocoupler Gain</div><div class="f-val">CTR = (I<sub>C</sub>/I<sub>F</sub>) × 100%</div></div>
+        <div class="fact"><div class="f-label">Typical Isolation Rating</div><div class="f-val">2.5 – 5 kV input-to-output</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Test your understanding with ten questions. Select your answers and click "Submit Answers" for your score and detailed feedback.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+      <div class="score-box" id="scoreBox"><div class="big">Score: 0 / 10</div><p>Please complete all questions to view your results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson01.html">← Lesson 1: Semiconductor Fundamentals</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 ELT 102 Home</a>
+  <a href="lesson03.html">Next: Lesson 3 →</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Lesson 2: Diode Applications, Power Supply Circuits &amp; Optoelectronics<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d = document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  dirty();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i, btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show', idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ================================================================
+   SIM 1 — POWER SUPPLY OSCILLOSCOPE
+================================================================ */
+var psCv=document.getElementById('psCv'), psCx=psCv.getContext('2d');
+var CAPS=[0,47,100,220,470,1000,2200,4700]; // µF
+var rectMode='full';
+var F=60, RS=2; // line freq, charge-path series resistance
+
+function setRect(m,btn){
+  rectMode=m;
+  document.querySelectorAll('#rectSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  dirty();
+}
+function psParams(){
+  var vpk=parseFloat(document.getElementById('vpk').value);
+  var C=CAPS[parseInt(document.getElementById('cap').value)]*1e-6;
+  var RL=Math.pow(10,parseFloat(document.getElementById('rl').value));
+  var reg=document.getElementById('regChk').checked;
+  document.getElementById('vpkVal').textContent=vpk.toFixed(1)+' V';
+  document.getElementById('capVal').textContent=CAPS[parseInt(document.getElementById('cap').value)]+' µF';
+  document.getElementById('rlVal').textContent = RL>=1000 ? (RL/1000).toFixed(1)+' kΩ' : Math.round(RL)+' Ω';
+  return {vpk:vpk,C:C,RL:RL,reg:reg};
+}
+function rectify(vin){
+  if(rectMode==='none') return vin;
+  if(rectMode==='half') return Math.max(0, vin-0.7);
+  return Math.max(0, Math.abs(vin)-1.4);
+}
+function simulate(p){
+  // simulate 5 cycles, keep the last 2 for display, last 1 for measurements
+  var Tper=1/F, cycles=5, dt=Tper/600, N=Math.round(cycles*Tper/dt);
+  var t=0, Vc=0;
+  var out={t:[],vin:[],vr:[],vf:[],vg:[]};
+  for(var i=0;i<N;i++){
+    var vin=p.vpk*Math.sin(2*Math.PI*F*t);
+    var vr=rectify(vin);
+    var vf;
+    if(p.C===0){ vf=vr; }
+    else{
+      var dV;
+      if(vr>Vc) dV = ((vr-Vc)/RS - Vc/p.RL) * dt / p.C;
+      else      dV = -(Vc/p.RL) * dt / p.C;
+      Vc=Math.max(0,Vc+dV);
+      vf=Vc;
+    }
+    var vg = !p.reg ? null : (vf>=7 ? 5 : Math.max(0,vf-2));
+    if(t >= (cycles-2)*Tper){
+      out.t.push(t-(cycles-2)*Tper); out.vin.push(vin); out.vr.push(vr); out.vf.push(vf); out.vg.push(vg);
+    }
+    t+=dt;
+  }
+  // measurements over final cycle of stored data
+  var half=Math.floor(out.vf.length/2);
+  var seg=out.vf.slice(half), segG=out.vg.slice(half);
+  var vmax=Math.max.apply(null,seg), vmin=Math.min.apply(null,seg);
+  var vavg=seg.reduce(function(a,b){return a+b;},0)/seg.length;
+  var dropout=false;
+  if(p.reg){ for(var k=0;k<segG.length;k++){ if(segG[k]!==null && segG[k]<4.98){ dropout=true; break; } } }
+  return {data:out, vpp:vmax-vmin, vmax:vmax, vmin:vmin, vavg:vavg, dropout:dropout};
+}
+function drawPS(){
+  var p=psParams(), r=simulate(p);
+  var W=psCv.width,H=psCv.height;
+  // scope-style dark graticule in both themes
+  psCx.fillStyle='#0c1420'; psCx.fillRect(0,0,W,H);
+  var gx=W/10, gy=H/8;
+  psCx.strokeStyle='rgba(120,150,190,.18)'; psCx.lineWidth=1;
+  for(var i=1;i<10;i++){ psCx.beginPath(); psCx.moveTo(i*gx,0); psCx.lineTo(i*gx,H); psCx.stroke(); }
+  for(var j=1;j<8;j++){ psCx.beginPath(); psCx.moveTo(0,j*gy); psCx.lineTo(W,j*gy); psCx.stroke(); }
+  // volt scale: -25..+25
+  function Y(v){ return H/2 - v/25*(H/2-14); }
+  function X(tt){ return tt/(2/F)*W; }
+  psCx.strokeStyle='rgba(120,150,190,.45)';
+  psCx.beginPath(); psCx.moveTo(0,Y(0)); psCx.lineTo(W,Y(0)); psCx.stroke();
+  psCx.fillStyle='rgba(160,190,230,.7)'; psCx.font='10px Arial';
+  [20,10,-10,-20].forEach(function(v){ psCx.fillText((v>0?'+':'')+v+' V',4,Y(v)+3); });
+  psCx.fillText('0 V',4,Y(0)-4);
+  psCx.fillText('5 ms/div · 5 V/div',W-110,H-8);
+
+  var d=r.data;
+  function trace(arr,color,w){
+    psCx.strokeStyle=color; psCx.lineWidth=w; psCx.beginPath();
+    var first=true;
+    for(var i=0;i<arr.length;i++){
+      if(arr[i]===null) continue;
+      var x=X(d.t[i]), y=Y(arr[i]);
+      if(first){ psCx.moveTo(x,y); first=false; } else psCx.lineTo(x,y);
+    }
+    psCx.stroke();
+  }
+  if(document.getElementById('trIn').checked)  trace(d.vin,'#7d8fa5',1.4);
+  if(document.getElementById('trRect').checked) trace(d.vr,'#4d8cff',2);
+  if(document.getElementById('trFilt').checked) trace(d.vf,'#2ecc8f',2.4);
+  if(document.getElementById('trReg').checked && p.reg) trace(d.vg,'#f0b545',2.4);
+
+  // legend
+  psCx.font='bold 10px Arial';
+  var lg=[['CH1 IN','#7d8fa5'],['CH2 RECT','#4d8cff'],['CH3 FILT','#2ecc8f']];
+  if(p.reg) lg.push(['CH4 REG','#f0b545']);
+  lg.forEach(function(l,i){ psCx.fillStyle=l[1]; psCx.fillText('● '+l[0], 10+i*92, 14); });
+
+  // readout
+  var iload=r.vavg/p.RL;
+  var fr = rectMode==='half' ? '60 Hz' : rectMode==='full' ? '120 Hz' : '—';
+  var Cuf=CAPS[parseInt(document.getElementById('cap').value)];
+  var status = !p.reg ? '<span class="r-bd">UNREGULATED</span>'
+             : r.dropout ? '<span class="r-off">DROPOUT — ripple breakthrough!</span>'
+             : '<span class="r-on">REGULATING (5.00 V)</span>';
+  var theory = (rectMode!=='none' && Cuf>0) ? (iload/((rectMode==='half'?60:120)*Cuf*1e-6)).toFixed(2)+' V' : '—';
+  document.getElementById('psRead').innerHTML=
+    'V<sub>PK</sub> in : '+p.vpk.toFixed(1)+' V<br>'+
+    'Filtered V<sub>DC</sub> : <span class="r-on">'+r.vavg.toFixed(2)+' V</span><br>'+
+    'Trough / Crest : '+r.vmin.toFixed(2)+' / '+r.vmax.toFixed(2)+' V<br>'+
+    'Ripple V<sub>r(pp)</sub> : <span class="r-bd">'+r.vpp.toFixed(2)+' V</span> @ '+fr+'<br>'+
+    'Theory I/(fC) : '+theory+'<br>'+
+    'I<sub>LOAD</sub> : '+(iload*1000).toFixed(1)+' mA<br>'+
+    'Regulator : '+status;
+}
+function psPreset(k){
+  if(k==='clean'){ rectMode='full'; document.getElementById('vpk').value=17; document.getElementById('cap').value=5; document.getElementById('rl').value=2.34; document.getElementById('regChk').checked=true; }
+  if(k==='ripple'){ rectMode='full'; document.getElementById('vpk').value=17; document.getElementById('cap').value=1; document.getElementById('rl').value=2; document.getElementById('regChk').checked=true; }
+  if(k==='reset'){ rectMode='full'; document.getElementById('vpk').value=17; document.getElementById('cap').value=4; document.getElementById('rl').value=2.34; document.getElementById('regChk').checked=false; }
+  document.querySelectorAll('#rectSeg button').forEach(function(b,i){ b.classList.toggle('active', i===2); });
+  dirty();
+}
+function dirty(){ drawPS(); }
+
+/* ================================================================
+   SIM 2 — OPTOCOUPLER ISOLATION
+================================================================ */
+var ocCv=document.getElementById('ocCv'), ocCx=ocCv.getContext('2d');
+var sigMode='square';
+var DATA=[1,0,1,1,0,0,1,0];
+function setSig(m,btn){
+  sigMode=m;
+  document.querySelectorAll('#sigSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function sig(t){ // 0..1 logic-ish signal, t in seconds, 1 kHz base
+  var ph=(t*1000)%1;
+  if(sigMode==='square') return ph<0.5?1:0;
+  if(sigMode==='sine') return 0.5+0.5*Math.sin(2*Math.PI*1000*t);
+  var bit=Math.floor((t*1000*2)%DATA.length);
+  return DATA[bit];
+}
+function dirty2(){ /* values read each frame */ }
+function drawOC(now){
+  var t0=now/1000;
+  var If=parseFloat(document.getElementById('ifled').value);
+  var CTR=parseFloat(document.getElementById('ctr').value);
+  var noise=document.getElementById('noiseChk').checked;
+  document.getElementById('ifVal').textContent=If.toFixed(1)+' mA';
+  document.getElementById('ctrVal').textContent=CTR+'%';
+  var Ic=If*CTR/100;               // mA
+  var voutHi=Math.min(5, Ic*1.0);  // 1 kΩ pull network
+  var weak=voutHi<4.5;
+
+  var W=ocCv.width,H=ocCv.height;
+  ocCx.fillStyle='#0c1420'; ocCx.fillRect(0,0,W,H);
+
+  /* ---- circuit strip (top 150px) ---- */
+  var cy=78;
+  // isolation barrier
+  ocCx.fillStyle='rgba(240,181,69,.14)';
+  ocCx.fillRect(W/2-16,10,32,140);
+  ocCx.strokeStyle='#f0b545'; ocCx.setLineDash([6,4]); ocCx.lineWidth=1.5;
+  ocCx.strokeRect(W/2-16,10,32,140); ocCx.setLineDash([]);
+  ocCx.fillStyle='#f0b545'; ocCx.font='bold 9px Arial'; ocCx.textAlign='center';
+  ocCx.fillText('ISOLATION',W/2,26); ocCx.fillText('5 kV',W/2,38);
+  // input side
+  ocCx.strokeStyle='#7d8fa5'; ocCx.lineWidth=2;
+  ocCx.beginPath(); ocCx.moveTo(30,cy); ocCx.lineTo(150,cy); ocCx.stroke();
+  ocCx.fillStyle='#7d8fa5'; ocCx.font='11px Arial';
+  ocCx.fillText('V IN',55,cy-12);
+  // resistor zigzag
+  ocCx.beginPath(); ocCx.moveTo(150,cy);
+  for(var z=0;z<6;z++){ ocCx.lineTo(150+8+z*12, cy+(z%2?8:-8)); }
+  ocCx.lineTo(230,cy); ocCx.stroke();
+  ocCx.fillText('R IN',185,cy-16);
+  // LED with glow proportional to instantaneous drive
+  var s=sig(t0);
+  var glow=s*If/20;
+  var g=ocCx.createRadialGradient(280,cy,2,280,cy,26+glow*26);
+  g.addColorStop(0,'rgba(255,80,60,'+(0.25+glow*0.75)+')');
+  g.addColorStop(1,'rgba(255,80,60,0)');
+  ocCx.fillStyle=g;
+  ocCx.beginPath(); ocCx.arc(280,cy,26+glow*26,0,Math.PI*2); ocCx.fill();
+  ocCx.strokeStyle='#e06050'; ocCx.lineWidth=2;
+  ocCx.beginPath(); ocCx.moveTo(230,cy); ocCx.lineTo(266,cy); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(266,cy-11); ocCx.lineTo(266,cy+11); ocCx.lineTo(288,cy); ocCx.closePath();
+  ocCx.fillStyle=glow>0.05?'rgba(255,90,70,'+(0.4+glow*0.6)+')':'rgba(120,60,55,.6)'; ocCx.fill(); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(288,cy-11); ocCx.lineTo(288,cy+11); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(288,cy); ocCx.lineTo(330,cy); ocCx.stroke();
+  ocCx.fillStyle='#e06050'; ocCx.fillText('IR LED',280,cy+30);
+  // photons crossing barrier
+  if(glow>0.05){
+    ocCx.fillStyle='rgba(240,181,69,'+(0.5+glow*0.5)+')';
+    for(var ph=0;ph<3;ph++){
+      var px=W/2-30+(((t0*160)+ph*22)%64);
+      ocCx.beginPath(); ocCx.arc(px,cy-14+ph*14,3,0,Math.PI*2); ocCx.fill();
+    }
+  }
+  // phototransistor (output side)
+  ocCx.strokeStyle='#2ecc8f'; ocCx.lineWidth=2;
+  ocCx.beginPath(); ocCx.arc(430,cy,20,0,Math.PI*2); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(422,cy-12); ocCx.lineTo(422,cy+12); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(422,cy-5); ocCx.lineTo(440,cy-16); ocCx.moveTo(422,cy+5); ocCx.lineTo(440,cy+16); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(440,cy+16); ocCx.lineTo(440,cy+16); ocCx.stroke();
+  ocCx.fillStyle='#2ecc8f'; ocCx.fillText('PHOTO-TRANSISTOR',452,cy-24);
+  ocCx.beginPath(); ocCx.moveTo(440,cy-16); ocCx.lineTo(440,cy-30); ocCx.lineTo(560,cy-30); ocCx.stroke();
+  ocCx.beginPath(); ocCx.moveTo(440,cy+16); ocCx.lineTo(440,cy+30); ocCx.lineTo(560,cy+30); ocCx.stroke();
+  ocCx.fillText('V OUT (isolated)',600,cy-12);
+  ocCx.strokeStyle='#7d8fa5';
+  ocCx.beginPath(); ocCx.moveTo(560,cy-30); ocCx.lineTo(690,cy-30); ocCx.stroke();
+  ocCx.textAlign='left';
+
+  /* ---- waveform lanes (bottom) ---- */
+  var laneH=110, y1=180, y2=305;
+  function lane(y,label,color){
+    ocCx.strokeStyle='rgba(120,150,190,.25)';
+    ocCx.strokeRect(30,y,W-60,laneH);
+    ocCx.fillStyle=color; ocCx.font='bold 10px Arial';
+    ocCx.fillText(label,34,y+12);
+  }
+  lane(y1,'INPUT SIDE (referenced to noisy input ground)','#7d8fa5');
+  lane(y2,'ISOLATED OUTPUT SIDE (clean local ground)','#2ecc8f');
+  var span=0.004; // 4 ms window
+  // input trace: signal + common-mode noise
+  ocCx.strokeStyle='#7d8fa5'; ocCx.lineWidth=1.8; ocCx.beginPath();
+  for(var x=0;x<=W-60;x++){
+    var tt=t0 - span + x/(W-60)*span;
+    var v=sig(tt)*3.3;
+    if(noise) v += 1.6*Math.sin(2*Math.PI*180*tt) + 0.5*Math.sin(2*Math.PI*777*tt);
+    var yy=y1+laneH-12 - v/6*(laneH-24);
+    x===0?ocCx.moveTo(30+x,yy):ocCx.lineTo(30+x,yy);
+  }
+  ocCx.stroke();
+  // output trace: clean reconstruction (weak coupling sags)
+  ocCx.strokeStyle= weak ? '#e06050' : '#2ecc8f'; ocCx.lineWidth=2.2; ocCx.beginPath();
+  for(var x2=0;x2<=W-60;x2++){
+    var tt2=t0 - span + x2/(W-60)*span;
+    var vo=sig(tt2)*voutHi;
+    var yy2=y2+laneH-12 - vo/6*(laneH-24);
+    x2===0?ocCx.moveTo(30+x2,yy2):ocCx.lineTo(30+x2,yy2);
+  }
+  ocCx.stroke();
+
+  // readout
+  var iso = noise ? '<span class="r-on">Noise on input side ONLY — output unaffected ✔</span>' : 'Inject noise to test the barrier';
+  var coup = weak ? '<span class="r-off">WEAK COUPLING — output below logic HIGH</span>' : '<span class="r-on">SOLID COUPLING</span>';
+  document.getElementById('ocRead').innerHTML=
+    'I<sub>F</sub> (LED) : '+If.toFixed(1)+' mA<br>'+
+    'CTR : '+CTR+'%<br>'+
+    'I<sub>C</sub> = I<sub>F</sub>×CTR : <span class="r-on">'+Ic.toFixed(1)+' mA</span><br>'+
+    'V<sub>OUT</sub> high : '+voutHi.toFixed(2)+' V<br>'+
+    'Coupling : '+coup+'<br>'+
+    'Isolation : '+iso;
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:"A bridge rectifier is fed 12.6 V-RMS (17.8 V peak). Ignoring the filter, what is the peak output voltage and ripple frequency?",
+  o:["17.1 V at 60 Hz — one diode drop, line frequency.","16.4 V at 120 Hz — two diode drops in the path, and both half-cycles reach the load.","17.8 V at 120 Hz — the bridge is lossless.","8.9 V at 60 Hz — the bridge halves the voltage."],
+  a:1, e:"On each half-cycle two bridge diodes conduct in series, so V-PK(out) = 17.8 − 1.4 = 16.4 V. Because both half-cycles reach the load, ripple frequency doubles to 120 Hz."},
+ {q:"A technician scopes a supply that should use a bridge rectifier and measures ripple with an 16.7 ms period. What has most likely happened?",
+  o:["Nothing — 16.7 ms is normal for a bridge on 60 Hz mains.","The filter capacitor is oversized.","One bridge diode has failed open, so the circuit is acting as a half-wave rectifier (60 Hz ripple instead of 120 Hz).","The regulator is in dropout."],
+  a:2, e:"16.7 ms = 60 Hz. A healthy bridge produces 120 Hz ripple (8.33 ms). Ripple at the line frequency means only one polarity is being rectified — the classic signature of an open bridge diode."},
+ {q:"A full-wave supply (120 Hz ripple) uses a 1000 µF filter capacitor and delivers 200 mA. Estimate the peak-to-peak ripple voltage.",
+  o:["0.83 V","1.67 V","16.7 V","0.42 V"],
+  a:1, e:"V-r(pp) ≈ I / (f × C) = 0.2 / (120 × 0.001) = 1.67 V. More load current means proportionally more ripple."},
+ {q:"For the SAME capacitor and load, why does a full-wave rectifier produce half the ripple of a half-wave rectifier?",
+  o:["Full-wave circuits use higher-quality diodes.","The 120 Hz ripple frequency halves the capacitor's discharge time between charging peaks.","Full-wave rectifiers step up the voltage.","The extra diodes add resistance that filters the output."],
+  a:1, e:"Ripple is set by how far the capacitor discharges between peaks. At 120 Hz the gap between recharge pulses is half as long as at 60 Hz, so the sawtooth droop — and therefore V-r(pp) — is halved."},
+ {q:"A 7805 regulator (2 V dropout) is fed by a filtered supply whose ripple troughs dip to 6.2 V. What appears at the output?",
+  o:["A clean 5.00 V — regulators remove all ripple.","A steady 6.2 V.","5 V with periodic dips: the regulator loses regulation each time the input trough falls below 7 V (ripple breakthrough).","0 V — the regulator shuts down completely."],
+  a:2, e:"The 7805 needs V-IN ≥ V-OUT + dropout = 7 V at every instant. When the trough dips to 6.2 V, the output momentarily sags to about (6.2 − 2) = 4.2 V, producing ripple breakthrough dips at the ripple rate."},
+ {q:"Which oscilloscope technique lets you accurately measure 50 mV of ripple riding on a 12 V DC rail?",
+  o:["DC coupling at 5 V/div.","AC coupling with increased vertical sensitivity — the DC component is blocked so the ripple can fill the screen.","X-Y mode.","Disconnect the filter capacitor first."],
+  a:1, e:"AC coupling inserts a blocking capacitor that removes the 12 V DC level, allowing you to switch to millivolt sensitivity and examine only the ripple."},
+ {q:"Design check: a blue LED (V-F = 3.3 V) must run at 10 mA from a 5 V rail. Which standard resistor is the best choice?",
+  o:["170 Ω exactly, custom wound.","180 Ω — R = (5 − 3.3)/0.010 = 170 Ω, rounded up to the nearest standard value for safety.","500 Ω to be extra safe.","No resistor needed; 5 V is close enough to 3.3 V."],
+  a:1, e:"R = (V-S − V-F)/I = 1.7/0.010 = 170 Ω. Choose the next standard value up (180 Ω), giving I = 1.7/180 ≈ 9.4 mA — safely near target. LEDs must never connect directly to a supply."},
+ {q:"Which statement correctly contrasts photodiode operating modes?",
+  o:["Photovoltaic mode requires reverse bias; photoconductive mode requires forward bias.","Photovoltaic mode (zero bias) generates voltage like a solar cell and is linear but slow; photoconductive mode (reverse bias) modulates leakage current and is much faster.","Both modes require forward bias beyond 0.7 V.","Photoconductive mode only works in complete darkness."],
+  a:1, e:"Zero-bias photovoltaic operation is precise and low-noise but slow. Reverse bias widens the depletion region, speeding response dramatically — the choice for data links and optocouplers — at the cost of dark-current noise."},
+ {q:"An optocoupler with a minimum CTR of 50% is driven with 8 mA of LED current. What guaranteed output current is available, and what does CTR degrade with?",
+  o:["16 mA; CTR improves with age.","4 mA; CTR degrades as the LED ages.","400 mA; CTR is unaffected by anything.","50 mA; CTR depends only on the phototransistor."],
+  a:1, e:"I-C = I-F × CTR = 8 mA × 0.50 = 4 mA guaranteed. LED light output falls over thousands of hours, so robust designs use minimum-datasheet CTR with margin."},
+ {q:"A microcontroller must read a switch located on a 480 V industrial panel with a different ground potential. Why is an optocoupler the correct interface?",
+  o:["It amplifies the 480 V down to 5 V.","It converts AC to DC.","The signal crosses the package as light only — there is no galvanic path, so the 480 V circuit, its ground offset, and its noise are completely isolated from the logic side.","It increases the switching speed of the signal."],
+  a:2, e:"Optical isolation provides thousands of volts of galvanic separation. Data crosses as photons; voltage differences and common-mode noise physically cannot, protecting both the microcontroller and the operator."}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt" id="q'+qi+'o'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'"><strong>Explanation:</strong> '+item.e+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0, answered=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name=q'+qi+']:checked');
+    for(var oi=0;oi<4;oi++){ document.getElementById('q'+qi+'o'+oi).classList.remove('correct','incorrect'); }
+    if(sel){
+      answered++;
+      var v=parseInt(sel.value);
+      if(v===item.a){ score++; document.getElementById('q'+qi+'o'+v).classList.add('correct'); }
+      else{ document.getElementById('q'+qi+'o'+v).classList.add('incorrect'); document.getElementById('q'+qi+'o'+item.a).classList.add('correct'); }
+      document.getElementById('ex'+qi).classList.add('show');
+    }
+  });
+  var box=document.getElementById('scoreBox');
+  if(answered<QUIZ.length){
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>You have answered '+answered+' of 10 questions. Complete all questions for a full evaluation.</p>';
+  } else {
+    var msg = score>=9 ? '🏆 Outstanding — you are ready to build and troubleshoot real power supplies!'
+            : score>=7 ? '✅ Solid work. Review the explanations you missed, then rerun the guided explorations in both simulators.'
+            : score>=5 ? '📘 Getting there. Revisit the Capacitive Filtering and Regulation tabs, then retake the quiz.'
+            : '🔁 Review the full lesson and work through every guided exploration before retaking this check.';
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>'+msg+'</p>';
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ============ INIT & LOOP ============ */
+drawPS();
+function loop(now){ drawOC(now); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
