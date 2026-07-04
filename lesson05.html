@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Lesson 5: Number Systems, Logic Gates &amp; Boolean Algebra</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ GATE SYMBOL LIBRARY ============ */
+.symgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.symcard{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:14px;text-align:center;}
+.symcard svg{width:100%;max-width:200px;height:110px;stroke:var(--text);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;}
+.symcard svg .lead{stroke:var(--navy);}
+.symcard svg .bub{fill:var(--card);}
+.symcard svg text{stroke:none;fill:var(--green-dark);font-family:'Arial Narrow',Arial,sans-serif;font-size:12px;font-weight:bold;}
+.symcard .sname{font-weight:bold;color:var(--navy);margin-top:4px;}
+[data-theme="dark"] .symcard .sname{color:#8ab6ff;}
+.symcard .sexp{font-family:'Courier New',monospace;font-size:.85rem;color:var(--green-dark);margin-top:2px;}
+.symcard table.tt{margin:8px auto 0;border-collapse:collapse;font-family:'Courier New',monospace;font-size:.75rem;}
+.symcard table.tt th{background:var(--navy);color:#fff;padding:2px 9px;font-weight:normal;}
+[data-theme="dark"] .symcard table.tt th{background:#1a3a68;}
+.symcard table.tt td{border:1px solid var(--border);padding:2px 9px;}
+.symcard table.tt td.one{color:var(--green-dark);font-weight:bold;}
+
+/* ============ INTERACTIVE LAB ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;cursor:pointer;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.mode-panel{display:none;}
+.mode-panel.show{display:block;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.readout .r-bd{color:#a86e00;font-weight:bold;}
+[data-theme="dark"] .readout .r-bd{color:var(--amber);}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;} .tab-pane{padding:20px 16px;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Lesson 5 of 8</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson05.html">Lesson 5</a> &nbsp;›&nbsp;
+  Number Systems, Logic Gates &amp; Boolean Algebra
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 3 · Digital Foundations</span>
+  <h1>Number Systems, Logic Gates &amp; Boolean Algebra</h1>
+  <p class="sub">Binary, octal, decimal, and hexadecimal conversions, arithmetic in base-N, signed binary (2's complement), and the fundamental laws of Boolean algebra — plus AND, OR, NOT, NAND, and NOR gates with truth table analysis.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 Hours Study</span>
+    <span>📋 9 Core Topics</span>
+    <span>📐 Gate Symbol Library</span>
+    <span>📈 3-Mode Digital Lab</span>
+    <span>🧪 Companion Simulators</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lesson, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Convert</strong> values among binary, octal, decimal, and hexadecimal using weighted place value, repeated division, and the 3-bit/4-bit grouping shortcuts.</li>
+      <li><strong>Perform</strong> addition and subtraction directly in base-2 and base-16, managing carries and borrows correctly.</li>
+      <li><strong>Represent</strong> signed numbers in 2's complement form, negate values by invert-and-add-one, and recognize overflow.</li>
+      <li><strong>Identify</strong> the ANSI schematic symbols for AND, OR, NOT, NAND, and NOR gates and state each gate's Boolean expression.</li>
+      <li><strong>Construct and interpret</strong> truth tables for individual gates and simple gate combinations.</li>
+      <li><strong>Explain</strong> why NAND and NOR are called universal gates and sketch how each builds the three basic functions.</li>
+      <li><strong>Apply</strong> the fundamental Boolean laws — identity, null, idempotent, complement, commutative, associative, and distributive — to simplify expressions.</li>
+      <li><strong>Use</strong> DeMorgan's theorems to convert between AND-based and OR-based forms and to "push bubbles" through a logic diagram.</li>
+      <li><strong>Verify</strong> every concept hands-on in the embedded 3-mode Digital Lab and the companion binary and gate simulators.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS (collapsed) ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition.</p>
+
+      <div class="cat-label">Number Systems</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Base (Radix)</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The number of unique digits a system uses: decimal is base-10 (0–9), binary base-2 (0–1), octal base-8 (0–7), hexadecimal base-16 (0–9, A–F). Each column's weight is the base raised to the column's position.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Bit, Nibble, Byte</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Bit: one binary digit (0 or 1). Nibble: 4 bits — exactly one hex digit. Byte: 8 bits — two hex digits, values 0–255 unsigned. The vocabulary of every datasheet and memory map.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Weighted Place Value</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A number's value is the sum of each digit times its column weight. Binary 1011 = 1×8 + 0×4 + 1×2 + 1×1 = 11. The single idea from which every conversion method follows.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">MSB / LSB</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Most Significant Bit: the leftmost, highest-weight bit (128 in a byte) — also the sign bit in 2's complement. Least Significant Bit: the rightmost, weight-1 bit that decides odd or even.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Hexadecimal</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Base-16, digits 0–9 then A=10 … F=15. One hex digit encodes exactly one nibble, so a byte is always two hex characters — the reason memory addresses, MAC addresses, and color codes are written in hex.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Octal</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Base-8, digits 0–7. One octal digit encodes exactly 3 bits. Largely historical in hardware but still alive in Unix/Linux file permissions (chmod 755).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Repeated Division Method</div><div class="cat">Number Systems</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Decimal → any base: divide by the base, record the remainder, repeat with the quotient until zero, then read the remainders bottom-up. 25÷2 chain gives remainders 1,0,0,1,1 → 11001₂.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Binary Arithmetic &amp; Signed Numbers</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Carry</div><div class="cat">Binary Arithmetic</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The overflow of a column sum into the next column. In binary: 1+1 = 0 carry 1, and 1+1+1 = 1 carry 1. Only four addition facts exist in base-2 — memorize them and you can add anything.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">2's Complement</div><div class="cat">Binary Arithmetic</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The standard representation for signed binary: to negate a number, <strong>invert every bit and add 1</strong>. Subtraction becomes addition of the complement, so one adder circuit handles both operations.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Sign Bit</div><div class="cat">Binary Arithmetic</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The MSB in a signed number: 0 = positive, 1 = negative. In 2's complement it carries a <em>negative</em> weight: for 8 bits, −128. Hence the asymmetric range −128 to +127.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Overflow</div><div class="cat">Binary Arithmetic</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A result too large for the available bits — two positives summing to an apparent negative (127+1 = −128 in 8 bits). Detected when the carry into the sign bit differs from the carry out.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Signed vs. Unsigned</div><div class="cat">Binary Arithmetic</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The same 8 bits mean different values by interpretation: 1111 1111 is 255 unsigned but −1 signed. The bits don't change — the <em>reading rule</em> does. The Digital Lab's SIGNED toggle makes this visceral.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Logic Gates</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Logic Gate</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A circuit (built from Lesson 3's transistors) whose output is a Boolean function of its inputs. HIGH ≈ supply voltage represents 1; LOW ≈ 0 V represents 0. The atoms of every digital system.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Truth Table</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The complete specification of a logic function: every input combination (2ⁿ rows for n inputs) and its output. Two circuits with identical truth tables are interchangeable, no matter how different they look.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">AND · OR · NOT</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The three primitives. AND (X=A·B): 1 only if <em>all</em> inputs are 1. OR (X=A+B): 1 if <em>any</em> input is 1. NOT (X=A̅): the inverter — output is the input flipped.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">NAND &amp; NOR</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>AND and OR with inverted outputs (the bubble on the symbol). NAND: 0 only when all inputs are 1. NOR: 1 only when all inputs are 0. Cheaper to build in silicon than their plain versions.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Universal Gate</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A gate from which every other logic function can be constructed. NAND and NOR each qualify — tie a NAND's inputs together and it becomes a NOT; add that inverter to another NAND and you have AND.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Bubble (Inversion Circle)</div><div class="cat">Logic Gates</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The small circle on a gate symbol meaning "invert here." AND + bubble = NAND. Reading and mentally "pushing" bubbles through a diagram (via DeMorgan) is a core schematic-reading skill.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Boolean Algebra</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Boolean Algebra</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The mathematics of two-valued logic (George Boole, 1854): variables are 0 or 1, operations are AND (·), OR (+), and NOT (overbar). Its laws let you simplify circuits before building them — fewer gates, same truth table.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Identity &amp; Null Laws</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Identity: A·1 = A and A+0 = A (the neutral elements). Null: A·0 = 0 and A+1 = 1 (the dominating elements). Four one-line rules that collapse many expressions on sight.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Complement &amp; Idempotent Laws</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Complement: A·A̅ = 0 and A+A̅ = 1 (a variable and its inverse). Idempotent: A·A = A and A+A = A (repetition changes nothing — there are no exponents or coefficients in Boolean algebra).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Commutative · Associative · Distributive</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Order doesn't matter (A·B = B·A), grouping doesn't matter (A·(B·C) = (A·B)·C), and AND distributes over OR: A·(B+C) = A·B + A·C — just like ordinary algebra, plus the surprising dual A+(B·C) = (A+B)·(A+C).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">DeMorgan's Theorems</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The bridge between AND and OR worlds: (A·B)̅ = A̅+B̅ and (A+B)̅ = A̅·B̅. In words: break the bar, change the operator. The reason NAND can impersonate every other gate — prove it live in the Lab's DeMorgan mode.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Logic Levels (HIGH / LOW)</div><div class="cat">Boolean Algebra</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The physical voltages representing 1 and 0 — e.g., TTL reads anything above 2.0 V as HIGH and below 0.8 V as LOW. Lesson 4's comparator output slamming between rails was already speaking this language.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GATE SYMBOL LIBRARY ================= -->
+<section id="symbols">
+  <h2 class="sec-title">📐 Logic Gate Symbol Library</h2>
+  <p>Five gates (plus one preview) that build every digital system ever made. Learn the ANSI shapes cold: the <strong>flat-backed D</strong> is AND-family, the <strong>curved shield</strong> is OR-family, and a <strong>bubble on the output means invert</strong>. Each card shows the Boolean expression and full truth table.</p>
+  <div class="symgrid">
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="AND gate ANSI symbol">
+        <path d="M70,25 h35 a30,30 0 0 1 0,60 h-35 z"/>
+        <line class="lead" x1="30" y1="40" x2="70" y2="40"/>
+        <line class="lead" x1="30" y1="70" x2="70" y2="70"/>
+        <line class="lead" x1="135" y1="55" x2="175" y2="55"/>
+        <text x="16" y="44">A</text><text x="16" y="74">B</text><text x="180" y="59">X</text>
+      </svg>
+      <div class="sname">AND</div>
+      <div class="sexp">X = A · B</div>
+      <table class="tt"><tr><th>A</th><th>B</th><th>X</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td class="one">1</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="OR gate ANSI symbol">
+        <path d="M62,25 q14,30 0,60 q46,-4 76,-30 q-30,-26 -76,-30 z"/>
+        <line class="lead" x1="28" y1="40" x2="68" y2="40"/>
+        <line class="lead" x1="28" y1="70" x2="68" y2="70"/>
+        <line class="lead" x1="138" y1="55" x2="175" y2="55"/>
+        <text x="14" y="44">A</text><text x="14" y="74">B</text><text x="180" y="59">X</text>
+      </svg>
+      <div class="sname">OR</div>
+      <div class="sexp">X = A + B</div>
+      <table class="tt"><tr><th>A</th><th>B</th><th>X</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td class="one">1</td></tr>
+      <tr><td>1</td><td>0</td><td class="one">1</td></tr><tr><td>1</td><td>1</td><td class="one">1</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="NOT gate inverter ANSI symbol">
+        <polygon points="72,25 72,85 128,55"/>
+        <circle class="bub" cx="135" cy="55" r="7"/>
+        <line class="lead" x1="30" y1="55" x2="72" y2="55"/>
+        <line class="lead" x1="142" y1="55" x2="176" y2="55"/>
+        <text x="16" y="59">A</text><text x="181" y="59">X</text>
+      </svg>
+      <div class="sname">NOT (Inverter)</div>
+      <div class="sexp">X = A&#773;</div>
+      <table class="tt"><tr><th>A</th><th>X</th></tr>
+      <tr><td>0</td><td class="one">1</td></tr><tr><td>1</td><td>0</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="NAND gate ANSI symbol">
+        <path d="M65,25 h35 a30,30 0 0 1 0,60 h-35 z"/>
+        <circle class="bub" cx="137" cy="55" r="7"/>
+        <line class="lead" x1="26" y1="40" x2="65" y2="40"/>
+        <line class="lead" x1="26" y1="70" x2="65" y2="70"/>
+        <line class="lead" x1="144" y1="55" x2="176" y2="55"/>
+        <text x="12" y="44">A</text><text x="12" y="74">B</text><text x="181" y="59">X</text>
+      </svg>
+      <div class="sname">NAND · universal</div>
+      <div class="sexp">X = (A·B)&#773;</div>
+      <table class="tt"><tr><th>A</th><th>B</th><th>X</th></tr>
+      <tr><td>0</td><td>0</td><td class="one">1</td></tr><tr><td>0</td><td>1</td><td class="one">1</td></tr>
+      <tr><td>1</td><td>0</td><td class="one">1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="NOR gate ANSI symbol">
+        <path d="M56,25 q14,30 0,60 q46,-4 76,-30 q-30,-26 -76,-30 z"/>
+        <circle class="bub" cx="139" cy="55" r="7"/>
+        <line class="lead" x1="24" y1="40" x2="62" y2="40"/>
+        <line class="lead" x1="24" y1="70" x2="62" y2="70"/>
+        <line class="lead" x1="146" y1="55" x2="176" y2="55"/>
+        <text x="10" y="44">A</text><text x="10" y="74">B</text><text x="181" y="59">X</text>
+      </svg>
+      <div class="sname">NOR · universal</div>
+      <div class="sexp">X = (A+B)&#773;</div>
+      <table class="tt"><tr><th>A</th><th>B</th><th>X</th></tr>
+      <tr><td>0</td><td>0</td><td class="one">1</td></tr><tr><td>0</td><td>1</td><td>0</td></tr>
+      <tr><td>1</td><td>0</td><td>0</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 200 110" role="img" aria-label="XOR exclusive OR gate ANSI symbol">
+        <path d="M68,25 q14,30 0,60 q46,-4 76,-30 q-30,-26 -76,-30 z"/>
+        <path d="M56,25 q14,30 0,60"/>
+        <line class="lead" x1="24" y1="40" x2="60" y2="40"/>
+        <line class="lead" x1="24" y1="70" x2="60" y2="70"/>
+        <line class="lead" x1="144" y1="55" x2="176" y2="55"/>
+        <text x="10" y="44">A</text><text x="10" y="74">B</text><text x="181" y="59">X</text>
+      </svg>
+      <div class="sname">XOR · Lesson 6 preview</div>
+      <div class="sexp">X = A ⊕ B</div>
+      <table class="tt"><tr><th>A</th><th>B</th><th>X</th></tr>
+      <tr><td>0</td><td>0</td><td>0</td></tr><tr><td>0</td><td>1</td><td class="one">1</td></tr>
+      <tr><td>1</td><td>0</td><td class="one">1</td></tr><tr><td>1</td><td>1</td><td>0</td></tr></table>
+    </div>
+
+  </div>
+  <div class="sim-links" style="margin-top:18px;">
+    <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">🧪 Logic Gates Simulator</a>
+    <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/binary.html" target="_blank" rel="noopener">🧪 Binary Numbers Simulator</a>
+  </div>
+</section>
+
+<!-- ================= CORE CONTENT ================= -->
+<section id="content">
+  <h2 class="sec-title">Core Lesson Content</h2>
+  <div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="showTab(0,this)">1. Intro</button>
+    <button class="tab-btn" onclick="showTab(1,this)">2. Decimal &amp; Binary</button>
+    <button class="tab-btn" onclick="showTab(2,this)">3. Octal &amp; Hex</button>
+    <button class="tab-btn" onclick="showTab(3,this)">4. Binary Arithmetic</button>
+    <button class="tab-btn" onclick="showTab(4,this)">5. 2's Complement</button>
+    <button class="tab-btn" onclick="showTab(5,this)">6. The Five Gates</button>
+    <button class="tab-btn" onclick="showTab(6,this)">7. Universal Gates</button>
+    <button class="tab-btn" onclick="showTab(7,this)">8. Boolean Laws</button>
+    <button class="tab-btn" onclick="showTab(8,this)">9. DeMorgan &amp; Analysis</button>
+  </div>
+
+  <!-- TAB 1 -->
+  <div class="tab-pane show">
+    <h3>Crossing the Digital Bridge</h3>
+    <p>Lesson 4 ended with a comparator slamming between two rails — an analog circuit producing only two answers. This lesson makes those two answers a complete language. Half the lesson is <strong>how digital systems count</strong> (number systems and binary arithmetic); the other half is <strong>how they decide</strong> (gates and Boolean algebra). Both halves rest on the same premise:</p>
+    <div class="callout co-pro">
+      <div class="co-title">💡 The Premise of All Digital Electronics</div>
+      Two reliably distinguishable voltage levels — HIGH and LOW, 1 and 0 — are enough to represent <strong>any number</strong> and compute <strong>any logical function</strong>. Everything from a thermostat to a datacenter is that one idea, repeated billions of times.
+    </div>
+    <p>The transistor connection matters: a MOSFET (Lesson 3) driven fully on or fully off <em>is</em> a logic level. Wire a few of them together and you get the gates in this lesson; wire a few billion and you get a processor.</p>
+    <h4>Try It Live</h4>
+    <div class="sim-links">
+      <a class="sim-chip" href="#diglab">📈 3-Mode Digital Lab (below)</a>
+      <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/binary.html" target="_blank" rel="noopener">🧪 Binary Numbers Simulator</a>
+      <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">🧪 Logic Gates Simulator</a>
+      <a class="sim-chip alt" href="lesson04.html">↩ Lesson 4: Amplifiers &amp; Op-Amps</a>
+    </div>
+  </div>
+
+  <!-- TAB 2 -->
+  <div class="tab-pane">
+    <h3>Decimal and Binary: One Idea, Two Bases</h3>
+    <p>You already know the only concept required: <strong>place value</strong>. In decimal, 347 means 3×100 + 4×10 + 7×1 — each column weighs ten times its neighbor. Binary works identically with columns weighing <em>two</em> times their neighbor:</p>
+    <div class="formula">Weights (8-bit): 128 · 64 · 32 · 16 · 8 · 4 · 2 · 1&nbsp;&nbsp;&nbsp;→&nbsp;&nbsp;&nbsp;1011 0010₂ = 128+32+16+2 = 178₁₀</div>
+    <h4>Binary → Decimal: Add the Weights</h4>
+    <p>Write the weights over the bits and sum wherever a 1 appears. That's the entire method — and exactly what the Digital Lab's Binary Explorer animates as you click bits.</p>
+    <h4>Decimal → Binary: Two Methods</h4>
+    <ul class="styled">
+      <li><strong>Repeated division by 2:</strong> divide, keep the remainder, repeat; read remainders bottom-up. 25 → 12 r1 → 6 r0 → 3 r0 → 1 r1 → 0 r1 gives <strong>11001₂</strong>.</li>
+      <li><strong>Greatest-weight subtraction:</strong> subtract the largest power of 2 that fits, mark that bit 1, repeat. 25 − 16 = 9, − 8 = 1, − 1 = 0 → 11001₂. Faster mentally once the weights are memorized.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Memorize These Nine Numbers</div>
+      1, 2, 4, 8, 16, 32, 64, 128, 256. Every conversion, address calculation, and subnet mask in your career reduces to these powers of two. (Notice 2ⁿ − 1 patterns too: 255 = all eight bits set.)
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#diglab">📈 Click bits and watch the weights sum live</a></div>
+  </div>
+
+  <!-- TAB 3 -->
+  <div class="tab-pane">
+    <h3>Octal and Hexadecimal: Binary Shorthand</h3>
+    <p>Nobody enjoys reading 1010111101101001. Octal and hex exist to compress binary for humans, and both work by the same beautiful accident of powers: <strong>8 = 2³ and 16 = 2⁴</strong>, so one octal digit is exactly 3 bits and one hex digit is exactly 4 bits (a nibble).</p>
+    <h4>The Grouping Shortcut (no arithmetic required)</h4>
+    <div class="formula">1010 1111 0110 1001₂ → group by 4 → A F 6 9 → AF69₁₆<br>1 010 111 101 101 001₂ → group by 3 → 1 2 7 5 5 1 → 127551₈</div>
+    <p>Grouping starts from the right (LSB). Convert hex→binary by expanding each digit back to its 4 bits. Between octal and hex? Go through binary — it's the common language.</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th class="mono">Dec</th><th class="mono">Bin</th><th class="mono">Oct</th><th class="mono">Hex</th><th class="mono">Dec</th><th class="mono">Bin</th><th class="mono">Oct</th><th class="mono">Hex</th></tr>
+      <tr><td class="mono">0</td><td class="mono">0000</td><td class="mono">0</td><td class="mono">0</td><td class="mono">8</td><td class="mono">1000</td><td class="mono">10</td><td class="mono">8</td></tr>
+      <tr><td class="mono">1</td><td class="mono">0001</td><td class="mono">1</td><td class="mono">1</td><td class="mono">9</td><td class="mono">1001</td><td class="mono">11</td><td class="mono">9</td></tr>
+      <tr><td class="mono">2</td><td class="mono">0010</td><td class="mono">2</td><td class="mono">2</td><td class="mono">10</td><td class="mono">1010</td><td class="mono">12</td><td class="mono">A</td></tr>
+      <tr><td class="mono">3</td><td class="mono">0011</td><td class="mono">3</td><td class="mono">3</td><td class="mono">11</td><td class="mono">1011</td><td class="mono">13</td><td class="mono">B</td></tr>
+      <tr><td class="mono">4</td><td class="mono">0100</td><td class="mono">4</td><td class="mono">4</td><td class="mono">12</td><td class="mono">1100</td><td class="mono">14</td><td class="mono">C</td></tr>
+      <tr><td class="mono">5</td><td class="mono">0101</td><td class="mono">5</td><td class="mono">5</td><td class="mono">13</td><td class="mono">1101</td><td class="mono">15</td><td class="mono">D</td></tr>
+      <tr><td class="mono">6</td><td class="mono">0110</td><td class="mono">6</td><td class="mono">6</td><td class="mono">14</td><td class="mono">1110</td><td class="mono">16</td><td class="mono">E</td></tr>
+      <tr><td class="mono">7</td><td class="mono">0111</td><td class="mono">7</td><td class="mono">7</td><td class="mono">15</td><td class="mono">1111</td><td class="mono">17</td><td class="mono">F</td></tr>
+    </table></div>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Where You'll Meet Them</div>
+      Hex is everywhere a technician looks: memory addresses (0x7FFC), MAC addresses (00:1A:2B:…), color codes (#0047AB — this course's navy!), error codes, firmware dumps, and network packet captures. Octal survives chiefly in Unix file permissions (chmod 755 = rwxr-xr-x). Fluency here is fluency with real equipment.
+    </div>
+  </div>
+
+  <!-- TAB 4 -->
+  <div class="tab-pane">
+    <h3>Arithmetic in Base-N</h3>
+    <h4>Binary Addition: Four Facts Total</h4>
+    <div class="formula">0+0 = 0&nbsp;&nbsp;|&nbsp;&nbsp;0+1 = 1&nbsp;&nbsp;|&nbsp;&nbsp;1+1 = 0, carry 1&nbsp;&nbsp;|&nbsp;&nbsp;1+1+1 = 1, carry 1</div>
+    <p><strong>Worked example:</strong></p>
+    <div class="formula">&nbsp;&nbsp;1111&nbsp;&nbsp;← carries<br>&nbsp;&nbsp;1011&nbsp;&nbsp;(11)<br>+ 0111&nbsp;&nbsp;(7)<br>——————<br>&nbsp;1 0010&nbsp;&nbsp;(18) ✓</div>
+    <p>The rhythm is identical to decimal addition — you just carry at 2 instead of at 10. The same is true in any base: hex carries at 16 (9 + 8 = 11₁₆, i.e., "one-one": 1 carry, 1 down).</p>
+    <h4>Binary Subtraction</h4>
+    <p>Borrowing works (0 − 1 borrows a 2 from the next column), but real hardware doesn't bother: it <strong>adds the 2's complement</strong> instead — one adder circuit, both operations. That trick is the whole next tab.</p>
+    <h4>Hex Arithmetic</h4>
+    <div class="formula">&nbsp;&nbsp;3A₁₆&nbsp;(58)<br>+ 2C₁₆&nbsp;(44)<br>—————<br>&nbsp;&nbsp;66₁₆&nbsp;(102) ✓&nbsp;&nbsp;&nbsp;(A+C = 10+12 = 22 = 16+6 → write 6, carry 1)</div>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Always sanity-check base-N arithmetic by converting to decimal: if the decimal versions of your operands don't sum to the decimal version of your answer, hunt for a dropped carry. The Digital Lab's <strong>+1</strong> button lets you watch carries ripple through a live binary counter.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#diglab">📈 Watch carries ripple: press +1 at 0111 1111</a></div>
+  </div>
+
+  <!-- TAB 5 -->
+  <div class="tab-pane">
+    <h3>Signed Binary: 2's Complement</h3>
+    <p>Bits have no minus sign, so we spend one bit to encode it. The naive approach (sign-magnitude) creates two zeros and breaks the adder. The universal solution is <strong>2's complement</strong>, where the MSB carries <em>negative</em> weight:</p>
+    <div class="formula">8-bit signed weights: <strong>−128</strong> · 64 · 32 · 16 · 8 · 4 · 2 · 1&nbsp;&nbsp;→&nbsp;&nbsp;range −128 … +127</div>
+    <h4>Negating a Number: Invert and Add One</h4>
+    <div class="formula">+25 = 0001 1001&nbsp;&nbsp;→ invert → 1110 0110&nbsp;&nbsp;→ +1 → <strong>1110 0111 = −25</strong><br>Check: −128+64+32+4+2+1 = −25 ✓</div>
+    <h4>Why Hardware Loves It</h4>
+    <ul class="styled">
+      <li><strong>Subtraction = addition:</strong> A − B is computed as A + (−B). One adder does everything; the carry out of the top bit is simply discarded.</li>
+      <li><strong>One zero, instant sign test:</strong> MSB = 1 means negative, full stop.</li>
+      <li><strong>Overflow is detectable:</strong> add two positives and get a negative (0111 1111 + 1 = 1000 0000, i.e., 127+1 = −128) — the classic wraparound. Watch it live in the Lab with the SIGNED toggle on.</li>
+    </ul>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out: Interpretation, Not Bits</div>
+      1111 1111 is <strong>255</strong> to an unsigned reader and <strong>−1</strong> to a signed reader — same byte, same voltages. Countless real bugs (and more than a few security exploits) trace to code reading a value with the wrong rule. The Lab's SIGNED/UNSIGNED toggle exists to burn this into memory.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#diglab">📈 Flip the SIGNED toggle on 1111 1111</a></div>
+  </div>
+
+  <!-- TAB 6 -->
+  <div class="tab-pane">
+    <h3>The Five Fundamental Gates</h3>
+    <p>A logic gate is a transistor circuit that computes one Boolean operation. Its complete personality fits in a <strong>truth table</strong> — list every input combination (2ⁿ rows) and the output for each. Master these five tables and you can read any digital schematic:</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Gate</th><th>Expression</th><th>Output is 1 when…</th><th>Memory Hook</th></tr>
+      <tr><td><strong>AND</strong></td><td class="mono">X = A·B</td><td>ALL inputs are 1</td><td>Series switches — both must close</td></tr>
+      <tr><td><strong>OR</strong></td><td class="mono">X = A+B</td><td>ANY input is 1</td><td>Parallel switches — either path works</td></tr>
+      <tr><td><strong>NOT</strong></td><td class="mono">X = A&#773;</td><td>Input is 0</td><td>The flip — one in, opposite out</td></tr>
+      <tr><td><strong>NAND</strong></td><td class="mono">X = (A·B)&#773;</td><td>NOT all inputs are 1</td><td>AND flipped — 0 only at 1,1</td></tr>
+      <tr><td><strong>NOR</strong></td><td class="mono">X = (A+B)&#773;</td><td>ALL inputs are 0</td><td>OR flipped — 1 only at 0,0</td></tr>
+    </table></div>
+    <h4>Reading the Symbols</h4>
+    <ul class="styled">
+      <li><strong>Shape carries meaning:</strong> flat-backed D = AND family; curved shield = OR family; triangle = buffer/inverter.</li>
+      <li><strong>The bubble is a NOT:</strong> NAND is literally the AND symbol wearing a bubble. No bubble, no inversion.</li>
+      <li><strong>The dot and plus are operators, not arithmetic:</strong> A·B reads "A AND B"; A+B reads "A OR B". In Boolean land 1+1 = 1.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Two-input truth tables always list inputs in binary counting order: 00, 01, 10, 11 — connecting this tab to Tab 2. For n inputs expect 2ⁿ rows; a question showing 8 rows is telling you there are 3 inputs.
+    </div>
+    <div class="sim-links">
+      <a class="sim-chip" href="#diglab">📈 Gate Lab mode: toggle inputs, watch the table row light up</a>
+      <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">🧪 Full Logic Gates Simulator</a>
+    </div>
+  </div>
+
+  <!-- TAB 7 -->
+  <div class="tab-pane">
+    <h3>NAND and NOR: The Universal Gates</h3>
+    <p>Here is one of digital design's most elegant facts: you don't need five gate types. <strong>NAND alone can build everything</strong> — and so can NOR. A gate with this property is called <em>universal</em>.</p>
+    <h4>Building the Basics from NAND</h4>
+    <ul class="styled">
+      <li><strong>NOT:</strong> tie both NAND inputs together. (A·A)&#773; = A&#773; — the idempotent law in action.</li>
+      <li><strong>AND:</strong> NAND followed by that NAND-inverter. Two gates.</li>
+      <li><strong>OR:</strong> invert each input, then NAND them: A&#773; NAND B&#773; = (A&#773;·B&#773;)&#773; = A + B — which is <strong>DeMorgan's theorem</strong> doing the heavy lifting. Three gates.</li>
+    </ul>
+    <p>The NOR story is the perfect mirror (swap the roles of AND and OR throughout — Boolean algebra's duality principle).</p>
+    <h4>Why This Matters Beyond Elegance</h4>
+    <ul class="styled">
+      <li><strong>Silicon economics:</strong> in CMOS, NAND is the cheapest, fastest gate to fabricate — so real chips are seas of NAND with everything else synthesized from it. ("NAND flash" memory earned its name honestly.)</li>
+      <li><strong>Inventory reality:</strong> a technician with a tube of 7400 quad-NAND ICs can prototype any logic function on the bench.</li>
+      <li><strong>Historical proof:</strong> the Apollo Guidance Computer was built entirely from one gate type — 3-input NOR — about 5,600 of them, navigating to the Moon.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 See It, Don't Take It on Faith</div>
+      The Digital Lab's <strong>DeMorgan mode</strong> places a NAND gate beside an OR-with-inverted-inputs and drives both from the same switches. Step through all four input combinations and watch the outputs agree every single time — that agreement <em>is</em> universality.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#diglab">📈 Prove it in DeMorgan mode</a></div>
+  </div>
+
+  <!-- TAB 8 -->
+  <div class="tab-pane">
+    <h3>The Laws of Boolean Algebra</h3>
+    <p>Boolean algebra lets you simplify a circuit <em>on paper</em> before spending gates on it. Fewer gates means lower cost, less power, and fewer failure points. The laws come in memorable pairs — every AND rule has an OR twin (duality):</p>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Law</th><th class="mono">AND form</th><th class="mono">OR form</th><th>Plain English</th></tr>
+      <tr><td><strong>Identity</strong></td><td class="mono">A · 1 = A</td><td class="mono">A + 0 = A</td><td>Neutral elements change nothing</td></tr>
+      <tr><td><strong>Null</strong></td><td class="mono">A · 0 = 0</td><td class="mono">A + 1 = 1</td><td>Dominating elements decide everything</td></tr>
+      <tr><td><strong>Idempotent</strong></td><td class="mono">A · A = A</td><td class="mono">A + A = A</td><td>Repetition is redundant</td></tr>
+      <tr><td><strong>Complement</strong></td><td class="mono">A · A&#773; = 0</td><td class="mono">A + A&#773; = 1</td><td>A thing and its opposite</td></tr>
+      <tr><td><strong>Commutative</strong></td><td class="mono">A·B = B·A</td><td class="mono">A+B = B+A</td><td>Order doesn't matter</td></tr>
+      <tr><td><strong>Associative</strong></td><td class="mono">A·(B·C) = (A·B)·C</td><td class="mono">A+(B+C) = (A+B)+C</td><td>Grouping doesn't matter</td></tr>
+      <tr><td><strong>Distributive</strong></td><td class="mono">A·(B+C) = A·B + A·C</td><td class="mono">A+(B·C) = (A+B)·(A+C)</td><td>The second form has no decimal twin!</td></tr>
+      <tr><td><strong>Involution</strong></td><td class="mono" colspan="2">A&#773;&#773; = A</td><td>Double negation cancels</td></tr>
+    </table></div>
+    <h4>Worked Simplification</h4>
+    <div class="formula">X = A·B + A·B&#773;<br>&nbsp;&nbsp;= A·(B + B&#773;)&nbsp;&nbsp;&nbsp;← distributive (factor A)<br>&nbsp;&nbsp;= A·(1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← complement law<br>&nbsp;&nbsp;= <strong>A</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← identity law</div>
+    <p>Three gates collapsed to a piece of wire — and the truth tables of the original and simplified expressions are identical, which is the only test that matters.</p>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      When a simplification stalls, build the truth table instead — 2ⁿ rows of brute force always works, and comparing tables proves (or disproves) any claimed identity. Algebra is the shortcut; the table is the referee.
+    </div>
+  </div>
+
+  <!-- TAB 9 -->
+  <div class="tab-pane">
+    <h3>DeMorgan's Theorems and Truth Table Analysis</h3>
+    <p>Augustus DeMorgan's two theorems are the master keys of gate-level reasoning — they convert freely between the AND world and the OR world:</p>
+    <div class="formula">(A · B)&#773; = A&#773; + B&#773;&nbsp;&nbsp;&nbsp;&nbsp;NAND = OR of inverted inputs<br>(A + B)&#773; = A&#773; · B&#773;&nbsp;&nbsp;&nbsp;&nbsp;NOR&nbsp; = AND of inverted inputs</div>
+    <p><strong>The verbal rule:</strong> break the bar, change the operator (· ↔ +), and complement each term. <strong>The schematic rule:</strong> a bubble on a gate's output can be "pushed" to its inputs if you also swap the gate's shape — invaluable when a schematic is drawn in mixed logic.</p>
+    <h4>Proof by Truth Table</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th class="mono">A</th><th class="mono">B</th><th class="mono">A·B</th><th class="mono">(A·B)&#773;</th><th class="mono">A&#773;</th><th class="mono">B&#773;</th><th class="mono">A&#773;+B&#773;</th></tr>
+      <tr><td class="mono">0</td><td class="mono">0</td><td class="mono">0</td><td class="mono"><strong>1</strong></td><td class="mono">1</td><td class="mono">1</td><td class="mono"><strong>1</strong></td></tr>
+      <tr><td class="mono">0</td><td class="mono">1</td><td class="mono">0</td><td class="mono"><strong>1</strong></td><td class="mono">1</td><td class="mono">0</td><td class="mono"><strong>1</strong></td></tr>
+      <tr><td class="mono">1</td><td class="mono">0</td><td class="mono">0</td><td class="mono"><strong>1</strong></td><td class="mono">0</td><td class="mono">1</td><td class="mono"><strong>1</strong></td></tr>
+      <tr><td class="mono">1</td><td class="mono">1</td><td class="mono">1</td><td class="mono"><strong>0</strong></td><td class="mono">0</td><td class="mono">0</td><td class="mono"><strong>0</strong></td></tr>
+    </table></div>
+    <p>Columns four and seven match on every row — the theorem is proven, no algebra required. This <strong>column-by-column construction</strong> is the general method for analyzing any combinational circuit: work from the inputs through each intermediate signal to the output, one column per node.</p>
+    <h4>Analysis Procedure for Any Gate Network</h4>
+    <ol class="styled">
+      <li>Label every internal node on the schematic.</li>
+      <li>Build a truth table with a column for each node, filling left to right.</li>
+      <li>The final column is the circuit's function — compare it against the five standard tables (or a required spec).</li>
+      <li>Optionally, write the Boolean expression by composing gate expressions from output back to inputs, then simplify with Tab 8's laws and re-verify by table.</li>
+    </ol>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Course Thread</div>
+      Comparator decisions (L4) became logic levels; logic levels became numbers and gates (this lesson). Next, gates combine into adders, encoders, and multiplexers — combinational circuits that <em>compute</em> — before flip-flops give digital systems a memory.
+    </div>
+    <div class="sim-links">
+      <a class="sim-chip" href="#diglab">📈 DeMorgan mode: step all four rows</a>
+      <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">🧪 Logic Gates Simulator</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DIGITAL LAB ================= -->
+<section id="diglab">
+  <h2 class="sec-title">📈 Interactive 3-Mode Digital Lab</h2>
+  <p>Three instruments in one panel. <strong>Binary Explorer:</strong> click bits directly on the canvas and watch decimal, hex, octal, and 2's-complement readings update live — then press <strong>+1</strong> repeatedly to watch carries ripple. <strong>Gate Lab:</strong> pick a gate, flip the input switches, and see the truth-table row light up. <strong>DeMorgan Prover:</strong> two different circuits, one pair of switches, identical outputs on every row — the theorem proven before your eyes.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="labCv" width="720" height="440" role="img" aria-label="Interactive digital lab canvas showing binary bits, logic gates, or DeMorgan comparison circuits depending on selected mode"></canvas>
+        <p class="sans" style="font-size:.78rem;color:var(--text-muted);margin-top:6px;">💡 The canvas is clickable — toggle bits and switches directly.</p>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Lab Mode</label>
+          <div class="seg" id="modeSeg">
+            <button class="active" onclick="setMode('bin',this)">Binary Explorer</button>
+            <button onclick="setMode('gate',this)">Gate Lab</button>
+            <button onclick="setMode('dm',this)">DeMorgan</button>
+          </div>
+        </div>
+
+        <div class="mode-panel show" id="pan-bin">
+          <div class="ctrl">
+            <label style="cursor:pointer;"><span>Interpretation</span></label>
+            <div class="seg">
+              <button class="active" id="unsBtn" onclick="setSigned(false,this)">Unsigned</button>
+              <button id="sgnBtn" onclick="setSigned(true,this)">Signed (2's C)</button>
+            </div>
+          </div>
+          <div class="g-btns" style="margin-bottom:8px;">
+            <button class="g-btn g-green" onclick="binOp('inc')">+1</button>
+            <button class="g-btn g-green" onclick="binOp('dec')">−1</button>
+            <button class="g-btn" onclick="binOp('shl')">&lt;&lt; ×2</button>
+            <button class="g-btn" onclick="binOp('shr')">&gt;&gt; ÷2</button>
+          </div>
+          <div class="g-btns" style="margin-bottom:12px;">
+            <button class="g-btn" onclick="binOp('inv')">Invert Bits</button>
+            <button class="g-btn" onclick="binOp('neg')">Negate (2's C)</button>
+            <button class="g-btn" onclick="binOp('clr')">Clear</button>
+          </div>
+        </div>
+
+        <div class="mode-panel" id="pan-gate">
+          <div class="ctrl">
+            <label>Gate Under Test</label>
+            <div class="seg" id="gateSeg">
+              <button class="active" onclick="setGate('AND',this)">AND</button>
+              <button onclick="setGate('OR',this)">OR</button>
+              <button onclick="setGate('NOT',this)">NOT</button>
+              <button onclick="setGate('NAND',this)">NAND</button>
+              <button onclick="setGate('NOR',this)">NOR</button>
+              <button onclick="setGate('XOR',this)">XOR</button>
+            </div>
+          </div>
+          <div class="g-btns" style="margin-bottom:12px;">
+            <button class="g-btn" id="btnA" onclick="togA()">A = 0</button>
+            <button class="g-btn" id="btnB" onclick="togB()">B = 0</button>
+          </div>
+        </div>
+
+        <div class="mode-panel" id="pan-dm">
+          <div class="ctrl">
+            <label>Theorem</label>
+            <div class="seg" id="thmSeg">
+              <button class="active" onclick="setThm(1,this)">(A·B)&#773; = A&#773;+B&#773;</button>
+              <button onclick="setThm(2,this)">(A+B)&#773; = A&#773;·B&#773;</button>
+            </div>
+          </div>
+          <div class="g-btns" style="margin-bottom:12px;">
+            <button class="g-btn" id="btnA2" onclick="togA()">A = 0</button>
+            <button class="g-btn" id="btnB2" onclick="togB()">B = 0</button>
+            <button class="g-btn g-green" onclick="dmStep()">Step Row ▸</button>
+          </div>
+        </div>
+
+        <div class="readout" id="labRead" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Guided Explorations</div>
+    <strong>1. Weights are everything:</strong> in Binary Explorer, build 178 by clicking only the bits whose weights sum to it (128+32+16+2). <strong>2. Ripple carry:</strong> set 0111 1111 (127) and press +1 — watch eight bits flip in one step, and with SIGNED on, watch +127 wrap to −128 (overflow!). <strong>3. Shifts are arithmetic:</strong> set 0000 0110 (6) and press &lt;&lt; twice — doubling each time. <strong>4. Invert-plus-one:</strong> set 25, press Invert, then +1, switch to SIGNED: −25. You just executed 2's complement by hand. <strong>5. Gate fingerprints:</strong> in Gate Lab, find the single input combination that makes AND output 1 and the single one that makes NOR output 1. <strong>6. The proof:</strong> in DeMorgan mode press Step Row four times — the two outputs agree on every row, for both theorems.
+  </div>
+  <h3>🧪 Companion Simulators</h3>
+  <div class="sim-links">
+    <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/binary.html" target="_blank" rel="noopener">Binary Numbers Simulator</a>
+    <a class="sim-chip" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">Logic Gates Simulator</a>
+  </div>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="acc open" id="factsAcc">
+    <button class="acc-head" onclick="toggleAcc('factsAcc')">Key Facts Reference Box <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <div class="facts">
+        <div class="fact"><div class="f-label">Binary Weights (8-bit)</div><div class="f-val">128 · 64 · 32 · 16 · 8 · 4 · 2 · 1</div></div>
+        <div class="fact"><div class="f-label">Grouping Shortcuts</div><div class="f-val">Hex = 4 bits/digit · Octal = 3 bits/digit</div></div>
+        <div class="fact"><div class="f-label">Hex Digits</div><div class="f-val">0–9 then A=10 … F=15</div></div>
+        <div class="fact"><div class="f-label">One Byte</div><div class="f-val">8 bits = 2 hex digits = 0–255</div></div>
+        <div class="fact"><div class="f-label">Binary Addition Facts</div><div class="f-val">1+1 = 0 c1 · 1+1+1 = 1 c1</div></div>
+        <div class="fact"><div class="f-label">Negate (2's Complement)</div><div class="f-val">Invert all bits, then add 1</div></div>
+        <div class="fact"><div class="f-label">Signed 8-bit Range</div><div class="f-val">−128 to +127 (MSB weighs −128)</div></div>
+        <div class="fact"><div class="f-label">Same Bits, Two Readings</div><div class="f-val">1111 1111 = 255 unsigned = −1 signed</div></div>
+        <div class="fact"><div class="f-label">AND / OR Rules</div><div class="f-val">AND: all 1s · OR: any 1</div></div>
+        <div class="fact"><div class="f-label">NAND / NOR Rules</div><div class="f-val">NAND: 0 only at all-1s · NOR: 1 only at all-0s</div></div>
+        <div class="fact"><div class="f-label">Universal Gates</div><div class="f-val">NAND and NOR each build everything</div></div>
+        <div class="fact"><div class="f-label">Truth Table Size</div><div class="f-val">n inputs → 2ⁿ rows</div></div>
+        <div class="fact"><div class="f-label">Identity / Null</div><div class="f-val">A·1=A, A+0=A · A·0=0, A+1=1</div></div>
+        <div class="fact"><div class="f-label">Complement Law</div><div class="f-val">A·A&#773;=0 · A+A&#773;=1</div></div>
+        <div class="fact"><div class="f-label">DeMorgan #1</div><div class="f-val">(A·B)&#773; = A&#773; + B&#773;</div></div>
+        <div class="fact"><div class="f-label">DeMorgan #2</div><div class="f-val">(A+B)&#773; = A&#773; · B&#773;</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Test your understanding with ten questions. Select your answers and click "Submit Answers" for your score and detailed feedback.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+      <div class="score-box" id="scoreBox"><div class="big">Score: 0 / 10</div><p>Please complete all questions to view your results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson04.html">← Lesson 4: Amplifiers &amp; Op-Amps</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 ELT 102 Home</a>
+  <a href="lesson06.html">Next: Lesson 6 →</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Lesson 5: Number Systems, Logic Gates &amp; Boolean Algebra<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  draw();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ DIGITAL LAB ============ */
+var cv=document.getElementById('labCv'), cx=cv.getContext('2d');
+var mode='bin', signed=false, bits=[1,0,1,1,0,0,1,0]; // MSB first (178)
+var gate='AND', A=0, B=0, thm=1, dmRow=0;
+
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('#modeSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  ['bin','gate','dm'].forEach(function(k){ document.getElementById('pan-'+k).classList.toggle('show',k===m); });
+  draw();
+}
+function setSigned(s,btn){
+  signed=s;
+  document.getElementById('unsBtn').classList.toggle('active',!s);
+  document.getElementById('sgnBtn').classList.toggle('active',s);
+  draw();
+}
+function setGate(g,btn){
+  gate=g;
+  document.querySelectorAll('#gateSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active'); draw();
+}
+function setThm(t,btn){
+  thm=t;
+  document.querySelectorAll('#thmSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active'); draw();
+}
+function togA(){ A^=1; syncAB(); draw(); }
+function togB(){ B^=1; syncAB(); draw(); }
+function syncAB(){
+  ['btnA','btnA2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent='A = '+A; });
+  ['btnB','btnB2'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent='B = '+B; });
+}
+function dmStep(){ dmRow=(dmRow+1)%4; A=(dmRow>>1)&1; B=dmRow&1; syncAB(); draw(); }
+
+/* ---- binary value helpers ---- */
+function uVal(){ return bits.reduce(function(a,b){return a*2+b;},0); }
+function setU(v){ v=((v%256)+256)%256; for(var i=7;i>=0;i--){ bits[i]=v&1; v>>=1; } }
+function sVal(){ var u=uVal(); return u>127? u-256 : u; }
+function binOp(op){
+  var u=uVal();
+  if(op==='inc') setU(u+1);
+  if(op==='dec') setU(u-1);
+  if(op==='shl') setU(u<<1);
+  if(op==='shr') setU(u>>1);
+  if(op==='inv') bits=bits.map(function(b){return b^1;});
+  if(op==='neg') setU(256-u);
+  if(op==='clr') bits=[0,0,0,0,0,0,0,0];
+  draw();
+}
+
+/* ---- gate logic ---- */
+function gateOut(g,a,b){
+  if(g==='AND') return a&b;
+  if(g==='OR') return a|b;
+  if(g==='NOT') return a^1;
+  if(g==='NAND') return (a&b)^1;
+  if(g==='NOR') return (a|b)^1;
+  return a^b; // XOR
+}
+
+/* ---- drawing helpers ---- */
+function wire(x1,y1,x2,y2,on){
+  cx.strokeStyle= on? css('--green') : css('--text-muted');
+  cx.lineWidth= on? 3 : 2;
+  cx.beginPath(); cx.moveTo(x1,y1); cx.lineTo(x2,y2); cx.stroke();
+}
+function lamp(x,y,on,label){
+  cx.fillStyle= on? css('--green') : css('--card-alt');
+  cx.strokeStyle= on? css('--green-dark') : css('--border');
+  cx.lineWidth=2;
+  cx.beginPath(); cx.arc(x,y,16,0,Math.PI*2); cx.fill(); cx.stroke();
+  cx.fillStyle= on? '#fff' : css('--text-muted');
+  cx.font='bold 13px Arial'; cx.textAlign='center';
+  cx.fillText(on?'1':'0',x,y+5); cx.textAlign='left';
+  if(label){ cx.fillStyle=css('--text'); cx.font='bold 11px Arial'; cx.fillText(label,x-8,y+34); }
+}
+function sw(x,y,v,label){
+  cx.fillStyle= v? css('--green') : css('--card-alt');
+  cx.strokeStyle=css('--navy'); cx.lineWidth=2;
+  cx.beginPath(); cx.roundRect(x-20,y-14,40,28,7); cx.fill(); cx.stroke();
+  cx.fillStyle= v? '#fff' : css('--text-muted'); cx.font='bold 13px Arial'; cx.textAlign='center';
+  cx.fillText(label+'='+v, x, y+5); cx.textAlign='left';
+}
+/* ANSI gate shapes; returns output-terminal x */
+function drawGate(g, x, y, s, a, b){
+  var out=gateOut(g,a,b);
+  cx.strokeStyle=css('--text'); cx.lineWidth=2.6; cx.fillStyle=css('--card');
+  var bub=(g==='NAND'||g==='NOR'||g==='NOT');
+  var isOr=(g==='OR'||g==='NOR'||g==='XOR');
+  if(g==='NOT'){
+    cx.beginPath(); cx.moveTo(x,y-30*s); cx.lineTo(x,y+30*s); cx.lineTo(x+56*s,y); cx.closePath(); cx.fill(); cx.stroke();
+  } else if(isOr){
+    cx.beginPath();
+    cx.moveTo(x,y-30*s);
+    cx.quadraticCurveTo(x+14*s,y, x,y+30*s);
+    cx.quadraticCurveTo(x+46*s,y+26*s, x+76*s,y);
+    cx.quadraticCurveTo(x+46*s,y-26*s, x,y-30*s);
+    cx.closePath(); cx.fill(); cx.stroke();
+    if(g==='XOR'){
+      cx.beginPath(); cx.moveTo(x-10*s,y-30*s); cx.quadraticCurveTo(x+4*s,y, x-10*s,y+30*s); cx.stroke();
+    }
+  } else { // AND family
+    cx.beginPath();
+    cx.moveTo(x,y-30*s); cx.lineTo(x+34*s,y-30*s);
+    cx.arc(x+34*s,y,30*s,-Math.PI/2,Math.PI/2);
+    cx.lineTo(x,y+30*s); cx.closePath(); cx.fill(); cx.stroke();
+  }
+  var ox = g==='NOT'? x+56*s : isOr? x+76*s : x+64*s;
+  if(bub){
+    cx.beginPath(); cx.arc(ox+7*s,y,7*s,0,Math.PI*2); cx.fillStyle=css('--card'); cx.fill(); cx.stroke();
+    ox+=14*s;
+  }
+  return {ox:ox, out:out};
+}
+
+/* ---- mode renderers ---- */
+var binCells=[]; // clickable regions
+function drawBin(){
+  binCells=[];
+  var W=cv.width;
+  cx.fillStyle=css('--card'); cx.fillRect(0,0,W,cv.height);
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText('Click any bit to toggle it', 20, 30);
+  var cw=74, x0=(W-8*cw)/2, y0=90;
+  for(var i=0;i<8;i++){
+    var x=x0+i*cw, on=bits[i]===1;
+    var wgt = signed&&i===0? -128 : Math.pow(2,7-i);
+    // weight label
+    cx.fillStyle= signed&&i===0? css('--red') : css('--text-muted');
+    cx.font='bold 12px Arial'; cx.textAlign='center';
+    cx.fillText(wgt, x+cw/2, y0-12);
+    // cell
+    cx.fillStyle= on? css('--green') : css('--card-alt');
+    cx.strokeStyle= signed&&i===0? css('--red') : css('--navy');
+    cx.lineWidth= signed&&i===0? 3 : 2;
+    cx.beginPath(); cx.roundRect(x+5,y0,cw-10,64,8); cx.fill(); cx.stroke();
+    cx.fillStyle= on? '#fff' : css('--text-muted');
+    cx.font='bold 30px Courier New';
+    cx.fillText(bits[i], x+cw/2, y0+43);
+    binCells.push({x:x+5,y:y0,w:cw-10,h:64,i:i});
+    // contribution
+    cx.font='11px Arial';
+    cx.fillStyle= on? css('--green-dark') : css('--border');
+    cx.fillText(on? '+'+(signed&&i===0? -128:wgt) : '·', x+cw/2, y0+84);
+  }
+  cx.textAlign='left';
+  if(signed){
+    cx.fillStyle=css('--red'); cx.font='bold 11px Arial';
+    cx.fillText('◀ SIGN BIT (weight −128)', x0, y0+108);
+  }
+  // big value display
+  var u=uVal(), s=sVal();
+  cx.fillStyle=css('--navy'); cx.font='bold 44px Georgia'; cx.textAlign='center';
+  cx.fillText(signed? s : u, W/2, 268);
+  cx.font='13px Arial'; cx.fillStyle=css('--text-muted');
+  cx.fillText(signed? 'signed (2\u2019s complement) value' : 'unsigned decimal value', W/2, 290);
+  // conversions row
+  cx.font='bold 15px Courier New'; cx.fillStyle=css('--text');
+  var bstr=bits.slice(0,4).join('')+' '+bits.slice(4).join('');
+  cx.fillText('BIN  '+bstr, W/2, 330);
+  cx.fillText('HEX  0x'+u.toString(16).toUpperCase().padStart(2,'0')+'      OCT  '+u.toString(8).padStart(3,'0'), W/2, 356);
+  cx.textAlign='left';
+  document.getElementById('labRead').innerHTML=
+    'Binary : '+bstr+'<br>'+
+    'Unsigned : <span class="r-on">'+u+'</span><br>'+
+    'Signed : <span class="'+(s<0?'r-off':'r-on')+'">'+s+'</span>'+(u>127?' (MSB=1 → negative)':'')+'<br>'+
+    'Hex : 0x'+u.toString(16).toUpperCase().padStart(2,'0')+' · Oct : '+u.toString(8)+'<br>'+
+    (u===128&&signed? '<span class="r-bd">Most negative value — no positive twin!</span>':'');
+}
+
+var gateSw=[];
+function drawGateLab(){
+  gateSw=[];
+  var W=cv.width;
+  cx.fillStyle=css('--card'); cx.fillRect(0,0,W,cv.height);
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText(gate+' gate — click the input switches', 20, 30);
+  var gy=150, gx=300;
+  var single=(gate==='NOT');
+  var r=drawGate(gate,gx,gy,1.4,A,single?A:B);
+  // inputs
+  if(single){
+    sw(90,gy,A,'A'); gateSw.push({x:70,y:gy-14,w:40,h:28,which:'A'});
+    wire(112,gy,gx,gy,A===1);
+  } else {
+    sw(90,gy-24,A,'A'); gateSw.push({x:70,y:gy-38,w:40,h:28,which:'A'});
+    sw(90,gy+24,B,'B'); gateSw.push({x:70,y:gy+10,w:40,h:28,which:'B'});
+    wire(112,gy-24,gx,gy-24,A===1);
+    wire(112,gy+24,gx,gy+24,B===1);
+  }
+  wire(r.ox,gy,r.ox+60,gy,r.out===1);
+  lamp(r.ox+82,gy,r.out===1,'X');
+  // expression
+  var exprs={AND:'X = A·B', OR:'X = A+B', NOT:'X = A\u0305', NAND:'X = (A·B)\u0305', NOR:'X = (A+B)\u0305', XOR:'X = A ⊕ B'};
+  cx.fillStyle=css('--green-dark'); cx.font='bold 16px Courier New';
+  cx.fillText(exprs[gate], gx+10, gy+72);
+  // truth table
+  var rows= single? [[0],[1]] : [[0,0],[0,1],[1,0],[1,1]];
+  var tx=530, ty=70, rh=32;
+  cx.font='bold 13px Courier New'; cx.fillStyle='#fff';
+  cx.fillStyle=css('--navy'); cx.fillRect(tx,ty,single?120:160,rh);
+  cx.fillStyle='#fff'; cx.textAlign='center';
+  if(single){ cx.fillText('A',tx+30,ty+21); cx.fillText('X',tx+90,ty+21); }
+  else { cx.fillText('A',tx+27,ty+21); cx.fillText('B',tx+80,ty+21); cx.fillText('X',tx+133,ty+21); }
+  rows.forEach(function(rw,ri){
+    var y=ty+rh*(ri+1);
+    var cur = single? (rw[0]===A) : (rw[0]===A && rw[1]===B);
+    cx.fillStyle= cur? 'rgba(0,168,107,.22)' : (ri%2? css('--card-alt'):css('--card'));
+    cx.fillRect(tx,y,single?120:160,rh);
+    cx.strokeStyle=css('--border'); cx.strokeRect(tx,y,single?120:160,rh);
+    var o=gateOut(gate,rw[0], single? rw[0]: rw[1]);
+    cx.fillStyle= cur? css('--green-dark'):css('--text');
+    cx.font=(cur?'bold ':'')+'13px Courier New';
+    if(single){ cx.fillText(rw[0],tx+30,y+21); cx.fillText(o,tx+90,y+21); }
+    else { cx.fillText(rw[0],tx+27,y+21); cx.fillText(rw[1],tx+80,y+21); cx.fillText(o,tx+133,y+21); }
+    if(cur){ cx.fillText('◀',tx+(single?120:160)+14,y+21); }
+  });
+  cx.textAlign='left';
+  var o=gateOut(gate,A,single?A:B);
+  document.getElementById('labRead').innerHTML=
+    'Gate : <span class="r-on">'+gate+'</span> · '+exprs[gate]+'<br>'+
+    'Inputs : A='+A+(single?'':' B='+B)+'<br>'+
+    'Output X = <span class="'+(o?'r-on':'r-off')+'">'+o+'</span><br>'+
+    'Truth table row '+(single?(A+1):((A*2+B)+1))+' of '+(single?2:4)+' highlighted';
+}
+
+var dmSw=[];
+function drawDM(){
+  dmSw=[];
+  var W=cv.width;
+  cx.fillStyle=css('--card'); cx.fillRect(0,0,W,cv.height);
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  var title = thm===1? 'Theorem 1:  (A·B)\u0305  =  A\u0305 + B\u0305' : 'Theorem 2:  (A+B)\u0305  =  A\u0305 · B\u0305';
+  cx.fillText(title, 20, 28);
+  // shared switches
+  sw(60,90,A,'A'); dmSw.push({x:40,y:76,w:40,h:28,which:'A'});
+  sw(60,150,B,'B'); dmSw.push({x:40,y:136,w:40,h:28,which:'B'});
+  var leftGate = thm===1? 'NAND':'NOR';
+  var rightBase= thm===1? 'OR':'AND';
+  // LEFT circuit
+  cx.fillStyle=css('--navy'); cx.font='bold 12px Arial';
+  cx.fillText('CIRCUIT 1: '+leftGate, 150, 64);
+  wire(82,90,180,90,A===1); wire(82,150,180,150,B===1);
+  wire(180,90,190,105,A===1); wire(180,150,190,135,B===1);
+  var g1=drawGate(leftGate,190,120,1.0,A,B);
+  wire(g1.ox,120,g1.ox+34,120,g1.out===1);
+  lamp(g1.ox+52,120,g1.out===1,'OUT1');
+  // RIGHT circuit: inverters then base gate
+  cx.fillStyle=css('--navy');
+  cx.fillText('CIRCUIT 2: NOT inputs → '+rightBase, 430, 64);
+  wire(82,90,420,90,A===1); wire(82,150,420,150,B===1);
+  var n1=drawGate('NOT',420,90,0.55,A,0);
+  var n2=drawGate('NOT',420,150,0.55,B,0);
+  wire(n1.ox,90,500,90,n1.out===1); wire(500,90,510,105,n1.out===1);
+  wire(n2.ox,150,500,150,n2.out===1); wire(500,150,510,135,n2.out===1);
+  var g2=drawGate(rightBase,510,120,1.0,n1.out,n2.out);
+  wire(g2.ox,120,g2.ox+30,120,g2.out===1);
+  lamp(g2.ox+48,120,g2.out===1,'OUT2');
+  // verdict banner
+  var match=(g1.out===g2.out);
+  cx.fillStyle= match? css('--green') : css('--red');
+  cx.font='bold 17px Georgia'; cx.textAlign='center';
+  cx.fillText(match? '✓ OUTPUTS MATCH — the theorem holds for this row' : '✗ mismatch (impossible!)', W/2, 218);
+  cx.textAlign='left';
+  // 4-row proof table
+  var tx=150, ty=250, rh=30, cwd=88;
+  var heads= thm===1? ['A','B','(A·B)\u0305','A\u0305+B\u0305'] : ['A','B','(A+B)\u0305','A\u0305·B\u0305'];
+  cx.fillStyle=css('--navy'); cx.fillRect(tx,ty,cwd*4,rh);
+  cx.fillStyle='#fff'; cx.font='bold 13px Courier New'; cx.textAlign='center';
+  heads.forEach(function(h,i){ cx.fillText(h, tx+cwd*i+cwd/2, ty+20); });
+  for(var r2=0;r2<4;r2++){
+    var a=(r2>>1)&1, b=r2&1, y=ty+rh*(r2+1);
+    var v1= thm===1? ((a&b)^1) : ((a|b)^1);
+    var v2= thm===1? ((a^1)|(b^1)) : ((a^1)&(b^1));
+    var cur=(a===A&&b===B);
+    cx.fillStyle= cur? 'rgba(0,168,107,.22)' : (r2%2? css('--card-alt'):css('--card'));
+    cx.fillRect(tx,y,cwd*4,rh);
+    cx.strokeStyle=css('--border'); cx.strokeRect(tx,y,cwd*4,rh);
+    cx.fillStyle= cur? css('--green-dark'):css('--text');
+    cx.font=(cur?'bold ':'')+'13px Courier New';
+    [a,b,v1,v2].forEach(function(v,i){ cx.fillText(v, tx+cwd*i+cwd/2, y+20); });
+    if(cur) cx.fillText('◀', tx+cwd*4+16, y+20);
+  }
+  cx.textAlign='left';
+  document.getElementById('labRead').innerHTML=
+    'Theorem : '+(thm===1?'(A·B)\u0305 = A\u0305+B\u0305':'(A+B)\u0305 = A\u0305·B\u0305')+'<br>'+
+    'Inputs : A='+A+' B='+B+'<br>'+
+    'OUT1 ('+leftGate+') = <span class="r-on">'+g1.out+'</span> · OUT2 = <span class="r-on">'+g2.out+'</span><br>'+
+    'Status : '+(match?'<span class="r-on">MATCH ✓</span>':'<span class="r-off">MISMATCH</span>')+'<br>'+
+    'Step all four rows to complete the proof.';
+}
+
+function draw(){
+  if(mode==='bin') drawBin();
+  else if(mode==='gate') drawGateLab();
+  else drawDM();
+}
+
+/* canvas clicks */
+cv.addEventListener('click', function(ev){
+  var r=cv.getBoundingClientRect();
+  var x=(ev.clientX-r.left)*cv.width/r.width, y=(ev.clientY-r.top)*cv.height/r.height;
+  function hit(c){ return x>=c.x&&x<=c.x+c.w&&y>=c.y&&y<=c.y+c.h; }
+  if(mode==='bin'){ binCells.forEach(function(c){ if(hit(c)){ bits[c.i]^=1; draw(); } }); }
+  if(mode==='gate'){ gateSw.forEach(function(c){ if(hit(c)){ c.which==='A'?togA():togB(); } }); }
+  if(mode==='dm'){ dmSw.forEach(function(c){ if(hit(c)){ c.which==='A'?togA():togB(); } }); }
+});
+
+/* roundRect polyfill for older engines */
+if(!cx.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    this.moveTo(x+r,y); this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+    this.arcTo(x,y+h,x,y,r); this.arcTo(x,y,x+w,y,r); this.closePath(); return this;
+  };
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:"Convert 1011 0010₂ to decimal using weighted place value.",
+  o:["178 — the 1s sit under weights 128, 32, 16, and 2.","162","202","94"],
+  a:0, e:"Sum the weights under each 1: 128 + 32 + 16 + 2 = 178. Rebuild it in the Binary Explorer to see each bit's contribution listed."},
+ {q:"Convert decimal 45 to binary using repeated division by 2.",
+  o:["101100₂","101101₂ — remainders 1,0,1,1,0,1 read bottom-up.","110101₂","100111₂"],
+  a:1, e:"45→22 r1, 22→11 r0, 11→5 r1, 5→2 r1, 2→1 r0, 1→0 r1. Reading remainders bottom-up: 101101₂. Check: 32+8+4+1 = 45 ✓"},
+ {q:"What is 1110 1001 0111 1100₂ in hexadecimal?",
+  o:["0xE97C — group by four bits: 1110=E, 1001=9, 0111=7, 1100=C.","0xE87D","0x751B4 — group by three bits.","0xF97C"],
+  a:0, e:"Hex is a 4-bit shorthand: split from the right into nibbles and translate each — no arithmetic needed. (Three-bit grouping is octal's trick, not hex's.)"},
+ {q:"Compute 3A₁₆ + 2C₁₆ directly in hex.",
+  o:["5C₁₆","66₁₆ — A+C = 22 = 16+6, so write 6 and carry 1 into the next column.","76₁₆","5F₁₆"],
+  a:1, e:"Units column: A(10)+C(12) = 22; 22−16 = 6, carry 1. Next column: 3+2+1 = 6. Answer 66₁₆ = 102₁₀ ✓ (58+44)."},
+ {q:"Find the 8-bit 2's complement representation of −25.",
+  o:["1001 1001","1110 0111 — write +25 (0001 1001), invert (1110 0110), add 1.","1110 0110","0001 1001 with a minus sign stored separately."],
+  a:1, e:"Invert-and-add-one: 0001 1001 → 1110 0110 → 1110 0111. Verify with signed weights: −128+64+32+4+2+1 = −25 ✓. Run it live with the Lab's Invert then +1 buttons."},
+ {q:"A byte contains 1111 1111. What does it represent unsigned, and signed (2's complement)?",
+  o:["255 unsigned; −1 signed — the same bits under two reading rules.","255 unsigned; −127 signed.","127 both ways.","−255 unsigned; 1 signed."],
+  a:0, e:"Unsigned: all weights sum to 255. Signed: −128+64+32+16+8+4+2+1 = −1. The bits never changed — only the interpretation. This is the SIGNED toggle's whole lesson."},
+ {q:"For which single input combination does a 2-input NAND gate output 0?",
+  o:["A=0, B=0","A=0, B=1","A=1, B=1 — NAND is AND inverted, so it is 0 only where AND was 1.","A NAND gate never outputs 0."],
+  a:2, e:"NAND = NOT-AND. AND outputs 1 only at (1,1), so NAND outputs 0 only at (1,1) and 1 everywhere else — the exact opposite fingerprint."},
+ {q:"Why are NAND and NOR called universal gates?",
+  o:["They switch faster than other gates.","Either one alone can construct AND, OR, and NOT — and therefore any logic function whatsoever.","They work at any supply voltage.","They have more than two inputs."],
+  a:1, e:"Tie a NAND's inputs together and it inverts (idempotent law); combine NANDs and DeMorgan's theorem delivers AND and OR. Real silicon exploits this — CMOS chips are built as seas of NAND."},
+ {q:"Simplify X = A·B + A·B̅ using Boolean laws.",
+  o:["X = B","X = A·B","X = A — factor to A·(B+B̅) = A·1 = A.","X = 1"],
+  a:2, e:"Distributive law factors out A: A·(B + B̅). The complement law says B + B̅ = 1, and the identity law says A·1 = A. Three gates become a wire — same truth table."},
+ {q:"Apply DeMorgan's theorem to (A + B)̅.",
+  o:["A̅ + B̅","A̅ · B̅ — break the bar, change OR to AND, complement each term.","A + B","(A·B)̅"],
+  a:1, e:"Theorem 2: the complement of an OR is the AND of the complements. Step through all four rows in the Lab's DeMorgan mode (Theorem 2 selected) and watch both circuits agree on every row."}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt" id="q'+qi+'o'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'"><strong>Explanation:</strong> '+item.e+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0, answered=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name=q'+qi+']:checked');
+    for(var oi=0;oi<4;oi++){ document.getElementById('q'+qi+'o'+oi).classList.remove('correct','incorrect'); }
+    if(sel){
+      answered++;
+      var v=parseInt(sel.value);
+      if(v===item.a){ score++; document.getElementById('q'+qi+'o'+v).classList.add('correct'); }
+      else{ document.getElementById('q'+qi+'o'+v).classList.add('incorrect'); document.getElementById('q'+qi+'o'+item.a).classList.add('correct'); }
+      document.getElementById('ex'+qi).classList.add('show');
+    }
+  });
+  var box=document.getElementById('scoreBox');
+  if(answered<QUIZ.length){
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>You have answered '+answered+' of 10 questions. Complete all questions for a full evaluation.</p>';
+  } else {
+    var msg = score>=9 ? '🏆 Outstanding — you speak fluent binary and Boolean!'
+            : score>=7 ? '✅ Solid work. Review the missed explanations, then verify each in the Digital Lab.'
+            : score>=5 ? '📘 Getting there. Revisit the 2\u2019s Complement and Boolean Laws tabs, then retake the quiz.'
+            : '🔁 Review the full lesson and complete all six guided Lab explorations before retaking this check.';
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>'+msg+'</p>';
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* init */
+syncAB();
+draw();
+</script>
+</body>
+</html>
