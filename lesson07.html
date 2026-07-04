@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Lesson 7: Encoders, Decoders, Multiplexers &amp; A/D-D/A Converters</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td.inv{color:var(--red);font-weight:bold;}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SYMBOL LIBRARY ============ */
+.symgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.symcard{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:14px;text-align:center;}
+.symcard svg{width:100%;max-width:190px;height:120px;stroke:var(--text);fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}
+.symcard svg .lead{stroke:var(--navy);}
+.symcard svg .bub{fill:var(--card);}
+.symcard svg text{stroke:none;fill:var(--text);font-family:'Courier New',monospace;font-size:14px;font-weight:bold;}
+.symcard svg text.pin{fill:var(--green-dark);font-family:'Arial Narrow',Arial,sans-serif;font-size:12px;}
+.symcard .sname{font-weight:bold;color:var(--navy);margin-top:4px;}
+[data-theme="dark"] .symcard .sname{color:#8ab6ff;}
+.symcard .suse{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--text-muted);line-height:1.4;margin-top:4px;}
+.symcard table.tt{margin:8px auto 0;border-collapse:collapse;font-family:'Courier New',monospace;font-size:.72rem;}
+.symcard table.tt th{background:var(--navy);color:#fff;padding:2px 8px;font-weight:normal;}
+[data-theme="dark"] .symcard table.tt th{background:#1a3a68;}
+.symcard table.tt td{border:1px solid var(--border);padding:2px 8px;}
+.symcard table.tt td.one{color:var(--green-dark);font-weight:bold;}
+.symcard table.tt td.bad{color:var(--red);font-weight:bold;}
+
+/* ============ LAB ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;cursor:pointer;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.readout .r-bd{color:#a86e00;font-weight:bold;}
+[data-theme="dark"] .readout .r-bd{color:var(--amber);}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+.g-btn.on{background:var(--green);font-weight:bold;}
+.toggle-row{display:flex;align-items:center;gap:10px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.92rem;font-weight:bold;color:var(--navy);margin-bottom:12px;}
+.toggle-row input{accent-color:var(--green);width:18px;height:18px;cursor:pointer;}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;} .tab-pane{padding:20px 16px;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Lesson 7 of 8</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson07.html">Lesson 7</a> &nbsp;›&nbsp;
+  Encoders, Decoders, Multiplexers &amp; A/D-D/A Converters
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 3 · Digital Foundations</span>
+  <h1>Encoders, Decoders, Multiplexers &amp; A/D-D/A Converters</h1>
+  <p class="sub">Combinational building blocks that encode, route, and convert signals: encoders compress many lines into a code, decoders expand a code back to one line, multiplexers select and demultiplexers distribute — and ADCs/DACs carry signals across the analog-digital frontier.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 Hours Study</span>
+    <span>📋 9 Core Topics</span>
+    <span>📐 Symbol Library (6 devices)</span>
+    <span>📈 3-Mode Conversion &amp; Routing Lab</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lesson, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Explain</strong> the role of combinational MSI circuits in encoding, routing, and converting signals within digital systems.</li>
+      <li><strong>Describe</strong> encoder operation — converting one active input line into a binary or BCD code — and explain how a priority encoder resolves multiple active inputs.</li>
+      <li><strong>Analyze</strong> decoder operation, tracing an N-bit input to exactly one of 2ᴺ activated output lines, and explain the function of the enable input.</li>
+      <li><strong>Trace</strong> data through a multiplexer, using select lines to determine which of many inputs reaches the single output.</li>
+      <li><strong>Contrast</strong> demultiplexer operation — distributing one input to a selected output — and explain how a decoder with a data input becomes a DEMUX.</li>
+      <li><strong>Design conceptually</strong> a MUX/DEMUX data-transmission link that shares one channel among multiple signals (time-division multiplexing).</li>
+      <li><strong>Explain</strong> the three steps of analog-to-digital conversion — sampling, quantizing, encoding — and calculate resolution as 2ⁿ levels.</li>
+      <li><strong>Describe</strong> digital-to-analog conversion, the stepped output waveform, and why filtering smooths the reconstruction.</li>
+      <li><strong>Match</strong> all six devices to real applications — keypads, memory address decoding, seven-segment displays, bus routing, sensor acquisition, and audio playback — and verify each behavior in the Conversion &amp; Routing Lab.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS (collapsed) ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition.</p>
+
+      <div class="cat-label">Encoding &amp; Decoding</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Encoder</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A combinational circuit that converts one active input line into a smaller coded output — e.g., an 8-to-3 encoder outputs the 3-bit binary code of whichever input is active. Many lines in, few coded bits out.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Priority Encoder</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An encoder that resolves conflicts: if several inputs are active simultaneously, the <strong>highest-priority</strong> input wins and is encoded. A valid flag often indicates whether any input is present at all.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Decoder</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The encoder's reverse: accepts an N-bit code and activates exactly <strong>one of up to 2ᴺ</strong> output lines. A 3-to-8 decoder turns the code 101 into "output line 5 active, all others quiet."</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Enable Input</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A master on/off pin found on most decoders (and many MSI parts): when disabled, all outputs stay inactive regardless of the input code. Enables let decoders be cascaded and let address ranges be switched — the same gating idea as Lesson 6's latches.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">BCD (Binary-Coded Decimal)</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Each decimal digit 0–9 stored as its own 4-bit code. A decimal-to-BCD encoder converts a pressed keypad digit into its nibble; BCD-to-seven-segment decoders drive numeric displays.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Seven-Segment Display</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Seven LED segments (a–g, from Lesson 2's optoelectronics) arranged as a figure-8. A decoder/driver translates a 4-bit code into the segment pattern for each digit — the classic decoder application on every multimeter and microwave.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">MSI (Medium-Scale Integration)</div><div class="cat">Encoding &amp; Decoding</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The chip class housing this lesson's devices — tens to hundreds of gates packaged as one ready-made function (74HC148 encoder, 74HC138 decoder, 74HC151 MUX). Built entirely from Lesson 5's gates; used as single building blocks.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Signal Routing</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Multiplexer (MUX)</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A <strong>data selector</strong>: chooses one of many inputs and forwards it to a single output, under the command of select lines. An 8-to-1 MUX funnels eight data paths into one channel.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Select Lines</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The address inputs that steer a MUX or DEMUX: n select lines address 2ⁿ channels (3 lines → 8 inputs). The select code is read as a binary number naming the chosen channel — Lesson 5's place value at work.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Demultiplexer (DEMUX)</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The MUX's mirror: a <strong>data distributor</strong> that takes one input and routes it to one of several outputs chosen by select lines. The unselected outputs stay inactive.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Decoder-as-DEMUX</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Add a data line to a decoder's enable input and it <em>becomes</em> a demultiplexer: the select code picks the output, the data stream flows to it. One silicon layout, two catalog names — the 74138 is sold as both.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Bus</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A shared group of wires carrying data between many devices. MUXes decide who talks onto the bus, decoders decide who listens — the pairing that lets one set of wires serve a whole computer.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Time-Division Multiplexing</div><div class="cat">Signal Routing</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Sharing one channel among many signals by rapidly scanning the select lines: each source gets the channel in turn, and a synchronized DEMUX sorts the slices back out. Watch it happen with the Lab's auto-scan.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Analog-Digital Conversion</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">ADC (Analog-to-Digital Converter)</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Converts a continuous analog quantity (a voltage from a sensor or microphone) into a digital number, by sampling the input, quantizing it into discrete levels, and encoding the result as binary.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Sampling</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Measuring the analog signal at regular instants — freezing snapshots of a moving waveform. The sampling rate must be fast enough to capture the signal's changes (at least twice its highest frequency), or the reconstruction misrepresents it.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Quantization</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Rounding each sample to the nearest of 2ⁿ discrete levels. The rounding error (quantization error) is the price of going digital — shrink it by adding bits, since each extra bit doubles the number of levels.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Resolution</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>How finely a converter divides its range: n bits → 2ⁿ levels, step size = range/2ⁿ. An 8-bit ADC on a 5 V range resolves ~19.5 mV; 12 bits resolves ~1.2 mV. Resolution and sampling rate together determine fidelity.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">DAC (Digital-to-Analog Converter)</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The reverse trip: converts a binary value into a proportional analog output, typically using weighted currents or voltage-divider (R-2R ladder) networks to reconstruct the signal.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Stepped (Staircase) Output</div><div class="cat">A/D-D/A Conversion</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A DAC's raw output holds each value until the next sample arrives, producing a staircase waveform. A low-pass filter (op-amp circuits from Lesson 4!) smooths the steps into a continuous signal — the last stage of every audio output.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SYMBOL LIBRARY ================= -->
+<section id="symbols">
+  <h2 class="sec-title">📐 Device Symbol Library</h2>
+  <p>Six devices, two visual families. Encoders, decoders, and converters are drawn as <strong>labeled rectangles</strong> — read the pin counts to identify them (many→few = encoder, few→many = decoder). Multiplexers and demultiplexers get the distinctive <strong>trapezoid</strong>: the wide side faces the many lines, the narrow side faces the one, and select lines enter from below.</p>
+  <div class="symgrid">
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="8-to-3 encoder block symbol">
+        <rect x="65" y="12" width="60" height="96" rx="4"/>
+        <line class="lead" x1="30" y1="20" x2="65" y2="20"/><line class="lead" x1="30" y1="32" x2="65" y2="32"/>
+        <line class="lead" x1="30" y1="44" x2="65" y2="44"/><line class="lead" x1="30" y1="56" x2="65" y2="56"/>
+        <line class="lead" x1="30" y1="68" x2="65" y2="68"/><line class="lead" x1="30" y1="80" x2="65" y2="80"/>
+        <line class="lead" x1="30" y1="92" x2="65" y2="92"/><line class="lead" x1="30" y1="104" x2="65" y2="104"/>
+        <line class="lead" x1="125" y1="40" x2="160" y2="40"/>
+        <line class="lead" x1="125" y1="60" x2="160" y2="60"/>
+        <line class="lead" x1="125" y1="80" x2="160" y2="80"/>
+        <text class="pin" x="70" y="30">I0-I7</text>
+        <text class="pin" x="98" y="64">Y2-Y0</text>
+        <text x="82" y="102" class="pin">ENC</text>
+      </svg>
+      <div class="sname">Encoder (8-to-3)</div>
+      <div class="suse">One active input → its 3-bit binary code · many in, few out</div>
+      <table class="tt"><tr><th>Active</th><th>Y2 Y1 Y0</th></tr>
+      <tr><td>I0</td><td>0 0 0</td></tr><tr><td>I3</td><td class="one">0 1 1</td></tr>
+      <tr><td>I5</td><td class="one">1 0 1</td></tr><tr><td>I7</td><td class="one">1 1 1</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="3-to-8 decoder block symbol with enable">
+        <rect x="65" y="12" width="60" height="96" rx="4"/>
+        <line class="lead" x1="30" y1="30" x2="65" y2="30"/>
+        <line class="lead" x1="30" y1="50" x2="65" y2="50"/>
+        <line class="lead" x1="30" y1="70" x2="65" y2="70"/>
+        <line class="lead" x1="30" y1="98" x2="65" y2="98"/>
+        <line class="lead" x1="125" y1="18" x2="158" y2="18"/><line class="lead" x1="125" y1="30" x2="158" y2="30"/>
+        <line class="lead" x1="125" y1="42" x2="158" y2="42"/><line class="lead" x1="125" y1="54" x2="158" y2="54"/>
+        <line class="lead" x1="125" y1="66" x2="158" y2="66"/><line class="lead" x1="125" y1="78" x2="158" y2="78"/>
+        <line class="lead" x1="125" y1="90" x2="158" y2="90"/><line class="lead" x1="125" y1="102" x2="158" y2="102"/>
+        <text class="pin" x="70" y="44">A2-A0</text>
+        <text class="pin" x="70" y="94">EN</text>
+        <text class="pin" x="96" y="64">Y0-Y7</text>
+      </svg>
+      <div class="sname">Decoder (3-to-8)</div>
+      <div class="suse">N-bit code → exactly one of 2ᴺ lines active · EN=0 silences all</div>
+      <table class="tt"><tr><th>EN</th><th>A2A1A0</th><th>Active</th></tr>
+      <tr><td>0</td><td>x x x</td><td>none</td></tr><tr><td>1</td><td>0 0 0</td><td class="one">Y0</td></tr>
+      <tr><td>1</td><td>1 0 1</td><td class="one">Y5</td></tr><tr><td>1</td><td>1 1 1</td><td class="one">Y7</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="4-to-1 multiplexer trapezoid symbol">
+        <polygon points="60,12 60,96 128,76 128,32"/>
+        <line class="lead" x1="26" y1="24" x2="60" y2="24"/>
+        <line class="lead" x1="26" y1="44" x2="60" y2="44"/>
+        <line class="lead" x1="26" y1="64" x2="60" y2="64"/>
+        <line class="lead" x1="26" y1="84" x2="60" y2="84"/>
+        <line class="lead" x1="128" y1="54" x2="164" y2="54"/>
+        <line class="lead" x1="86" y1="90" x2="86" y2="112"/>
+        <line class="lead" x1="102" y1="86" x2="102" y2="112"/>
+        <text class="pin" x="8" y="28">D0</text><text class="pin" x="8" y="88">D3</text>
+        <text class="pin" x="140" y="48">OUT</text>
+        <text class="pin" x="68" y="118">S1 S0</text>
+        <text x="72" y="58" class="pin">MUX</text>
+      </svg>
+      <div class="sname">Multiplexer (4-to-1)</div>
+      <div class="suse">Data selector · select lines choose which input reaches the one output</div>
+      <table class="tt"><tr><th>S1 S0</th><th>OUT =</th></tr>
+      <tr><td>0 0</td><td class="one">D0</td></tr><tr><td>0 1</td><td class="one">D1</td></tr>
+      <tr><td>1 0</td><td class="one">D2</td></tr><tr><td>1 1</td><td class="one">D3</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="1-to-4 demultiplexer trapezoid symbol">
+        <polygon points="62,32 62,76 130,96 130,12"/>
+        <line class="lead" x1="26" y1="54" x2="62" y2="54"/>
+        <line class="lead" x1="130" y1="24" x2="164" y2="24"/>
+        <line class="lead" x1="130" y1="44" x2="164" y2="44"/>
+        <line class="lead" x1="130" y1="64" x2="164" y2="64"/>
+        <line class="lead" x1="130" y1="84" x2="164" y2="84"/>
+        <line class="lead" x1="88" y1="88" x2="88" y2="112"/>
+        <line class="lead" x1="104" y1="92" x2="104" y2="112"/>
+        <text class="pin" x="14" y="48">IN</text>
+        <text class="pin" x="168" y="28">Y0</text><text class="pin" x="168" y="88">Y3</text>
+        <text class="pin" x="66" y="118">S1 S0</text>
+        <text x="70" y="58" class="pin">DEMUX</text>
+      </svg>
+      <div class="sname">Demultiplexer (1-to-4)</div>
+      <div class="suse">Data distributor · one input routed to the selected output</div>
+      <table class="tt"><tr><th>S1 S0</th><th>IN goes to</th></tr>
+      <tr><td>0 0</td><td class="one">Y0</td></tr><tr><td>0 1</td><td class="one">Y1</td></tr>
+      <tr><td>1 0</td><td class="one">Y2</td></tr><tr><td>1 1</td><td class="one">Y3</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="Analog to digital converter block symbol">
+        <rect x="55" y="25" width="80" height="70" rx="4"/>
+        <path d="M14,60 q8,-18 16,0 q8,18 16,0" class="lead"/>
+        <line class="lead" x1="46" y1="60" x2="55" y2="60"/>
+        <line class="lead" x1="135" y1="40" x2="168" y2="40"/>
+        <line class="lead" x1="135" y1="60" x2="168" y2="60"/>
+        <line class="lead" x1="135" y1="80" x2="168" y2="80"/>
+        <text x="72" y="55" class="pin">ADC</text>
+        <text class="pin" x="62" y="88">sample·quantize·encode</text>
+        <text class="pin" x="172" y="64">n bits</text>
+      </svg>
+      <div class="sname">ADC</div>
+      <div class="suse">Analog voltage in → binary code out · resolution = 2ⁿ levels</div>
+      <table class="tt"><tr><th>Bits</th><th>Levels</th></tr>
+      <tr><td>4</td><td>16</td></tr><tr><td>8</td><td class="one">256</td></tr>
+      <tr><td>12</td><td class="one">4096</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="Digital to analog converter block symbol">
+        <rect x="55" y="25" width="80" height="70" rx="4"/>
+        <line class="lead" x1="22" y1="40" x2="55" y2="40"/>
+        <line class="lead" x1="22" y1="60" x2="55" y2="60"/>
+        <line class="lead" x1="22" y1="80" x2="55" y2="80"/>
+        <line class="lead" x1="135" y1="60" x2="144" y2="60"/>
+        <path d="M144,72 h8 v-10 h8 v-8 h8 v-6 h8" class="lead"/>
+        <text x="72" y="55" class="pin">DAC</text>
+        <text class="pin" x="66" y="88">reconstruct + filter</text>
+        <text class="pin" x="4" y="64">n bits</text>
+      </svg>
+      <div class="sname">DAC</div>
+      <div class="suse">Binary code in → stepped analog out · filter smooths the staircase</div>
+      <table class="tt"><tr><th>Code (4-bit)</th><th>Out (5V range)</th></tr>
+      <tr><td>0000</td><td>0.00 V</td></tr><tr><td>1000</td><td class="one">2.50 V</td></tr>
+      <tr><td>1111</td><td class="one">4.69 V</td></tr></table>
+    </div>
+
+  </div>
+  <div class="sim-links" style="margin-top:18px;">
+    <a class="sim-chip" href="#convlab">📈 Operate all six devices in the Conversion &amp; Routing Lab</a>
+    <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt102/binary.html" target="_blank" rel="noopener">↩ Review: Binary Numbers Simulator</a>
+    <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">↩ Review: Logic Gates Simulator</a>
+  </div>
+</section>
+
+<!-- ================= CORE CONTENT ================= -->
+<section id="content">
+  <h2 class="sec-title">Core Lesson Content</h2>
+  <div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="showTab(0,this)">1. Intro</button>
+    <button class="tab-btn" onclick="showTab(1,this)">2. Encoders</button>
+    <button class="tab-btn" onclick="showTab(2,this)">3. Decoders</button>
+    <button class="tab-btn" onclick="showTab(3,this)">4. Multiplexers</button>
+    <button class="tab-btn" onclick="showTab(4,this)">5. Demultiplexers</button>
+    <button class="tab-btn" onclick="showTab(5,this)">6. MUX+DEMUX Links</button>
+    <button class="tab-btn" onclick="showTab(6,this)">7. ADC</button>
+    <button class="tab-btn" onclick="showTab(7,this)">8. DAC</button>
+    <button class="tab-btn" onclick="showTab(8,this)">9. Comparison &amp; Applications</button>
+  </div>
+
+  <!-- TAB 1 -->
+  <div class="tab-pane show">
+    <h3>Encoding, Routing, and Converting Signals</h3>
+    <p>Lessons 5 and 6 gave you gates and memory. This lesson supplies the <strong>traffic system</strong> — combinational circuits that move information between forms and destinations. Every device here is built purely from Lesson 5's gates (no storage, no clock needed), yet each solves a problem so common it's sold as its own chip:</p>
+    <ul class="styled">
+      <li>An <strong>encoder</strong> converts one active input line into a coded output, usually binary or BCD — compressing many wires into a few.</li>
+      <li>A <strong>decoder</strong> performs the reverse, taking an N-bit input and activating one of many output lines.</li>
+      <li>A <strong>multiplexer</strong> selects one of many inputs and sends it to a single output line.</li>
+      <li>A <strong>demultiplexer</strong> takes one input and routes it to one of many outputs.</li>
+      <li>An <strong>ADC</strong> converts an analog signal into a digital code, and a <strong>DAC</strong> converts a digital code back into an analog signal — the two doors between this course's analog half and its digital half.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 One Mental Map for All Six</div>
+      Think in pin counts and directions: <strong>encoder</strong> = many→few (compress) · <strong>decoder</strong> = few→many (expand) · <strong>MUX</strong> = many→one (select) · <strong>DEMUX</strong> = one→many (distribute) · <strong>ADC</strong> = analog→digital · <strong>DAC</strong> = digital→analog. Every application in this lesson is one of those six arrows.
+    </div>
+    <h4>Try It Live</h4>
+    <div class="sim-links">
+      <a class="sim-chip" href="#convlab">📈 3-Mode Conversion &amp; Routing Lab (below)</a>
+      <a class="sim-chip alt" href="lesson06.html">↩ Lesson 6: Latches &amp; Flip-Flops</a>
+    </div>
+  </div>
+
+  <!-- TAB 2 -->
+  <div class="tab-pane">
+    <h3>Encoders: Many Lines In, a Code Out</h3>
+    <h4>What They Are</h4>
+    <p>An encoder is a combinational circuit that converts an active input line into a smaller coded output. A basic encoder assumes <strong>only one input is active at a time</strong>: press one line, read its binary name. An 8-to-3 encoder watches eight input lines and outputs the 3-bit code of whichever is active.</p>
+    <h4>How They Work</h4>
+    <div class="formula">Input line 5 active (8-to-3 encoder) → output = 101₂&nbsp;&nbsp;&nbsp;(the binary code for 5)</div>
+    <p>Internally it's just OR gates: each output bit ORs together every input line whose number has a 1 in that bit position. Y0 = I1+I3+I5+I7, Y1 = I2+I3+I6+I7, Y2 = I4+I5+I6+I7 — Lesson 5's place value implemented in gates.</p>
+    <h4>The Priority Encoder</h4>
+    <p>What if two keys are pressed at once? A basic encoder produces garbage (the OR gates merge both codes). A <strong>priority encoder</strong> resolves the conflict by encoding only the <strong>highest-priority active input</strong>, and typically adds a <em>valid flag</em> output indicating whether any input is present at all. This is the version real systems use — the 74HC148 in classic TTL, and the interrupt-priority logic inside every microprocessor.</p>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Keyboard and keypad interfacing:</strong> 10 digit keys → a 4-bit BCD code (decimal-to-BCD encoding), so the processor reads one nibble instead of scanning ten wires.</li>
+      <li><strong>Octal-to-binary and other code conversions.</strong></li>
+      <li><strong>Input reduction</strong> wherever many signals must be compressed into fewer lines — sensor arrays, interrupt controllers, position encoders.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Lab Check</div>
+      In the Lab's Encoder/Decoder mode, click input pad 5 and confirm the code lights read 101. Then press pads 3 and 4 together with priority OFF — the merged code 111 accuses innocent input 7. Enable <strong>Priority</strong> and 4 cleanly wins: that arbitration is the entire difference between the basic and priority versions.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: Encoder/Decoder mode — try the priority toggle</a></div>
+  </div>
+
+  <!-- TAB 3 -->
+  <div class="tab-pane">
+    <h3>Decoders: A Code In, One Line Out</h3>
+    <h4>What They Are</h4>
+    <p>A decoder accepts an N-bit input and activates <strong>one of up to 2ᴺ outputs</strong> — essentially the reverse of an encoder. A 2-to-4 decoder maps 2 input bits to 4 outputs; a 3-to-8 maps 3 bits to 8 lines. Many decoders include an <strong>enable input</strong> that turns the whole device on or off: when disabled, all outputs remain inactive regardless of the input code.</p>
+    <h4>How They Work</h4>
+    <p>For each binary input combination, <strong>exactly one output line is selected</strong>. Each output is an AND gate decoding its own address: Y5 = A2·A1&#773;·A0·EN fires only for code 101 with enable high. It's Lesson 5's truth-table thinking in silicon — one AND gate per row.</p>
+    <div class="formula">3-to-8 decoder, EN=1: input 101₂ → Y5 active, Y0–Y4 and Y6–Y7 all inactive<br>EN=0: all eight outputs inactive, whatever the code</div>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Memory address decoding:</strong> the computer's address bus feeds decoders whose outputs are chip-select lines — the decoder decides <em>which</em> memory chip answers each address. Enable inputs let decoders cascade to cover huge address spaces.</li>
+      <li><strong>Seven-segment display driving:</strong> a BCD-to-seven-segment decoder/driver converts each 4-bit digit into the a–g segment pattern lighting the LEDs (Lesson 2!) of a numeric display.</li>
+      <li><strong>Data routing, device selection, and sequencing control</strong> — anywhere one-of-many must be chosen by a binary code.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 The Round Trip</div>
+      Encoder and decoder are inverse functions: encode input 5 → code 101 → decode → output 5 lights. The Lab's Encoder/Decoder mode wires them back-to-back so you can watch the round trip live — the same trip every keypress takes into a processor and back out to a display.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: watch the encoder→decoder round trip</a></div>
+  </div>
+
+  <!-- TAB 4 -->
+  <div class="tab-pane">
+    <h3>Multiplexers: The Data Selector</h3>
+    <h4>What They Are</h4>
+    <p>A multiplexer (MUX) is a <strong>data selector</strong>: it chooses one input from many and forwards it to one output. The choice is controlled by <strong>select lines</strong>, and the payoff is that a multiplexer reduces multiple data paths into a single channel.</p>
+    <h4>How They Work</h4>
+    <div class="formula">n select lines address 2ⁿ inputs:&nbsp;&nbsp;2 lines → 4-to-1 MUX&nbsp;&nbsp;·&nbsp;&nbsp;3 lines → 8-to-1 MUX</div>
+    <p>The select code is read as a binary number naming the chosen channel: S1S0 = 10 connects input D2 to the output. Internally, gate networks (or transmission-gate structures in CMOS) route only the chosen input through — each data input is ANDed with its address decode, and the results are ORed into the single output.</p>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Data selection in CPUs and digital systems:</strong> register-file reads, choosing between ALU sources — a processor is full of MUXes making choices every clock cycle.</li>
+      <li><strong>Bus sharing and communication channel reduction:</strong> many devices, one set of wires; the MUX decides who transmits.</li>
+      <li><strong>Implementing logic functions:</strong> a clever classic — wire a truth table's outputs to a MUX's data inputs, drive the select lines with the variables, and the MUX <em>is</em> the function. One 8-to-1 MUX can implement any 3-variable Boolean function from Lesson 5.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Select-line counts are pure Lesson 5 place value: 2ⁿ inputs need n select lines. 16-to-1 → 4 lines; 32-to-1 → 5. If an exam mentions a MUX with 3 select lines, it has 8 data inputs — no diagram required.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: MUX/DEMUX mode — steer the select lines</a></div>
+  </div>
+
+  <!-- TAB 5 -->
+  <div class="tab-pane">
+    <h3>Demultiplexers: The Data Distributor</h3>
+    <h4>What They Are</h4>
+    <p>A demultiplexer (DEMUX) is the multiplexer's mirror image: it takes <strong>one input and distributes it to one of several outputs</strong> — a one-to-many data distributor. Like the MUX, it uses select lines to choose the destination.</p>
+    <h4>How They Work</h4>
+    <p>The input signal is passed to <strong>only the selected output line</strong>; all other outputs remain inactive. Set S1S0 = 11 on a 1-to-4 DEMUX and whatever arrives at the input appears on Y3 alone.</p>
+    <div class="callout co-pro">
+      <div class="co-title">💡 The Decoder Connection</div>
+      Compare the internals: a decoder activates one output per input code; a DEMUX routes data to one output per select code. They're the <em>same circuit</em> — add a data line to a decoder's enable input and the decoder becomes a demultiplexer. The 74HC138 is catalogued as both a "3-to-8 decoder" and a "1-of-8 demultiplexer" for exactly this reason. Recognizing shared structure like this is a mark of fluent schematic reading.
+    </div>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Data distribution to multiple destinations:</strong> one data source feeding whichever subsystem is addressed.</li>
+      <li><strong>Serial-to-parallel style routing:</strong> incoming serial data steered into parallel destinations slot by slot.</li>
+      <li><strong>Driving devices, memory write-lines, and output selection systems.</strong></li>
+    </ul>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: MUX/DEMUX mode — watch data land on the selected output</a></div>
+  </div>
+
+  <!-- TAB 6 -->
+  <div class="tab-pane">
+    <h3>MUX + DEMUX: Sharing One Channel</h3>
+    <p>Put the two mirrors face to face and you get one of digital communication's founding ideas. A MUX at the sending end funnels several signals into <strong>one shared channel</strong>; a DEMUX at the receiving end, driven by <strong>synchronized select lines</strong>, sorts them back out to their destinations.</p>
+    <h4>Time-Division Multiplexing</h4>
+    <p>Now scan the select lines rapidly — 00, 01, 10, 11, repeat. Each source gets the channel for a slice of time, and the receiver's DEMUX (stepping in lockstep) delivers each slice to the matching output. Four conversations share one wire, invisible to all four:</p>
+    <div class="formula">Sources D0–D3 → [MUX] → one channel → [DEMUX] → destinations Y0–Y3<br>Select lines scan 00→01→10→11→00… on both ends, synchronized</div>
+    <ul class="styled">
+      <li><strong>Why it matters:</strong> wires, connectors, and radio spectrum are expensive; select logic is cheap. Telephone trunks, digital audio interfaces, and sensor networks all ride on this trade.</li>
+      <li><strong>The synchronization requirement</strong> is the hard part — if the two ends disagree about the select code, every message arrives at the wrong door. Real links send framing/clock information for exactly this reason (and Lesson 6's flip-flop synchronizers help tame it).</li>
+      <li><strong>Scaling:</strong> the same structure with faster scanning and more channels is how thousands of calls share one fiber.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 See It in the Lab</div>
+      MUX/DEMUX mode has an <strong>Auto-Scan</strong> checkbox: switch it on and watch the select code sweep the four channels while the transmission path redraws in real time. Set different data values on D0–D3 first, and you'll see each value pop out of its own output in turn — time-division multiplexing, animated.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: enable Auto-Scan and watch TDM happen</a></div>
+  </div>
+
+  <!-- TAB 7 -->
+  <div class="tab-pane">
+    <h3>Analog-to-Digital Converters</h3>
+    <p>Every real-world signal — temperature, sound, light, pressure — arrives as a continuous analog quantity, usually a voltage from one of the sensors and amplifier circuits you built in Lessons 1–4. An <strong>ADC converts that continuous voltage into a digital number</strong> the logic world can store and compute with. Three steps:</p>
+    <ol class="styled">
+      <li><strong>Sampling:</strong> measure the input at regular instants — snapshots of a moving waveform. The sampling rate must be fast enough to capture the signal's changes (at least twice the highest signal frequency), or the reconstruction misrepresents the original.</li>
+      <li><strong>Quantizing:</strong> round each sample to the nearest of 2ⁿ discrete levels. The rounding error is the <em>quantization error</em> — the unavoidable price of going digital.</li>
+      <li><strong>Encoding:</strong> output each level as its binary code (Lesson 5's numbers, at last, coming from a real signal).</li>
+    </ol>
+    <h4>Resolution: The Bit Budget</h4>
+    <div class="formula">n bits → 2ⁿ levels&nbsp;&nbsp;·&nbsp;&nbsp;step size = range / 2ⁿ<br>8-bit ADC, 5 V range: 256 levels, ~19.5 mV steps&nbsp;&nbsp;·&nbsp;&nbsp;12-bit: 4096 levels, ~1.2 mV</div>
+    <p>The resolution and sampling rate together determine how accurately the signal is represented — each extra bit halves the step size, each doubling of sample rate captures faster changes. Both cost money and power, which is why choosing an ADC is always an engineering trade.</p>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Microphones, sensors, and measurement instruments</strong> — your multimeter's entire front end is a careful ADC.</li>
+      <li><strong>Data acquisition systems</strong> logging real-world signals for analysis.</li>
+      <li><strong>Embedded controllers and communication systems</strong> that need digital processing of real-world signals.</li>
+    </ul>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: ADC/DAC mode — drag the resolution slider and watch the staircase sharpen</a></div>
+  </div>
+
+  <!-- TAB 8 -->
+  <div class="tab-pane">
+    <h3>Digital-to-Analog Converters</h3>
+    <p>The <strong>DAC performs the reverse operation</strong>: it converts a binary value into a proportional analog output — the door back out of the digital world, to speakers, motors, displays, and control actuators.</p>
+    <h4>How They Work</h4>
+    <ul class="styled">
+      <li><strong>Weighted conversion networks:</strong> each bit contributes a current or voltage proportional to its place value — the MSB contributes half the range, the next bit a quarter, and so on. Practical designs use <strong>R-2R ladder</strong> voltage dividers (only two resistor values, easy to match) feeding a summing op-amp — the inverting amplifier from Lesson 4 doing the addition.</li>
+      <li><strong>The stepped output:</strong> the raw output holds each converted value until the next code arrives, producing a <strong>staircase waveform</strong>.</li>
+      <li><strong>Filtering:</strong> a low-pass filter smooths the steps into a continuous signal — the final handshake between digital data and the analog world.</li>
+    </ul>
+    <div class="formula">4-bit DAC, 5 V range: code 1000₂ (8) → 8/16 × 5 V = 2.50 V&nbsp;&nbsp;·&nbsp;&nbsp;1111₂ (15) → 15/16 × 5 V ≈ 4.69 V</div>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Audio playback:</strong> every digital audio path ends in a DAC — millions of samples per second becoming a voltage that moves a speaker cone.</li>
+      <li><strong>Signal generation and waveform synthesis:</strong> function generators compute waveforms digitally and DAC them into existence.</li>
+      <li><strong>Control systems and actuator interfaces:</strong> a controller's computed output becomes the analog drive for valves, heaters, and motor speed references.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 The Full-Circle Moment</div>
+      Follow one voice through a phone call: microphone (analog) → amplifier (Lesson 4) → <strong>ADC</strong> → codes routed by MUXes over shared channels (this lesson) stored in flip-flops (Lesson 6) → <strong>DAC</strong> → filter → amplifier → speaker (analog). Every lesson of this course is inside that one sentence.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#convlab">📈 Lab: ADC/DAC mode — compare the staircase to the original wave</a></div>
+  </div>
+
+  <!-- TAB 9 -->
+  <div class="tab-pane">
+    <h3>The Six Devices, Side by Side</h3>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Device</th><th>Input</th><th>Output</th><th>Main Function</th><th>Typical Uses</th></tr>
+      <tr><td><strong>Encoder</strong></td><td>Many lines, usually one active</td><td>Fewer coded bits</td><td>Compress input information</td><td>Keypads, code conversion</td></tr>
+      <tr><td><strong>Decoder</strong></td><td>N-bit code</td><td>Up to 2ᴺ lines</td><td>Expand code to one active line</td><td>Memory decoding, displays</td></tr>
+      <tr><td><strong>Multiplexer</strong></td><td>Many data inputs</td><td>One output</td><td>Select one source</td><td>Bus routing, logic design</td></tr>
+      <tr><td><strong>Demultiplexer</strong></td><td>One input</td><td>Many outputs</td><td>Send signal to one destination</td><td>Data distribution, routing</td></tr>
+      <tr><td><strong>ADC</strong></td><td>Analog signal</td><td>Digital code</td><td>Sample and quantize</td><td>Sensors, instruments</td></tr>
+      <tr><td><strong>DAC</strong></td><td>Digital code</td><td>Analog signal</td><td>Reconstruct analog output</td><td>Audio, control, waveform generation</td></tr>
+    </table></div>
+    <h4>Where They Live Together</h4>
+    <ul class="styled">
+      <li><strong>Memory systems:</strong> decoders select chips and rows; MUXes route data lines.</li>
+      <li><strong>Displays:</strong> decoders drive segments; MUXes scan multiple digits over shared wires.</li>
+      <li><strong>Communication:</strong> MUX/DEMUX pairs share channels; ADC/DAC pairs bookend every digital link that touches the physical world.</li>
+      <li><strong>Sensors &amp; audio:</strong> an analog MUX lets one ADC serve many sensors in turn; a DAC plus a Lesson 4 filter and amplifier completes the return path.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Course Thread</div>
+      Diodes steered current (L1), supplies delivered it (L2), transistors switched it (L3), feedback refined it (L4), gates made it logical (L5), bistables gave it memory (L6) — and now the routing and conversion layer connects all of it to the real world. Lesson 8 assembles the full system.
+    </div>
+    <div class="sim-links">
+      <a class="sim-chip" href="#convlab">📈 Conversion &amp; Routing Lab — all three modes</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONVERSION & ROUTING LAB ================= -->
+<section id="convlab">
+  <h2 class="sec-title">📈 Interactive Conversion &amp; Routing Lab</h2>
+  <p>Three instruments in one panel. <strong>Encoder → Decoder:</strong> press an input pad, watch its binary code form, and see the decoder light the matching output — the full round trip, with a priority-encoder toggle for multi-press conflicts. <strong>MUX → DEMUX:</strong> set data values, steer the select lines, and watch one shared channel carry the chosen signal to the chosen destination — then enable Auto-Scan for live time-division multiplexing. <strong>ADC → DAC:</strong> sample a real waveform, quantize it with your chosen bit depth, and compare the staircase reconstruction against the original.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="labCv" width="720" height="440" role="img" aria-label="Interactive lab canvas showing encoder-decoder round trip, MUX-DEMUX routing, or ADC-DAC sampling depending on selected mode"></canvas>
+        <p style="font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--text-muted);margin-top:6px;">💡 The canvas is clickable — input pads and switches respond directly.</p>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Lab Mode</label>
+          <div class="seg" id="modeSeg">
+            <button class="active" onclick="setMode('enc',this)">Encoder/Decoder</button>
+            <button onclick="setMode('mux',this)">MUX/DEMUX</button>
+            <button onclick="setMode('adc',this)">ADC/DAC</button>
+          </div>
+        </div>
+
+        <div class="mode-panel show" id="pan-enc">
+          <div class="toggle-row"><input type="checkbox" id="priChk"> <span>Priority encoder (multi-press allowed)</span></div>
+          <div class="g-btns"><button class="g-btn" onclick="encClear()">Clear Inputs</button></div>
+        </div>
+
+        <div class="mode-panel" id="pan-mux">
+          <div class="ctrl">
+            <label>Data Inputs</label>
+            <div class="g-btns">
+              <button class="g-btn" id="md0" onclick="togD(0)">D0 = 0</button>
+              <button class="g-btn" id="md1" onclick="togD(1)">D1 = 0</button>
+              <button class="g-btn" id="md2" onclick="togD(2)">D2 = 0</button>
+              <button class="g-btn" id="md3" onclick="togD(3)">D3 = 0</button>
+            </div>
+          </div>
+          <div class="ctrl">
+            <label>Select Lines</label>
+            <div class="g-btns">
+              <button class="g-btn" id="ms1" onclick="togS(1)">S1 = 0</button>
+              <button class="g-btn" id="ms0" onclick="togS(0)">S0 = 0</button>
+            </div>
+          </div>
+          <div class="toggle-row"><input type="checkbox" id="scanChk"> <span>Auto-Scan (time-division mux)</span></div>
+        </div>
+
+        <div class="mode-panel" id="pan-adc">
+          <div class="ctrl">
+            <label>Resolution <span class="val" id="bitsVal">3 bits · 8 levels</span></label>
+            <input type="range" id="bits" min="1" max="6" step="1" value="3">
+          </div>
+          <div class="ctrl">
+            <label>Sample Interval <span class="val" id="srVal">40 px</span></label>
+            <input type="range" id="srate" min="12" max="80" step="4" value="40">
+          </div>
+          <div class="toggle-row"><input type="checkbox" id="reconChk" checked> <span>Show DAC staircase reconstruction</span></div>
+        </div>
+
+        <div class="readout" id="labRead" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Guided Explorations</div>
+    <strong>1. The round trip:</strong> in Encoder/Decoder mode press pad 5 — code reads 101, decoder output 5 lights. Try every pad and confirm the code is always the pad's binary name. <strong>2. The conflict:</strong> priority OFF, press 3 and 4 together — the OR gates merge 011 and 100 into 111, a code claiming input 7 was pressed. It never was! Priority ON: 4 cleanly wins and the code is honest again. <strong>3. Selection:</strong> in MUX/DEMUX mode set D2=1 (others 0), steer S1S0 to 10 — the channel goes live and Y2 lights; every other select code sends 0. <strong>4. TDM:</strong> set D0=1, D1=0, D2=1, D3=0, enable Auto-Scan, and watch each value pop out of its own output in rotation — four signals sharing one wire. <strong>5. The bit budget:</strong> in ADC/DAC mode set 1 bit — the staircase is a crude two-level caricature. Slide to 6 bits and watch it hug the wave. <strong>6. Sampling matters too:</strong> at any resolution, stretch the sample interval and watch detail vanish between samples — resolution AND rate together set fidelity.
+  </div>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="acc open" id="factsAcc">
+    <button class="acc-head" onclick="toggleAcc('factsAcc')">Key Facts Reference Box <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <div class="facts">
+        <div class="fact"><div class="f-label">Encoder</div><div class="f-val">Many lines → few coded bits (compress)</div></div>
+        <div class="fact"><div class="f-label">Priority Encoder</div><div class="f-val">Highest-priority active input wins + valid flag</div></div>
+        <div class="fact"><div class="f-label">Decoder</div><div class="f-val">N-bit code → one of 2ᴺ lines active</div></div>
+        <div class="fact"><div class="f-label">Decoder Enable</div><div class="f-val">EN=0 → all outputs inactive</div></div>
+        <div class="fact"><div class="f-label">Multiplexer</div><div class="f-val">Data selector: many in → one out</div></div>
+        <div class="fact"><div class="f-label">Demultiplexer</div><div class="f-val">Data distributor: one in → many out</div></div>
+        <div class="fact"><div class="f-label">Select Line Rule</div><div class="f-val">n select lines address 2ⁿ channels</div></div>
+        <div class="fact"><div class="f-label">Decoder = DEMUX</div><div class="f-val">Add data via enable → same circuit</div></div>
+        <div class="fact"><div class="f-label">TDM</div><div class="f-val">Scan select lines → many signals share one channel</div></div>
+        <div class="fact"><div class="f-label">ADC Three Steps</div><div class="f-val">Sample → Quantize → Encode</div></div>
+        <div class="fact"><div class="f-label">Resolution</div><div class="f-val">n bits = 2ⁿ levels · step = range/2ⁿ</div></div>
+        <div class="fact"><div class="f-label">8-bit on 5 V</div><div class="f-val">256 levels ≈ 19.5 mV steps</div></div>
+        <div class="fact"><div class="f-label">Sampling Rate</div><div class="f-val">≥ 2× highest signal frequency</div></div>
+        <div class="fact"><div class="f-label">DAC</div><div class="f-val">Binary code → proportional analog output</div></div>
+        <div class="fact"><div class="f-label">DAC Output</div><div class="f-val">Staircase → low-pass filter smooths it</div></div>
+        <div class="fact"><div class="f-label">Classic Chips</div><div class="f-val">74148 encoder · 74138 decoder · 74151 MUX</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Test your understanding with ten questions. Select your answers and click "Submit Answers" for your score and detailed feedback.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+      <div class="score-box" id="scoreBox"><div class="big">Score: 0 / 10</div><p>Please complete all questions to view your results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson06.html">← Lesson 6: Latches &amp; Flip-Flops</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 ELT 102 Home</a>
+  <a href="lesson08.html">Next: Lesson 8 →</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Lesson 7: Encoders, Decoders, Multiplexers &amp; A/D-D/A Converters<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ LAB ============ */
+var cv=document.getElementById('labCv'), cx=cv.getContext('2d');
+var mode='enc', frame=0;
+var encIn=[0,0,0,0,0,1,0,0]; // pad 5 pre-pressed for the round-trip demo
+var D=[0,0,0,0], S1=0, S0=0;
+
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('#modeSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  ['enc','mux','adc'].forEach(function(k){ document.getElementById('pan-'+k).classList.toggle('show',k===m); });
+}
+function encClear(){ encIn=[0,0,0,0,0,0,0,0]; }
+function togD(i){ D[i]^=1; var b=document.getElementById('md'+i); b.textContent='D'+i+' = '+D[i]; b.classList.toggle('on',D[i]===1); }
+function togS(which){
+  if(which===1){ S1^=1; } else { S0^=1; }
+  syncS();
+}
+function syncS(){
+  var b1=document.getElementById('ms1'), b0=document.getElementById('ms0');
+  b1.textContent='S1 = '+S1; b1.classList.toggle('on',S1===1);
+  b0.textContent='S0 = '+S0; b0.classList.toggle('on',S0===1);
+}
+
+/* helpers */
+function lamp(x,y,on,label,badFlag){
+  cx.fillStyle= badFlag? css('--red') : (on? css('--green') : css('--card-alt'));
+  cx.strokeStyle= badFlag? css('--red') : (on? css('--green-dark') : css('--border'));
+  cx.lineWidth=2;
+  cx.beginPath(); cx.arc(x,y,13,0,Math.PI*2); cx.fill(); cx.stroke();
+  cx.fillStyle= (on||badFlag)? '#fff' : css('--text-muted');
+  cx.font='bold 12px Arial'; cx.textAlign='center';
+  cx.fillText(on?'1':'0', x, y+4); cx.textAlign='left';
+  if(label){ cx.fillStyle=css('--text'); cx.font='10px Arial'; cx.fillText(label, x-10, y+27); }
+}
+function wire(x1,y1,x2,y2,on){
+  cx.strokeStyle= on? css('--green') : css('--text-muted');
+  cx.lineWidth= on? 3 : 1.6;
+  cx.beginPath(); cx.moveTo(x1,y1); cx.lineTo(x2,y2); cx.stroke();
+}
+
+/* ---- ENCODER/DECODER mode ---- */
+var padBoxes=[];
+function drawEnc(){
+  padBoxes=[];
+  var pri=document.getElementById('priChk').checked;
+  var active=[]; encIn.forEach(function(v,i){ if(v) active.push(i); });
+  var code=0, valid=active.length>0, conflict=false, winner=-1;
+  if(pri){ if(valid){ winner=Math.max.apply(null,active); code=winner; } }
+  else {
+    active.forEach(function(i){ code|=i; }); // OR-merge = garbage on multi-press
+    conflict = active.length>1;
+    if(active.length===1) winner=active[0];
+  }
+  var bits=[(code>>2)&1,(code>>1)&1,code&1];
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText('Encoder → code → Decoder round trip  (click the input pads)', 20, 26);
+  var y0=58, gap=44;
+  // input pads
+  for(var i=0;i<8;i++){
+    var y=y0+i*gap, on=encIn[i]===1;
+    cx.fillStyle= on? css('--green') : css('--card-alt');
+    cx.strokeStyle=css('--navy'); cx.lineWidth=2;
+    cx.beginPath(); cx.roundRect(24,y-15,52,30,7); cx.fill(); cx.stroke();
+    cx.fillStyle= on? '#fff' : css('--text-muted'); cx.font='bold 13px Courier New'; cx.textAlign='center';
+    cx.fillText('I'+i, 50, y+5); cx.textAlign='left';
+    padBoxes.push({x:24,y:y-15,w:52,h:30,i:i});
+    wire(76,y,150,y,on);
+  }
+  // encoder block
+  cx.fillStyle=css('--card'); cx.strokeStyle=css('--text'); cx.lineWidth=2.4;
+  cx.beginPath(); cx.rect(150,44,86,352); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 13px Arial'; cx.textAlign='center';
+  cx.fillText(pri?'PRIORITY':'ENCODER', 193, 216);
+  cx.fillText(pri?'ENCODER':'8 → 3', 193, 232); cx.textAlign='left';
+  // code lamps
+  var cxm=300;
+  ['Y2','Y1','Y0'].forEach(function(L,bi){
+    var y=170+bi*50;
+    wire(236,y,cxm-16,y,bits[bi]===1);
+    lamp(cxm,y,bits[bi]===1,L,conflict);
+  });
+  cx.fillStyle= conflict? css('--red') : css('--green-dark');
+  cx.font='bold 15px Courier New'; cx.textAlign='center';
+  cx.fillText('code = '+bits.join(''), cxm+2, 330);
+  if(pri){ cx.font='11px Arial'; cx.fillStyle= valid? css('--green-dark') : css('--text-muted'); cx.fillText('VALID = '+(valid?1:0), cxm+2, 348); }
+  if(conflict){ cx.font='bold 11px Arial'; cx.fillStyle=css('--red'); cx.fillText('⚠ multi-press merge!', cxm+2, 348); }
+  cx.textAlign='left';
+  // decoder block
+  cx.fillStyle=css('--card'); cx.strokeStyle=css('--text'); cx.lineWidth=2.4;
+  cx.beginPath(); cx.rect(372,44,86,352); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 13px Arial'; cx.textAlign='center';
+  cx.fillText('DECODER', 415, 216); cx.fillText('3 → 8', 415, 232); cx.textAlign='left';
+  ['','',''].forEach(function(_,bi){ wire(cxm+16,170+bi*50,372,170+bi*50,bits[bi]===1); });
+  // outputs
+  for(var o=0;o<8;o++){
+    var y2=y0+o*gap, hot=valid&&(o===code);
+    wire(458,y2,540,y2,hot);
+    lamp(556,y2,hot,'Y'+o, hot&&conflict);
+  }
+  // annotation
+  cx.fillStyle=css('--text-muted'); cx.font='11px Arial';
+  cx.fillText('keypad / sensors', 20, 418);
+  cx.fillText('binary code (3 wires replace 8)', 252, 418);
+  cx.fillText('one-of-8 select', 512, 418);
+  var read='Active input(s) : '+(active.length?active.join(', '):'none')+'<br>'+
+    'Code Y2Y1Y0 : <span class="'+(conflict?'r-off':'r-on')+'">'+bits.join('')+'</span> ('+code+')<br>'+
+    'Decoded output : '+(valid? '<span class="r-on">Y'+code+'</span>':'none')+'<br>'+
+    (pri? 'Priority mode : highest input wins · VALID='+(valid?1:0)
+        : (conflict? '<span class="r-off">Basic encoder: multiple inputs merge into a WRONG code</span>':'Basic mode: assumes one input at a time'));
+  document.getElementById('labRead').innerHTML=read;
+}
+
+/* ---- MUX/DEMUX mode ---- */
+function drawMux(){
+  if(document.getElementById('scanChk').checked && frame%45===0){
+    var sel=((S1<<1)|S0)+1; S1=(sel>>1)&1; S0=sel&1; syncS();
+  }
+  var sel=(S1<<1)|S0, data=D[sel];
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText('MUX → shared channel → DEMUX  (one wire carries the selected signal)', 20, 26);
+  var iy0=90, gap=70;
+  // MUX trapezoid
+  cx.fillStyle=css('--card'); cx.strokeStyle=css('--text'); cx.lineWidth=2.4;
+  cx.beginPath(); cx.moveTo(170,60); cx.lineTo(170,340); cx.lineTo(250,290); cx.lineTo(250,110); cx.closePath(); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 13px Arial'; cx.textAlign='center'; cx.fillText('MUX',210,205); cx.fillText('4→1',210,221); cx.textAlign='left';
+  for(var i=0;i<4;i++){
+    var y=iy0+i*gap, hot=(i===sel);
+    wire(70,y,170,y,D[i]===1);
+    cx.fillStyle= hot? css('--green') : css('--card-alt');
+    cx.strokeStyle= hot? css('--green-dark'):css('--navy'); cx.lineWidth=2;
+    cx.beginPath(); cx.roundRect(20,y-14,48,28,7); cx.fill(); cx.stroke();
+    cx.fillStyle= hot? '#fff':css('--text-muted'); cx.font='bold 12px Courier New'; cx.textAlign='center';
+    cx.fillText('D'+i+'='+D[i], 44, y+4); cx.textAlign='left';
+    if(hot){ cx.fillStyle=css('--green-dark'); cx.font='bold 11px Arial'; cx.fillText('◀ selected', 78, y-8); }
+  }
+  // channel
+  var chOn=data===1;
+  cx.strokeStyle= chOn? css('--green') : css('--text-muted'); cx.lineWidth= chOn?4:2;
+  cx.beginPath(); cx.moveTo(250,200); cx.lineTo(452,200); cx.stroke();
+  // moving data pulse
+  var px=250+((frame*3)%202);
+  cx.fillStyle= chOn? css('--green') : css('--text-muted');
+  cx.beginPath(); cx.arc(px,200,6,0,Math.PI*2); cx.fill();
+  cx.fillStyle=css('--text-muted'); cx.font='11px Arial'; cx.textAlign='center';
+  cx.fillText('ONE shared channel · value = '+data, 351, 182); cx.textAlign='left';
+  // DEMUX trapezoid
+  cx.fillStyle=css('--card'); cx.strokeStyle=css('--text'); cx.lineWidth=2.4;
+  cx.beginPath(); cx.moveTo(452,110); cx.lineTo(452,290); cx.lineTo(532,340); cx.lineTo(532,60); cx.closePath(); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 13px Arial'; cx.textAlign='center'; cx.fillText('DEMUX',492,205); cx.fillText('1→4',492,221); cx.textAlign='left';
+  for(var o=0;o<4;o++){
+    var y2=iy0+o*gap, hot2=(o===sel);
+    wire(532,y2,610,y2, hot2&&chOn);
+    lamp(628,y2, hot2&&data===1, 'Y'+o);
+    if(hot2){ cx.fillStyle=css('--green-dark'); cx.font='bold 11px Arial'; cx.fillText('◀ selected', 648, y2+4); }
+  }
+  // select bus
+  cx.strokeStyle=css('--amber'); cx.lineWidth=2; cx.setLineDash([5,4]);
+  cx.beginPath(); cx.moveTo(210,340); cx.lineTo(210,392); cx.lineTo(492,392); cx.lineTo(492,340); cx.stroke(); cx.setLineDash([]);
+  cx.fillStyle=css('--amber'); cx.font='bold 12px Courier New'; cx.textAlign='center';
+  cx.fillText('S1 S0 = '+S1+' '+S0+'  (synchronized select · channel '+sel+')', 351, 412); cx.textAlign='left';
+  document.getElementById('labRead').innerHTML=
+    'Select S1S0 : <span class="r-on">'+S1+S0+'</span> → channel '+sel+'<br>'+
+    'Data D'+sel+' = <span class="'+(data?'r-on':'r-bd')+'">'+data+'</span> on the shared wire<br>'+
+    'DEMUX output : Y'+sel+' = '+data+' (others 0)<br>'+
+    (document.getElementById('scanChk').checked? '<span class="r-on">AUTO-SCAN: time-division multiplexing</span>' : 'Steer S1/S0 to change the route');
+}
+
+/* ---- ADC/DAC mode ---- */
+function drawAdc(){
+  var n=parseInt(document.getElementById('bits').value);
+  var levels=Math.pow(2,n);
+  var interval=parseInt(document.getElementById('srate').value);
+  var recon=document.getElementById('reconChk').checked;
+  document.getElementById('bitsVal').textContent=n+' bit'+(n>1?'s':'')+' · '+levels+' levels';
+  document.getElementById('srVal').textContent=interval+' px';
+  var W=cv.width,H=cv.height, top=56, bot=H-64, mid=(top+bot)/2, amp=(bot-top)/2*0.88;
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText('ADC: sample + quantize ('+n+'-bit) → DAC staircase reconstruction', 20, 26);
+  // quant level gridlines
+  cx.strokeStyle='rgba(120,150,190,.25)'; cx.lineWidth=1;
+  for(var L=0;L<levels;L++){
+    var vy=bot-(L/(levels-1||1))*(bot-top);
+    cx.beginPath(); cx.moveTo(40,vy); cx.lineTo(W-16,vy); cx.stroke();
+  }
+  var ph=frame*0.006;
+  function sig(x){ return Math.sin((x/W)*2*Math.PI*2.3+ph)*0.8 + Math.sin((x/W)*2*Math.PI*4.6+ph*1.7)*0.18; }
+  function toY(v){ return mid - v*amp; }
+  // analog original
+  cx.strokeStyle='#7d8fa5'; cx.lineWidth=2; cx.beginPath();
+  for(var x=40;x<=W-16;x++){ var y=toY(sig(x)); x===40?cx.moveTo(x,y):cx.lineTo(x,y); }
+  cx.stroke();
+  // samples + quantized staircase
+  var codes=[];
+  var lastQY=null;
+  if(recon){ cx.strokeStyle=css('--green-dark'); cx.lineWidth=2.6; cx.beginPath(); }
+  for(var sx=40;sx<=W-16;sx+=interval){
+    var v=sig(sx);
+    var lvl=Math.round((v+1)/2*(levels-1)); lvl=Math.max(0,Math.min(levels-1,lvl));
+    codes.push(lvl);
+    var qv=(lvl/(levels-1||1))*2-1, qy=toY(qv);
+    if(recon){
+      if(lastQY===null) cx.moveTo(sx,qy);
+      else { cx.lineTo(sx,lastQY); cx.lineTo(sx,qy); }
+      lastQY=qy;
+    }
+    // sample dot
+    cx.fillStyle=css('--amber');
+    cx.beginPath(); cx.arc(sx,toY(v),4,0,Math.PI*2); cx.fill();
+  }
+  if(recon){ cx.lineTo(W-16,lastQY); cx.stroke(); }
+  // legend
+  cx.font='bold 11px Arial';
+  cx.fillStyle='#7d8fa5'; cx.fillText('— analog original', 46, H-40);
+  cx.fillStyle=css('--amber'); cx.fillText('● samples', 170, H-40);
+  cx.fillStyle=css('--green-dark'); cx.fillText('— DAC staircase ('+n+'-bit)', 250, H-40);
+  // first few codes
+  cx.fillStyle=css('--text'); cx.font='12px Courier New';
+  var show=codes.slice(0,6).map(function(c){ return c.toString(2).padStart(n,'0'); }).join(' ');
+  cx.fillText('first codes: '+show+' …', 46, H-18);
+  var step=5/levels;
+  document.getElementById('labRead').innerHTML=
+    'Resolution : <span class="r-on">'+n+' bits = '+levels+' levels</span><br>'+
+    'Step size (5 V range) : '+(step>=0.001? (step*1000).toFixed(1)+' mV' : step.toFixed(4)+' V')+'<br>'+
+    'Samples across screen : '+codes.length+'<br>'+
+    'Quantization error ≤ ½ step — '+(n<=2?'<span class="r-off">very coarse!</span>': n>=5?'<span class="r-on">fine reconstruction</span>':'<span class="r-bd">visible steps</span>');
+}
+
+function draw(){
+  cx.fillStyle=css('--card'); cx.fillRect(0,0,cv.width,cv.height);
+  if(mode==='enc') drawEnc();
+  else if(mode==='mux') drawMux();
+  else drawAdc();
+  frame++;
+  requestAnimationFrame(draw);
+}
+cv.addEventListener('click', function(ev){
+  if(mode!=='enc') return;
+  var r=cv.getBoundingClientRect();
+  var x=(ev.clientX-r.left)*cv.width/r.width, y=(ev.clientY-r.top)*cv.height/r.height;
+  padBoxes.forEach(function(c){ if(x>=c.x&&x<=c.x+c.w&&y>=c.y&&y<=c.y+c.h) encIn[c.i]^=1; });
+});
+if(!cx.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    this.moveTo(x+r,y); this.arcTo(x+w,y,x+w,y+h,r); this.arcTo(x+w,y+h,x,y+h,r);
+    this.arcTo(x,y+h,x,y,r); this.arcTo(x,y,x+w,y,r); this.closePath(); return this;
+  };
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:"Input line 5 (only) is active on an 8-to-3 encoder. What appears at the output?",
+  o:["00000101 — all eight bits.","101 — the 3-bit binary code for 5.","Line 5 passes straight through.","111 — all outputs go high."],
+  a:1, e:"An encoder compresses one active line into its binary name: I5 active → Y2Y1Y0 = 101. Eight wires of information travel on three — press pad 5 in the Lab and watch it happen."},
+ {q:"What problem does a PRIORITY encoder solve that a basic encoder cannot?",
+  o:["It works at higher clock speeds.","When multiple inputs are active simultaneously, it encodes only the highest-priority input (and often raises a valid flag) instead of merging codes into garbage.","It needs fewer output bits.","It eliminates the need for a decoder."],
+  a:1, e:"A basic encoder's OR gates merge simultaneous inputs into a wrong code — press 3 and 4 in the Lab and the outputs merge 011|100 = 111, claiming input 7 was pressed when it never was. The priority version arbitrates: highest active input wins — which is why keypads and interrupt controllers always use it."},
+ {q:"A 3-to-8 decoder receives input 101₂ with EN=1. What do the outputs do?",
+  o:["Outputs Y1 and Y5 both activate.","Output Y5 activates; all other seven outputs stay inactive.","All outputs show 101.","Nothing — decoders need a clock."],
+  a:1, e:"A decoder activates exactly one of 2ᴺ lines: the one whose number matches the input code. Y5 = A2·A1̅·A0·EN — one AND gate per output, each decoding its own address. With EN=0, ALL outputs stay quiet."},
+ {q:"What is memory address decoding, the classic decoder application?",
+  o:["Converting memory contents to decimal.","The address bus drives decoders whose outputs are chip-select lines, so exactly one memory chip responds to each address range.","Encrypting RAM contents.","Refreshing DRAM cells."],
+  a:1, e:"The processor puts an address on the bus; decoders translate the upper address bits into one active chip-select. The enable inputs let decoders cascade to carve up large address spaces — millions of locations, one responder."},
+ {q:"How many select lines does a 16-to-1 multiplexer require?",
+  o:["16","8","4 — since 2⁴ = 16 inputs can be addressed.","2"],
+  a:2, e:"n select lines address 2ⁿ channels — Lesson 5's place value applied to routing. 16 inputs → 4 select lines; 8 inputs → 3; 32 → 5."},
+ {q:"What is the functional difference between a multiplexer and a demultiplexer?",
+  o:["MUX is analog; DEMUX is digital.","A MUX selects one of many inputs onto a single output; a DEMUX distributes a single input to one of many outputs — mirror images.","A DEMUX is just a faster MUX.","MUX stores data; DEMUX erases it."],
+  a:1, e:"Selector vs. distributor: many→one vs. one→many, both steered by select lines. Face them across one shared channel and you have a complete data-transmission link."},
+ {q:"Why can a 74HC138 be sold as BOTH a '3-to-8 decoder' and a '1-of-8 demultiplexer'?",
+  o:["Marketing only — they are unrelated functions.","Feeding a data stream into a decoder's enable input turns it into a DEMUX: the code selects the output, the data flows to it. Same circuit, two roles.","It contains two separate circuits.","Because it has 8 pins."],
+  a:1, e:"A decoder activates one addressed output; route data through the enable and that data appears on the addressed output — which is precisely demultiplexing. One silicon layout, two catalog names."},
+ {q:"List the three steps an ADC performs, in order.",
+  o:["Filter, amplify, invert.","Sample the analog input, quantize each sample to the nearest of 2ⁿ levels, encode each level as a binary code.","Encode, sample, transmit.","Toggle, hold, reset."],
+  a:1, e:"Sample (snapshot the moving waveform at regular instants) → quantize (round to a discrete level — the quantization error is the price of digital) → encode (output the level's binary code). Resolution and sampling rate together set fidelity."},
+ {q:"An 8-bit ADC operates over a 5 V range. How many levels does it resolve, and what is the step size?",
+  o:["8 levels of 625 mV.","256 levels of about 19.5 mV — since 2⁸ = 256 and 5 V / 256 ≈ 0.0195 V.","65,536 levels of 76 µV.","100 levels of 50 mV."],
+  a:1, e:"n bits → 2ⁿ levels; step = range/2ⁿ. 2⁸ = 256, and 5/256 ≈ 19.5 mV. Each added bit doubles the levels and halves the step — watch the Lab staircase sharpen as you slide from 1 to 6 bits."},
+ {q:"A DAC's raw output is a staircase waveform. Why, and what is done about it?",
+  o:["The DAC is broken; staircases indicate failure.","The output holds each converted value until the next code arrives, creating steps; a low-pass filter smooths the staircase into a continuous signal.","Staircases are required by digital audio standards.","The steps are removed by adding more select lines."],
+  a:1, e:"Reconstruction is sample-and-hold by nature: one level per code, held for one sample period. The low-pass filter (an op-amp circuit from Lesson 4) removes the step edges, completing the return trip to the analog world — the final stage of every audio output."}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt" id="q'+qi+'o'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'"><strong>Explanation:</strong> '+item.e+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0, answered=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name=q'+qi+']:checked');
+    for(var oi=0;oi<4;oi++){ document.getElementById('q'+qi+'o'+oi).classList.remove('correct','incorrect'); }
+    if(sel){
+      answered++;
+      var v=parseInt(sel.value);
+      if(v===item.a){ score++; document.getElementById('q'+qi+'o'+v).classList.add('correct'); }
+      else{ document.getElementById('q'+qi+'o'+v).classList.add('incorrect'); document.getElementById('q'+qi+'o'+item.a).classList.add('correct'); }
+      document.getElementById('ex'+qi).classList.add('show');
+    }
+  });
+  var box=document.getElementById('scoreBox');
+  if(answered<QUIZ.length){
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>You have answered '+answered+' of 10 questions. Complete all questions for a full evaluation.</p>';
+  } else {
+    var msg = score>=9 ? '🏆 Outstanding — you can route, encode, and convert with the best of them!'
+            : score>=7 ? '✅ Solid work. Review the missed explanations, then verify each behavior in the Conversion &amp; Routing Lab.'
+            : score>=5 ? '📘 Getting there. Revisit the Decoders and ADC tabs, then retake the quiz.'
+            : '🔁 Review the full lesson and complete all six guided Lab explorations before retaking this check.';
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>'+msg+'</p>';
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* init */
+syncS();
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
