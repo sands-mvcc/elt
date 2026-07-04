@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Lesson 8: Oscillators, Timers &amp; Counters</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td.inv{color:var(--red);font-weight:bold;}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SYMBOL LIBRARY ============ */
+.symgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+.symcard{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:14px;text-align:center;}
+.symcard svg{width:100%;max-width:190px;height:120px;stroke:var(--text);fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}
+.symcard svg .lead{stroke:var(--navy);}
+.symcard svg .bub{fill:var(--card);}
+.symcard svg text{stroke:none;fill:var(--text);font-family:'Courier New',monospace;font-size:14px;font-weight:bold;}
+.symcard svg text.pin{fill:var(--green-dark);font-family:'Arial Narrow',Arial,sans-serif;font-size:12px;}
+.symcard .sname{font-weight:bold;color:var(--navy);margin-top:4px;}
+[data-theme="dark"] .symcard .sname{color:#8ab6ff;}
+.symcard .suse{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--text-muted);line-height:1.4;margin-top:4px;}
+.symcard table.tt{margin:8px auto 0;border-collapse:collapse;font-family:'Courier New',monospace;font-size:.72rem;}
+.symcard table.tt th{background:var(--navy);color:#fff;padding:2px 8px;font-weight:normal;}
+[data-theme="dark"] .symcard table.tt th{background:#1a3a68;}
+.symcard table.tt td{border:1px solid var(--border);padding:2px 8px;}
+.symcard table.tt td.one{color:var(--green-dark);font-weight:bold;}
+.symcard table.tt td.bad{color:var(--red);font-weight:bold;}
+
+/* ============ LAB ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;cursor:pointer;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.readout .r-bd{color:#a86e00;font-weight:bold;}
+[data-theme="dark"] .readout .r-bd{color:var(--amber);}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+.g-btn.on{background:var(--green);font-weight:bold;}
+.toggle-row{display:flex;align-items:center;gap:10px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.92rem;font-weight:bold;color:var(--navy);margin-bottom:12px;}
+.toggle-row input{accent-color:var(--green);width:18px;height:18px;cursor:pointer;}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;} .tab-pane{padding:20px 16px;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Lesson 8 of 8</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lesson08.html">Lesson 8</a> &nbsp;›&nbsp;
+  Oscillators, Timers &amp; Counters
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 3 · Digital Foundations · Capstone</span>
+  <h1>Oscillators, Timers &amp; Counters</h1>
+  <p class="sub">The circuits that give digital systems a heartbeat and a memory of time: oscillators generate the clock, timers shape precise intervals, and counters — built from Lesson 6's flip-flops — count edges into binary, BCD, up/down, and Johnson sequences.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 Hours Study</span>
+    <span>📋 9 Core Topics</span>
+    <span>📐 Symbol Library (6 circuits)</span>
+    <span>📈 555 Timer Scope + 4-Counter Lab</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lesson, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Explain</strong> how an oscillator sustains a repeating waveform without an input signal, and distinguish RC relaxation oscillators from crystal oscillators by stability and application.</li>
+      <li><strong>Analyze</strong> 555 timer astable operation — the capacitor cycling between ⅓ and ⅔ V<sub>CC</sub> — and calculate frequency with f = 1.44 / ((R₁+2R₂)C).</li>
+      <li><strong>Calculate</strong> monostable (one-shot) pulse width using T = 1.1·R·C and identify applications for triggered timing pulses.</li>
+      <li><strong>Describe</strong> how a quartz crystal plus a flip-flop divider chain produces precision clocks, from wristwatches to microprocessors.</li>
+      <li><strong>Distinguish</strong> asynchronous (ripple) counters from synchronous counters, and explain modulus as the number of states a counter cycles through.</li>
+      <li><strong>Trace</strong> a 4-bit binary counter through its 16 states, reading each output as a divide-by-2ⁿ frequency divider.</li>
+      <li><strong>Explain</strong> how a BCD (decade) counter resets at ten, and how cascaded decades drive multi-digit displays through Lesson 7's decoders.</li>
+      <li><strong>Analyze</strong> up/down counter direction control and Johnson (twisted-ring) counter operation, including its 2n-state sequence and glitch-free decoding.</li>
+      <li><strong>Verify</strong> every circuit hands-on in the embedded 555 Timer Scope and Counter Lab, connecting oscillator → clock → counter into one working timing chain.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS (collapsed) ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition.</p>
+
+      <div class="cat-label">Oscillators</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Oscillator</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A circuit that generates a repeating waveform with <strong>no input signal</strong> — positive feedback plus a timing element sustains the oscillation. Every clocked system in Lessons 6–7 assumed one exists; this lesson builds it.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Astable Operation</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>"No stable state": the output continuously flips between HIGH and LOW on its own. Contrast with Lesson 6's <em>bistable</em> (two stable states) and the timer's <em>monostable</em> (one stable state) — the three siblings of multivibrator circuits.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Relaxation Oscillator</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An oscillator that charges a capacitor toward one threshold, snaps, discharges toward another, snaps back — over and over. The 555 astable is the classic example: RC charging (Lesson 2's time constants) plus comparator thresholds (Lesson 4).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Crystal Oscillator</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An oscillator disciplined by a quartz crystal's mechanical resonance — stable to parts per million, versus a few percent for RC circuits. The 32.768 kHz watch crystal and every microprocessor clock source belong to this family.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Period &amp; Frequency</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Period T is the time of one complete cycle; frequency f = 1/T is cycles per second (Hz). A 1 kHz clock has a 1 ms period. The two are one fact wearing two units.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Duty Cycle</div><div class="cat">Oscillators</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The percentage of each period the output spends HIGH. A perfect square wave is 50%. The basic 555 astable always exceeds 50% because the capacitor charges through two resistors but discharges through one.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Timers</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">555 Timer</div><div class="cat">Timers</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The most-manufactured IC in history — two comparators, a resistor divider setting ⅓ and ⅔ V<sub>CC</sub> thresholds, an SR latch (Lesson 6!), and a discharge transistor. Wire it two ways and it's an oscillator or a precision one-shot.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Monostable (One-Shot)</div><div class="cat">Timers</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>One stable state: the output rests LOW until triggered, produces exactly <strong>one pulse of width T = 1.1·R·C</strong>, then returns to rest. Used for debounce delays, precise strobe pulses, and timeout intervals.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Threshold &amp; Trigger</div><div class="cat">Timers</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The 555's two comparator inputs: <strong>Trigger</strong> fires the internal latch when the capacitor falls below ⅓ V<sub>CC</sub>; <strong>Threshold</strong> resets it when the capacitor rises above ⅔ V<sub>CC</sub>. The sawtooth bouncing between them is visible live in the Lab.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">RC Time Constant (τ)</div><div class="cat">Timers</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>τ = R·C, the natural clock of every timing circuit: a capacitor charges to ~63% of its target in one τ. All 555 math is disguised time constants — bigger R or C, slower everything, in exact proportion.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Counters</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A register of flip-flops that steps through a fixed sequence of states, one step per clock edge. Lesson 6's toggle behavior, organized: the outputs read as a number that increments with every pulse counted.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Modulus (MOD)</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The number of unique states a counter cycles through before repeating. Four flip-flops give up to MOD-16 (0–15); a decade counter is MOD-10; a 4-bit Johnson counter is MOD-8. Modulus also equals the frequency division ratio.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple (Asynchronous) Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Each flip-flop is clocked by the <em>previous stage's output</em> — the count "ripples" down the chain. Minimal wiring, but stage delays accumulate, so high-speed or glitch-sensitive designs use synchronous counters instead.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Synchronous Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Every flip-flop shares the <strong>same clock</strong>; gate logic decides which stages toggle each edge. All outputs change together — no ripple delay, no decoding glitches. The 74163 is the classic packaged example.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">BCD (Decade) Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A MOD-10 counter: counts 0–9, then reset logic detects state 1010₂ and forces a return to 0000. One decade per decimal digit — cascade them and feed Lesson 7's BCD-to-seven-segment decoders to build any numeric display.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Up/Down Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A counter with a direction control: count up on one setting, down on the other (some versions use separate up/down clock inputs). The natural fit wherever a quantity both rises and falls — position, inventory, people in a room.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Johnson (Twisted-Ring) Counter</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A shift register whose <strong>inverted</strong> last output feeds back to its input. n flip-flops give 2n states (4 FFs → 8 states) in a walking-bit pattern where only one bit changes per clock — so decoded outputs are glitch-free.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Terminal Count / Carry Out</div><div class="cat">Counters</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The output that pulses when a counter reaches its final state (15 for MOD-16, 9 for a decade). It clocks the next counter in a cascade — how single digits become odometers, frequency counters, and digital clocks.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SYMBOL LIBRARY ================= -->
+<section id="symbols">
+  <h2 class="sec-title">📐 Circuit Symbol &amp; Diagram Library</h2>
+  <p>The timing family at a glance: the 555 in its two personalities, the quartz crystal's distinctive symbol, and the three counter architectures — read where the clock enters (rippling stage-to-stage versus shared by all) and where the feedback goes (Johnson's twist) to identify each on sight.</p>
+  <div class="symgrid">
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="555 timer astable circuit block">
+        <rect x="70" y="24" width="58" height="76" rx="4"/>
+        <text x="82" y="66" class="pin">555</text>
+        <path class="comp" d="M46,14 l4,-5 5,10 5,-10 5,10 4,-5"/>
+        <line class="lead" x1="40" y1="9" x2="46" y2="9"/><line class="lead" x1="69" y1="9" x2="76" y2="9"/><line class="lead" x1="76" y1="9" x2="76" y2="24"/>
+        <path class="comp" d="M46,44 l4,-5 5,10 5,-10 5,10 4,-5"/>
+        <line class="lead" x1="40" y1="39" x2="46" y2="39"/><line class="lead" x1="69" y1="39" x2="70" y2="39"/>
+        <line class="comp" x1="34" y1="70" x2="54" y2="70"/><line class="comp" x1="38" y1="76" x2="50" y2="76"/>
+        <line class="lead" x1="44" y1="52" x2="44" y2="70"/><line class="lead" x1="44" y1="39" x2="44" y2="52"/><line class="lead" x1="44" y1="52" x2="70" y2="52"/>
+        <line class="lead" x1="128" y1="56" x2="164" y2="56"/>
+        <text class="pin" x="150" y="50">OUT</text>
+        <text class="pin" x="24" y="9">R1</text><text class="pin" x="24" y="39">R2</text><text class="pin" x="18" y="80">C</text>
+      </svg>
+      <div class="sname">555 Astable</div>
+      <div class="suse">Free-running oscillator · C bounces between ⅓ and ⅔ V<sub>CC</sub></div>
+      <table class="tt"><tr><th colspan="2">f = 1.44 / ((R₁+2R₂)·C)</th></tr>
+      <tr><td>Duty</td><td class="one">(R₁+R₂)/(R₁+2R₂)</td></tr>
+      <tr><td>Always</td><td>&gt; 50% HIGH</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="555 timer monostable one-shot block">
+        <rect x="70" y="24" width="58" height="76" rx="4"/>
+        <text x="82" y="66" class="pin">555</text>
+        <line class="lead" x1="24" y1="46" x2="70" y2="46"/>
+        <path class="lead" d="M30,58 h10 v-12 h8 v12 h10" />
+        <text class="pin" x="18" y="40">TRIG ⏷</text>
+        <line class="lead" x1="128" y1="56" x2="140" y2="56"/>
+        <path class="lead" d="M140,66 h8 v-20 h18 v20 h8"/>
+        <text class="pin" x="142" y="42">one pulse</text>
+        <text class="pin" x="76" y="112">T = 1.1·R·C</text>
+      </svg>
+      <div class="sname">555 Monostable</div>
+      <div class="suse">One-shot: trigger in → single clean pulse out, then back to rest</div>
+      <table class="tt"><tr><th>R·C</th><th>Pulse T</th></tr>
+      <tr><td>10kΩ·10µF</td><td class="one">0.11 s</td></tr>
+      <tr><td>100kΩ·100µF</td><td class="one">11 s</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="Quartz crystal oscillator symbol with divider chain">
+        <line class="lead" x1="20" y1="50" x2="52" y2="50"/>
+        <line x1="52" y1="34" x2="52" y2="66"/>
+        <rect x="58" y="32" width="16" height="36"/>
+        <line x1="80" y1="34" x2="80" y2="66"/>
+        <line class="lead" x1="80" y1="50" x2="112" y2="50"/>
+        <text class="pin" x="40" y="86">XTAL 32.768 kHz</text>
+        <rect x="112" y="36" width="28" height="28" rx="3"/><text class="pin" x="118" y="54">÷2</text>
+        <line class="lead" x1="140" y1="50" x2="148" y2="50"/>
+        <rect x="148" y="36" width="28" height="28" rx="3"/><text class="pin" x="152" y="54">…15</text>
+        <text class="pin" x="120" y="86">15 T flip-flops → 1 Hz</text>
+      </svg>
+      <div class="sname">Crystal + Divider Chain</div>
+      <div class="suse">Quartz precision ÷ 2¹⁵ = one perfect second (Lesson 6's T FFs)</div>
+      <table class="tt"><tr><th>Source</th><th>Stability</th></tr>
+      <tr><td>RC (555)</td><td>~few %</td></tr>
+      <tr><td>Crystal</td><td class="one">parts per million</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="4-bit ripple counter chain of T flip-flops">
+        <rect x="14" y="40" width="34" height="40" rx="3"/><polyline points="14,64 22,70 14,76" transform="translate(0,-6)"/>
+        <rect x="58" y="40" width="34" height="40" rx="3"/><polyline points="58,64 66,70 58,76" transform="translate(0,-6)"/>
+        <rect x="102" y="40" width="34" height="40" rx="3"/><polyline points="102,64 110,70 102,76" transform="translate(0,-6)"/>
+        <rect x="146" y="40" width="34" height="40" rx="3"/><polyline points="146,64 154,70 146,76" transform="translate(0,-6)"/>
+        <line class="lead" x1="2" y1="64" x2="14" y2="64"/>
+        <line class="lead" x1="48" y1="52" x2="58" y2="64"/>
+        <line class="lead" x1="92" y1="52" x2="102" y2="64"/>
+        <line class="lead" x1="136" y1="52" x2="146" y2="64"/>
+        <text class="pin" x="22" y="34">Q0</text><text class="pin" x="66" y="34">Q1</text><text class="pin" x="110" y="34">Q2</text><text class="pin" x="154" y="34">Q3</text>
+        <text class="pin" x="2" y="56">CLK</text>
+        <text class="pin" x="30" y="104">each Q clocks the next stage</text>
+      </svg>
+      <div class="sname">Ripple Counter (4-bit)</div>
+      <div class="suse">Asynchronous: count ripples down the chain · Q0=÷2 … Q3=÷16</div>
+      <table class="tt"><tr><th>FFs</th><th>MOD</th><th>Counts</th></tr>
+      <tr><td>4</td><td class="one">16</td><td>0–15</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="Synchronous counter block symbol">
+        <rect x="52" y="20" width="86" height="80" rx="4"/>
+        <line class="lead" x1="16" y1="44" x2="52" y2="44"/>
+        <polyline points="52,58 64,66 52,74"/>
+        <line class="lead" x1="16" y1="66" x2="52" y2="66"/>
+        <line class="lead" x1="138" y1="32" x2="170" y2="32"/><line class="lead" x1="138" y1="52" x2="170" y2="52"/>
+        <line class="lead" x1="138" y1="72" x2="170" y2="72"/><line class="lead" x1="138" y1="92" x2="170" y2="92"/>
+        <text class="pin" x="58" y="48">EN</text><text class="pin" x="70" y="70">CLK</text>
+        <text class="pin" x="100" y="48">Q0-Q3</text>
+        <text class="pin" x="58" y="92">CTR ÷16</text>
+        <text class="pin" x="146" y="108">+ carry out (TC)</text>
+      </svg>
+      <div class="sname">Synchronous Counter</div>
+      <div class="suse">One shared clock, all outputs change together · 74163 class</div>
+      <table class="tt"><tr><th>Type</th><th>Delay</th></tr>
+      <tr><td>Ripple</td><td>accumulates</td></tr>
+      <tr><td>Sync</td><td class="one">one FF delay</td></tr></table>
+    </div>
+
+    <div class="symcard">
+      <svg viewBox="0 0 190 120" role="img" aria-label="Johnson twisted ring counter diagram">
+        <rect x="18" y="36" width="30" height="36" rx="3"/>
+        <rect x="58" y="36" width="30" height="36" rx="3"/>
+        <rect x="98" y="36" width="30" height="36" rx="3"/>
+        <rect x="138" y="36" width="30" height="36" rx="3"/>
+        <line class="lead" x1="48" y1="54" x2="58" y2="54"/>
+        <line class="lead" x1="88" y1="54" x2="98" y2="54"/>
+        <line class="lead" x1="128" y1="54" x2="138" y2="54"/>
+        <line class="lead" x1="168" y1="54" x2="180" y2="54"/>
+        <line class="lead" x1="180" y1="54" x2="180" y2="94"/>
+        <line class="lead" x1="180" y1="94" x2="8" y2="94"/>
+        <line class="lead" x1="8" y1="94" x2="8" y2="54"/>
+        <circle class="bub" cx="12" cy="54" r="5"/>
+        <line class="lead" x1="17" y1="54" x2="18" y2="54"/>
+        <text class="pin" x="26" y="30">Q0</text><text class="pin" x="66" y="30">Q1</text><text class="pin" x="106" y="30">Q2</text><text class="pin" x="146" y="30">Q3</text>
+        <text class="pin" x="52" y="110">Q&#773;3 feeds back to input — the "twist"</text>
+      </svg>
+      <div class="sname">Johnson (Twisted-Ring)</div>
+      <div class="suse">Shift register + inverted feedback · 2n states, one bit changes per clock</div>
+      <table class="tt"><tr><th>4 FFs</th><th>Sequence</th></tr>
+      <tr><td colspan="2" class="one">0000→0001→0011→0111→1111→1110→1100→1000→…</td></tr></table>
+    </div>
+
+  </div>
+  <div class="sim-links" style="margin-top:18px;">
+    <a class="sim-chip" href="#timelab">📈 Run every circuit in the Timing &amp; Counting Lab</a>
+    <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt102/gates.html" target="_blank" rel="noopener">↩ Review: Logic Gates Simulator</a>
+    <a class="sim-chip alt" href="https://sands-mvcc.github.io/elt102/binary.html" target="_blank" rel="noopener">↩ Review: Binary Numbers Simulator</a>
+  </div>
+</section>
+
+<!-- ================= CORE CONTENT ================= -->
+<section id="content">
+  <h2 class="sec-title">Core Lesson Content</h2>
+  <div class="tabs" id="tabBar">
+    <button class="tab-btn active" onclick="showTab(0,this)">1. Intro</button>
+    <button class="tab-btn" onclick="showTab(1,this)">2. Oscillators</button>
+    <button class="tab-btn" onclick="showTab(2,this)">3. 555 Astable</button>
+    <button class="tab-btn" onclick="showTab(3,this)">4. 555 Monostable</button>
+    <button class="tab-btn" onclick="showTab(4,this)">5. Crystals &amp; Clocks</button>
+    <button class="tab-btn" onclick="showTab(5,this)">6. Counter Fundamentals</button>
+    <button class="tab-btn" onclick="showTab(6,this)">7. Binary &amp; BCD Counters</button>
+    <button class="tab-btn" onclick="showTab(7,this)">8. Up/Down Counters</button>
+    <button class="tab-btn" onclick="showTab(8,this)">9. Johnson Counters &amp; Applications</button>
+  </div>
+
+  <!-- TAB 1 -->
+  <div class="tab-pane show">
+    <h3>Giving Digital Systems a Heartbeat</h3>
+    <p>Lessons 6 and 7 kept saying "on the clock edge" — but where do clock edges come from? This capstone lesson completes the picture with the timing chain every digital system contains:</p>
+    <ol class="styled">
+      <li><strong>Oscillators</strong> generate the repeating waveform — the raw heartbeat — with no input signal at all.</li>
+      <li><strong>Timers</strong> shape precise intervals from that behavior: a pulse exactly this wide, a delay exactly that long.</li>
+      <li><strong>Counters</strong> — flip-flops from Lesson 6, organized — count the edges into numbers, divide frequencies, and sequence events.</li>
+    </ol>
+    <div class="formula">Oscillator → clock edges → counters count them → decoders (L7) display them<br>A digital clock, a frequency counter, and a stopwatch are all this one chain.</div>
+    <div class="callout co-pro">
+      <div class="co-title">💡 The Whole Course in One Circuit</div>
+      A 555 timer is a resistor-capacitor charging circuit (Lesson 2's time constants), watched by two comparators (Lesson 4), driving an SR latch (Lesson 6), whose output clocks counters (this lesson) that feed display decoders (Lesson 7). Every device on the chip's die is something you've already mastered — this lesson just connects them into <em>time</em>.
+    </div>
+    <h4>Try It Live</h4>
+    <div class="sim-links">
+      <a class="sim-chip" href="#timelab">📈 Timing &amp; Counting Lab (below)</a>
+      <a class="sim-chip alt" href="lesson07.html">↩ Lesson 7: Encoders, Decoders &amp; Converters</a>
+    </div>
+  </div>
+
+  <!-- TAB 2 -->
+  <div class="tab-pane">
+    <h3>Oscillators: Output Without Input</h3>
+    <p>Every amplifier in Lesson 4 needed an input signal. An <strong>oscillator</strong> needs none — it manufactures its own repeating waveform from two ingredients:</p>
+    <ul class="styled">
+      <li><strong>Positive feedback:</strong> a portion of the output returned in-phase to the input, reinforcing any change until the circuit swings rail to rail (the same positive feedback that made Lesson 4's Schmitt trigger snap).</li>
+      <li><strong>A timing element:</strong> something that delays the swing-back — an RC network, an LC tank, or a quartz crystal — setting the period of the resulting oscillation.</li>
+    </ul>
+    <h4>The Relaxation Oscillator</h4>
+    <p>The workhorse pattern for digital clocks: a capacitor charges toward a threshold, a comparator snaps the output, the capacitor discharges toward a second threshold, and the comparator snaps back. Charge, snap, discharge, snap — forever. The output is a square wave (perfect for clocking logic) and the capacitor voltage is a sawtooth bouncing between the two thresholds — both waveforms are drawn live in the Lab's 555 mode.</p>
+    <h4>The Multivibrator Family</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Circuit</th><th>Stable States</th><th>Behavior</th><th>You Met It In</th></tr>
+      <tr><td><strong>Bistable</strong></td><td>Two</td><td>Holds either state until commanded — a latch/flip-flop</td><td>Lesson 6</td></tr>
+      <tr><td><strong>Monostable</strong></td><td>One</td><td>Rests until triggered, emits one timed pulse, returns to rest</td><td>Tab 4</td></tr>
+      <tr><td><strong>Astable</strong></td><td>None</td><td>Flips continuously on its own — an oscillator</td><td>Tab 3</td></tr>
+    </table></div>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      "How many stable states?" is the classifier: bi = 2, mono = 1, a = none. The prefix answers the exam question by itself.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: watch charge-snap-discharge-snap in the 555 scope</a></div>
+  </div>
+
+  <!-- TAB 3 -->
+  <div class="tab-pane">
+    <h3>The 555 Timer in Astable Mode</h3>
+    <p>The 555 — billions manufactured yearly since 1972 — packages the relaxation oscillator into eight pins. Inside: a resistor divider creating <strong>⅓ and ⅔ V<sub>CC</sub> reference points</strong>, two comparators watching them, an SR latch, and a discharge transistor. In astable wiring, external parts R₁, R₂, and C set the tempo:</p>
+    <ol class="styled">
+      <li>C charges toward V<sub>CC</sub> <strong>through R₁ + R₂</strong>; output is HIGH.</li>
+      <li>C reaches ⅔ V<sub>CC</sub> → threshold comparator resets the latch → output LOW, discharge transistor opens a path.</li>
+      <li>C discharges <strong>through R₂ only</strong> toward ground.</li>
+      <li>C falls to ⅓ V<sub>CC</sub> → trigger comparator sets the latch → output HIGH — back to step 1, forever.</li>
+    </ol>
+    <div class="formula">f = 1.44 / ((R₁ + 2R₂)·C)&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;Duty = (R₁+R₂)/(R₁+2R₂)<br>Example: R₁=10 kΩ, R₂=47 kΩ, C=10 µF → f = 1.44/(104k × 10µ) ≈ 1.4 Hz, duty ≈ 55%</div>
+    <div class="callout co-warn">
+      <div class="co-title">⚠️ Watch Out: Duty Cycle Is Always Above 50%</div>
+      Charging runs through <em>two</em> resistors, discharging through <em>one</em> — so HIGH time always exceeds LOW time in the basic circuit. Need a true 50% square wave? Make R₂ ≫ R₁ (approaches 50%), add a diode across R₂, or simply divide the output by 2 with a T flip-flop — Lesson 6's trick, which delivers a perfect 50% regardless.
+    </div>
+    <h4>Applications</h4>
+    <p>LED flashers and tone generators, clock sources for counters where a few percent of drift is fine, PWM foundations, and — historically — half the hobby-electronics projects ever published.</p>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: 555 mode — drag R₁, R₂, C and verify the formula live</a></div>
+  </div>
+
+  <!-- TAB 4 -->
+  <div class="tab-pane">
+    <h3>The 555 Timer in Monostable Mode: The One-Shot</h3>
+    <p>Rewire the same chip and it becomes a precision pulse-maker with <strong>one stable state</strong>: output LOW, capacitor held empty. Then:</p>
+    <ol class="styled">
+      <li>A falling edge on the <strong>trigger</strong> input (below ⅓ V<sub>CC</sub>) sets the latch — output snaps HIGH.</li>
+      <li>C charges through R toward V<sub>CC</sub>.</li>
+      <li>When C reaches ⅔ V<sub>CC</sub>, the threshold comparator resets the latch — output returns LOW and C is discharged, ready for the next trigger.</li>
+    </ol>
+    <div class="formula">Pulse width:&nbsp;&nbsp;T = 1.1 · R · C&nbsp;&nbsp;&nbsp;(time to charge from 0 to ⅔ V<sub>CC</sub> ≈ 1.1 time constants)<br>Example: R = 100 kΩ, C = 10 µF → T = 1.1 × 1.0 s = 1.1 seconds — regardless of how long the trigger lasts</div>
+    <p>That last clause is the magic: a sloppy, bouncing, variable-length input produces one clean, exactly-timed output pulse. The one-shot is a <em>pulse standardizer</em>.</p>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Switch debouncing:</strong> a bouncing pushbutton (dozens of edges) becomes one clean pulse — solving the very problem Lesson 6's SR latch debouncer addressed, with adjustable timing.</li>
+      <li><strong>Timed intervals:</strong> darkroom timers, delay-off lighting, watchdog timeouts, missing-pulse detectors.</li>
+      <li><strong>Pulse-width standardization</strong> ahead of counters — guaranteeing every counted event has identical width.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Quiz Tip</div>
+      Two formulas carry this chip: astable f = 1.44/((R₁+2R₂)C), monostable T = 1.1RC. Anchor them by remembering <em>which mode has two resistors</em> — the oscillator charges through two, the one-shot through one.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: switch to Monostable and fire the trigger button</a></div>
+  </div>
+
+  <!-- TAB 5 -->
+  <div class="tab-pane">
+    <h3>Crystal Oscillators and System Clocks</h3>
+    <p>RC oscillators drift — resistor tolerance, capacitor aging, and temperature swing the 555's frequency by a few percent. Fine for a blinking LED; catastrophic for a watch (a 1% error is ~14 minutes per day). Precision timing uses <strong>quartz</strong>:</p>
+    <ul class="styled">
+      <li><strong>The piezoelectric bargain:</strong> squeeze quartz and it makes a voltage; apply a voltage and it flexes. Cut a crystal to size and it rings at one mechanical resonant frequency with extraordinary purity — an electrically-accessible tuning fork.</li>
+      <li><strong>In the feedback loop:</strong> replace the RC timing network with the crystal and the oscillator locks to the crystal's resonance — stable to <strong>parts per million</strong> (seconds per month, not minutes per day).</li>
+      <li><strong>The magic number 32,768:</strong> watch crystals are cut for 32,768 Hz = 2¹⁵ Hz, so a chain of fifteen T flip-flops (Lesson 6's divide-by-2, fifteen times) delivers exactly 1 Hz. Every quartz watch on Earth is this circuit.</li>
+    </ul>
+    <div class="formula">32,768 Hz → ÷2¹⁵ (fifteen toggle stages) → 1.000 Hz → drives the seconds counter</div>
+    <h4>Clock Distribution in Real Systems</h4>
+    <p>A microprocessor board typically runs one crystal oscillator, then uses dividers (counters!) and multipliers to derive every internal clock — CPU, memory, peripherals — from that single disciplined source. When a technician sees timing chaos across a whole board, the crystal and its oscillator circuit are the first suspects: one part, every symptom.</p>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Design Trade Summary</div>
+      555/RC: cheap, adjustable, drifty — use where "about right" is right. Crystal: fixed-frequency, ppm-stable — use wherever time is money, data, or law (clocks, communications, instrumentation).
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: Counter mode — watch Q0–Q3 divide the clock by 2, 4, 8, 16</a></div>
+  </div>
+
+  <!-- TAB 6 -->
+  <div class="tab-pane">
+    <h3>Counter Fundamentals</h3>
+    <p>A <strong>counter</strong> is Lesson 6's payoff: flip-flops arranged so their collective state steps through a fixed sequence, one step per clock edge. Read the outputs as a binary number (Lesson 5) and the circuit literally counts the pulses it has received.</p>
+    <h4>Modulus: A Counter's Size</h4>
+    <div class="formula">MOD = number of unique states before the sequence repeats<br>n flip-flops → up to 2ⁿ states&nbsp;&nbsp;·&nbsp;&nbsp;4 FFs → MOD-16 (counts 0–15)&nbsp;&nbsp;·&nbsp;&nbsp;MOD also = frequency division ratio</div>
+    <h4>Asynchronous (Ripple) vs. Synchronous</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Feature</th><th>Ripple (Asynchronous)</th><th>Synchronous</th></tr>
+      <tr><td><strong>Clocking</strong></td><td>Only stage 0 gets the clock; each Q clocks the next stage</td><td>Every flip-flop shares the same clock</td></tr>
+      <tr><td><strong>Wiring</strong></td><td>Minimal — T flip-flops holding hands</td><td>Extra gating decides which stages toggle</td></tr>
+      <tr><td><strong>Speed/glitches</strong></td><td>Delays accumulate down the chain; outputs change at slightly different times (decoding glitches)</td><td>All outputs change together — one flip-flop delay total</td></tr>
+      <tr><td><strong>Use</strong></td><td>Frequency division, slow counting, minimal parts</td><td>High-speed counting, decoded outputs, packaged MSI counters (74163)</td></tr>
+    </table></div>
+    <p>The ripple counter's charm is its honesty: it's <em>nothing but</em> the T flip-flop divide-by-2 from Lesson 6, chained. Q0 toggles every clock (÷2), Q1 toggles every Q0 cycle (÷4), Q2 (÷8), Q3 (÷16) — and read together, Q3Q2Q1Q0 is the count in binary. Counting and frequency division are the <strong>same circuit viewed two ways</strong>.</p>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 See Both Views at Once</div>
+      In the Lab's Counter mode, the LED row shows the <em>number</em> view while the timing lanes below show the <em>divider</em> view — same flip-flops, same instant. Count the CLK-lane edges between Q3 edges: sixteen.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: 4-bit counter with live timing lanes</a></div>
+  </div>
+
+  <!-- TAB 7 -->
+  <div class="tab-pane">
+    <h3>The 4-Bit Binary Counter and the BCD (Decade) Counter</h3>
+    <h4>4-Bit Binary: MOD-16</h4>
+    <p>Four flip-flops count 0000 through 1111 — decimal 0 to 15 — then roll over to 0000 and raise a <strong>terminal count / carry out</strong> pulse. That carry clocks the next 4-bit counter in a cascade, exactly as a car odometer's units wheel nudges the tens wheel. Applications: event counting, address generation, timers, and ÷16 prescalers.</p>
+    <h4>BCD (Decade): MOD-10</h4>
+    <p>Humans read decimal, so display systems count in <strong>binary-coded decimal</strong>: each digit gets its own MOD-10 counter that counts 0–9 and resets. The construction trick:</p>
+    <div class="formula">Count normally 0000→1001 (0–9). The moment state 1010₂ (10) appears,<br>a NAND gate watching Q3·Q1 fires the asynchronous CLEAR → counter snaps to 0000.</div>
+    <ul class="styled">
+      <li><strong>The reset is Lesson 5 logic:</strong> 1010 is the first state where Q3 AND Q1 are both high — two gate inputs detect it. The illegal state exists for only nanoseconds.</li>
+      <li><strong>Cascading decades:</strong> each counter's rollover clocks the next digit. Three decades + three of Lesson 7's BCD-to-seven-segment decoders = a 0–999 display. This is the anatomy of every digital multimeter, frequency counter, and scoreboard.</li>
+      <li><strong>Division by ten:</strong> a decade counter is also a ÷10 prescaler — chain them for ÷100, ÷1000 in instrumentation.</li>
+    </ul>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Watch the Reset Happen</div>
+      In the Lab, select <strong>BCD</strong> and single-step the clock past 9. The count snaps to 0 — and the decimal readout confirms the counter never displays 10 through 15. Compare against Binary mode, which sails on to 15 before rolling over.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: step BCD past 9 and catch the reset</a></div>
+  </div>
+
+  <!-- TAB 8 -->
+  <div class="tab-pane">
+    <h3>The Up/Down Counter</h3>
+    <p>Some quantities only grow — elapsed seconds, total visitors. Others rise <em>and</em> fall — items in stock, position on a track, people in a room. The <strong>up/down counter</strong> serves the second kind with a direction control:</p>
+    <ul class="styled">
+      <li><strong>Direction input:</strong> one control line selects the sequence — UP counts 0,1,2,…,15,0 while DOWN counts 15,14,…,0,15. Internally, gating chooses whether each stage watches the previous stage's Q (up) or Q&#773; (down).</li>
+      <li><strong>Dual-clock versions:</strong> some parts (the classic 74193) instead provide separate count-up and count-down clock inputs — pulse whichever event occurred.</li>
+      <li><strong>Borrow and carry:</strong> full up/down parts provide both a carry (rolled over the top) and a borrow (rolled under zero) for cascading in either direction.</li>
+    </ul>
+    <h4>Applications</h4>
+    <ul class="styled">
+      <li><strong>Position tracking:</strong> a motor encoder pulses up for one direction of rotation, down for the other — the count <em>is</em> the position. CNC machines and 3D printers live on this.</li>
+      <li><strong>Inventory and occupancy:</strong> entry sensor counts up, exit sensor counts down — parking garages ("SPACES: 47") and room-occupancy limits.</li>
+      <li><strong>Elevator floor indicators, kitchen-timer countdowns,</strong> and any set-then-count-to-zero interval logic.</li>
+    </ul>
+    <div class="callout co-tip">
+      <div class="co-title">🎯 Lab Check</div>
+      In Counter mode, select <strong>Up/Down</strong>, count up to 5, flip the direction button, and step again: 4, 3, 2… Watch the timing lanes reverse their pattern — Q0 still toggles every edge, but the higher bits now step down through the codes.
+    </div>
+    <div class="sim-links"><a class="sim-chip" href="#timelab">📈 Lab: flip DIR mid-count and watch the sequence reverse</a></div>
+  </div>
+
+  <!-- TAB 9 -->
+  <div class="tab-pane">
+    <h3>The Johnson (Twisted-Ring) Counter — and the Family Portrait</h3>
+    <h4>Construction: One Twist</h4>
+    <p>Take Lesson 6's shift register and close the loop — feed the last output back to the input and data circulates in a <strong>ring</strong>. Now add the twist: feed back the <strong>inverted</strong> last output (Q&#773;₃ → D₀). That single inversion creates the Johnson counter:</p>
+    <div class="formula">4 flip-flops, sequence (Q3Q2Q1Q0):&nbsp;0000 → 0001 → 0011 → 0111 → 1111 → 1110 → 1100 → 1000 → 0000 …<br>A wave of 1s washes in, then washes out — <strong>2n states from n flip-flops</strong> (here MOD-8)</div>
+    <h4>Why Designers Love It</h4>
+    <ul class="styled">
+      <li><strong>Only one bit changes per clock.</strong> Decode any state with a single 2-input AND gate, and the decoded outputs are <strong>glitch-free</strong> — no ripple-counter race conditions, no momentary false states.</li>
+      <li><strong>2n states</strong> beats the plain ring counter's n states for the same hardware (a 4-FF ring gives only 4 states; the twist doubles it).</li>
+      <li><strong>Self-clocking sequencing:</strong> the overlapping waveforms are naturally phase-shifted square waves — historically used for quadrature signals and switch-tail sequencers.</li>
+    </ul>
+    <p><strong>Applications:</strong> state sequencers and phase generators (stepper-motor drive waveforms), the classic 4017-style LED chasers (a Johnson counter plus decoding), and glitch-free timing-signal generation.</p>
+    <h4>The Counter Family, Side by Side</h4>
+    <div class="tbl-wrap"><table class="data">
+      <tr><th>Counter</th><th>MOD (4 FFs)</th><th>Sequence Style</th><th>Signature Application</th></tr>
+      <tr><td><strong>4-bit binary</strong></td><td>16</td><td>Binary count 0–15</td><td>Event counting, ÷16, addressing</td></tr>
+      <tr><td><strong>BCD (decade)</strong></td><td>10</td><td>0–9, reset at 1010</td><td>Digit displays, ÷10 prescalers</td></tr>
+      <tr><td><strong>Up/Down</strong></td><td>16 (both ways)</td><td>Direction-controlled</td><td>Position, inventory, occupancy</td></tr>
+      <tr><td><strong>Johnson</strong></td><td>8 (= 2n)</td><td>Walking-1s wave, one bit changes per clock</td><td>Glitch-free sequencing, phase generation</td></tr>
+    </table></div>
+    <div class="callout co-pro">
+      <div class="co-title">💡 Course Complete: The Full Signal Chain</div>
+      Semiconductors steered current (L1), supplies powered it (L2), transistors switched it (L3), op-amps refined it (L4), gates computed with it (L5), flip-flops remembered it (L6), routers and converters moved it (L7) — and now oscillators, timers, and counters give it <strong>time</strong>. From a doped silicon crystal to a working digital clock: that's ELT 102.
+    </div>
+    <div class="sim-links">
+      <a class="sim-chip" href="#timelab">📈 Lab: Johnson mode — watch the wave of 1s wash in and out</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TIMING & COUNTING LAB ================= -->
+<section id="timelab">
+  <h2 class="sec-title">📈 Timing &amp; Counting Lab</h2>
+  <p>Two instruments, one timing chain. <strong>555 Timer mode:</strong> a live scope showing the capacitor voltage sawing between the ⅓ and ⅔ V<sub>CC</sub> thresholds while the output squares off above it — drag R₁, R₂, and C and verify the frequency formula in real time, or switch to monostable and fire single pulses. <strong>Counter mode:</strong> all four counters from this lesson — 4-bit binary, BCD, up/down, and Johnson — with an LED state row, decimal readout, and the scrolling timing lanes that reveal frequency division as it happens.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="labCv" width="720" height="440" role="img" aria-label="Timing lab canvas showing 555 timer waveforms or counter states with timing diagram depending on selected mode"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Lab Mode</label>
+          <div class="seg" id="modeSeg">
+            <button class="active" onclick="setMode('t555',this)">555 Timer</button>
+            <button onclick="setMode('ctr',this)">Counter Lab</button>
+          </div>
+        </div>
+
+        <div class="mode-panel show" id="pan-t555">
+          <div class="ctrl">
+            <label>Configuration</label>
+            <div class="seg" id="cfg555">
+              <button class="active" onclick="set555('ast',this)">Astable</button>
+              <button onclick="set555('mono',this)">Monostable</button>
+            </div>
+          </div>
+          <div class="ctrl"><label>R₁ <span class="val" id="r1Val">10 kΩ</span></label>
+            <input type="range" id="r1" min="1" max="100" step="1" value="10"></div>
+          <div class="ctrl" id="r2Ctrl"><label>R₂ <span class="val" id="r2Val">47 kΩ</span></label>
+            <input type="range" id="r2" min="1" max="100" step="1" value="47"></div>
+          <div class="ctrl"><label>C <span class="val" id="cVal">10 µF</span></label>
+            <input type="range" id="cap" min="1" max="100" step="1" value="10"></div>
+          <div class="g-btns" id="trigWrap" style="display:none;">
+            <button class="g-btn g-green" onclick="fireTrig()">Fire Trigger ⏷</button>
+          </div>
+        </div>
+
+        <div class="mode-panel" id="pan-ctr">
+          <div class="ctrl">
+            <label>Counter Type</label>
+            <div class="seg" id="ctrSeg">
+              <button class="active" onclick="setCtr('bin',this)">4-Bit Binary</button>
+              <button onclick="setCtr('bcd',this)">BCD</button>
+              <button onclick="setCtr('ud',this)">Up/Down</button>
+              <button onclick="setCtr('joh',this)">Johnson</button>
+            </div>
+          </div>
+          <div class="g-btns">
+            <button class="g-btn g-green" onclick="pulseClk()">Pulse Clock ⏶</button>
+            <button class="g-btn" id="dirBtn" onclick="togDir()" style="display:none;">DIR: UP ▲</button>
+            <button class="g-btn" onclick="rstCtr()">Reset</button>
+          </div>
+          <div class="toggle-row"><input type="checkbox" id="autoClk"> <span>Auto-clock (free-running)</span></div>
+        </div>
+
+        <div class="readout" id="labRead" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">💡 Guided Explorations</div>
+    <strong>1. Verify the formula:</strong> 555 astable, R₁=10k, R₂=47k, C=10µF — the readout should confirm ≈1.4 Hz. Halve C and watch frequency double: pure proportionality. <strong>2. The duty-cycle law:</strong> make R₁ huge and R₂ tiny — duty approaches 100%; reverse them — it approaches (but never reaches) 50%. <strong>3. One clean pulse:</strong> switch to Monostable and fire the trigger repeatedly — every pulse is identical width T = 1.1·R₁·C no matter how you mash the button. <strong>4. Two views of one circuit:</strong> Counter mode, 4-bit binary, auto-clock — read the LED row as a number while the lanes below show Q0–Q3 dividing by 2, 4, 8, 16. <strong>5. The decade reset:</strong> BCD mode, single-step past 9 — it snaps to 0, never showing 10–15. <strong>6. Reversal:</strong> Up/Down — count to 5, flip DIR, and watch the lanes' pattern mirror. <strong>7. The wave:</strong> Johnson mode, auto-clock — a wave of 1s washes across the LEDs and back, one bit changing per clock: 8 states from 4 flip-flops, glitch-free by construction.
+  </div>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="acc open" id="factsAcc">
+    <button class="acc-head" onclick="toggleAcc('factsAcc')">Key Facts Reference Box <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <div class="facts">
+        <div class="fact"><div class="f-label">Oscillator Recipe</div><div class="f-val">Positive feedback + timing element</div></div>
+        <div class="fact"><div class="f-label">Multivibrator Family</div><div class="f-val">Bistable 2 states · Mono 1 · Astable 0</div></div>
+        <div class="fact"><div class="f-label">555 Thresholds</div><div class="f-val">Trigger at ⅓ V<sub>CC</sub> · Threshold at ⅔ V<sub>CC</sub></div></div>
+        <div class="fact"><div class="f-label">555 Astable Frequency</div><div class="f-val">f = 1.44 / ((R₁+2R₂)·C)</div></div>
+        <div class="fact"><div class="f-label">555 Astable Duty</div><div class="f-val">(R₁+R₂)/(R₁+2R₂) — always &gt; 50%</div></div>
+        <div class="fact"><div class="f-label">555 Monostable Pulse</div><div class="f-val">T = 1.1 · R · C</div></div>
+        <div class="fact"><div class="f-label">RC vs Crystal Stability</div><div class="f-val">Few % vs parts per million</div></div>
+        <div class="fact"><div class="f-label">Watch Crystal</div><div class="f-val">32,768 Hz = 2¹⁵ → ÷2¹⁵ = 1 Hz</div></div>
+        <div class="fact"><div class="f-label">Modulus</div><div class="f-val">States before repeat = division ratio</div></div>
+        <div class="fact"><div class="f-label">n Flip-Flops</div><div class="f-val">Up to 2ⁿ states (4 FFs → MOD-16)</div></div>
+        <div class="fact"><div class="f-label">Ripple vs Synchronous</div><div class="f-val">Chained clocks vs one shared clock</div></div>
+        <div class="fact"><div class="f-label">4-Bit Binary Counter</div><div class="f-val">0–15 · Q0..Q3 = ÷2, ÷4, ÷8, ÷16</div></div>
+        <div class="fact"><div class="f-label">BCD Counter</div><div class="f-val">0–9, NAND detects 1010 → reset</div></div>
+        <div class="fact"><div class="f-label">Up/Down Counter</div><div class="f-val">Direction control · position &amp; inventory</div></div>
+        <div class="fact"><div class="f-label">Johnson Counter</div><div class="f-val">Inverted feedback · 2n states · 1 bit/clock</div></div>
+        <div class="fact"><div class="f-label">Cascading</div><div class="f-val">Carry out clocks the next digit/stage</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Test your understanding with ten questions. Select your answers and click "Submit Answers" for your score and detailed feedback.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Submit Answers</button>
+      <div class="score-box" id="scoreBox"><div class="big">Score: 0 / 10</div><p>Please complete all questions to view your results.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson07.html">← Lesson 7: Encoders, Decoders &amp; Converters</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏁 Course Complete — ELT 102 Home</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Lesson 8: Oscillators, Timers &amp; Counters<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ LAB ============ */
+var cv=document.getElementById('labCv'), cx=cv.getContext('2d');
+var mode='t555', frame=0;
+
+/* --- 555 state --- */
+var m555='ast', VCC=9, capV=0, out555=0, trigArm=false;
+var outHist=[], capHist=[]; var HLEN=560;
+function set555(m,btn){
+  m555=m; capV=0; out555= (m==='ast'?1:0); outHist=[]; capHist=[];
+  document.querySelectorAll('#cfg555 button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('r2Ctrl').style.display = m==='ast'?'block':'none';
+  document.getElementById('trigWrap').style.display = m==='mono'?'flex':'none';
+}
+function fireTrig(){ if(m555==='mono' && out555===0){ out555=1; capV=0; } }
+
+/* --- counter state --- */
+var ctr='bin', count=0, joh=[0,0,0,0], dirUp=true, edges=0;
+var clkPulse=0, prevClk=0;
+var lanes={CLK:[],Q0:[],Q1:[],Q2:[],Q3:[]};
+function setMode(m,btn){
+  mode=m;
+  document.querySelectorAll('#modeSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  ['t555','ctr'].forEach(function(k){ document.getElementById('pan-'+k).classList.toggle('show',k===m); });
+}
+function setCtr(c,btn){
+  ctr=c; rstCtr();
+  document.querySelectorAll('#ctrSeg button').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById('dirBtn').style.display = c==='ud'?'block':'none';
+}
+function rstCtr(){ count=0; joh=[0,0,0,0]; edges=0; Object.keys(lanes).forEach(function(k){lanes[k]=[];}); }
+function togDir(){ dirUp=!dirUp; document.getElementById('dirBtn').textContent='DIR: '+(dirUp?'UP ▲':'DOWN ▼'); }
+function pulseClk(){ clkPulse=14; }
+function bitsOf(){
+  if(ctr==='joh') return joh.slice(); // [Q0,Q1,Q2,Q3]
+  return [count&1,(count>>1)&1,(count>>2)&1,(count>>3)&1];
+}
+function stepCounter(){
+  edges++;
+  if(ctr==='bin') count=(count+1)%16;
+  else if(ctr==='bcd') count=(count+1)%10;
+  else if(ctr==='ud') count= dirUp? (count+1)%16 : (count+15)%16;
+  else { // johnson: shift Q0->Q1->Q2->Q3, new Q0 = NOT Q3
+    joh=[joh[3]^1, joh[0], joh[1], joh[2]];
+  }
+}
+
+/* --- drawing helpers --- */
+function led(x,y,on,label){
+  cx.fillStyle= on? css('--green') : css('--card-alt');
+  cx.strokeStyle= on? css('--green-dark') : css('--border'); cx.lineWidth=2;
+  cx.beginPath(); cx.arc(x,y,17,0,Math.PI*2); cx.fill(); cx.stroke();
+  cx.fillStyle= on? '#fff' : css('--text-muted');
+  cx.font='bold 14px Arial'; cx.textAlign='center';
+  cx.fillText(on?'1':'0',x,y+5);
+  cx.fillStyle=css('--text'); cx.font='11px Arial'; cx.fillText(label,x,y+34);
+  cx.textAlign='left';
+}
+
+/* --- 555 renderer --- */
+function draw555(){
+  var R1=parseInt(document.getElementById('r1').value);
+  var R2=parseInt(document.getElementById('r2').value);
+  var C=parseInt(document.getElementById('cap').value);
+  document.getElementById('r1Val').textContent=R1+' kΩ';
+  document.getElementById('r2Val').textContent=R2+' kΩ';
+  document.getElementById('cVal').textContent=C+' µF';
+  // simulate: dt scaled so mid-range settings give a pleasing few cycles on screen
+  var dt=0.0016; // seconds per frame (display timebase)
+  var steps=3;
+  for(var s=0;s<steps;s++){
+    if(m555==='ast'){
+      if(out555===1){
+        var tau=(R1+R2)*1e3*C*1e-6;
+        capV += (VCC-capV)*(1-Math.exp(-dt/tau));
+        if(capV>=VCC*2/3){ out555=0; }
+      } else {
+        var tau2=R2*1e3*C*1e-6;
+        capV += (0-capV)*(1-Math.exp(-dt/tau2));
+        if(capV<=VCC/3){ out555=1; }
+      }
+    } else { // monostable
+      if(out555===1){
+        var tau3=R1*1e3*C*1e-6;
+        capV += (VCC-capV)*(1-Math.exp(-dt/tau3));
+        if(capV>=VCC*2/3){ out555=0; capV=0; }
+      }
+    }
+  }
+  capHist.push(capV); outHist.push(out555);
+  if(capHist.length>HLEN){ capHist.shift(); outHist.shift(); }
+  // render
+  var W=cv.width,H=cv.height;
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText(m555==='ast'? '555 Astable — capacitor sawtooth + square output' : '555 Monostable — fire the trigger for one timed pulse', 20, 26);
+  var x0=60,x1=W-16;
+  // output lane (top)
+  var oHi=64,oLo=140;
+  cx.fillStyle=css('--text'); cx.font='bold 12px Courier New'; cx.fillText('OUT',14,(oHi+oLo)/2);
+  cx.strokeStyle=css('--green-dark'); cx.lineWidth=2.4; cx.beginPath();
+  var step=(x1-x0)/HLEN, ly=null;
+  outHist.forEach(function(v,i){
+    var x=x1-(outHist.length-1-i)*step, y=v?oHi:oLo;
+    if(ly===null){cx.moveTo(x,y);} else if(y!==ly){cx.lineTo(x,ly);cx.lineTo(x,y);} else cx.lineTo(x,y);
+    ly=y;
+  });
+  cx.stroke();
+  // cap lane (bottom): 0..VCC maps
+  var cTop=190,cBot=400;
+  function capY(v){ return cBot-(v/VCC)*(cBot-cTop); }
+  cx.fillStyle=css('--text'); cx.fillText('V(C)',12,(cTop+cBot)/2);
+  // threshold lines
+  [[VCC*2/3,'⅔ Vcc — THRESHOLD'],[VCC/3,'⅓ Vcc — TRIGGER']].forEach(function(t){
+    cx.strokeStyle=css('--amber'); cx.setLineDash([5,4]); cx.lineWidth=1.5;
+    cx.beginPath(); cx.moveTo(x0,capY(t[0])); cx.lineTo(x1,capY(t[0])); cx.stroke(); cx.setLineDash([]);
+    cx.fillStyle=css('--amber'); cx.font='10px Arial'; cx.fillText(t[1], x0+6, capY(t[0])-5);
+  });
+  cx.strokeStyle=css('--navy'); cx.lineWidth=2.4; cx.beginPath();
+  var first=true;
+  capHist.forEach(function(v,i){
+    var x=x1-(capHist.length-1-i)*step, y=capY(v);
+    first? cx.moveTo(x,y):cx.lineTo(x,y); first=false;
+  });
+  cx.stroke();
+  cx.fillStyle=css('--text-muted'); cx.font='10px Arial'; cx.fillText('time →', x1-40, cBot+18);
+  // readout
+  var read;
+  if(m555==='ast'){
+    var f=1.44/(((R1+2*R2)*1e3)*(C*1e-6));
+    var duty=(R1+R2)/(R1+2*R2)*100;
+    var T=1/f;
+    read='f = 1.44/((R₁+2R₂)C) = <span class="r-on">'+(f>=1? f.toFixed(2)+' Hz' : (f*1000).toFixed(0)+' mHz')+'</span><br>'+
+      'Period T = '+(T<1? (T*1000).toFixed(0)+' ms' : T.toFixed(2)+' s')+'<br>'+
+      'Duty cycle = <span class="r-bd">'+duty.toFixed(1)+'%</span> (always &gt; 50%)<br>'+
+      'V(C) now = '+capV.toFixed(2)+' V · OUT = '+out555;
+  } else {
+    var Tp=1.1*(R1*1e3)*(C*1e-6);
+    read='Pulse width T = 1.1·R₁·C = <span class="r-on">'+(Tp<1? (Tp*1000).toFixed(0)+' ms' : Tp.toFixed(2)+' s')+'</span><br>'+
+      'State : '+(out555? '<span class="r-on">PULSING (charging to ⅔ Vcc)</span>' : '<span class="r-bd">RESTING — fire the trigger</span>')+'<br>'+
+      'V(C) now = '+capV.toFixed(2)+' V<br>'+
+      'Every pulse is identical, however you trigger.';
+  }
+  document.getElementById('labRead').innerHTML=read;
+}
+
+/* --- counter renderer --- */
+function drawCtr(){
+  var clk = document.getElementById('autoClk').checked? ((frame%56)<28?1:0) : (clkPulse>0?1:0);
+  if(clk===1 && prevClk===0) stepCounter();
+  prevClk=clk;
+  if(clkPulse>0) clkPulse--;
+  var b=bitsOf(); // [Q0..Q3]
+  lanes.CLK.push(clk); lanes.Q0.push(b[0]); lanes.Q1.push(b[1]); lanes.Q2.push(b[2]); lanes.Q3.push(b[3]);
+  Object.keys(lanes).forEach(function(k){ if(lanes[k].length>HLEN) lanes[k].shift(); });
+  var W=cv.width;
+  var names={bin:'4-Bit Binary Counter (MOD-16)',bcd:'BCD / Decade Counter (MOD-10)',ud:'Up/Down Counter (MOD-16, '+(dirUp?'UP':'DOWN')+')',joh:'Johnson Counter (4 FF → 8 states)'};
+  cx.fillStyle=css('--text'); cx.font='bold 15px Georgia';
+  cx.fillText(names[ctr], 20, 26);
+  // LED row Q3..Q0
+  var lx=210;
+  led(lx,70,b[3]===1,'Q3'); led(lx+70,70,b[2]===1,'Q2'); led(lx+140,70,b[1]===1,'Q1'); led(lx+210,70,b[0]===1,'Q0');
+  // decimal
+  var val= ctr==='joh'? (joh[3]*8+joh[2]*4+joh[1]*2+joh[0]) : count;
+  cx.fillStyle=css('--navy'); cx.font='bold 40px Georgia'; cx.textAlign='center';
+  cx.fillText(ctr==='joh'? joh.slice().reverse().join('') : val, 560, 84);
+  cx.font='11px Arial'; cx.fillStyle=css('--text-muted');
+  cx.fillText(ctr==='joh'? 'state (Q3Q2Q1Q0)' : 'decimal count', 560, 102);
+  cx.textAlign='left';
+  // timing lanes
+  var lnames=['CLK','Q0','Q1','Q2','Q3'];
+  var x0=64,x1=W-16,y0=140,laneH=58;
+  var stepPx=(x1-x0)/HLEN;
+  lnames.forEach(function(L,li){
+    var top=y0+li*laneH, hi=top+8, lo=top+laneH-16;
+    cx.fillStyle=css('--text'); cx.font='bold 12px Courier New'; cx.fillText(L,16,(hi+lo)/2+4);
+    cx.strokeStyle=css('--border'); cx.lineWidth=1;
+    cx.beginPath(); cx.moveTo(x0,lo); cx.lineTo(x1,lo); cx.stroke();
+    var h=lanes[L]; if(h.length<2) return;
+    cx.strokeStyle= L==='CLK'? css('--amber') : css('--green-dark');
+    cx.lineWidth=2.2; cx.beginPath();
+    var ly=null;
+    h.forEach(function(v,i){
+      var x=x1-(h.length-1-i)*stepPx, y=v?hi:lo;
+      if(ly===null) cx.moveTo(x,y);
+      else if(y!==ly){ cx.lineTo(x,ly); cx.lineTo(x,y); }
+      else cx.lineTo(x,y);
+      ly=y;
+    });
+    cx.stroke();
+  });
+  var extra= ctr==='bin'? 'Q0=÷2 · Q1=÷4 · Q2=÷8 · Q3=÷16'
+           : ctr==='bcd'? 'Counts 0–9 then resets (1010 never shown)'
+           : ctr==='ud'? 'Direction: '+(dirUp?'UP ▲':'DOWN ▼')+' — toggle DIR mid-count'
+           : 'One bit changes per clock — glitch-free decoding';
+  document.getElementById('labRead').innerHTML=
+    'Counter : <span class="r-on">'+names[ctr]+'</span><br>'+
+    'State Q3Q2Q1Q0 : '+b[3]+''+b[2]+''+b[1]+''+b[0]+(ctr!=='joh'? ' = '+count : '')+'<br>'+
+    'Clock edges counted : '+edges+'<br>'+extra;
+}
+
+function draw(){
+  cx.fillStyle=css('--card'); cx.fillRect(0,0,cv.width,cv.height);
+  if(mode==='t555') draw555(); else drawCtr();
+  frame++;
+  requestAnimationFrame(draw);
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:"What two ingredients does every oscillator require to produce an output with no input signal?",
+  o:["Negative feedback and a large capacitor.","Positive feedback and a timing element (RC network, LC tank, or crystal).","A clock input and a counter.","Two comparators and a display."],
+  a:1, e:"Positive feedback reinforces any change until the output swings fully; the timing element delays the swing-back, setting the period. Remove either ingredient and the oscillation stops."},
+ {q:"How many stable states do astable, monostable, and bistable circuits have, respectively?",
+  o:["1, 2, 3","0, 1, 2 — astable never rests, monostable rests in one state, bistable rests in either of two.","2, 1, 0","They all have one stable state."],
+  a:1, e:"The prefix is the answer: a-stable = no stable state (oscillator), mono-stable = one (one-shot timer), bi-stable = two (Lesson 6's latches and flip-flops)."},
+ {q:"In a 555 astable circuit, between which two voltages does the capacitor continuously cycle?",
+  o:["0 V and V_CC.","⅓ V_CC and ⅔ V_CC — the trigger and threshold comparator levels set by the internal divider.","−V_CC and +V_CC.","0.7 V and 5 V."],
+  a:1, e:"The internal three-resistor divider fixes the two comparator references. The capacitor saws between them — charging through R₁+R₂ to ⅔ V_CC, discharging through R₂ to ⅓ V_CC — visible live in the Lab."},
+ {q:"Calculate the astable frequency for R₁ = 10 kΩ, R₂ = 47 kΩ, C = 10 µF.",
+  o:["14.4 Hz","≈1.4 Hz — f = 1.44/((10k + 94k) × 10 µF) = 1.44/1.04.","0.14 Hz","144 Hz"],
+  a:1, e:"f = 1.44/((R₁+2R₂)·C) = 1.44/((104×10³)(10×10⁻⁶)) = 1.44/1.04 ≈ 1.38 Hz. Set these exact values in the Lab and compare the readout."},
+ {q:"Why is the basic 555 astable's duty cycle always greater than 50%?",
+  o:["The output transistor is slow.","The capacitor charges through R₁+R₂ but discharges through R₂ alone, so the HIGH (charging) time always exceeds the LOW time.","The supply voltage is asymmetric.","Duty cycle is exactly 50% in all 555 circuits."],
+  a:1, e:"Two resistors up, one resistor down: charging is always slower than discharging. Fixes: R₂ ≫ R₁, a diode across R₂, or divide the output by 2 with a T flip-flop for a perfect square wave."},
+ {q:"A 555 monostable uses R = 100 kΩ and C = 10 µF. What pulse does a trigger produce?",
+  o:["A continuous square wave.","A single pulse of T = 1.1RC = 1.1 × (100k)(10µ) = 1.1 seconds, identical every time regardless of trigger duration.","A pulse whose width equals the trigger's width.","An 11-second pulse."],
+  a:1, e:"T = 1.1·R·C = 1.1 × 1.0 s = 1.1 s. The one-shot standardizes pulses: bouncy or held-down triggers all yield the same clean interval — mash the Lab's trigger button and confirm."},
+ {q:"Why do wristwatches use a 32,768 Hz crystal specifically?",
+  o:["It is the cheapest frequency to manufacture.","32,768 = 2¹⁵, so a chain of fifteen divide-by-2 flip-flop stages reduces it to exactly 1 Hz for the seconds counter.","Human hearing cannot detect it.","It matches the AC power line."],
+  a:1, e:"Fifteen of Lesson 6's T flip-flops, each halving the frequency: 32,768 ÷ 2¹⁵ = 1.000 Hz — quartz stability (parts per million) delivered as one perfect tick per second."},
+ {q:"What distinguishes a synchronous counter from a ripple (asynchronous) counter?",
+  o:["Synchronous counters can only count to 8.","In a synchronous counter every flip-flop shares the same clock so all outputs change together; in a ripple counter each stage is clocked by the previous stage's output, so delays accumulate down the chain.","Ripple counters need no flip-flops.","Synchronous counters cannot divide frequency."],
+  a:1, e:"Ripple: minimal wiring, accumulated delay, momentary false states during transitions. Synchronous: shared clock plus steering logic, one flip-flop delay total — the choice for speed and glitch-free decoding."},
+ {q:"How does a BCD (decade) counter achieve MOD-10 operation from four flip-flops?",
+  o:["It uses ten flip-flops.","It counts normally 0–9, and a NAND gate detecting state 1010₂ (Q3·Q1) immediately fires the clear input, snapping the counter back to 0000.","It skips even numbers.","It runs at one-tenth clock speed."],
+  a:1, e:"1010 is the first state with Q3 AND Q1 both high — two gate inputs detect it and reset the counter within nanoseconds, so the display never shows 10–15. Cascade decades + Lesson 7's seven-segment decoders = any digital readout."},
+ {q:"A 4-bit Johnson counter starts at 0000. What are its first four states, and how many states total does it cycle through?",
+  o:["0000→0001→0010→0011; 16 states.","0000→0001→0011→0111; 8 states total (2n for n flip-flops) — a wave of 1s shifts in, then shifts out.","0000→1111→0000; 2 states.","0000→1000→0100→0010; 4 states."],
+  a:1, e:"The inverted feedback (Q̄3→D0) marches 1s in from the right, then 0s: 0000, 0001, 0011, 0111, 1111, 1110, 1100, 1000, repeat — 2×4 = 8 states, only one bit changing per clock, which is why decoded Johnson outputs are glitch-free."}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt" id="q'+qi+'o'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'"><strong>Explanation:</strong> '+item.e+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0, answered=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name=q'+qi+']:checked');
+    for(var oi=0;oi<4;oi++){ document.getElementById('q'+qi+'o'+oi).classList.remove('correct','incorrect'); }
+    if(sel){
+      answered++;
+      var v=parseInt(sel.value);
+      if(v===item.a){ score++; document.getElementById('q'+qi+'o'+v).classList.add('correct'); }
+      else{ document.getElementById('q'+qi+'o'+v).classList.add('incorrect'); document.getElementById('q'+qi+'o'+item.a).classList.add('correct'); }
+      document.getElementById('ex'+qi).classList.add('show');
+    }
+  });
+  var box=document.getElementById('scoreBox');
+  if(answered<QUIZ.length){
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>You have answered '+answered+' of 10 questions. Complete all questions for a full evaluation.</p>';
+  } else {
+    var msg = score>=9 ? '🏆 Outstanding — oscillators to Johnson counters, the timing chain is yours. Course complete!'
+            : score>=7 ? '✅ Solid work. Review the missed explanations, then verify each circuit in the Timing &amp; Counting Lab.'
+            : score>=5 ? '📘 Getting there. Revisit the 555 and Counter Fundamentals tabs, then retake the quiz.'
+            : '🔁 Review the full lesson and complete all seven guided Lab explorations before retaking this check.';
+    box.innerHTML='<div class="big">Score: '+score+' / 10</div><p>'+msg+'</p>';
+  }
+  box.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* init */
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
