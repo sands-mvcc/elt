@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Hands-On Lab: Basic Diode Operation in Tinkercad</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td input{width:100%;min-width:90px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:.88rem;}
+table.data td input:focus{outline:2px solid var(--green);border-color:var(--green);}
+
+/* ============ STEP LIST ============ */
+.steps{counter-reset:step;list-style:none;margin:0 0 16px 0;}
+.steps li{counter-increment:step;position:relative;padding:0 0 18px 58px;margin-bottom:4px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;box-shadow:var(--shadow);}
+.steps li::after{content:'';position:absolute;left:18px;top:42px;bottom:0;width:2px;background:var(--border);}
+.steps li:last-child::after{display:none;}
+.steps li .step-title{font-weight:bold;color:var(--navy);display:block;margin-bottom:3px;}
+[data-theme="dark"] .steps li .step-title{color:#8ab6ff;}
+.steps.green li::before{background:var(--green);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;cursor:pointer;border:none;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SCHEMATIC FIGURE ============ */
+.fig{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin:20px 0;text-align:center;}
+.fig svg{width:100%;max-width:820px;height:auto;}
+.fig .fig-cap{font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;color:var(--text-muted);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;text-align:left;}
+.sch-wire{stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sch-comp{stroke:var(--navy);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sch-fill{fill:var(--navy);stroke:none;}
+.sch-lbl{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;fill:var(--text);}
+.sch-sub{font-family:'Arial Narrow',Arial,sans-serif;font-size:12.5px;fill:var(--text-muted);}
+.sch-meter{fill:var(--card-alt);stroke:var(--amber);stroke-width:2.4;}
+.sch-mlbl{font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;font-weight:bold;fill:#a86e00;}
+[data-theme="dark"] .sch-mlbl{fill:var(--amber);}
+.sch-green{stroke:var(--green);}
+.sch-red{stroke:var(--red);}
+
+/* ============ LAB (interactive) ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;}}
+@media print{.topbar,.crumbs,.theme-btn,.foot-nav,.submit-btn{display:none!important;} body{background:#fff;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Hands-On Tinkercad Lab</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lab-diode.html">Labs</a> &nbsp;›&nbsp;
+  Basic Diode Operation in Tinkercad
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 2 · Solid State Devices · Lab</span>
+  <h1>Basic Diode Operation: Forward &amp; Reverse Bias</h1>
+  <p class="sub">Build a diode test circuit in Autodesk Tinkercad Circuits, measure voltage and current in both bias directions, and prove for yourself that a diode is a one-way valve for current — conducting near 0.7 V forward, blocking completely in reverse.</p>
+  <div class="meta-chips">
+    <span>⏱ 60–90 Minutes</span>
+    <span>🖥 Tinkercad Circuits (Free)</span>
+    <span>🔧 4 Components · 3 Multimeters</span>
+    <span>📊 Data Tables + I-V Curve Explorer</span>
+    <span>✅ 6-Question Knowledge Check</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lab, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Construct</strong> a series diode-resistor circuit on a virtual breadboard in Tinkercad Circuits, correctly identifying the anode and cathode of a 1N4001 rectifier diode.</li>
+      <li><strong>Configure</strong> virtual multimeters as an ammeter (in series) and voltmeters (in parallel) to measure circuit current and component voltage drops.</li>
+      <li><strong>Measure</strong> the forward voltage drop of a silicon diode and verify that it remains near 0.6–0.7 V while the series resistor absorbs the remaining supply voltage.</li>
+      <li><strong>Demonstrate</strong> reverse-bias blocking by flipping the diode and confirming that current falls to 0 A and the full supply voltage appears across the diode.</li>
+      <li><strong>Apply</strong> Kirchhoff's Voltage Law and Ohm's Law to predict circuit current — <em>I = (V<sub>S</sub> − V<sub>F</sub>) / R</em> — and compare predictions against simulated measurements.</li>
+      <li><strong>Explain</strong> why a current-limiting resistor is required in every diode circuit, and predict what would happen without one.</li>
+      <li><strong>Interpret</strong> the diode I-V characteristic curve, locating the knee voltage, the forward-conduction region, and the reverse-blocking region.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition. Review these before you build.</p>
+
+      <div class="cat-label">The Diode</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">PN Junction Diode</div><div class="cat">The Diode</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A two-terminal semiconductor device formed where P-type and N-type material meet. It conducts current easily in one direction (anode → cathode) and blocks it in the other — electronics' one-way valve.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Anode &amp; Cathode</div><div class="cat">The Diode</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The diode's two terminals. The <strong>anode</strong> is the P-side (arrow in the schematic symbol); the <strong>cathode</strong> is the N-side (the bar, marked by the silver/gray band on the physical package). Conventional current flows anode → cathode.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">1N4001</div><div class="cat">The Diode</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The workhorse general-purpose silicon rectifier diode used in this lab: rated 1 A forward current and 50 V peak reverse voltage. Tinkercad's default diode models this part.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Barrier (Knee) Voltage</div><div class="cat">The Diode</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The minimum forward voltage needed to overcome the junction's depletion region — about <strong>0.7 V for silicon</strong> (0.3 V for germanium). Below the knee the diode barely conducts; above it, current rises steeply.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Bias Conditions</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Forward Bias</div><div class="cat">Bias Conditions</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Anode more positive than cathode. The depletion region collapses, the diode conducts, and it drops a nearly constant ~0.7 V regardless of current. The diode acts like a closed switch (plus a small voltage drop).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Reverse Bias</div><div class="cat">Bias Conditions</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Cathode more positive than anode. The depletion region widens, only a tiny leakage current flows (≈0 in Tinkercad), and the diode acts like an open switch — the <strong>entire supply voltage</strong> appears across it.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Reverse Breakdown</div><div class="cat">Bias Conditions</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>If reverse voltage exceeds the diode's rating (50 V for a 1N4001), the junction avalanches and conducts heavily — destructive for rectifiers, but exploited deliberately by Zener diodes for voltage regulation.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Current-Limiting Resistor</div><div class="cat">Bias Conditions</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The series resistor that sets circuit current once the diode is conducting. Because a forward-biased diode holds ~0.7 V almost no matter what, without a resistor the current would be limited only by the supply — destroying the diode.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Measurement</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ammeter (Series)</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A multimeter set to <strong>A</strong> mode measures current and must be wired <em>in series</em> — the circuit's current physically flows through the meter. In Tinkercad, break the circuit and insert the meter into the gap.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Voltmeter (Parallel)</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A multimeter set to <strong>V</strong> mode measures potential difference and connects <em>in parallel</em> — across the two terminals of the component under test, without breaking the circuit.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Negative Reading</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A voltmeter reads negative when its red lead sits at the <em>lower</em> potential. In the reverse-bias step, the meter across the diode reads <strong>−7.50 V</strong> — the magnitude is the full supply, and the sign tells you the polarity is reversed.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">KVL Check</div><div class="cat">Measurement</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Kirchhoff's Voltage Law: around any loop, the voltage drops must sum to the supply. In this lab: <strong>V<sub>S</sub> = V<sub>R</sub> + V<sub>D</sub></strong> in both bias directions — your built-in error detector for every measurement row.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT TINKERCAD ================= -->
+<section id="tinkercad">
+  <h2 class="sec-title">🖥 About the Simulation Tool: Tinkercad Circuits</h2>
+  <p><strong>Autodesk Tinkercad Circuits</strong> is a free, browser-based electronics simulator (no installation, runs on Chromebooks). You drag components from a parts panel onto a workspace, wire them on a virtual breadboard that behaves exactly like the real thing, and press <strong>Start Simulation</strong> to see live meter readings, glowing LEDs — and smoke effects if you overload a part. It is ideal for this lab because you can flip a diode around in two seconds and re-measure, something that reinforces the forward/reverse concept far faster than reading about it.</p>
+  <div class="callout co-pro">
+    <div class="co-title">Getting Set Up</div>
+    Go to <strong>tinkercad.com</strong> and sign in (use your class join link if your instructor provided one, or create a free personal account). From the dashboard choose <strong>Circuits → Create new Circuit</strong>. The parts panel is on the right; keep it set to <strong>Components: Basic</strong> for this lab.
+  </div>
+  <div class="callout co-tip">
+    <div class="co-title">Tinkercad Survival Skills</div>
+    <ul class="styled" style="margin-bottom:0;">
+      <li><strong>Rotate</strong> a selected part with the <em>R</em> key or the rotate icon — you will use this to flip the diode.</li>
+      <li><strong>Wire color</strong> is changeable from the toolbar after clicking a wire: use <span style="color:var(--red);font-weight:bold;">red</span> for +, black for −, green for measurement leads (matching this lab's figures).</li>
+      <li><strong>Component values</strong> (resistance, supply voltage, meter mode) are edited in the small inspector window that appears when you click a part <em>while simulation is stopped</em>.</li>
+      <li>Breadboard rows <strong>a–e</strong> and <strong>f–j</strong> are connected in vertical groups of five; the center trench isolates the two halves. The long <strong>+ / −</strong> rails run horizontally.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section id="materials">
+  <h2 class="sec-title">🔧 Virtual Parts List</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Qty</th><th>Component (Tinkercad name)</th><th>Setting</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>Breadboard (small)</td><td class="mono">—</td><td>Mounting platform for the resistor and diode</td></tr>
+    <tr><td>1</td><td>Power Supply</td><td class="mono">7.50 V / current limit 5 A</td><td>Adjustable DC source (bench-supply style)</td></tr>
+    <tr><td>1</td><td>Resistor</td><td class="mono">1 kΩ (brown-black-red)</td><td>Current-limiting resistor R1</td></tr>
+    <tr><td>1</td><td>Diode</td><td class="mono">1N4001</td><td>Device under test, D1 — gray band = cathode</td></tr>
+    <tr><td>3</td><td>Multimeter</td><td class="mono">1 × A mode, 2 × V mode</td><td>Ammeter (series) + voltmeters across R1 and D1</td></tr>
+    <tr><td>~8</td><td>Wires</td><td class="mono">red / black / green</td><td>Power, ground, and meter connections</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= CIRCUIT ILLUSTRATION ================= -->
+<section id="schematic">
+  <h2 class="sec-title">📐 The Circuit You Will Build</h2>
+  <p>The test circuit is a simple series loop: power supply → ammeter → resistor R1 → diode D1 → back to the supply. Two voltmeters watch R1 and D1 from the sidelines. The schematic below shows the <strong>forward-bias</strong> configuration; in Part 3 you will rotate D1 180° for reverse bias.</p>
+
+  <div class="fig">
+    <svg viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Schematic: 7.5 volt supply in series with ammeter, 1 kilohm resistor R1, and diode D1, with voltmeters across R1 and D1">
+      <!-- main loop wires -->
+      <path class="sch-wire" d="M 90 100 H 200"/>
+      <path class="sch-wire" d="M 280 100 H 330"/>
+      <path class="sch-wire" d="M 450 100 H 520"/>
+      <path class="sch-wire" d="M 580 100 H 750 V 280 H 90 V 100"/>
+      <!-- supply -->
+      <circle cx="90" cy="190" r="0" />
+      <rect x="40" y="150" width="100" height="80" rx="8" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="2.6"/>
+      <text class="sch-lbl" x="90" y="185" text-anchor="middle">7.50 V</text>
+      <text class="sch-sub" x="90" y="205" text-anchor="middle">DC Supply</text>
+      <path class="sch-wire" d="M 90 150 V 100"/>
+      <path class="sch-wire" d="M 90 230 V 280"/>
+      <text class="sch-lbl" x="105" y="130" fill="var(--red)">+</text>
+      <text class="sch-lbl" x="105" y="265">−</text>
+      <!-- ammeter -->
+      <circle cx="240" cy="100" r="40" class="sch-meter"/>
+      <text class="sch-lbl" x="240" y="108" text-anchor="middle">A</text>
+      <text class="sch-mlbl" x="240" y="52" text-anchor="middle">M1 · Ammeter (series)</text>
+      <!-- resistor R1 (zigzag) -->
+      <path class="sch-comp" d="M 330 100 l 12 -16 l 16 32 l 16 -32 l 16 32 l 16 -32 l 16 32 l 12 -16 h 16"/>
+      <text class="sch-lbl" x="390" y="66" text-anchor="middle">R1 = 1 kΩ</text>
+      <!-- diode D1 -->
+      <path class="sch-fill" d="M 520 78 L 520 122 L 558 100 Z"/>
+      <path class="sch-comp" d="M 558 78 V 122"/>
+      <text class="sch-lbl" x="548" y="60" text-anchor="middle">D1 · 1N4001</text>
+      <text class="sch-sub" x="516" y="142" text-anchor="middle">anode</text>
+      <text class="sch-sub" x="566" y="142" text-anchor="middle">cathode</text>
+      <!-- voltmeter across R1 -->
+      <circle cx="390" cy="215" r="36" class="sch-meter"/>
+      <text class="sch-lbl" x="390" y="223" text-anchor="middle">V</text>
+      <text class="sch-mlbl" x="390" y="273" text-anchor="middle">M2 · V across R1</text>
+      <path class="sch-wire sch-green" d="M 340 100 V 200 M 340 200 L 358 208" stroke-dasharray="5,4"/>
+      <path class="sch-wire sch-green" d="M 452 100 V 200 M 452 200 L 422 208" stroke-dasharray="5,4"/>
+      <!-- voltmeter across D1 -->
+      <circle cx="640" cy="200" r="36" class="sch-meter"/>
+      <text class="sch-lbl" x="640" y="208" text-anchor="middle">V</text>
+      <text class="sch-mlbl" x="640" y="258" text-anchor="middle">M3 · V across D1</text>
+      <path class="sch-wire sch-green" d="M 520 112 V 185 L 607 193" stroke-dasharray="5,4"/>
+      <path class="sch-wire sch-green" d="M 585 100 V 160 L 655 167" stroke-dasharray="5,4"/>
+      <!-- current arrow -->
+      <path class="sch-wire sch-red" d="M 130 320 H 210" marker-end="url(#arrH)"/>
+      <defs><marker id="arrH" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L9,3 L0,6 Z" fill="var(--red)"/></marker></defs>
+      <text class="sch-sub" x="230" y="325">Conventional current I (forward bias): supply + → A → R1 → D1 anode → cathode → supply −</text>
+    </svg>
+    <div class="fig-cap"><strong>Figure 1 — Diode test circuit (forward bias).</strong> The ammeter M1 is <em>in the loop</em>; voltmeters M2 and M3 attach across R1 and D1 with green leads. On the Tinkercad breadboard, R1 bridges the center trench around column 10 and D1 around column 17, with the supply feeding the bottom + and − rails — exactly as shown in the lab screenshots.</div>
+  </div>
+
+  <h3>Expected Readings at a Glance</h3>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Configuration</th><th class="mono">M1 Current</th><th class="mono">M2 V(R1)</th><th class="mono">M3 V(D1)</th><th>Diode acts like…</th></tr>
+    <tr><td><strong>Forward bias</strong> (band toward supply −)</td><td class="mono">≈ 6.8 mA</td><td class="mono">≈ 6.8 V</td><td class="mono">≈ +0.7 V</td><td>Closed switch + 0.7 V drop</td></tr>
+    <tr><td><strong>Reverse bias</strong> (band toward supply +)</td><td class="mono">0.00 A</td><td class="mono">0.00 V</td><td class="mono">−7.50 V</td><td>Open switch — blocks everything</td></tr>
+  </table></div>
+  <div class="callout co-warn">
+    <div class="co-title">Predict Before You Measure</div>
+    Before running each simulation step, write down what you <em>expect</em> each meter to read and why. Prediction-first measurement is what turns a wiring exercise into learning — and your KVL check (V<sub>S</sub> = V<sub>R</sub> + V<sub>D</sub>) must balance in <strong>both</strong> tables.
+  </div>
+</section>
+
+<!-- ================= PROCEDURE ================= -->
+<section id="procedure">
+  <h2 class="sec-title">🛠 Step-by-Step Procedure</h2>
+
+  <h3>Part 1 — Build the Circuit (≈20 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Create the workspace.</span> Sign in at tinkercad.com, open <strong>Circuits → Create new Circuit</strong>, and rename it <em>"LastName – Diode Lab"</em> using the title field in the upper-left.</li>
+    <li><span class="step-title">Place the breadboard.</span> In the parts panel search for <strong>"breadboard"</strong> and drag a <em>Breadboard Small</em> to the center of the workspace.</li>
+    <li><span class="step-title">Add the power supply.</span> Search <strong>"power supply"</strong> and place it to the left of the breadboard. Click it and set the voltage to <strong>7.50 V</strong> and the current limit to <strong>5 A</strong> in the inspector. Wire its red (+) terminal to the bottom <strong>+ rail</strong> and its black (−) terminal to the bottom <strong>− rail</strong> of the breadboard.</li>
+    <li><span class="step-title">Place resistor R1.</span> Drag a <strong>Resistor</strong> so it straddles the center trench at column 10 (one lead in row <em>e</em>, the other in row <em>f</em>). Click it and set the value to <strong>1 kΩ</strong>. Verify the color bands read brown-black-red.</li>
+    <li><span class="step-title">Place diode D1.</span> Search <strong>"diode"</strong> and place the 1N4001 straddling the trench at column 17. Orient it so the <strong>gray cathode band faces down</strong> (toward the − rail side). Hover over each lead — Tinkercad labels them <em>anode</em> and <em>cathode</em>. This is your forward-bias orientation.</li>
+    <li><span class="step-title">Wire the loop.</span> (a) Red wire from the <strong>+ rail</strong> up to column 10, row <em>a</em> (bottom lead of R1). (b) The top lead of R1 (row <em>f</em>, col 10) will connect to the ammeter in the next step. (c) Green wire from the diode's top lead (row <em>f</em>, col 17) toward the ammeter. (d) Black wire from the diode's bottom lead (row <em>a</em>, col 17) down to the <strong>− rail</strong>.</li>
+    <li><span class="step-title">Insert the ammeter (M1) in series.</span> Drag a <strong>Multimeter</strong> above the breadboard and set its mode to <strong>A</strong> (ammeter). Wire its black terminal to R1's top lead and its red terminal to D1's top lead. Current now has no path except <em>through</em> the meter.</li>
+    <li><span class="step-title">Attach voltmeter M2 across R1.</span> Place a second multimeter to the left, set mode to <strong>V</strong>. Connect its leads to the two leads of R1 (red lead on the supply side).</li>
+    <li><span class="step-title">Attach voltmeter M3 across D1.</span> Place a third multimeter to the right, set mode to <strong>V</strong>. Connect its <strong>red lead to the anode</strong> and black lead to the cathode of D1, so a forward drop reads positive.</li>
+  </ol>
+
+  <h3>Part 2 — Forward-Bias Measurements (≈15 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Predict.</span> With V<sub>S</sub> = 7.5 V, V<sub>F</sub> ≈ 0.7 V, and R = 1 kΩ, calculate your expected current using <em>I = (V<sub>S</sub> − V<sub>F</sub>) / R</em>. Record the prediction in Data Table 1.</li>
+    <li><span class="step-title">Simulate.</span> Press <strong>Start Simulation</strong>. All three meters come alive.</li>
+    <li><span class="step-title">Record.</span> Log M1 (current), M2 (V across R1), and M3 (V across D1) in Data Table 1. M3 should read close to <strong>0.7 V</strong>.</li>
+    <li><span class="step-title">KVL check.</span> Verify V(R1) + V(D1) ≈ 7.50 V. If it doesn't balance, a meter is mis-wired — stop and fix it.</li>
+    <li><span class="step-title">Explore the knee.</span> Stop the simulation, lower the supply to 3 V, 1 V, and 0.5 V, re-running each time. Watch what happens to current when V<sub>S</sub> drops below the barrier potential. Record each row.</li>
+  </ol>
+
+  <h3>Part 3 — Reverse-Bias Measurements (≈10 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Flip the diode.</span> Stop the simulation. Click D1 and rotate it 180° (press <strong>R</strong> twice) so the gray band now faces the <strong>+</strong> side. Reconnect its leads to the same breadboard columns.</li>
+    <li><span class="step-title">Restore 7.50 V</span> on the supply and press <strong>Start Simulation</strong>.</li>
+    <li><span class="step-title">Record.</span> M1 should read <strong>0.00 A</strong>, M2 <strong>0.00 V</strong>, and M3 <strong>−7.50 V</strong> — the screenshot at the top of Figure 1's caption shows exactly this state. Log all three in Data Table 2.</li>
+    <li><span class="step-title">Reason it out.</span> With zero current, Ohm's Law forces V(R1) = I·R = 0 — so KVL puts the <em>entire</em> supply across the diode. Write one sentence in your report explaining why the M3 reading is negative.</li>
+    <li><span class="step-title">Stress test (optional).</span> Raise the supply toward 30 V. The 1N4001 blocks up to 50 V reverse, so current stays at zero — but note in your report what would eventually happen in a real circuit past the breakdown rating.</li>
+  </ol>
+
+  <h3>Part 4 — Trace the Characteristic Curve (≈15 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Sweep forward voltage.</span> With the diode back in forward bias, set the supply to each value in Data Table 3 (0.2 V → 10 V), simulate, and record I and V(D1) at every point.</li>
+    <li><span class="step-title">Plot.</span> Graph I (vertical) versus V(D1) (horizontal) — on paper, in a spreadsheet, or by comparing against the interactive I-V Explorer below. Mark the knee.</li>
+    <li><span class="step-title">Conclude.</span> Answer the Analysis Questions, complete the Knowledge Check, and use your browser's <strong>Print</strong> function on this page (data tables included) to submit your report.</li>
+  </ol>
+
+  <div class="callout co-tip">
+    <div class="co-title">Troubleshooting</div>
+    <strong>Meter reads 0 in forward bias?</strong> Check the diode band direction first, then confirm the ammeter is in the loop (not across a component). <strong>Ammeter shows a huge current?</strong> You wired it in parallel — an ammeter is nearly a short circuit. <strong>Nothing at all?</strong> Make sure both supply wires reach the rails and the simulation is actually running.
+  </div>
+</section>
+
+<!-- ================= DATA TABLES ================= -->
+<section id="data">
+  <h2 class="sec-title">📋 Data Tables</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Type your readings directly into the tables — they are preserved when you print this page. Use the <strong>Check KVL</strong> buttons to verify each measurement set.</p>
+
+  <h3>Data Table 1 — Forward Bias (V<sub>S</sub> sweep)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl1">
+    <tr><th class="mono">V_S (set)</th><th class="mono">Predicted I = (V_S−0.7)/1k</th><th class="mono">Measured I (M1)</th><th class="mono">V(R1) (M2)</th><th class="mono">V(D1) (M3)</th><th class="mono">V(R1)+V(D1)</th></tr>
+    <tr><td class="mono">7.50 V</td><td><input aria-label="predicted current at 7.5 volts"></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">3.00 V</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1.00 V</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 2 — Reverse Bias</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl2">
+    <tr><th class="mono">V_S (set)</th><th class="mono">Measured I (M1)</th><th class="mono">V(R1) (M2)</th><th class="mono">V(D1) (M3)</th><th>Diode state (open/closed switch?)</th></tr>
+    <tr><td class="mono">7.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">15.0 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 3 — Forward Characteristic Sweep</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl3">
+    <tr><th class="mono">V_S</th><th class="mono">0.2 V</th><th class="mono">0.5 V</th><th class="mono">0.7 V</th><th class="mono">1.0 V</th><th class="mono">2.0 V</th><th class="mono">5.0 V</th><th class="mono">10 V</th></tr>
+    <tr><td class="mono">I (mA)</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">V(D1)</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+  <div class="g-btns" style="max-width:420px;">
+    <button class="g-btn g-green" onclick="window.print()">🖨 Print / Save Report</button>
+    <button class="g-btn" onclick="clearTables()">↺ Clear Tables</button>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE I-V EXPLORER ================= -->
+<section id="explorer">
+  <h2 class="sec-title">📈 Interactive Diode I-V Explorer</h2>
+  <p>This companion simulator models the same series circuit you built in Tinkercad. Adjust the supply voltage and resistor, flip the bias, and watch the operating point slide along the diode's characteristic curve. Compare its readouts against your Data Table values — they should agree closely.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="ivCv" width="640" height="420" aria-label="Diode current versus voltage characteristic curve with live operating point"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label><span>Bias Direction</span></label>
+          <div class="seg" id="biasSeg">
+            <button class="active" onclick="setBias(1,this)">Forward</button>
+            <button onclick="setBias(-1,this)">Reverse</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label><span>Supply Voltage V<sub>S</sub></span><span id="vsVal">7.5 V</span></label>
+          <input type="range" id="vsSlide" min="0" max="15" step="0.1" value="7.5" oninput="drawIV()">
+        </div>
+        <div class="ctrl">
+          <label><span>Resistor R1</span></label>
+          <div class="seg" id="rSeg">
+            <button onclick="setR(330,this)">330 Ω</button>
+            <button class="active" onclick="setR(1000,this)">1 kΩ</button>
+            <button onclick="setR(4700,this)">4.7 kΩ</button>
+            <button onclick="setR(10000,this)">10 kΩ</button>
+          </div>
+        </div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="preset(7.5,1000,1)">Lab: Forward</button>
+          <button class="g-btn" onclick="preset(7.5,1000,-1)">Lab: Reverse</button>
+        </div>
+        <div class="readout" id="ivRead"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">What To Notice</div>
+    In forward bias, cranking V<sub>S</sub> from 2 V to 15 V barely moves V<sub>D</sub> (it creeps from ~0.65 V to ~0.75 V) while the current — set almost entirely by R1 — climbs linearly. That near-constant drop is why engineers model a conducting silicon diode as a flat <strong>0.7 V</strong>. In reverse, the operating point pins to the axis at I = 0 no matter what you do.
+  </div>
+</section>
+
+<!-- ================= ANALYSIS QUESTIONS ================= -->
+<section id="analysis">
+  <h2 class="sec-title">✍ Analysis Questions</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Answer in complete sentences in your lab report.</p>
+  <ol class="styled">
+    <li>Using your Data Table 1 row for 7.50 V, show the KVL calculation proving your three meter readings are consistent with each other.</li>
+    <li>In forward bias you raised V<sub>S</sub> from 1 V to 7.5 V, yet V(D1) barely changed. Where did the "extra" voltage go, and which component controlled the current?</li>
+    <li>At V<sub>S</sub> = 0.5 V forward, the current was essentially zero even though the diode was pointed the "right" way. Explain using the concept of barrier potential.</li>
+    <li>In reverse bias, why does the voltmeter across R1 read 0.00 V? Support your answer with Ohm's Law.</li>
+    <li>Why does M3 read <strong>−7.50 V</strong> rather than +7.50 V in the reverse-bias configuration?</li>
+    <li>Suppose a classmate builds this circuit with <em>no resistor</em> — diode straight across the 7.5 V supply, forward biased. Predict what happens and why. (Tinkercad will show you smoke; a real 1N4001 gives you about one second of regret.)</li>
+    <li>Name one real-world circuit that depends on the diode's one-way behavior you just demonstrated, and describe the diode's job in it in one sentence.</li>
+  </ol>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="facts">
+    <div class="fact"><div class="f-label">Silicon knee voltage</div><div class="f-val">≈ 0.7 V (Ge ≈ 0.3 V)</div></div>
+    <div class="fact"><div class="f-label">Forward diode model</div><div class="f-val">Closed switch + 0.7 V drop</div></div>
+    <div class="fact"><div class="f-label">Reverse diode model</div><div class="f-val">Open switch, I ≈ 0</div></div>
+    <div class="fact"><div class="f-label">Circuit current (forward)</div><div class="f-val">I = (V_S − 0.7 V) / R</div></div>
+    <div class="fact"><div class="f-label">Lab values: 7.5 V, 1 kΩ</div><div class="f-val">I ≈ 6.8 mA · V_R ≈ 6.8 V</div></div>
+    <div class="fact"><div class="f-label">Reverse-bias readings</div><div class="f-val">0.00 A · 0.00 V · −7.50 V</div></div>
+    <div class="fact"><div class="f-label">1N4001 ratings</div><div class="f-val">1 A forward · 50 V reverse</div></div>
+    <div class="fact"><div class="f-label">Cathode identification</div><div class="f-val">Gray/silver band on package</div></div>
+    <div class="fact"><div class="f-label">Ammeter wiring</div><div class="f-val">In series (in the loop)</div></div>
+    <div class="fact"><div class="f-label">Voltmeter wiring</div><div class="f-val">In parallel (across the part)</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Six questions drawn directly from the lab. Select an answer for each, then press Grade My Quiz.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Grade My Quiz</button>
+      <div id="scoreBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lesson01.html">← Lesson Pages</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 Course Home</a>
+  <a href="#objectives">Back to Top ↑</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Hands-On Lab: Basic Diode Operation in Tinkercad<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  drawIV();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+
+/* ============ DATA TABLES ============ */
+function clearTables(){
+  if(!confirm('Clear all data table entries?')) return;
+  document.querySelectorAll('table.data input').forEach(function(i){ i.value=''; });
+}
+
+/* ============ I-V EXPLORER ============ */
+var cv=document.getElementById('ivCv'), cx=cv.getContext('2d');
+var VS=7.5, R=1000, BIAS=1;
+var IS=1e-9, NVT=0.045; /* Shockley-ish: n·Vt tuned so Vf≈0.7 at mA levels */
+
+function setBias(b,btn){
+  BIAS=b;
+  document.querySelectorAll('#biasSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawIV();
+}
+function setR(r,btn){
+  R=r;
+  document.querySelectorAll('#rSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawIV();
+}
+function preset(v,r,b){
+  VS=v; R=r; BIAS=b;
+  document.getElementById('vsSlide').value=v;
+  document.querySelectorAll('#rSeg button').forEach(function(x){ x.classList.toggle('active', parseInt(x.textContent)===Math.round(r>=1000?r/1000:r) && ((r>=1000)===(x.textContent.indexOf('k')>-1)) ); });
+  /* simpler: match by value attribute */
+  var rBtns=document.querySelectorAll('#rSeg button');
+  rBtns.forEach(function(x){x.classList.remove('active');});
+  var map={330:0,1000:1,4700:2,10000:3};
+  rBtns[map[r]].classList.add('active');
+  var bBtns=document.querySelectorAll('#biasSeg button');
+  bBtns.forEach(function(x){x.classList.remove('active');});
+  bBtns[b===1?0:1].classList.add('active');
+  drawIV();
+}
+
+/* diode current for a given diode voltage */
+function iDiode(vd){
+  if(vd<=-45) return -1; /* breakdown flag, not plotted */
+  if(vd<0) return 0;
+  return IS*(Math.exp(vd/NVT)-1);
+}
+/* solve series circuit: VS = I*R + VD, forward; reverse: I=0 */
+function solve(){
+  if(BIAS<0) return {i:0, vd:-VS, vr:0};
+  if(VS<=0) return {i:0, vd:0, vr:0};
+  var lo=0, hi=Math.min(VS,1.1);
+  for(var k=0;k<60;k++){
+    var mid=(lo+hi)/2;
+    var f=mid + iDiode(mid)*R - VS; /* KVL residual */
+    if(f>0) hi=mid; else lo=mid;
+  }
+  var vd=(lo+hi)/2, i=(VS-vd)/R;
+  if(i<0){ i=0; vd=VS; }
+  return {i:i, vd:vd, vr:i*R};
+}
+
+function drawIV(){
+  VS=parseFloat(document.getElementById('vsSlide').value);
+  document.getElementById('vsVal').textContent=VS.toFixed(1)+' V';
+  var W=cv.width, H=cv.height;
+  cx.clearRect(0,0,W,H);
+  /* plot region: vd from -8..+1.2, i from 0..20mA (auto-scale to R) */
+  var vMin=-8, vMax=1.2;
+  var iMaxA=Math.max(0.002,(15-0.6)/R*1.15);
+  var padL=58, padR=16, padT=18, padB=44;
+  function X(v){ return padL+(v-vMin)/(vMax-vMin)*(W-padL-padR); }
+  function Y(i){ return H-padB-(i/iMaxA)*(H-padT-padB); }
+  /* grid */
+  cx.strokeStyle=css('--border'); cx.lineWidth=1;
+  cx.font='11px Arial'; cx.fillStyle=css('--text-muted'); cx.textAlign='center';
+  for(var v=Math.ceil(vMin); v<=vMax; v+=1){
+    cx.beginPath(); cx.moveTo(X(v),padT); cx.lineTo(X(v),H-padB); cx.stroke();
+    cx.fillText(v+'', X(v), H-padB+16);
+  }
+  cx.textAlign='right';
+  var iStepMA=Math.max(1,Math.round(iMaxA*1000/5));
+  for(var im=0; im<=iMaxA*1000+0.001; im+=iStepMA){
+    cx.beginPath(); cx.moveTo(padL,Y(im/1000)); cx.lineTo(W-padR,Y(im/1000)); cx.stroke();
+    cx.fillText(im.toFixed(0), padL-8, Y(im/1000)+4);
+  }
+  /* axes */
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=1.6;
+  cx.beginPath(); cx.moveTo(X(0),padT); cx.lineTo(X(0),H-padB); cx.stroke();
+  cx.beginPath(); cx.moveTo(padL,H-padB); cx.lineTo(W-padR,H-padB); cx.stroke();
+  cx.fillStyle=css('--text'); cx.font='bold 12px Arial'; cx.textAlign='center';
+  cx.fillText('V_D  (volts)', (padL+W-padR)/2, H-8);
+  cx.save(); cx.translate(16,(padT+H-padB)/2); cx.rotate(-Math.PI/2);
+  cx.fillText('I  (mA)',0,0); cx.restore();
+  /* characteristic curve */
+  cx.strokeStyle=css('--navy'); cx.lineWidth=3; cx.beginPath();
+  var first=true;
+  for(var px=padL; px<=W-padR; px+=2){
+    var vv=vMin+(px-padL)/(W-padL-padR)*(vMax-vMin);
+    var ii=iDiode(vv);
+    if(ii<0) continue;
+    var py=Y(Math.min(ii,iMaxA*1.02));
+    if(first){ cx.moveTo(px,py); first=false; } else cx.lineTo(px,py);
+  }
+  cx.stroke();
+  /* knee label */
+  cx.fillStyle=css('--green-dark'); cx.font='bold 11px Arial'; cx.textAlign='left';
+  cx.fillText('knee ≈ 0.7 V', X(0.72), Y(iMaxA*0.28));
+  /* load line (forward only) */
+  var op=solve();
+  if(BIAS>0 && VS>0){
+    cx.strokeStyle=css('--amber'); cx.lineWidth=2; cx.setLineDash([6,5]);
+    cx.beginPath(); cx.moveTo(X(Math.min(VS,vMax)), Y(Math.max(0,(VS-Math.min(VS,vMax))/R))); cx.lineTo(X(0), Y(Math.min(VS/R,iMaxA))); cx.stroke();
+    cx.setLineDash([]);
+  }
+  /* operating point */
+  cx.fillStyle=css('--red');
+  cx.beginPath(); cx.arc(X(Math.max(vMin,op.vd)), Y(Math.min(op.i,iMaxA)), 7, 0, Math.PI*2); cx.fill();
+  cx.strokeStyle='#fff'; cx.lineWidth=2; cx.stroke();
+  /* readout */
+  var mA=(op.i*1000);
+  var state = BIAS<0 ? '<span class="r-off">REVERSE — BLOCKING (open switch)</span>'
+            : (mA<0.05 ? '<span class="r-off">FORWARD — below knee, ≈OFF</span>'
+                       : '<span class="r-on">FORWARD — CONDUCTING</span>');
+  document.getElementById('ivRead').innerHTML=
+    'V_S  = '+VS.toFixed(2)+' V<br>'+
+    'R1   = '+(R>=1000?(R/1000)+' kΩ':R+' Ω')+'<br>'+
+    '─────────────────<br>'+
+    'I    = '+(BIAS<0?'0.00 mA':mA.toFixed(2)+' mA')+'<br>'+
+    'V(D1)= '+op.vd.toFixed(2)+' V<br>'+
+    'V(R1)= '+op.vr.toFixed(2)+' V<br>'+
+    'KVL  : '+(op.vr+Math.abs(op.vd)).toFixed(2)+' V = V_S ✓<br>'+
+    '─────────────────<br>'+state;
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:'In the forward-bias test (7.5 V supply, 1 kΩ resistor), the voltmeter across the diode read approximately:',
+  o:['7.5 V','0.7 V','6.8 V','0 V'], a:1,
+  x:'A conducting silicon diode holds a nearly constant barrier-potential drop of about 0.7 V; the resistor takes the remaining ≈6.8 V.'},
+ {q:'The measured forward current was about 6.8 mA. Which calculation predicts this?',
+  o:['I = V_S / R = 7.5 mA','I = V_S × R','I = (V_S − 0.7 V) / R','I = 0.7 V / R'], a:2,
+  x:'KVL: the supply must cover both drops, so the resistor sees V_S − V_F = 6.8 V, giving 6.8 V / 1 kΩ = 6.8 mA.'},
+ {q:'After flipping the diode (reverse bias), the ammeter read 0.00 A because:',
+  o:['the resistor blocked the current','the depletion region widened and the junction acts like an open switch','the power supply shut down','the ammeter was wired in parallel'], a:1,
+  x:'Reverse bias pulls carriers away from the junction, widening the depletion region — no conduction path, so the diode behaves as an open switch.'},
+ {q:'In reverse bias the voltmeter across the diode read −7.50 V. The full supply appears across the diode because:',
+  o:['the diode amplifies voltage','with I = 0, the resistor drops 0 V (Ohm\u2019s Law), so KVL puts all of V_S across the diode','the resistor shorted out','voltmeters always read the supply voltage'], a:1,
+  x:'V(R1) = I·R = 0 × 1 kΩ = 0 V. By KVL, V_S = V(R1) + V(D1), so the diode must hold the entire 7.5 V (negative sign = reversed polarity at the meter leads).'},
+ {q:'How do you identify the cathode on a physical (or Tinkercad) 1N4001?',
+  o:['It is the longer lead','It is marked by the gray/silver band','It is always on the left','It is the red terminal'], a:1,
+  x:'The band printed on the package marks the cathode — the bar side of the schematic symbol. Current flows in at the anode and out at the banded cathode when forward biased.'},
+ {q:'Why must every diode circuit include a series current-limiting resistor?',
+  o:['To increase the diode\u2019s forward voltage','Because a conducting diode holds ~0.7 V regardless of current, so something else must limit the current','To make the meter readings positive','Resistors are only needed in reverse bias'], a:1,
+  x:'The diode\u2019s flat forward drop means it cannot self-limit: connect it straight across a supply and the current is bounded only by the source — the diode overheats and fails. R1 sets a safe operating point.'}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'">💡 '+item.x+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name="q'+qi+'"]:checked');
+    var opts=document.querySelectorAll('input[name="q'+qi+'"]');
+    opts.forEach(function(inp,oi){
+      var lab=inp.parentElement;
+      lab.classList.remove('correct','incorrect');
+      if(oi===item.a) lab.classList.add('correct');
+      else if(sel && parseInt(sel.value)===oi) lab.classList.add('incorrect');
+    });
+    document.getElementById('ex'+qi).classList.add('show');
+    if(sel && parseInt(sel.value)===item.a) score++;
+  });
+  var msg = score===6 ? '🏆 Perfect! You have diode operation nailed down.'
+          : score>=4 ? '📗 Solid work. Review the explanations for any missed items, then re-check your data tables.'
+          : '📘 Getting there. Re-run Parts 2 and 3 in Tinkercad while watching the meters, then retake the quiz.';
+  document.getElementById('scoreBox').innerHTML=
+    '<div class="score-box"><div class="big">'+score+' / 6</div><div>'+msg+'</div></div>';
+  document.getElementById('scoreBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+drawIV();
+</script>
+</body>
+</html>
