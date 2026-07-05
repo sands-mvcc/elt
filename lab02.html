@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Hands-On Lab: Half-Wave, Full-Wave &amp; Bridge Rectifiers in Tinkercad</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td input{width:100%;min-width:90px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:.88rem;}
+table.data td input:focus{outline:2px solid var(--green);border-color:var(--green);}
+
+/* ============ STEP LIST ============ */
+.steps{counter-reset:step;list-style:none;margin:0 0 16px 0;}
+.steps li{counter-increment:step;position:relative;padding:0 0 18px 58px;margin-bottom:4px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;box-shadow:var(--shadow);}
+.steps li::after{content:'';position:absolute;left:18px;top:42px;bottom:0;width:2px;background:var(--border);}
+.steps li:last-child::after{display:none;}
+.steps li .step-title{font-weight:bold;color:var(--navy);display:block;margin-bottom:3px;}
+[data-theme="dark"] .steps li .step-title{color:#8ab6ff;}
+.steps.green li::before{background:var(--green);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;cursor:pointer;border:none;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SCHEMATIC FIGURE ============ */
+.fig{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin:20px 0;text-align:center;}
+.fig svg{width:100%;max-width:820px;height:auto;}
+.fig .fig-cap{font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;color:var(--text-muted);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;text-align:left;}
+.sch-wire{stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sch-comp{stroke:var(--navy);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sch-fill{fill:var(--navy);stroke:none;}
+.sch-lbl{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;fill:var(--text);}
+.sch-sub{font-family:'Arial Narrow',Arial,sans-serif;font-size:12.5px;fill:var(--text-muted);}
+.sch-meter{fill:var(--card-alt);stroke:var(--amber);stroke-width:2.4;}
+.sch-mlbl{font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;font-weight:bold;fill:#a86e00;}
+[data-theme="dark"] .sch-mlbl{fill:var(--amber);}
+.sch-green{stroke:var(--green);}
+.sch-red{stroke:var(--red);}
+
+/* ============ LAB (interactive) ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;}}
+@media print{.topbar,.crumbs,.theme-btn,.foot-nav,.submit-btn{display:none!important;} body{background:#fff;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+.sch-wave-in{stroke:var(--text-muted);stroke-width:2;fill:none;}
+.sch-wave-out{stroke:var(--green);stroke-width:2.6;fill:none;}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Hands-On Tinkercad Lab</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lab-rectifiers.html">Labs</a> &nbsp;›&nbsp;
+  Half-Wave, Full-Wave &amp; Bridge Rectifiers
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 2 · Solid State Devices · Lab</span>
+  <h1>Rectifier Circuits: Half-Wave, Full-Wave &amp; Full-Bridge</h1>
+  <p class="sub">Turn AC into DC three different ways. Build each rectifier in Autodesk Tinkercad Circuits, watch the waveforms transform on a virtual oscilloscope, prove that full-wave circuits double the ripple frequency — then add a filter capacitor and watch pulsating DC smooth into a usable supply.</p>
+  <div class="meta-chips">
+    <span>⏱ 90–120 Minutes</span>
+    <span>🖥 Tinkercad Circuits (Free)</span>
+    <span>🔧 3 Circuits · 6 Diodes Total</span>
+    <span>📊 Waveform Explorer + Ripple Filter</span>
+    <span>✅ 6-Question Knowledge Check</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lab, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Construct</strong> half-wave, full-wave center-tapped, and full-bridge rectifier circuits on a virtual breadboard in Tinkercad Circuits, using a function generator as the AC source and an oscilloscope to observe waveforms.</li>
+      <li><strong>Trace</strong> the conduction path through each circuit during the positive and negative half-cycles, identifying which diode(s) conduct and which block on every half-cycle.</li>
+      <li><strong>Measure</strong> the input and output peak voltages of each rectifier and account for the difference using diode drops — one 0.7 V drop for half-wave and center-tapped, two drops (≈1.4 V) for the bridge.</li>
+      <li><strong>Compare</strong> the output ripple frequency of half-wave (equal to the line frequency) against full-wave circuits (double the line frequency), and explain why this makes full-wave rectifiers easier to filter.</li>
+      <li><strong>Calculate</strong> the average (DC) value of each rectified waveform — V<sub>DC</sub> ≈ 0.318 V<sub>p</sub> for half-wave and ≈ 0.637 V<sub>p</sub> for full-wave — and verify against simulation.</li>
+      <li><strong>Demonstrate</strong> capacitive filtering by adding a reservoir capacitor across the load and relating ripple amplitude to capacitor size and load resistance.</li>
+      <li><strong>Evaluate</strong> the three topologies against each other — component count, output voltage, PIV stress, transformer requirements, and efficiency — and select the appropriate rectifier for a given application.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition. Review these before you build.</p>
+
+      <div class="cat-label">Rectification Basics</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Rectifier</div><div class="cat">Rectification Basics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A diode circuit that converts AC into pulsating DC by allowing current through the load in only one direction. The first stage of nearly every power supply — the diode lab's "one-way valve" put to work.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Half-Wave Rectifier</div><div class="cat">Rectification Basics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>One diode in series with the load: passes the positive half-cycles, blocks the negative ones. Simple and cheap, but half the input energy is thrown away and the output ripples at the line frequency.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Full-Wave Rectifier (CT)</div><div class="cat">Rectification Basics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Two diodes fed by a <strong>center-tapped</strong> transformer secondary. Each diode handles one half-cycle, steering both halves through the load in the same direction — but each half only sees half the secondary voltage.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Full-Bridge Rectifier</div><div class="cat">Rectification Basics</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Four diodes in a diamond: diagonal pairs conduct on alternate half-cycles, rectifying the <em>full</em> source voltage with no center tap needed. The dominant topology in real power supplies — at the cost of two diode drops (≈1.4 V).</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Waveform Measures</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Pulsating DC</div><div class="cat">Waveform Measures</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Rectifier output before filtering: current always flows the same direction (DC), but the magnitude pulses between zero and the peak. Useful for charging batteries; too bumpy for electronics until filtered.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple Frequency</div><div class="cat">Waveform Measures</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>How many output pulses occur per second. Half-wave: <strong>one pulse per input cycle</strong> (60 Hz in → 60 Hz ripple). Full-wave and bridge: <strong>two pulses per cycle</strong> (60 Hz in → 120 Hz ripple) — the fingerprint that tells you which rectifier you're looking at on a scope.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Average (DC) Value</div><div class="cat">Waveform Measures</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>What a DC voltmeter reads across the load: the area under the waveform averaged over a cycle. Half-wave: V<sub>DC</sub> = V<sub>p</sub>/π ≈ 0.318 V<sub>p</sub>. Full-wave: V<sub>DC</sub> = 2V<sub>p</sub>/π ≈ 0.637 V<sub>p</sub> — double, because no half-cycle is wasted.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Peak Inverse Voltage (PIV)</div><div class="cat">Waveform Measures</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The maximum reverse voltage a diode must survive while blocking. Half-wave: PIV = V<sub>p</sub>. Center-tapped: PIV = <strong>2V<sub>p</sub></strong> (the whole secondary lands on the off diode). Bridge: PIV ≈ V<sub>p</sub> — a hidden advantage of the four-diode design.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Filtering &amp; Sources</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Filter (Reservoir) Capacitor</div><div class="cat">Filtering &amp; Sources</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A large capacitor across the load that charges to the peak and supplies the load between pulses, smoothing pulsating DC toward steady DC. Bigger C (or lighter load) → slower discharge → less ripple.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Ripple Voltage (V<sub>r</sub>)</div><div class="cat">Filtering &amp; Sources</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The small peak-to-peak sawtooth left on a filtered output as the capacitor discharges between peaks. Approximated by V<sub>r</sub> ≈ I<sub>load</sub> / (f<sub>ripple</sub> · C) — which is why 120 Hz full-wave ripple filters twice as well as 60 Hz half-wave ripple with the same capacitor.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Function Generator</div><div class="cat">Filtering &amp; Sources</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Tinkercad's adjustable AC source: choose sine wave, set frequency and amplitude. It stands in for the wall-transformer secondary in this lab, since Tinkercad Circuits has no transformer component.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Oscilloscope</div><div class="cat">Filtering &amp; Sources</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Draws voltage versus time. In Tinkercad each scope is single-channel: use one across the source and one across the load to compare input and output simultaneously. Set the time-per-division so 2–3 full cycles fit on screen.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TINKERCAD NOTES ================= -->
+<section id="tinkercad">
+  <h2 class="sec-title">🖥 Tinkercad Setup Notes for AC Circuits</h2>
+  <p>You already know the Tinkercad basics from the Basic Diode lab (parts panel, <strong>R</strong> to rotate, inspector to set values, Start Simulation). Rectifier work adds two instruments and one important limitation:</p>
+  <ul class="styled">
+    <li><strong>Function Generator</strong> (search "function generator"): set <em>Function = Sine</em>, <em>Frequency = 60 Hz</em>. Set the amplitude, then <em>verify the actual peak on the oscilloscope</em> — checking whether an instrument's "amplitude" field means peak or peak-to-peak is a professional habit, and the scope is the referee. Adjust until the scope shows <strong>±10 V peaks</strong>.</li>
+    <li><strong>Oscilloscope</strong> (search "oscilloscope"): two terminals, wired in parallel like a voltmeter. Set <em>Time Per Division ≈ 5 ms</em> so about three 60 Hz cycles fill the screen. Use <strong>two scopes</strong> — one on the source, one on the load — to compare input and output side by side.</li>
+    <li><strong>No transformer exists in Tinkercad.</strong> For the center-tapped circuit you will emulate the secondary winding with <strong>two identical function generators in series</strong>, grounding the midpoint: the junction behaves exactly like a center tap, with the two outer ends swinging equally above and below it. This is a standard simulator workaround — and wiring it forces you to understand what a center tap actually <em>is</em>.</li>
+  </ul>
+  <div class="callout co-warn">
+    <div class="co-title">Keep the Two Generators Identical</div>
+    In Part 2, both function generators must have the <em>same</em> waveform, frequency, and amplitude settings, wired + to − in series (head to tail). If one is flipped or mismatched, the two half-cycles of your output will be unequal — which is itself a useful diagnostic to observe once, on purpose.
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section id="materials">
+  <h2 class="sec-title">🔧 Virtual Parts List</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Qty</th><th>Component (Tinkercad name)</th><th>Setting</th><th>Used In</th></tr>
+    <tr><td>1</td><td>Breadboard (small)</td><td class="mono">—</td><td>All parts</td></tr>
+    <tr><td>2</td><td>Function Generator</td><td class="mono">Sine · 60 Hz · ±10 V peak</td><td>1 for Parts 1 &amp; 3 · 2 for Part 2</td></tr>
+    <tr><td>2</td><td>Oscilloscope</td><td class="mono">5 ms/div</td><td>Input + output, all parts</td></tr>
+    <tr><td>6</td><td>Diode 1N4001</td><td class="mono">—</td><td>1 (half-wave) · 2 (CT) · 4 (bridge)</td></tr>
+    <tr><td>1</td><td>Resistor</td><td class="mono">1 kΩ</td><td>Load R<sub>L</sub>, all parts</td></tr>
+    <tr><td>1</td><td>Polarized Capacitor</td><td class="mono">47 µF → 470 µF</td><td>Part 4 filtering</td></tr>
+    <tr><td>1</td><td>Multimeter</td><td class="mono">V (DC)</td><td>Part 4 average/DC readings</td></tr>
+    <tr><td>~14</td><td>Wires</td><td class="mono">red / black / green</td><td>All parts</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= CIRCUIT ILLUSTRATIONS ================= -->
+<section id="schematic">
+  <h2 class="sec-title">📐 The Three Circuits You Will Build</h2>
+  <p>All three rectifiers drive the same 1 kΩ load; only the diode arrangement changes. Study each schematic and its output waveform <em>before</em> building — your job in the procedure is to make Tinkercad's oscilloscope reproduce these green traces.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(0,this)">① Half-Wave</button>
+    <button class="tab-btn" onclick="showTab(1,this)">② Full-Wave (Center-Tapped)</button>
+    <button class="tab-btn" onclick="showTab(2,this)">③ Full-Bridge</button>
+  </div>
+
+  <!-- ---- TAB 1: HALF-WAVE ---- -->
+  <div class="tab-pane show">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Half-wave rectifier schematic: sine source, one diode D1, load resistor, with input sine and half-wave output waveforms">
+        <!-- source -->
+        <circle cx="110" cy="150" r="42" class="sch-comp"/>
+        <path class="sch-comp" d="M 88 150 q 11 -20 22 0 q 11 20 22 0"/>
+        <text class="sch-lbl" x="110" y="225" text-anchor="middle">60 Hz · ±10 V</text>
+        <text class="sch-sub" x="110" y="243" text-anchor="middle">Function Generator</text>
+        <!-- wires -->
+        <path class="sch-wire" d="M 110 108 V 70 H 330"/>
+        <path class="sch-wire" d="M 398 70 H 560 V 110"/>
+        <path class="sch-wire" d="M 560 190 V 260 H 110 V 192"/>
+        <!-- diode D1 -->
+        <path class="sch-fill" d="M 330 48 L 330 92 L 368 70 Z"/>
+        <path class="sch-comp" d="M 368 48 V 92"/>
+        <text class="sch-lbl" x="350" y="30" text-anchor="middle">D1</text>
+        <text class="sch-sub" x="326" y="112" text-anchor="middle">anode</text>
+        <text class="sch-sub" x="378" y="112" text-anchor="middle">cathode</text>
+        <!-- load -->
+        <path class="sch-comp" d="M 560 110 l -14 8 l 28 14 l -28 14 l 28 14 l -28 14 l 14 8"/>
+        <text class="sch-lbl" x="600" y="155">R_L = 1 kΩ</text>
+        <!-- waveforms -->
+        <text class="sch-sub" x="675" y="52">Input (scope 1)</text>
+        <path class="sch-wave-in" d="M 660 85 q 15 -30 30 0 q 15 30 30 0 q 15 -30 30 0 q 15 30 30 0"/>
+        <path class="sch-wire" d="M 660 85 H 810" stroke-dasharray="2,4" stroke-width="1"/>
+        <text class="sch-sub" x="675" y="152">Output (scope 2)</text>
+        <path class="sch-wave-out" d="M 660 205 q 15 -34 30 0 h 30 q 15 -34 30 0 h 30"/>
+        <path class="sch-wire" d="M 660 205 H 810" stroke-dasharray="2,4" stroke-width="1"/>
+        <text class="sch-sub" x="660" y="235">Pulses at 60 Hz · gaps where D1 blocks</text>
+        <text class="sch-sub" x="120" y="300">Positive half-cycle: D1 conducts, load sees V_in − 0.7 V.   Negative half-cycle: D1 blocks (open switch), load sees 0 V.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 1 — Half-wave rectifier.</strong> One diode, one conduction path. Expected: V<sub>p(out)</sub> ≈ 9.3 V, ripple frequency 60 Hz, V<sub>DC</sub> ≈ 0.318 × 9.3 ≈ 3.0 V. PIV on D1 = full 10 V peak.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 2: CENTER-TAPPED ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Full-wave center-tapped rectifier emulated with two series function generators, diodes D1 and D2, and load resistor">
+        <!-- gen A -->
+        <circle cx="100" cy="90" r="34" class="sch-comp"/>
+        <path class="sch-comp" d="M 82 90 q 9 -16 18 0 q 9 16 18 0"/>
+        <text class="sch-sub" x="100" y="42" text-anchor="middle">Gen A · sine · 60 Hz</text>
+        <!-- gen B -->
+        <circle cx="100" cy="230" r="34" class="sch-comp"/>
+        <path class="sch-comp" d="M 82 230 q 9 -16 18 0 q 9 16 18 0"/>
+        <text class="sch-sub" x="100" y="292" text-anchor="middle">Gen B · sine · 60 Hz</text>
+        <!-- series connection + center tap -->
+        <path class="sch-wire" d="M 100 124 V 196"/>
+        <circle cx="100" cy="160" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 100 160 H 250 V 330 H 560"/>
+        <text class="sch-lbl" x="122" y="152">CT</text>
+        <text class="sch-sub" x="128" y="170">center tap (0 V ref)</text>
+        <!-- top path: A -> D1 -->
+        <path class="sch-wire" d="M 100 56 V 30 H 330"/>
+        <path class="sch-fill" d="M 330 8 L 330 52 L 368 30 Z"/>
+        <path class="sch-comp" d="M 368 8 V 52"/>
+        <text class="sch-lbl" x="349" y="72" text-anchor="middle">D1</text>
+        <path class="sch-wire" d="M 368 30 H 560 V 30"/>
+        <!-- bottom path: B -> D2 -->
+        <path class="sch-wire" d="M 100 264 V 300 H 200 V 150 H 330"/>
+        <path class="sch-fill" d="M 330 128 L 330 172 L 368 150 Z"/>
+        <path class="sch-comp" d="M 368 128 V 172"/>
+        <text class="sch-lbl" x="349" y="192" text-anchor="middle">D2</text>
+        <path class="sch-wire" d="M 368 150 H 490 V 30"/>
+        <!-- cathode junction to load -->
+        <circle cx="490" cy="30" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 490 30 H 560 V 60"/>
+        <!-- load -->
+        <path class="sch-comp" d="M 560 60 l -14 8 l 28 14 l -28 14 l 28 14 l -28 14 l 14 8 V 330"/>
+        <text class="sch-lbl" x="600" y="105">R_L = 1 kΩ</text>
+        <!-- waveform -->
+        <text class="sch-sub" x="672" y="180">Output (scope 2)</text>
+        <path class="sch-wave-out" d="M 660 235 q 15 -34 30 0 q 15 -34 30 0 q 15 -34 30 0 q 15 -34 30 0"/>
+        <path class="sch-wire" d="M 660 235 H 810" stroke-dasharray="2,4" stroke-width="1"/>
+        <text class="sch-sub" x="655" y="265">Every half-cycle used → 120 Hz ripple</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 2 — Full-wave center-tapped rectifier (transformer emulated).</strong> Gens A and B in series, midpoint grounded — the junction is the "center tap." When the top end swings positive D1 conducts; when the bottom end swings positive D2 conducts. Both routes push current through R<sub>L</sub> in the same direction. Expected: V<sub>p(out)</sub> ≈ 9.3 V (one diode drop), ripple 120 Hz, V<sub>DC</sub> ≈ 5.9 V. PIV on each diode = 2 × V<sub>p</sub> = 20 V.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 3: BRIDGE ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Full-bridge rectifier schematic: sine source into a diamond of four diodes D1 through D4 with load resistor across the DC diagonal">
+        <!-- source -->
+        <circle cx="90" cy="190" r="40" class="sch-comp"/>
+        <path class="sch-comp" d="M 69 190 q 10.5 -18 21 0 q 10.5 18 21 0"/>
+        <text class="sch-sub" x="90" y="262" text-anchor="middle">60 Hz · ±10 V</text>
+        <!-- bridge diamond nodes: top(330,60) right(470,190) bottom(330,320) left(190,190) -->
+        <path class="sch-wire" d="M 90 150 V 60 H 330"/>
+        <path class="sch-wire" d="M 90 230 V 320 H 330"/>
+        <path class="sch-wire" d="M 330 60 L 470 190 L 330 320 L 190 190 L 330 60"/>
+        <!-- D1: anode at DC− (left), cathode toward AC-top -->
+        <g transform="translate(260,125) rotate(-42.9)">
+          <path class="sch-fill" d="M -19 -14 L -19 14 L 8 0 Z"/><path class="sch-comp" d="M 8 -14 V 14"/>
+        </g>
+        <text class="sch-lbl" x="218" y="105">D1</text>
+        <!-- D2: anode at AC-bottom, cathode toward DC+ (right) -->
+        <g transform="translate(400,255) rotate(-42.9)">
+          <path class="sch-fill" d="M -19 -14 L -19 14 L 8 0 Z"/><path class="sch-comp" d="M 8 -14 V 14"/>
+        </g>
+        <text class="sch-lbl" x="418" y="292">D2</text>
+        <!-- D3: anode at DC− (left), cathode toward AC-bottom -->
+        <g transform="translate(260,255) rotate(42.9)">
+          <path class="sch-fill" d="M -19 -14 L -19 14 L 8 0 Z"/><path class="sch-comp" d="M 8 -14 V 14"/>
+        </g>
+        <text class="sch-lbl" x="212" y="292">D3</text>
+        <!-- D4: anode at AC-top, cathode toward DC+ (right) -->
+        <g transform="translate(400,125) rotate(42.9)">
+          <path class="sch-fill" d="M -19 -14 L -19 14 L 8 0 Z"/><path class="sch-comp" d="M 8 -14 V 14"/>
+        </g>
+        <text class="sch-lbl" x="424" y="105">D4</text>
+        <!-- AC nodes = top & bottom · DC nodes = left (−) & right (+) -->
+        <circle cx="330" cy="60" r="4" class="sch-fill"/>
+        <circle cx="330" cy="320" r="4" class="sch-fill"/>
+        <circle cx="190" cy="190" r="4" class="sch-fill"/>
+        <circle cx="470" cy="190" r="4" class="sch-fill"/>
+        <text class="sch-lbl" x="480" y="172" fill="var(--red)">+</text>
+        <text class="sch-lbl" x="168" y="176">−</text>
+        <!-- load across DC diagonal -->
+        <path class="sch-wire" d="M 470 190 H 560 V 120"/>
+        <path class="sch-comp" d="M 560 120 l -14 -8 l 28 -14 l -28 -14 l 28 -14 l -28 -14 l 14 -8"/>
+        <path class="sch-wire" d="M 560 48 H 640 V 355 H 190 V 190"/>
+        <text class="sch-lbl" x="580" y="90">R_L = 1 kΩ</text>
+        <!-- waveform -->
+        <text class="sch-sub" x="672" y="180">Output (scope 2)</text>
+        <path class="sch-wave-out" d="M 660 235 q 15 -32 30 0 q 15 -32 30 0 q 15 -32 30 0 q 15 -32 30 0"/>
+        <path class="sch-wire" d="M 660 235 H 810" stroke-dasharray="2,4" stroke-width="1"/>
+        <text class="sch-sub" x="655" y="262">120 Hz ripple · two diode drops</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 3 — Full-bridge rectifier.</strong> AC enters at the top and bottom nodes; DC exits at the left (−) and right (+) nodes. Positive half-cycle: current flows through <strong>D4 → R<sub>L</sub> → D3</strong>. Negative half-cycle: through <strong>D2 → R<sub>L</sub> → D1</strong>. Two diodes always in series with the load, so expected V<sub>p(out)</sub> ≈ 10 − 1.4 = 8.6 V, ripple 120 Hz, V<sub>DC</sub> ≈ 5.5 V. PIV per diode ≈ V<sub>p</sub> only.</div>
+    </div>
+  </div>
+
+  <h3>Expected Results at a Glance</h3>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Circuit</th><th class="mono">Diodes</th><th class="mono">V_p(out) @ ±10 V in</th><th class="mono">Ripple freq</th><th class="mono">V_DC (unfiltered)</th><th class="mono">PIV per diode</th></tr>
+    <tr><td><strong>Half-wave</strong></td><td class="mono">1</td><td class="mono">≈ 9.3 V</td><td class="mono">60 Hz</td><td class="mono">≈ 3.0 V</td><td class="mono">V_p = 10 V</td></tr>
+    <tr><td><strong>Full-wave CT</strong></td><td class="mono">2</td><td class="mono">≈ 9.3 V</td><td class="mono">120 Hz</td><td class="mono">≈ 5.9 V</td><td class="mono">2·V_p = 20 V</td></tr>
+    <tr><td><strong>Full-bridge</strong></td><td class="mono">4</td><td class="mono">≈ 8.6 V</td><td class="mono">120 Hz</td><td class="mono">≈ 5.5 V</td><td class="mono">≈ V_p = 10 V</td></tr>
+  </table></div>
+  <div class="formula">V_DC(half-wave) = V_p(out) / π ≈ 0.318 · V_p(out)          V_DC(full-wave) = 2 · V_p(out) / π ≈ 0.637 · V_p(out)          V_r(filtered) ≈ I_load / (f_ripple · C)</div>
+</section>
+
+<!-- ================= PROCEDURE ================= -->
+<section id="procedure">
+  <h2 class="sec-title">🛠 Step-by-Step Procedure</h2>
+
+  <h3>Part 1 — Half-Wave Rectifier (≈20 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Create the workspace.</span> New circuit, renamed <em>"LastName – Rectifier Lab."</em> Place a small breadboard.</li>
+    <li><span class="step-title">Set up the AC source.</span> Place a Function Generator left of the breadboard: <strong>Sine, 60 Hz</strong>. Wire its output terminals to two free breadboard columns (call them the <em>source rails</em>). Attach oscilloscope #1 across the generator, 5 ms/div.</li>
+    <li><span class="step-title">Calibrate the amplitude.</span> Start the simulation and adjust the generator amplitude until scope #1 shows peaks of <strong>±10 V</strong>. Record the amplitude setting that achieves this — you'll reuse it all lab. Stop the simulation.</li>
+    <li><span class="step-title">Build the rectifier.</span> D1 (1N4001) from the generator's top terminal, <strong>cathode band pointing toward the load</strong>, then R<sub>L</sub> = 1 kΩ from D1's cathode back to the generator's other terminal — the series loop of Figure 1.</li>
+    <li><span class="step-title">Attach scope #2 across R<sub>L</sub></span> (same 5 ms/div) and run the simulation.</li>
+    <li><span class="step-title">Observe and record.</span> Sketch or screenshot both traces. In Data Table 1 record V<sub>p(in)</sub>, V<sub>p(out)</sub>, the number of output pulses per input cycle, and the ripple frequency. Confirm V<sub>p(in)</sub> − V<sub>p(out)</sub> ≈ 0.7 V.</li>
+    <li><span class="step-title">Flip test.</span> Rotate D1 180° and re-run. The output pulses should now be <em>negative</em> humps — the diode passes the other half-cycle. Note this in your report, then flip D1 back.</li>
+  </ol>
+
+  <h3>Part 2 — Full-Wave Center-Tapped (≈25 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Emulate the center-tapped secondary.</span> Add a second Function Generator directly below the first with <strong>identical settings</strong> (sine, 60 Hz, same amplitude). Wire Gen A's − terminal to Gen B's + terminal. That junction is your <strong>center tap (CT)</strong> — wire it to a breadboard rail and treat it as the 0 V reference.</li>
+    <li><span class="step-title">Verify the emulation.</span> Run the simulation with scope #1 from Gen A's + end to CT, then move it to measure Gen B's − end to CT. Both should show ±10 V sines — equal and opposite swings around the tap. Stop.</li>
+    <li><span class="step-title">Place the steering diodes.</span> D1 from Gen A's outer (+) end, D2 from Gen B's outer (−) end — <strong>both cathode bands pointing toward a shared column</strong>, exactly as in Figure 2. Join both cathodes at that column.</li>
+    <li><span class="step-title">Connect the load.</span> R<sub>L</sub> = 1 kΩ from the shared cathode column back to the CT rail. Scope #2 across R<sub>L</sub>.</li>
+    <li><span class="step-title">Run and record.</span> The gaps from Part 1 are now filled — every half-cycle produces a hump. Record V<sub>p(out)</sub>, pulses per input cycle, and ripple frequency (should be <strong>120 Hz</strong>) in Data Table 1.</li>
+    <li><span class="step-title">Half-cycle detective work.</span> Temporarily delete D2 and re-run: you're back to half-wave. Restore D2. One sentence for your report: what does each diode contribute?</li>
+  </ol>
+
+  <h3>Part 3 — Full-Bridge Rectifier (≈25 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Simplify the source.</span> Delete Gen B and the CT wiring — the bridge needs only one generator, same ±10 V sine.</li>
+    <li><span class="step-title">Build the diamond.</span> Place four 1N4001s as in Figure 3. Breadboard tip: give each of the four bridge nodes its own 5-hole column group and label them mentally — <em>AC-top, AC-bottom, DC+, DC−</em>. Both cathodes of D4 and D2 meet at <strong>DC+</strong>; both anodes of D1 and D3 meet at <strong>DC−</strong>.</li>
+    <li><span class="step-title">Connect source and load.</span> Generator terminals to AC-top and AC-bottom. R<sub>L</sub> between DC+ and DC−. Scope #2 across R<sub>L</sub> with its + lead on DC+.</li>
+    <li><span class="step-title">Run and record.</span> Full-wave humps again at 120 Hz — but measure V<sub>p(out)</sub> carefully. It should be about <strong>1.4 V below</strong> the input peak. In Data Table 1, record the values and identify which two diodes conduct on each half-cycle by tracing Figure 3.</li>
+    <li><span class="step-title">Fault insertion.</span> Delete any ONE bridge diode and re-run. Predict first, then observe: the bridge degrades to a half-wave rectifier. Restore the diode. This is exactly how a real bridge with one failed-open diode behaves — a classic troubleshooting scenario.</li>
+  </ol>
+
+  <h3>Part 4 — Filter Capacitor &amp; Ripple (≈20 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Add the reservoir.</span> Keep the bridge circuit. Place a polarized capacitor <strong>across R<sub>L</sub></strong> — stripe/− terminal to DC−. Start with <strong>47 µF</strong>.</li>
+    <li><span class="step-title">Observe smoothing.</span> Run the simulation. The humps become a DC level with a sawtooth ripple riding on top. Measure the ripple peak-to-peak on scope #2 and the DC level with the multimeter (DC V mode across R<sub>L</sub>). Record in Data Table 2.</li>
+    <li><span class="step-title">Scale the capacitor.</span> Repeat with <strong>470 µF</strong>. Ripple should shrink roughly 10×, matching V<sub>r</sub> ≈ I/(f·C).</li>
+    <li><span class="step-title">Ripple-frequency payoff.</span> Move the 47 µF capacitor to your Part 1 half-wave circuit and measure its ripple. Compare against the bridge with the same capacitor: the 60 Hz circuit ripples about <strong>twice as much</strong> — the practical reason power supplies use full-wave rectification. Record both in Data Table 2.</li>
+    <li><span class="step-title">Wrap up.</span> Complete the Analysis Questions and Knowledge Check, then Print/Save your report with the data tables filled in.</li>
+  </ol>
+
+  <div class="callout co-tip">
+    <div class="co-title">Troubleshooting</div>
+    <strong>Output looks identical to input?</strong> A diode is bypassed — check that the load current has no path around it. <strong>CT output has unequal humps?</strong> The two generators are mismatched or one is reversed. <strong>Bridge output is zero?</strong> Almost always one diode reversed in the diamond — hover each 1N4001 and confirm the anode/cathode labels against Figure 3. <strong>Filtered output at nearly 0 V with huge current?</strong> The polarized capacitor is in backwards.
+  </div>
+</section>
+
+<!-- ================= DATA TABLES ================= -->
+<section id="data">
+  <h2 class="sec-title">📋 Data Tables</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Type readings directly into the tables — they persist when you print this page.</p>
+
+  <h3>Data Table 1 — Rectifier Comparison (unfiltered, ±10 V / 60 Hz input)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl1">
+    <tr><th>Circuit</th><th class="mono">V_p(in)</th><th class="mono">V_p(out)</th><th class="mono">Diode drop(s) = in−out</th><th class="mono">Pulses per input cycle</th><th class="mono">Ripple freq</th><th class="mono">Conducting diode(s), + half</th></tr>
+    <tr><td class="mono">Half-wave</td><td><input aria-label="half-wave input peak"></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Full-wave CT</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Full-bridge</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 2 — Filtering &amp; Ripple (1 kΩ load)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl2">
+    <tr><th>Circuit + Capacitor</th><th class="mono">V_DC (multimeter)</th><th class="mono">Ripple V_pp (scope)</th><th class="mono">Ripple freq</th><th>Observation</th></tr>
+    <tr><td class="mono">Bridge · 47 µF</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Bridge · 470 µF</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Half-wave · 47 µF</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+  <div class="g-btns" style="max-width:420px;">
+    <button class="g-btn g-green" onclick="window.print()">🖨 Print / Save Report</button>
+    <button class="g-btn" onclick="clearTables()">↺ Clear Tables</button>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE EXPLORER ================= -->
+<section id="explorer">
+  <h2 class="sec-title">📈 Interactive Rectifier Waveform Explorer</h2>
+  <p>This companion simulator models the same three circuits driving a 1 kΩ load. The gray trace is the AC input; the green trace is what your Tinkercad oscilloscope should show across R<sub>L</sub>. Switch topologies, add a filter capacitor, and compare the readouts against your data tables.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="rxCv" width="640" height="420" aria-label="Rectifier input and output waveforms with live DC and ripple readouts"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label><span>Rectifier Topology</span></label>
+          <div class="seg" id="topoSeg">
+            <button class="active" onclick="setTopo('half',this)">Half-Wave</button>
+            <button onclick="setTopo('ct',this)">Full-Wave CT</button>
+            <button onclick="setTopo('bridge',this)">Bridge</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label><span>Input Peak V<sub>p</sub></span><span id="vpVal">10.0 V</span></label>
+          <input type="range" id="vpSlide" min="3" max="20" step="0.5" value="10" oninput="drawRX()">
+        </div>
+        <div class="ctrl">
+          <label><span>Filter Capacitor (across R<sub>L</sub> = 1 kΩ)</span></label>
+          <div class="seg" id="capSeg">
+            <button class="active" onclick="setCap(0,this)">None</button>
+            <button onclick="setCap(47e-6,this)">47 µF</button>
+            <button onclick="setCap(220e-6,this)">220 µF</button>
+            <button onclick="setCap(470e-6,this)">470 µF</button>
+          </div>
+        </div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="presetRX('half',0)">Lab Part 1</button>
+          <button class="g-btn g-green" onclick="presetRX('ct',0)">Part 2</button>
+          <button class="g-btn g-green" onclick="presetRX('bridge',0)">Part 3</button>
+          <button class="g-btn" onclick="presetRX('bridge',47e-6)">Part 4</button>
+        </div>
+        <div class="readout" id="rxRead"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">What To Notice</div>
+    Switch from Half-Wave to Bridge with the 47 µF filter engaged and watch the ripple drop by roughly half without touching the capacitor — the 120 Hz pulses recharge the reservoir twice as often. Then compare CT versus Bridge peaks at the same input: the bridge loses an extra 0.7 V (two diodes in the path), the CT circuit only one — but remember the CT design pays for that elsewhere, in transformer cost and 2V<sub>p</sub> PIV stress.
+  </div>
+</section>
+
+<!-- ================= ANALYSIS QUESTIONS ================= -->
+<section id="analysis">
+  <h2 class="sec-title">✍ Analysis Questions</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Answer in complete sentences in your lab report.</p>
+  <ol class="styled">
+    <li>Using Data Table 1, compare the input-to-output peak difference for the half-wave and bridge circuits. Why is the bridge's difference approximately double?</li>
+    <li>Both full-wave circuits produced 120 Hz ripple from a 60 Hz input. Explain, in terms of conduction paths, where the "extra" pulses come from.</li>
+    <li>In Part 2, what physical transformer feature did the two series function generators emulate, and why did the midpoint have to be your 0 V reference?</li>
+    <li>When you deleted one bridge diode in Part 3, the circuit became a half-wave rectifier. Trace and explain: which half-cycle was lost, and why did the other survive?</li>
+    <li>Using V<sub>r</sub> ≈ I/(f·C), predict the ripple for the bridge with 47 µF (I ≈ 8 mA, f = 120 Hz), and compare against your Data Table 2 measurement.</li>
+    <li>The center-tapped design uses two fewer diodes than the bridge yet is rarer in modern supplies. Using your PIV column and the transformer requirement, argue why industry prefers the bridge.</li>
+    <li>A car's alternator uses six diodes in a three-phase bridge. Based on this lab's pattern, predict the ripple frequency relative to the alternator's electrical frequency, and explain your reasoning.</li>
+  </ol>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="facts">
+    <div class="fact"><div class="f-label">Half-wave ripple</div><div class="f-val">f_in (60 Hz → 60 Hz)</div></div>
+    <div class="fact"><div class="f-label">Full-wave ripple</div><div class="f-val">2 × f_in (60 Hz → 120 Hz)</div></div>
+    <div class="fact"><div class="f-label">Half-wave average</div><div class="f-val">V_DC = V_p / π ≈ 0.318 V_p</div></div>
+    <div class="fact"><div class="f-label">Full-wave average</div><div class="f-val">V_DC = 2V_p / π ≈ 0.637 V_p</div></div>
+    <div class="fact"><div class="f-label">Diode drops in path</div><div class="f-val">HW: 1 · CT: 1 · Bridge: 2</div></div>
+    <div class="fact"><div class="f-label">PIV per diode</div><div class="f-val">HW: V_p · CT: 2V_p · Bridge: ≈V_p</div></div>
+    <div class="fact"><div class="f-label">Filtered ripple estimate</div><div class="f-val">V_r ≈ I_load / (f_ripple · C)</div></div>
+    <div class="fact"><div class="f-label">Bridge conduction pairs</div><div class="f-val">+half: D4+D3 · −half: D2+D1</div></div>
+    <div class="fact"><div class="f-label">Tinkercad transformer</div><div class="f-val">None — emulate CT with 2 series gens</div></div>
+    <div class="fact"><div class="f-label">Reservoir capacitor</div><div class="f-val">Bigger C → smaller ripple</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Six questions drawn directly from the lab. Select an answer for each, then press Grade My Quiz.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Grade My Quiz</button>
+      <div id="scoreBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lab-diode.html">← Lab: Basic Diode Operation</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 Course Home</a>
+  <a href="#objectives">Back to Top ↑</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Hands-On Lab: Half-Wave, Full-Wave &amp; Bridge Rectifiers in Tinkercad<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  drawRX();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ DATA TABLES ============ */
+function clearTables(){
+  if(!confirm('Clear all data table entries?')) return;
+  document.querySelectorAll('table.data input').forEach(function(i){ i.value=''; });
+}
+
+/* ============ RECTIFIER EXPLORER ============ */
+var cv=document.getElementById('rxCv'), cx=cv.getContext('2d');
+var TOPO='half', VP=10, CAP=0;
+var FREQ=60, RL=1000, VD=0.7;
+
+function setTopo(t,btn){
+  TOPO=t;
+  document.querySelectorAll('#topoSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawRX();
+}
+function setCap(c,btn){
+  CAP=c;
+  document.querySelectorAll('#capSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawRX();
+}
+function presetRX(t,c){
+  TOPO=t; CAP=c;
+  var tMap={half:0,ct:1,bridge:2};
+  var tb=document.querySelectorAll('#topoSeg button');
+  tb.forEach(function(x){x.classList.remove('active');}); tb[tMap[t]].classList.add('active');
+  var cMap={0:0}; cMap[47e-6]=1; cMap[220e-6]=2; cMap[470e-6]=3;
+  var cb=document.querySelectorAll('#capSeg button');
+  cb.forEach(function(x){x.classList.remove('active');}); cb[cMap[c]].classList.add('active');
+  drawRX();
+}
+
+/* ideal-ish rectified value (before filter) at time t */
+function rectV(t){
+  var vin=VP*Math.sin(2*Math.PI*FREQ*t);
+  if(TOPO==='half')   return Math.max(0, vin-VD);
+  if(TOPO==='ct')     return Math.max(0, Math.abs(vin)-VD);
+  /* bridge */        return Math.max(0, Math.abs(vin)-2*VD);
+}
+
+function drawRX(){
+  VP=parseFloat(document.getElementById('vpSlide').value);
+  document.getElementById('vpVal').textContent=VP.toFixed(1)+' V';
+  var W=cv.width, H=cv.height;
+  cx.clearRect(0,0,W,H);
+  var padL=52, padR=14, padT=16, padB=40;
+  var T=3/FREQ;                 /* show 3 input cycles */
+  var vMax=Math.ceil(VP*1.15), vMin=-vMax;
+  function X(t){ return padL+t/T*(W-padL-padR); }
+  function Y(v){ return padT+(vMax-v)/(vMax-vMin)*(H-padT-padB); }
+
+  /* simulate filtered output over several cycles to reach steady state */
+  var N=3000, dt=T/N*2, vc=0, out=[], settle=2*T;
+  for(var t=-settle; t<=T; t+=dt){
+    var vr=rectV(t);
+    if(CAP>0){
+      if(vr>=vc) vc=vr;                       /* diode charges cap to source */
+      else vc*=Math.exp(-dt/(RL*CAP));        /* cap discharges through load */
+    } else vc=vr;
+    if(t>=0) out.push([t,vc]);
+  }
+
+  /* grid */
+  cx.strokeStyle=css('--border'); cx.lineWidth=1;
+  cx.font='11px Arial'; cx.fillStyle=css('--text-muted');
+  var vStep=Math.max(2,Math.round(vMax/4));
+  cx.textAlign='right';
+  for(var v=Math.ceil(vMin/vStep)*vStep; v<=vMax; v+=vStep){
+    cx.beginPath(); cx.moveTo(padL,Y(v)); cx.lineTo(W-padR,Y(v)); cx.stroke();
+    cx.fillText(v+'', padL-6, Y(v)+4);
+  }
+  cx.textAlign='center';
+  for(var ms=0; ms<=T*1000+0.1; ms+=10){
+    cx.beginPath(); cx.moveTo(X(ms/1000),padT); cx.lineTo(X(ms/1000),H-padB); cx.stroke();
+    cx.fillText(ms+'', X(ms/1000), H-padB+16);
+  }
+  /* zero axis */
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=1.6;
+  cx.beginPath(); cx.moveTo(padL,Y(0)); cx.lineTo(W-padR,Y(0)); cx.stroke();
+  cx.fillStyle=css('--text'); cx.font='bold 12px Arial';
+  cx.fillText('time (ms)  ·  3 input cycles @ 60 Hz', (padL+W-padR)/2, H-6);
+  cx.save(); cx.translate(14,(padT+H-padB)/2); cx.rotate(-Math.PI/2);
+  cx.fillText('volts',0,0); cx.restore();
+
+  /* input sine (gray) */
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=1.8; cx.setLineDash([5,4]);
+  cx.beginPath();
+  for(var px=padL; px<=W-padR; px++){
+    var tt=(px-padL)/(W-padL-padR)*T;
+    var vy=Y(VP*Math.sin(2*Math.PI*FREQ*tt));
+    if(px===padL) cx.moveTo(px,vy); else cx.lineTo(px,vy);
+  }
+  cx.stroke(); cx.setLineDash([]);
+
+  /* output (green) */
+  cx.strokeStyle=css('--green'); cx.lineWidth=3;
+  cx.beginPath();
+  out.forEach(function(p,i){ var x=X(p[0]), y=Y(p[1]); if(i===0) cx.moveTo(x,y); else cx.lineTo(x,y); });
+  cx.stroke();
+
+  /* legend */
+  cx.font='bold 11px Arial'; cx.textAlign='left';
+  cx.strokeStyle=css('--text-muted'); cx.setLineDash([5,4]); cx.lineWidth=1.8;
+  cx.beginPath(); cx.moveTo(padL+8,padT+10); cx.lineTo(padL+38,padT+10); cx.stroke(); cx.setLineDash([]);
+  cx.fillStyle=css('--text-muted'); cx.fillText('input', padL+44, padT+14);
+  cx.strokeStyle=css('--green'); cx.lineWidth=3;
+  cx.beginPath(); cx.moveTo(padL+98,padT+10); cx.lineTo(padL+128,padT+10); cx.stroke();
+  cx.fillStyle=css('--green-dark'); cx.fillText('output across R_L', padL+134, padT+14);
+
+  /* numeric readouts */
+  var vpk=0, vmin=1e9, sum=0;
+  out.forEach(function(p){ vpk=Math.max(vpk,p[1]); vmin=Math.min(vmin,p[1]); sum+=p[1]; });
+  var vdc=sum/out.length, vrip=vpk-vmin;
+  var fRip=(TOPO==='half')?FREQ:2*FREQ;
+  var drops=(TOPO==='bridge')?'2 × 0.7 V':'1 × 0.7 V';
+  var name={half:'HALF-WAVE',ct:'FULL-WAVE CT',bridge:'FULL-BRIDGE'}[TOPO];
+  document.getElementById('rxRead').innerHTML=
+    '<span class="r-on">'+name+'</span>'+(CAP>0?' + '+(CAP*1e6).toFixed(0)+' µF':' · unfiltered')+'<br>'+
+    '─────────────────<br>'+
+    'V_p(in)  = '+VP.toFixed(1)+' V<br>'+
+    'V_p(out) = '+vpk.toFixed(2)+' V<br>'+
+    'Diode drops: '+drops+'<br>'+
+    'V_DC(avg)= '+vdc.toFixed(2)+' V<br>'+
+    'Ripple pp= '+vrip.toFixed(2)+' V<br>'+
+    'Ripple f = '+fRip+' Hz<br>'+
+    '─────────────────<br>'+
+    (CAP>0
+      ? 'V_r est ≈ I/(f·C) = '+((vdc/RL)/(fRip*CAP)).toFixed(2)+' V'
+      : 'Theory V_DC ≈ '+((TOPO==='half'?0.318:0.637)*vpk).toFixed(2)+' V');
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:'A 60 Hz sine drives a rectifier and the oscilloscope shows output pulses at 120 Hz. The circuit must be:',
+  o:['A half-wave rectifier','Either a full-wave center-tapped or a bridge rectifier','A filter capacitor acting alone','A broken half-wave rectifier'], a:1,
+  x:'Full-wave circuits (CT and bridge alike) route BOTH half-cycles through the load, producing two pulses per input cycle — 120 Hz ripple from a 60 Hz line. Ripple frequency is the scope fingerprint of full-wave rectification.'},
+ {q:'With a ±10 V input, the bridge rectifier\u2019s output peaked near 8.6 V while the half-wave peaked near 9.3 V. The extra loss in the bridge occurs because:',
+  o:['four diodes waste four diode drops','current always passes through two conducting diodes in series','the bridge halves the input voltage','bridge diodes have higher barrier potential'], a:1,
+  x:'On every half-cycle, exactly two of the four bridge diodes conduct in series with the load — two 0.7 V drops, so ≈1.4 V total versus 0.7 V for the single-diode paths.'},
+ {q:'In the center-tapped emulation, the two series function generators\u2019 midpoint served as:',
+  o:['the positive output terminal','the center tap — the 0 V reference the two outer ends swing above and below','a current limiter','the PIV test point'], a:1,
+  x:'A center tap is simply the electrical midpoint of a winding. Two identical in-phase sources in series create the same thing: outer ends at +V and −V relative to the grounded junction.'},
+ {q:'Which rectifier subjects each diode to the highest PIV for the same output peak?',
+  o:['Half-wave','Full-wave center-tapped','Full-bridge','They are all identical'], a:1,
+  x:'In the CT circuit, while one diode conducts, the OFF diode sees the full end-to-end secondary voltage — about 2·V_p. Bridge diodes see only ≈V_p, one of the bridge\u2019s quiet advantages.'},
+ {q:'With the same 47 µF filter capacitor and 1 kΩ load, the half-wave circuit showed about twice the ripple of the bridge because:',
+  o:['half-wave output has a higher peak','the capacitor discharges twice as long between 60 Hz recharge pulses as between 120 Hz pulses','half-wave rectifiers damage capacitors','the bridge uses smaller current'], a:1,
+  x:'Ripple ≈ I/(f·C): the reservoir droops until the next pulse tops it up. At 120 Hz the top-ups come twice as often, halving the droop for the same C and load.'},
+ {q:'You delete one diode from a working bridge rectifier. The most likely oscilloscope result is:',
+  o:['no output at all','output identical to before','half-wave output — one half-cycle\u2019s conduction pair is broken','the input sine appears across the load'], a:2,
+  x:'Each half-cycle depends on a specific diagonal pair. Removing one diode breaks one pair\u2019s path while the other pair still works — the bridge degrades gracefully into a half-wave rectifier, a classic real-world failure signature.'}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'">💡 '+item.x+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name="q'+qi+'"]:checked');
+    var opts=document.querySelectorAll('input[name="q'+qi+'"]');
+    opts.forEach(function(inp,oi){
+      var lab=inp.parentElement;
+      lab.classList.remove('correct','incorrect');
+      if(oi===item.a) lab.classList.add('correct');
+      else if(sel && parseInt(sel.value)===oi) lab.classList.add('incorrect');
+    });
+    document.getElementById('ex'+qi).classList.add('show');
+    if(sel && parseInt(sel.value)===item.a) score++;
+  });
+  var msg = score===6 ? '🏆 Perfect! You can read a rectifier off a scope trace like a pro.'
+          : score>=4 ? '📗 Solid work. Review the explanations for missed items and compare against your Data Table 1.'
+          : '📘 Getting there. Re-run the three circuits while watching pulses-per-cycle, then retake the quiz.';
+  document.getElementById('scoreBox').innerHTML=
+    '<div class="score-box"><div class="big">'+score+' / 6</div><div>'+msg+'</div></div>';
+  document.getElementById('scoreBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+drawRX();
+</script>
+</body>
+</html>
