@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Hands-On Lab: Encoders, Decoders, MUX/DEMUX &amp; ADC/DAC in Tinkercad</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td input{width:100%;min-width:90px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:.88rem;}
+table.data td input:focus{outline:2px solid var(--green);border-color:var(--green);}
+
+/* ============ STEP LIST ============ */
+.steps{counter-reset:step;list-style:none;margin:0 0 16px 0;}
+.steps li{counter-increment:step;position:relative;padding:0 0 18px 58px;margin-bottom:4px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;box-shadow:var(--shadow);}
+.steps li::after{content:'';position:absolute;left:18px;top:42px;bottom:0;width:2px;background:var(--border);}
+.steps li:last-child::after{display:none;}
+.steps li .step-title{font-weight:bold;color:var(--navy);display:block;margin-bottom:3px;}
+[data-theme="dark"] .steps li .step-title{color:#8ab6ff;}
+.steps.green li::before{background:var(--green);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;cursor:pointer;border:none;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SCHEMATIC FIGURE ============ */
+.fig{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin:20px 0;text-align:center;}
+.fig svg{width:100%;max-width:820px;height:auto;}
+.fig .fig-cap{font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;color:var(--text-muted);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;text-align:left;}
+.sch-wire{stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sch-comp{stroke:var(--navy);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sch-fill{fill:var(--navy);stroke:none;}
+.sch-lbl{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;fill:var(--text);}
+.sch-sub{font-family:'Arial Narrow',Arial,sans-serif;font-size:12.5px;fill:var(--text-muted);}
+.sch-meter{fill:var(--card-alt);stroke:var(--amber);stroke-width:2.4;}
+.sch-mlbl{font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;font-weight:bold;fill:#a86e00;}
+[data-theme="dark"] .sch-mlbl{fill:var(--amber);}
+.sch-green{stroke:var(--green);}
+.sch-red{stroke:var(--red);}
+
+/* ============ LAB (interactive) ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;}}
+@media print{.topbar,.crumbs,.theme-btn,.foot-nav,.submit-btn{display:none!important;} body{background:#fff;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+.sch-wave-in{stroke:var(--text-muted);stroke-width:2;fill:none;}
+.sch-wave-out{stroke:var(--green);stroke-width:2.6;fill:none;}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Hands-On Tinkercad Lab</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lab-interface.html">Labs</a> &nbsp;›&nbsp;
+  Encoders, Decoders, MUX/DEMUX &amp; ADC/DAC
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 1 · Digital Interface · Lab</span>
+  <h1>Codes, Routes &amp; Conversions: Where Digital Meets the World</h1>
+  <p class="sub">Six circuits that move information between forms: decoders that turn binary codes into actions, encoders that turn events into codes, multiplexers and demultiplexers that route many signals down one wire — and the two great translators at the analog border, the R-2R DAC and the flash ADC. You'll build every one from chips you already own, ending with a staircase waveform you generated and an analog-to-digital converter you constructed from op-amps.</p>
+  <div class="meta-chips">
+    <span>⏱ 3 × 75-Minute Sessions</span>
+    <span>🖥 Tinkercad Circuits (Free)</span>
+    <span>🔧 6 Circuits · Gates + 4511 + '193 + 741s</span>
+    <span>📊 Signal-Path &amp; Staircase Playground</span>
+    <span>✅ 6-Question Knowledge Check</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lab, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Construct</strong> a 2-to-4 line decoder from 74HC04/08 gates, verify its one-hot behavior (exactly one output active for each binary input code), and relate it to the commercial 74HC138/139 decoders.</li>
+      <li><strong>Operate</strong> a BCD-to-7-segment decoder/driver (CD4511, the 74HC4511's twin) driving a real 7-segment display, and <strong>trace</strong> how a 4-bit code becomes a human-readable digit.</li>
+      <li><strong>Construct</strong> a 4-to-2 encoder from 74HC32 OR gates, <strong>demonstrate</strong> the inverse relationship between encoding and decoding, and <strong>explain</strong> why commercial encoders (74HC147/148) add priority logic.</li>
+      <li><strong>Build</strong> a 2-to-1 multiplexer implementing Y = S̄·A + S·B, and <strong>demonstrate</strong> that a demultiplexer is simply a decoder whose enable input carries the data — converting your Part 1 circuit into a 1-to-4 demux with one wire.</li>
+      <li><strong>Construct</strong> a 4-bit R-2R ladder DAC, <strong>measure</strong> its 16 output levels, <strong>calculate</strong> its resolution (1 LSB = V<sub>ref</sub>/16 ≈ 0.3125 V), and <strong>generate</strong> a staircase waveform by driving it from a 74HC193 binary counter.</li>
+      <li><strong>Construct</strong> a 2-bit flash ADC from a resistor reference ladder and three LM741 comparators, <strong>map</strong> its quantization thresholds with a potentiometer sweep, and <strong>encode</strong> its thermometer-code output to binary with your Part 3 encoder.</li>
+      <li><strong>Evaluate</strong> the resolution/speed/complexity trade-offs of flash conversion (2ⁿ−1 comparators) and quantization error (±½ LSB), and <strong>identify</strong> the analog-digital boundary as a critical point in real systems — including their security.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition. Review these before you build.</p>
+
+      <div class="cat-label">Coding Circuits</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Decoder</div><div class="cat">Coding Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Takes an n-bit binary code and activates exactly ONE of its 2ⁿ outputs — <strong>one-hot</strong> output. A 2-to-4 decoder turns "10" into "output #2 only." Address decoders in memory chips are this circuit scaled up: your 16 GB of RAM finds every byte with decoders. Commercial parts: 74HC139 (dual 2-to-4), 74HC138 (3-to-8).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Encoder</div><div class="cat">Coding Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The decoder's inverse: 2ⁿ input lines in, an n-bit binary code out — "input #2 is active" becomes "10." Every key you press reaches your computer through an encoder. Commercial parts (74HC147/148) add <strong>priority</strong>: if two inputs fire at once, the highest-numbered wins, resolving the ambiguity our simple gate version ignores.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">BCD &amp; 7-Segment</div><div class="cat">Coding Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div><strong>Binary-Coded Decimal</strong>: each decimal digit 0–9 stored as its own 4-bit code. A BCD-to-7-segment decoder (CD4511 / 74HC4511 / classic 7447) translates that code into the seven segment-drive signals that paint the digit on a display — a decoder with 7 simultaneously-active outputs instead of one-hot.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">One-Hot Output</div><div class="cat">Coding Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An output pattern where exactly one line is active at a time. It's the decoder's signature and your Part 1 acceptance test: for every input code, count the lit LEDs — the answer must always be one. Two lit LEDs = a wiring error, guaranteed.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Routing Circuits</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Multiplexer (MUX)</div><div class="cat">Routing Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A digitally-controlled selector switch: n select bits choose which of 2ⁿ data inputs reaches the single output. Y = S̄·A + S·B is the 2-to-1 version you'll wire. MUXes let one wire, one ADC, or one bus serve many sources by taking turns — the foundation of all shared-media communication. Commercial: 74HC157 (quad 2-to-1), 74HC151 (8-to-1).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Demultiplexer (DEMUX)</div><div class="cat">Routing Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The MUX's mirror: one data input, routed to the ONE of 2ⁿ outputs the select code names. The elegant secret you'll prove in Part 4: <strong>a demux IS a decoder</strong> — feed data into the decoder's enable pin and the selected output copies the data while all others stay quiet. Same silicon, two job titles (74HC138 datasheets say "decoder/demultiplexer" for exactly this reason).</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Select Lines</div><div class="cat">Routing Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The address inputs of a MUX/DEMUX. The count rule is pure binary: <strong>n select lines command 2ⁿ channels</strong> — 1 line for 2 channels, 3 lines for 8. Going the other way: routing 16 channels? You need ⌈log₂16⌉ = 4 select bits. This arithmetic sizes every bus and every memory address in computing.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Time-Division Sharing</div><div class="cat">Routing Circuits</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The MUX's payoff: rapidly cycling the select lines lets many slow signals share one fast channel, each getting time slices. Your phone call, multiplexed with thousands of others onto one fiber, is this lab's Part 4 running at gigahertz. The receiving end demultiplexes — decoder with your time slot's address.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">The Analog Border</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">DAC &amp; the R-2R Ladder</div><div class="cat">The Analog Border</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A Digital-to-Analog Converter turns a binary code into a proportional voltage. The <strong>R-2R ladder</strong> does it with just two resistor values: each bit's switch contributes a binary-weighted share, so V<sub>out</sub> = V<sub>ref</sub> × (code/2ⁿ). Your headphones are hearing a many-bit descendant of the 4-bit ladder you'll build.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Resolution &amp; the LSB</div><div class="cat">The Analog Border</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The smallest voltage step a converter can express: <strong>1 LSB = V<sub>ref</sub> / 2ⁿ</strong>. Your 4-bit DAC on 5 V: 5/16 ≈ 0.3125 V per step — chunky. A 16-bit audio DAC: 5/65536 ≈ 76 µV — smooth. Bits buy fineness, exponentially.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Flash ADC</div><div class="cat">The Analog Border</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The fastest Analog-to-Digital architecture: a resistor ladder creates every threshold at once, a bank of <strong>2ⁿ−1 comparators</strong> tests the input against all of them simultaneously (producing <em>thermometer code</em> — comparators light up from the bottom like a thermometer), and an encoder converts to binary. Speed paid for in hardware: 8 bits costs 255 comparators.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Quantization Error</div><div class="cat">The Analog Border</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The rounding built into every ADC: all input voltages within one step map to the same code, so the digital value can be off by up to <strong>±½ LSB</strong>. It isn't a defect to eliminate — it's the price of admission to digital, reduced (never removed) by adding bits. You'll watch it directly as your pot sweeps between thresholds and the code refuses to budge.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TINKERCAD NOTES ================= -->
+<section id="tinkercad">
+  <h2 class="sec-title">🖥 Tinkercad Setup Notes: Building What the Library Doesn't Stock</h2>
+  <p>Seventh lab, and by now the pattern is the point: Tinkercad's library carries some of these functions as chips and omits others — and the omissions become the best builds. Here's the inventory honestly mapped:</p>
+  <ul class="styled">
+    <li><strong>What Tinkercad HAS:</strong> the <strong>CD4511</strong> BCD-to-7-segment decoder/driver (functional twin of the 74HC4511; the classic 74xx part is the 7447 — pinout documented in tab ②), the <strong>7-segment display</strong> (common cathode), the <strong>74HC193</strong> up/down counter you'll meet again in the counters lab, and all your gate chips and LM741s from previous labs.</li>
+    <li><strong>What it LACKS:</strong> no 74HC138/139 decoder, no 74HC147/148 encoder, no 74HC151/157 MUX, no DAC0808, no ADC0804. Every one of those functions gets <em>constructed</em> in this lab from 74HC04/08/32 gates, plain resistors, and 741 comparators — and the commercial 74xx parts are documented alongside each build so you can translate to real hardware immediately.</li>
+    <li><strong>7-segment display wiring:</strong> Tinkercad's common-cathode display needs its common pin(s) to GND and <strong>one 220 Ω resistor per segment</strong> (seven total) — not one shared resistor, which makes brightness vary with the digit. Hover each display pin: Tinkercad labels them a–g.</li>
+    <li><strong>R-2R ladder values:</strong> use <strong>1 kΩ and 2 kΩ</strong> exactly. The ladder's magic depends on the 2:1 ratio, not the absolute values — but mixing tolerances breaks the binary weighting. Measure the output with the multimeter (V mode); it has effectively infinite input impedance in Tinkercad, so no buffering needed.</li>
+    <li><strong>Comparators for the flash ADC:</strong> three <strong>LM741s</strong> on a single +5 V/GND supply (pin 7 → +5 V, pin 4 → GND — no negative rail this time). Outputs won't reach the full rails (expect ≈1.5 V inside), which is why the ADC's indicators are LEDs driven directly rather than logic inputs. The optional binary-encoding step notes the level caveat.</li>
+    <li><strong>The pot is your analog signal:</strong> a 10 kΩ potentiometer across +5 V/GND, wiper = V<sub>in</sub>, exactly as in the op-amp lab. Sweep it slowly and watch codes change in steps — that stepping IS quantization.</li>
+  </ul>
+  <div class="callout co-warn">
+    <div class="co-title">Three Sessions, One Idea</div>
+    This lab is long because it closes a loop: <strong>codes (Parts 1–3) → routes (Part 4) → conversions (Parts 5–6)</strong>, and the final circuit — the flash ADC — contains an encoder, comparators from the op-amp lab, and a resistor ladder cousin of the DAC. Budget Session 1 for Parts 1–2, Session 2 for Parts 3–4, Session 3 for Parts 5–6. Don't rush Part 5's measurement table; the DAC data feeds two analysis questions.
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section id="materials">
+  <h2 class="sec-title">🔧 Virtual Parts List</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Qty</th><th>Component (Tinkercad name)</th><th>Setting / Part</th><th>Used In</th></tr>
+    <tr><td>1</td><td>Breadboard (small)</td><td class="mono">—</td><td>All parts</td></tr>
+    <tr><td>1</td><td>Power Supply</td><td class="mono">5.00 V</td><td>All parts</td></tr>
+    <tr><td>4</td><td>Slideswitch</td><td class="mono">SPDT harness</td><td>Code inputs A/B · data · DAC bits</td></tr>
+    <tr><td>1 ea</td><td>74HC04 · 74HC08 · 74HC32</td><td class="mono">NOT · AND · OR</td><td>Decoder · encoder · MUX (Parts 1, 3, 4)</td></tr>
+    <tr><td>1</td><td>CD4511</td><td class="mono">BCD → 7-segment (≈74HC4511)</td><td>Part 2</td></tr>
+    <tr><td>1</td><td>7-Segment Display + 7 × 220 Ω</td><td class="mono">common cathode</td><td>Part 2</td></tr>
+    <tr><td>1</td><td>74HC193</td><td class="mono">4-bit up/down counter</td><td>Part 5 staircase drive</td></tr>
+    <tr><td>8</td><td>Resistor</td><td class="mono">4 × 1 kΩ · 4 × 2 kΩ</td><td>R-2R ladder (Part 5) — plus 1 spare 2 kΩ for the terminator</td></tr>
+    <tr><td>4</td><td>Resistor 1 kΩ</td><td class="mono">reference ladder</td><td>Flash ADC thresholds (Part 6)</td></tr>
+    <tr><td>3</td><td>Op Amp LM741</td><td class="mono">single 5 V supply</td><td>Flash ADC comparators (Part 6)</td></tr>
+    <tr><td>1</td><td>Potentiometer 10 kΩ</td><td class="mono">wiper = V_in</td><td>Part 6 analog input</td></tr>
+    <tr><td>1</td><td>Function Generator</td><td class="mono">square · 1 Hz · 0–5 V</td><td>Part 5 counter clock</td></tr>
+    <tr><td>4–6</td><td>LED + 220 Ω</td><td class="mono">assorted colors</td><td>Decoder/encoder/MUX/ADC indicators</td></tr>
+    <tr><td>1 ea</td><td>Multimeter · Oscilloscope</td><td class="mono">V mode · 500 ms/div</td><td>DAC levels · staircase waveform</td></tr>
+    <tr><td>~24</td><td>Wires</td><td class="mono">red / black / green</td><td>All parts</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= CIRCUIT ILLUSTRATIONS ================= -->
+<section id="schematic">
+  <h2 class="sec-title">📐 The Circuits You Will Build</h2>
+  <p>Five figures for six builds — the demux shares Figure 1's circuit, because that identity is the lesson. Commercial 74xx equivalents are noted on every figure for translation to real hardware.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(0,this)">① 2-to-4 Decoder / Demux</button>
+    <button class="tab-btn" onclick="showTab(1,this)">② BCD → 7-Segment</button>
+    <button class="tab-btn" onclick="showTab(2,this)">③ Encoder &amp; MUX</button>
+    <button class="tab-btn" onclick="showTab(3,this)">④ R-2R DAC + Staircase</button>
+    <button class="tab-btn" onclick="showTab(4,this)">⑤ 2-Bit Flash ADC</button>
+  </div>
+
+  <!-- ---- TAB 1: DECODER ---- -->
+  <div class="tab-pane show">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2-to-4 decoder from inverters and AND gates: inputs A1 A0, four AND gates produce one-hot outputs Y0 to Y3 driving LEDs">
+        <!-- inputs -->
+        <text class="sch-lbl" x="40" y="86">A1</text>
+        <path class="sch-wire sch-green" d="M 78 80 H 150"/>
+        <text class="sch-lbl" x="40" y="266">A0</text>
+        <path class="sch-wire sch-green" d="M 78 260 H 150"/>
+        <!-- inverters -->
+        <path class="sch-comp" d="M 150 62 L 150 98 L 184 80 Z" fill="var(--card-alt)"/>
+        <circle cx="191" cy="80" r="6" class="sch-comp" fill="var(--card)"/>
+        <text class="sch-sub" x="146" y="118">'04</text>
+        <path class="sch-comp" d="M 150 242 L 150 278 L 184 260 Z" fill="var(--card-alt)"/>
+        <circle cx="191" cy="260" r="6" class="sch-comp" fill="var(--card)"/>
+        <!-- rails: A1, A1bar, A0, A0bar as vertical distribution -->
+        <circle cx="120" cy="80" r="4" class="sch-fill"/>
+        <circle cx="120" cy="260" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 197 80 H 240"/>
+        <path class="sch-wire" d="M 197 260 H 260"/>
+        <text class="sch-sub" x="204" y="72">A̅1</text>
+        <text class="sch-sub" x="204" y="252">A̅0</text>
+        <!-- 4 AND gates -->
+        <g>
+          <path class="sch-comp" d="M 400 40 H 436 A 22 22 0 0 1 436 84 H 400 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="404" y="66">AND</text>
+          <path class="sch-comp" d="M 400 110 H 436 A 22 22 0 0 1 436 154 H 400 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="404" y="136">AND</text>
+          <path class="sch-comp" d="M 400 180 H 436 A 22 22 0 0 1 436 224 H 400 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="404" y="206">AND</text>
+          <path class="sch-comp" d="M 400 250 H 436 A 22 22 0 0 1 436 294 H 400 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="404" y="276">AND</text>
+        </g>
+        <!-- gate input labels -->
+        <text class="sch-sub" x="330" y="56">A̅1 · A̅0</text>
+        <text class="sch-sub" x="330" y="126">A̅1 · A0</text>
+        <text class="sch-sub" x="330" y="196">A1 · A̅0</text>
+        <text class="sch-sub" x="330" y="266">A1 · A0</text>
+        <!-- outputs -->
+        <path class="sch-wire" d="M 458 62 H 560"/><text class="sch-lbl" x="572" y="68">Y0 → LED (code 00)</text>
+        <path class="sch-wire" d="M 458 132 H 560"/><text class="sch-lbl" x="572" y="138">Y1 → LED (code 01)</text>
+        <path class="sch-wire" d="M 458 202 H 560"/><text class="sch-lbl" x="572" y="208">Y2 → LED (code 10)</text>
+        <path class="sch-wire" d="M 458 272 H 560"/><text class="sch-lbl" x="572" y="278">Y3 → LED (code 11)</text>
+        <text class="sch-sub" x="40" y="324">Each AND recognizes one code. Commercial: 74HC139 (dual 2-to-4) · 74HC138 (3-to-8). DEMUX conversion: gate each AND with a DATA line (Part 4).</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 1 — 2-to-4 decoder from one '04 and one '08.</strong> Two inverters make A̅1 and A̅0; four AND gates each recognize exactly one of the four codes, so exactly one LED lights per input — one-hot. Only three of these AND gates fit on one 74HC08 (it holds four 2-input gates, and Y3 needs A1·A0 — all four fit exactly). In Part 4, feeding a DATA signal into each AND (making them 3-input via a second gate layer, or gating the inverter supply of the enable) turns this same circuit into a 1-to-4 demultiplexer — the procedure shows the one-chip trick.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 2: 4511 ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CD4511 BCD to 7-segment decoder pinout wired to common-cathode display: BCD inputs on pins 7 1 2 6, segment outputs a through g through 220 ohm resistors">
+        <rect x="240" y="50" width="180" height="290" rx="10" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="3"/>
+        <path d="M 312 50 A 18 18 0 0 0 348 50" fill="none" stroke="var(--navy)" stroke-width="3"/>
+        <text class="sch-lbl" x="330" y="190" text-anchor="middle">CD4511</text>
+        <text class="sch-sub" x="330" y="210" text-anchor="middle">≈ 74HC4511</text>
+        <g class="sch-lbl" font-size="13">
+          <text x="208" y="80" text-anchor="end">1 · B (bit 1)</text>
+          <text x="208" y="115" text-anchor="end">2 · C (bit 2)</text>
+          <text x="208" y="150" text-anchor="end">3 · LT̄ (tie HIGH)</text>
+          <text x="208" y="185" text-anchor="end">4 · BL̄ (tie HIGH)</text>
+          <text x="208" y="220" text-anchor="end">5 · LE (tie LOW)</text>
+          <text x="208" y="255" text-anchor="end">6 · D (bit 3, MSB)</text>
+          <text x="208" y="290" text-anchor="end">7 · A (bit 0, LSB)</text>
+          <text x="208" y="322" text-anchor="end">8 · GND</text>
+        </g>
+        <g class="sch-lbl" font-size="13">
+          <text x="452" y="80">16 · V_DD (+5 V)</text>
+          <text x="452" y="115">15 · f  → 220 Ω → seg f</text>
+          <text x="452" y="150">14 · g → 220 Ω → seg g</text>
+          <text x="452" y="185">13 · a → 220 Ω → seg a</text>
+          <text x="452" y="220">12 · b → 220 Ω → seg b</text>
+          <text x="452" y="255">11 · c → 220 Ω → seg c</text>
+          <text x="452" y="290">10 · d → 220 Ω → seg d</text>
+          <text x="452" y="322">9  · e → 220 Ω → seg e</text>
+        </g>
+        <g stroke="var(--navy)" stroke-width="3">
+          <line x1="218" y1="76" x2="240" y2="76"/><line x1="218" y1="111" x2="240" y2="111"/>
+          <line x1="218" y1="146" x2="240" y2="146"/><line x1="218" y1="181" x2="240" y2="181"/>
+          <line x1="218" y1="216" x2="240" y2="216"/><line x1="218" y1="251" x2="240" y2="251"/>
+          <line x1="218" y1="286" x2="240" y2="286"/><line x1="218" y1="318" x2="240" y2="318"/>
+          <line x1="420" y1="76" x2="442" y2="76"/><line x1="420" y1="111" x2="442" y2="111"/>
+          <line x1="420" y1="146" x2="442" y2="146"/><line x1="420" y1="181" x2="442" y2="181"/>
+          <line x1="420" y1="216" x2="442" y2="216"/><line x1="420" y1="251" x2="442" y2="251"/>
+          <line x1="420" y1="286" x2="442" y2="286"/><line x1="420" y1="318" x2="442" y2="318"/>
+        </g>
+        <text class="sch-sub" x="40" y="366">BCD switches → A B C D (note scattered pins: 7, 1, 2, 6!). Display common cathode → GND. Classic TTL twin: 7447 (active-LOW outputs, common-ANODE display).</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 2 — The applied decoder: CD4511 + 7-segment display.</strong> Four switches enter a BCD code; seven outputs paint the digit. Mind two traps: the BCD input pins are scattered (A=7, B=1, C=2, D=6 — not in order), and the three control pins must be tied (LT̄ and BL̄ HIGH, LE LOW) or the display will blank, lamp-test, or freeze. One 220 Ω per segment.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 3: ENCODER & MUX ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Left: 4-to-2 encoder from two OR gates. Right: 2-to-1 multiplexer implementing Y equals not-S and A or S and B">
+        <!-- ENCODER left -->
+        <text class="sch-lbl" x="60" y="40">4-to-2 Encoder ('32)</text>
+        <text class="sch-sub" x="40" y="76">D0 (btn) — no gate needed</text>
+        <text class="sch-lbl" x="40" y="110">D1</text>
+        <text class="sch-lbl" x="40" y="150">D2</text>
+        <text class="sch-lbl" x="40" y="190">D3</text>
+        <path class="sch-wire sch-green" d="M 70 104 H 150 V 118 H 170"/>
+        <path class="sch-wire sch-green" d="M 70 184 H 150 V 140 H 170"/>
+        <path class="sch-comp" d="M 170 108 q 26 0 46 22 q -20 22 -46 22 q 12 -22 0 -44 Z" fill="var(--card-alt)"/>
+        <text class="sch-sub" x="178" y="136">OR</text>
+        <path class="sch-wire" d="M 216 130 H 300"/>
+        <text class="sch-lbl" x="308" y="136">A0 = D1+D3</text>
+        <path class="sch-wire sch-green" d="M 70 144 H 130 V 210 H 170"/>
+        <path class="sch-wire sch-green" d="M 150 184 V 232 H 170"/>
+        <path class="sch-comp" d="M 170 200 q 26 0 46 22 q -20 22 -46 22 q 12 -22 0 -44 Z" fill="var(--card-alt)"/>
+        <text class="sch-sub" x="178" y="228">OR</text>
+        <path class="sch-wire" d="M 216 222 H 300"/>
+        <text class="sch-lbl" x="308" y="228">A1 = D2+D3</text>
+        <text class="sch-sub" x="40" y="290">Press D2 → code 10. Press D3 → code 11.</text>
+        <text class="sch-sub" x="40" y="310">Commercial: 74HC148 adds priority + valid flag.</text>
+        <!-- divider -->
+        <path class="sch-wire" d="M 430 30 V 330" stroke-dasharray="4,6"/>
+        <!-- MUX right -->
+        <text class="sch-lbl" x="470" y="40">2-to-1 MUX ('04+'08+'32)</text>
+        <text class="sch-lbl" x="460" y="90">A</text>
+        <path class="sch-wire sch-green" d="M 484 84 H 560"/>
+        <text class="sch-lbl" x="460" y="130">S̄</text>
+        <path class="sch-wire" d="M 484 124 H 560"/>
+        <path class="sch-comp" d="M 560 66 H 592 A 20 20 0 0 1 592 106 H 560 Z" fill="var(--card-alt)"/>
+        <text class="sch-sub" x="562" y="92">AND</text>
+        <text class="sch-lbl" x="460" y="210">B</text>
+        <path class="sch-wire sch-green" d="M 484 204 H 560"/>
+        <text class="sch-lbl" x="460" y="250">S</text>
+        <path class="sch-wire" d="M 484 244 H 560"/>
+        <path class="sch-comp" d="M 560 186 H 592 A 20 20 0 0 1 592 226 H 560 Z" fill="var(--card-alt)"/>
+        <text class="sch-sub" x="562" y="212">AND</text>
+        <path class="sch-wire" d="M 614 86 H 650 V 140 H 672"/>
+        <path class="sch-wire" d="M 614 206 H 650 V 162 H 672"/>
+        <path class="sch-comp" d="M 672 128 q 26 0 46 22 q -20 22 -46 22 q 12 -22 0 -44 Z" fill="var(--card-alt)"/>
+        <text class="sch-sub" x="680" y="156">OR</text>
+        <path class="sch-wire" d="M 718 150 H 790"/>
+        <text class="sch-lbl" x="742" y="140">Y</text>
+        <text class="sch-sub" x="470" y="290">Y = S̄·A + S·B — the select line opens</text>
+        <text class="sch-sub" x="470" y="310">exactly one AND "door." Commercial: 74HC157.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 3 — Encoder (left) and MUX (right).</strong> The encoder is two OR gates reading off which input fired — note D0 needs no gate at all (code 00 means "nothing else pressed"). The MUX is the inverting amplifier's digital cousin: S̄ opens the A door, S opens the B door, the OR merges. One inverter, two ANDs, one OR — spare gates on chips you've already placed.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 4: DAC ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4-bit R-2R ladder DAC: bit switches through 2 kilohm resistors into a ladder of 1 kilohm series resistors, output Vout, optional 74HC193 counter drive">
+        <!-- ladder backbone -->
+        <path class="sch-wire" d="M 120 120 H 660"/>
+        <!-- series R (1k) between nodes -->
+        <g class="sch-comp">
+          <path d="M 235 120 l 8 -10 l 10 20 l 10 -20 l 10 20 l 8 -10" fill="none"/>
+          <path d="M 375 120 l 8 -10 l 10 20 l 10 -20 l 10 20 l 8 -10" fill="none"/>
+          <path d="M 515 120 l 8 -10 l 10 20 l 10 -20 l 10 20 l 8 -10" fill="none"/>
+        </g>
+        <text class="sch-sub" x="248" y="98">1 kΩ</text>
+        <text class="sch-sub" x="388" y="98">1 kΩ</text>
+        <text class="sch-sub" x="528" y="98">1 kΩ</text>
+        <!-- 2k legs from switches -->
+        <g>
+          <text class="sch-lbl" x="140" y="34">b0 (LSB)</text>
+          <path class="sch-wire sch-green" d="M 170 44 V 60"/>
+          <path class="sch-comp" d="M 170 60 l 7 9 l -14 8 l 14 8 l -14 8 l 7 9" fill="none"/>
+          <path class="sch-wire" d="M 170 102 V 120"/>
+          <text class="sch-sub" x="182" y="86">2 kΩ</text>
+          <circle cx="170" cy="120" r="4" class="sch-fill"/>
+        </g>
+        <g>
+          <text class="sch-lbl" x="290" y="34">b1</text>
+          <path class="sch-wire sch-green" d="M 310 44 V 60"/>
+          <path class="sch-comp" d="M 310 60 l 7 9 l -14 8 l 14 8 l -14 8 l 7 9" fill="none"/>
+          <path class="sch-wire" d="M 310 102 V 120"/>
+          <text class="sch-sub" x="322" y="86">2 kΩ</text>
+          <circle cx="310" cy="120" r="4" class="sch-fill"/>
+        </g>
+        <g>
+          <text class="sch-lbl" x="430" y="34">b2</text>
+          <path class="sch-wire sch-green" d="M 450 44 V 60"/>
+          <path class="sch-comp" d="M 450 60 l 7 9 l -14 8 l 14 8 l -14 8 l 7 9" fill="none"/>
+          <path class="sch-wire" d="M 450 102 V 120"/>
+          <text class="sch-sub" x="462" y="86">2 kΩ</text>
+          <circle cx="450" cy="120" r="4" class="sch-fill"/>
+        </g>
+        <g>
+          <text class="sch-lbl" x="570" y="34">b3 (MSB)</text>
+          <path class="sch-wire sch-green" d="M 590 44 V 60"/>
+          <path class="sch-comp" d="M 590 60 l 7 9 l -14 8 l 14 8 l -14 8 l 7 9" fill="none"/>
+          <path class="sch-wire" d="M 590 102 V 120"/>
+          <text class="sch-sub" x="602" y="86">2 kΩ</text>
+          <circle cx="590" cy="120" r="4" class="sch-fill"/>
+        </g>
+        <!-- terminator 2k to GND at LSB end -->
+        <path class="sch-comp" d="M 120 120 V 140 l 9 7 l -18 14 l 18 14 l -18 14 l 9 7" fill="none"/>
+        <path class="sch-wire" d="M 120 196 V 220"/>
+        <path class="sch-comp" d="M 108 220 H 132 M 113 226 H 127 M 117 232 H 123"/>
+        <text class="sch-sub" x="134" y="172">2 kΩ terminator</text>
+        <!-- output -->
+        <circle cx="660" cy="120" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 660 120 H 750"/>
+        <text class="sch-lbl" x="700" y="108">V_out</text>
+        <text class="sch-sub" x="646" y="150">→ multimeter / scope</text>
+        <!-- formula + counter note -->
+        <text class="sch-lbl" x="120" y="278">V_out = 5 V × (8·b3 + 4·b2 + 2·b1 + b0) / 16     ·     1 LSB = 0.3125 V</text>
+        <text class="sch-sub" x="120" y="308">Step 2 upgrade: replace the four switches with 74HC193 outputs QA→b0 … QD→b3, clock at 1 Hz → live staircase on the scope.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 4 — 4-bit R-2R ladder DAC.</strong> Each switch drives its 2 kΩ leg with 5 V (bit=1) or GND (bit=0); the 1 kΩ backbone halves each bit's influence as it travels toward the output, producing perfect binary weighting from only two resistor values. Don't omit the 2 kΩ terminator at the LSB end — it completes the ladder's math. Commercial reference: DAC0808 (8-bit).</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 5: FLASH ADC ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="2-bit flash ADC: four 1 kilohm resistor ladder generates thresholds 1.25, 2.5, 3.75 volts feeding three LM741 comparators against potentiometer input, thermometer LED outputs">
+        <!-- reference ladder -->
+        <text class="sch-lbl" x="46" y="40">+5 V</text>
+        <path class="sch-wire sch-red" d="M 70 48 V 64"/>
+        <g class="sch-comp" fill="none">
+          <path d="M 70 64 l 7 8 l -14 8 l 14 8 l -14 8 l 7 8"/>
+          <path d="M 70 128 l 7 8 l -14 8 l 14 8 l -14 8 l 7 8"/>
+          <path d="M 70 192 l 7 8 l -14 8 l 14 8 l -14 8 l 7 8"/>
+          <path d="M 70 256 l 7 8 l -14 8 l 14 8 l -14 8 l 7 8"/>
+        </g>
+        <text class="sch-sub" x="86" y="92">1 kΩ</text>
+        <text class="sch-sub" x="86" y="156">1 kΩ</text>
+        <text class="sch-sub" x="86" y="220">1 kΩ</text>
+        <text class="sch-sub" x="86" y="284">1 kΩ</text>
+        <path class="sch-wire" d="M 70 104 V 128 M 70 168 V 192 M 70 232 V 256 M 70 300 V 316"/>
+        <path class="sch-comp" d="M 58 316 H 82 M 63 322 H 77 M 67 328 H 73"/>
+        <circle cx="70" cy="116" r="4" class="sch-fill"/>
+        <circle cx="70" cy="180" r="4" class="sch-fill"/>
+        <circle cx="70" cy="244" r="4" class="sch-fill"/>
+        <text class="sch-sub" x="88" y="120">3.75 V</text>
+        <text class="sch-sub" x="88" y="184">2.50 V</text>
+        <text class="sch-sub" x="88" y="248">1.25 V</text>
+        <!-- comparators -->
+        <g>
+          <path class="sch-comp" d="M 260 84 L 260 148 L 336 116 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="270" y="106">−</text><text class="sch-sub" x="270" y="136">+</text>
+          <text class="sch-sub" x="268" y="166">C3 · 741</text>
+          <path class="sch-comp" d="M 260 148 L 260 212 L 336 180 Z" fill="var(--card-alt)" transform="translate(0,16)"/>
+          <text class="sch-sub" x="270" y="186">−</text><text class="sch-sub" x="270" y="216">+</text>
+          <text class="sch-sub" x="268" y="246">C2 · 741</text>
+          <path class="sch-comp" d="M 260 244 L 260 308 L 336 276 Z" fill="var(--card-alt)"/>
+          <text class="sch-sub" x="270" y="266">−</text><text class="sch-sub" x="270" y="296">+</text>
+          <text class="sch-sub" x="268" y="326">C1 · 741</text>
+        </g>
+        <!-- threshold wires to - inputs -->
+        <path class="sch-wire" d="M 70 116 H 200 V 100 H 260"/>
+        <path class="sch-wire" d="M 70 180 H 200 V 180 H 260"/>
+        <path class="sch-wire" d="M 70 244 H 200 V 260 H 260"/>
+        <!-- Vin bus to + inputs -->
+        <text class="sch-lbl" x="150" y="346">V_in (pot wiper)</text>
+        <path class="sch-wire sch-green" d="M 236 340 H 236 V 130 H 260 M 236 210 H 260 M 236 290 H 260"/>
+        <path class="sch-wire sch-green" d="M 290 340 H 236"/>
+        <!-- outputs -->
+        <path class="sch-wire" d="M 336 116 H 430"/><text class="sch-lbl" x="440" y="122">L3 → LED (V_in &gt; 3.75)</text>
+        <path class="sch-wire" d="M 336 196 H 430"/><text class="sch-lbl" x="440" y="202">L2 → LED (V_in &gt; 2.50)</text>
+        <path class="sch-wire" d="M 336 276 H 430"/><text class="sch-lbl" x="440" y="282">L1 → LED (V_in &gt; 1.25)</text>
+        <text class="sch-sub" x="440" y="70">Thermometer code: LEDs light bottom-up.</text>
+        <text class="sch-sub" x="440" y="316">Optional: L-outputs → Part 3 encoder → binary b1 b0.</text>
+        <text class="sch-sub" x="440" y="336">Commercial one-chip ADC: ADC0804 (8-bit SAR).</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 5 — 2-bit flash ADC from three comparators.</strong> The equal-resistor ladder slices 5 V into thresholds at 1.25, 2.50, and 3.75 V; each 741 (single 5 V supply: pin 7 → +5 V, pin 4 → GND) compares V<sub>in</sub> against one threshold. Sweep the pot and the LEDs fill like a thermometer — 2ⁿ−1 = 3 comparators for 2 bits, which is why 8-bit flash costs 255 of them.</div>
+    </div>
+  </div>
+
+  <h3>Commercial 74xx / Converter Reference</h3>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Function</th><th class="mono">This lab's build</th><th class="mono">Commercial part</th><th class="mono">Key pins (commercial)</th></tr>
+    <tr><td>2-to-4 / 3-to-8 decoder (+demux)</td><td class="mono">'04 + '08 gates</td><td class="mono">74HC139 / 74HC138</td><td class="mono">'138: A,B,C in 1-3 · Y0-Y7 out 15-7 · enables 4,5,6 · pwr 8/16</td></tr>
+    <tr><td>BCD → 7-segment</td><td class="mono">CD4511 (in Tinkercad)</td><td class="mono">74HC4511 / 7447</td><td class="mono">4511: A=7 B=1 C=2 D=6 · a-g=13,12,11,10,9,15,14 · pwr 8/16</td></tr>
+    <tr><td>Encoder (priority)</td><td class="mono">'32 gates</td><td class="mono">74HC147 / 74HC148</td><td class="mono">'148: in 0-7 · A0-A2 out 9,7,6 · EI 5 · pwr 8/16</td></tr>
+    <tr><td>2-to-1 / 8-to-1 MUX</td><td class="mono">'04+'08+'32 gates</td><td class="mono">74HC157 / 74HC151</td><td class="mono">'151: D0-D7 · select 11,10,9 · Y 5 · pwr 8/16</td></tr>
+    <tr><td>DAC</td><td class="mono">R-2R ladder + '193 drive</td><td class="mono">DAC0808 (8-bit)</td><td class="mono">'193: clk-up 5 · QA-QD 3,2,6,7 · clear 14 · pwr 8/16</td></tr>
+    <tr><td>ADC</td><td class="mono">3 × LM741 flash</td><td class="mono">ADC0804 (8-bit SAR)</td><td class="mono">741 (each): +in 3 · −in 2 · out 6 · V+ 7 · V− 4</td></tr>
+  </table></div>
+  <div class="formula">Decoder: 1-of-2ⁿ one-hot     MUX: n selects → 2ⁿ channels     DAC: V_out = V_ref · code/2ⁿ     1 LSB = V_ref/2ⁿ     Flash ADC: 2ⁿ−1 comparators     Q-error ≤ ±½ LSB</div>
+</section>
+
+<!-- ================= PROCEDURE ================= -->
+<section id="procedure">
+  <h2 class="sec-title">🛠 Step-by-Step Procedure</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Session 1 = Parts 1–2 (decoders) · Session 2 = Parts 3–4 (encoder, MUX/DEMUX) · Session 3 = Parts 5–6 (DAC/ADC).</p>
+
+  <h3>Part 1 — 2-to-4 Decoder from Gates (≈25 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Workspace.</span> New circuit <em>"LastName – Interface Lab."</em> Breadboard, 5.00 V supply to rails. Two slide switches (SPDT harness) as inputs <strong>A1</strong> and <strong>A0</strong>; four LED + 220 Ω indicators as <strong>Y0–Y3</strong>.</li>
+    <li><span class="step-title">Seat the '04 and '08.</span> Power ritual on both (14 → +5 V, 7 → GND). Wire A1 → 04 pin 1 and A0 → 04 pin 3; their outputs (pins 2, 4) are A̅1 and A̅0. Run A1, A̅1, A0, A̅0 to four labeled distribution columns.</li>
+    <li><span class="step-title">Wire the four recognizers</span> per Figure 1 on the '08: gate 1 (pins 1,2→3) gets A̅1, A̅0 → Y0; gate 2 (4,5→6) gets A̅1, A0 → Y1; gate 3 (9,10→8) gets A1, A̅0 → Y2; gate 4 (12,13→11) gets A1, A0 → Y3.</li>
+    <li><span class="step-title">One-hot verification.</span> Simulate. Step the switches through 00, 01, 10, 11 and record which LED lights in Data Table 1. Acceptance test: <strong>exactly one LED per code, every code</strong>. Two LEDs ever lit at once means a distribution wire is crossed.</li>
+    <li><span class="step-title">Think ahead.</span> One sentence in the report: your computer's RAM has ~34 address bits. How many outputs would a full 34-to-2³⁴ decoder have? (This is why memory decoders are built in trees.)</li>
+  </ol>
+
+  <h3>Part 2 — The Applied Decoder: BCD → 7-Segment (≈25 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Seat the CD4511</span> (16-pin: V<sub>DD</sub> = 16 → +5 V, GND = 8). Immediately tie the control pins: <strong>LT̄ (3) → +5 V, BL̄ (4) → +5 V, LE (5) → GND</strong>. Skipping these is the #1 failure in this part.</li>
+    <li><span class="step-title">Inputs.</span> Four slide switches → the BCD pins <strong>in their scattered order</strong>: bit 0 → pin 7 (A), bit 1 → pin 1 (B), bit 2 → pin 2 (C), bit 3 → pin 6 (D). Label the switches on the workspace.</li>
+    <li><span class="step-title">Display.</span> Place the 7-segment (common cathode), its common pin → GND. Wire segment outputs through <strong>seven individual 220 Ω resistors</strong>: pin 13→a, 12→b, 11→c, 10→d, 9→e, 15→f, 14→g (hover the display's pins to match a–g).</li>
+    <li><span class="step-title">Count 0 through 9.</span> Enter each BCD code 0000–1001 and record the displayed digit in Data Table 2. Then try 1010–1111 (10–15): the 4511 <strong>blanks</strong> — note this, and contrast with what a hex-capable decoder would do.</li>
+    <li><span class="step-title">Control-pin experiments.</span> Momentarily ground LT̄ (all segments light — lamp test), ground BL̄ (display blanks), and raise LE with a digit showing, then change the switches (display freezes — LE is a latch, last lab's lesson hiding inside this chip). Record all three.</li>
+  </ol>
+
+  <h3>Part 3 — 4-to-2 Encoder from OR Gates (≈15 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Inputs and outputs.</span> Four pushbuttons D0–D3, each with a 10 kΩ pull-down (button from +5 V to its column, resistor from column to GND). Two LEDs as the code output <strong>A1 (MSB), A0 (LSB)</strong>.</li>
+    <li><span class="step-title">Wire the '32</span> per Figure 3: gate 1 (pins 1,2→3): D1, D3 → A0. Gate 2 (4,5→6): D2, D3 → A1. D0 connects to nothing — pressing it yields code 00 by silence.</li>
+    <li><span class="step-title">Verify.</span> Press each button alone and record the 2-bit code in Data Table 3: D0→00, D1→01, D2→10, D3→11 — the exact inverse of Part 1.</li>
+    <li><span class="step-title">Find the flaw.</span> Press D1 and D2 <em>together</em>: the output claims 11, i.e. "D3" — a lie. Record it, and explain in one sentence what the 74HC148's priority logic would have answered instead (highest input wins: 10).</li>
+  </ol>
+
+  <h3>Part 4 — MUX, then the DEMUX Revelation (≈25 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Build the 2-to-1 MUX</span> per Figure 3 with spare gates: inputs A and B from two slide switches, select S from a third; S → 04 spare inverter → S̄; AND gate 1: S̄·A; AND gate 2: S·B; OR them → Y → LED.</li>
+    <li><span class="step-title">Prove selection.</span> Set A = 1, B = 0. S = 0 → Y shows A (1). S = 1 → Y shows B (0). Now wiggle the <em>unselected</em> input and watch Y ignore it completely. Fill Data Table 4.</li>
+    <li><span class="step-title">Route a live signal.</span> Replace input B with the function generator (square, 1 Hz, 0–5 V). S = 1: the LED blinks (you routed the generator). S = 0: steady A. One wire = many sources, taking turns.</li>
+    <li><span class="step-title">The demux revelation.</span> Return to your Part 1 decoder. Pick ONE change: replace the A̅1·A̅0-style two-input recognition with three-input recognition by routing a DATA switch through spare '08 gates — concretely: take each decoder output Yn into a fresh AND gate paired with DATA, and move the LEDs to those gate outputs. Now A1 A0 <em>select a destination</em> and DATA's value appears there: 1-line-to-4-line demultiplexer. Toggle DATA with the code at 10 — only LED 2 blinks. Record in Data Table 4.</li>
+    <li><span class="step-title">Say it in one sentence.</span> For the report: why do 74HC138 datasheets title the chip "decoder/demultiplexer"?</li>
+  </ol>
+
+  <h3>Part 5 — R-2R DAC &amp; the Staircase (≈30 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Build the ladder</span> per Figure 4 on a clear breadboard area: backbone of three 1 kΩ resistors between four node columns; a 2 kΩ leg rising from each node to a slide switch (SPDT: GND / leg / +5 V); the 2 kΩ terminator from the LSB-end node to GND. Multimeter (V) from the MSB-end node (V<sub>out</sub>) to GND.</li>
+    <li><span class="step-title">Predict, then measure the corners.</span> Predict with V<sub>out</sub> = 5 × code/16, then measure codes 0000, 0001 (1 LSB!), 1000 (MSB alone = 2.5 V), 1111. Record predicted vs measured in Data Table 5.</li>
+    <li><span class="step-title">Fill the table.</span> Measure the remaining codes (order suggested in the table). The steps should march up by ≈0.3125 V each time. Any code that breaks the pattern → check that bit's 2 kΩ leg and switch.</li>
+    <li><span class="step-title">Binary weight check.</span> From your data: does code 1000 alone equal the sum of 0111 + 1 LSB? Show the arithmetic in the report — that identity <em>is</em> binary weighting, measured.</li>
+    <li><span class="step-title">Automate: the staircase.</span> Seat the <strong>74HC193</strong> (16-pin: V<sub>CC</sub> 16, GND 8; tie CLR pin 14 → GND, LOAD pin 11 → +5 V, DOWN-clock pin 4 → +5 V). Function generator (square, 1 Hz, 0–5 V) → UP-clock pin 5. Replace the four switches: QA (pin 3) → b0 leg, QB (2) → b1, QC (6) → b2, QD (7) → b3. Oscilloscope on V<sub>out</sub>, 500 ms/div.</li>
+    <li><span class="step-title">Watch it climb.</span> Run: V<sub>out</sub> ascends 16 steps and wraps to zero — a staircase waveform, the counting of the '193 made visible as voltage. Sketch or screenshot it; record step height and period in Data Table 5. You have built a (slow) signal generator from a counter and eight resistors.</li>
+  </ol>
+
+  <h3>Part 6 — 2-Bit Flash ADC (≈30 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Reference ladder.</span> Four 1 kΩ resistors in series from +5 V to GND. Verify the taps with the multimeter: 3.75 V, 2.50 V, 1.25 V top to bottom.</li>
+    <li><span class="step-title">Comparator bank.</span> Three LM741s, each powered <strong>single-supply</strong>: pin 7 → +5 V, pin 4 → GND. Wire each tap to one comparator's <strong>inverting</strong> input (pin 2): C1 gets 1.25 V, C2 gets 2.50 V, C3 gets 3.75 V.</li>
+    <li><span class="step-title">Analog input.</span> 10 kΩ pot across +5 V/GND; wiper → all three <strong>non-inverting</strong> inputs (pin 3), and → multimeter so you can read V<sub>in</sub> precisely.</li>
+    <li><span class="step-title">Thermometer display.</span> Each comparator output (pin 6) → LED + 220 Ω → GND, stacked vertically L1 (bottom) to L3 (top).</li>
+    <li><span class="step-title">Sweep and map.</span> Turn the pot slowly from 0 to 5 V. The LEDs fill bottom-up — thermometer code. Record in Data Table 6 the V<sub>in</sub> at which each LED turns on, versus the ladder's theoretical thresholds. Then park the pot at 1.8 V and nudge it ±0.2 V: the code doesn't move. You are standing inside one quantization step — that immobility is quantization error, experienced.</li>
+    <li><span class="step-title">Optional: close the loop to binary.</span> Route L1, L2, L3 into encoder logic (b1 = L2; b0 = L3 + (L1·L̄2) — one OR, one AND, one inverter from your spares) and two LEDs show the count 00–11 in binary. Note: the 741's HIGH (~3.5 V) is marginal for 74HC inputs; in Tinkercad it works — on real hardware you'd use an LM339 comparator with a pull-up. Record the binary column in Data Table 6.</li>
+    <li><span class="step-title">Wrap up.</span> Complete the Analysis Questions and Knowledge Check, then Print/Save your report with all six data tables.</li>
+  </ol>
+
+  <div class="callout co-tip">
+    <div class="co-title">Troubleshooting</div>
+    <strong>Decoder lights two LEDs?</strong> A distribution wire (A vs A̅) is swapped — check the inverter outputs first. <strong>7-segment shows garbage or nothing?</strong> Control pins: LT̄/BL̄ HIGH, LE LOW; then check the scattered BCD pin order (A=7!). <strong>DAC steps uneven?</strong> One leg's resistor is 1 k where it should be 2 k (or vice versa), or the terminator is missing — the ladder is unforgiving about its ratio. <strong>Staircase stuck at zero?</strong> The '193's CLR (14) must be LOW and LOAD (11) HIGH; also confirm the clock swings 0–5 V. <strong>ADC LEDs all on or all off?</strong> Comparator inputs swapped — thresholds go to pin 2 (−), the pot to pin 3 (+). <strong>ADC LED half-bright?</strong> Normal near a threshold: the comparator is mid-transition; nudge the pot.
+  </div>
+</section>
+
+<!-- ================= DATA TABLES ================= -->
+<section id="data">
+  <h2 class="sec-title">📋 Data Tables</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Tables persist when you print this page.</p>
+
+  <h3>Data Table 1 — 2-to-4 Decoder (Part 1)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl1">
+    <tr><th class="mono">A1</th><th class="mono">A0</th><th class="mono">Y0</th><th class="mono">Y1</th><th class="mono">Y2</th><th class="mono">Y3</th><th class="mono"># of LEDs lit</th></tr>
+    <tr><td class="mono">0</td><td class="mono">0</td><td><input aria-label="Y0 at code 00"></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0</td><td class="mono">1</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">0</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">1</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 2 — BCD → 7-Segment (Part 2)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl2">
+    <tr><th class="mono">D C B A</th><th class="mono">0000</th><th class="mono">0001</th><th class="mono">0010</th><th class="mono">0011</th><th class="mono">0100</th><th class="mono">0101</th><th class="mono">0110</th><th class="mono">0111</th><th class="mono">1000</th><th class="mono">1001</th><th class="mono">1010–1111</th></tr>
+    <tr><td class="mono">Digit shown</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+  <div class="tbl-wrap"><table class="data" id="tbl2b">
+    <tr><th>Control experiment</th><th>Observed display behavior</th></tr>
+    <tr><td class="mono">LT̄ grounded</td><td><input></td></tr>
+    <tr><td class="mono">BL̄ grounded</td><td><input></td></tr>
+    <tr><td class="mono">LE raised, then inputs changed</td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 3 — 4-to-2 Encoder (Part 3)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl3">
+    <tr><th>Button pressed</th><th class="mono">A1</th><th class="mono">A0</th><th>Code correct?</th></tr>
+    <tr><td class="mono">D0</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">D1</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">D2</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">D3</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">D1 + D2 together</td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 4 — MUX &amp; DEMUX (Part 4)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl4">
+    <tr><th>Test</th><th class="mono">S / code</th><th class="mono">Y / destination</th><th>Observation</th></tr>
+    <tr><td class="mono">MUX: A=1 B=0</td><td class="mono">S=0</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">MUX: A=1 B=0</td><td class="mono">S=1</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">MUX: wiggle unselected input</td><td class="mono">—</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">MUX: B = 1 Hz generator</td><td class="mono">S=1</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">DEMUX: DATA toggled</td><td class="mono">code 10</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">DEMUX: DATA toggled</td><td class="mono">code 01</td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 5 — R-2R DAC (Part 5)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl5">
+    <tr><th class="mono">Code b3b2b1b0</th><th class="mono">Decimal</th><th class="mono">Predicted V = 5·n/16</th><th class="mono">Measured V_out</th></tr>
+    <tr><td class="mono">0000</td><td class="mono">0</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0001</td><td class="mono">1</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0010</td><td class="mono">2</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0100</td><td class="mono">4</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0111</td><td class="mono">7</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1000</td><td class="mono">8</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1100</td><td class="mono">12</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1111</td><td class="mono">15</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono" colspan="2" style="text-align:right;font-weight:bold;">Staircase: step height · period per full ramp</td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 6 — Flash ADC (Part 6)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl6">
+    <tr><th class="mono">V_in range</th><th class="mono">Theoretical threshold</th><th class="mono">Measured turn-on V_in</th><th class="mono">L3 L2 L1</th><th class="mono">Binary b1 b0 (opt.)</th></tr>
+    <tr><td class="mono">0 – 1.25 V</td><td class="mono">—</td><td class="mono">—</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1.25 – 2.50 V</td><td class="mono">1.25 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">2.50 – 3.75 V</td><td class="mono">2.50 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">3.75 – 5.00 V</td><td class="mono">3.75 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono" colspan="3" style="text-align:right;font-weight:bold;">Quantization test: code change while nudging pot ±0.2 V inside a step?</td><td colspan="2"><input></td></tr>
+  </table></div>
+  <div class="g-btns" style="max-width:420px;">
+    <button class="g-btn g-green" onclick="window.print()">🖨 Print / Save Report</button>
+    <button class="g-btn" onclick="clearTables()">↺ Clear Tables</button>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE EXPLORER ================= -->
+<section id="explorer">
+  <h2 class="sec-title">📈 Interactive Signal-Path &amp; Conversion Playground</h2>
+  <p>All six circuits, live. The digital modes draw the signal path with active routes in green; the converter modes plot the transfer function — the staircase that defines digital-analog conversion — with your operating point riding on it. Rehearse each part here before wiring it.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="ifCv" width="640" height="400" aria-label="Live diagram or transfer function for the selected interface circuit"></canvas>
+        <div class="g-btns" style="margin-top:14px;" id="ifBtns"></div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label><span>Circuit</span></label>
+          <div class="seg" id="modeSeg">
+            <button class="active" onclick="setMode('dec',this)">Decoder</button>
+            <button onclick="setMode('enc',this)">Encoder</button>
+            <button onclick="setMode('mux',this)">MUX</button>
+            <button onclick="setMode('demux',this)">DEMUX</button>
+            <button onclick="setMode('dac',this)">DAC</button>
+            <button onclick="setMode('adc',this)">ADC</button>
+          </div>
+        </div>
+        <div class="ctrl" id="adcCtrl" style="display:none;">
+          <label><span>V<sub>in</sub> (pot)</span><span id="vinVal">2.00 V</span></label>
+          <input type="range" id="vinSlide" min="0" max="5" step="0.05" value="2" oninput="drawIF()">
+        </div>
+        <div class="readout" id="ifRead" style="margin-bottom:12px;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">What To Notice</div>
+    In <strong>DAC</strong> mode, press <em>Auto-Count</em> and watch the dot climb the staircase exactly as your scope will show in Part 5 — then read the step height off the axis: 0.3125 V. In <strong>ADC</strong> mode, drag V<sub>in</sub> slowly: the dot slides <em>horizontally</em> inside a tread with the code frozen, then jumps a riser — the geometry of quantization error. And compare the MUX and DEMUX drawings: same trapezoid, arrows reversed. The routing family is one idea wearing two hats.
+  </div>
+</section>
+
+<!-- ================= ANALYSIS QUESTIONS ================= -->
+<section id="analysis">
+  <h2 class="sec-title">✍ Analysis Questions</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Answer in complete sentences in your lab report.</p>
+  <ol class="styled">
+    <li>State the input/output relationship of a decoder and an encoder in one sentence each, and use your Data Tables 1 and 3 to show they are inverses.</li>
+    <li>In Part 3 you caught the simple encoder lying when two buttons were pressed. Explain how the 74HC148's priority scheme resolves it, and give one real device where priority encoding is essential.</li>
+    <li>Defend the sentence "a demultiplexer is a decoder with data on its enable" using your Part 4 step 4 observations. Why do manufacturers sell one chip for both jobs?</li>
+    <li>From Data Table 5: compute the measured step size between consecutive codes and compare to the theoretical 1 LSB = 312.5 mV. Then compute what 1 LSB would be for an 8-bit and a 16-bit converter on the same 5 V reference — and explain what those numbers mean for audio quality.</li>
+    <li>Your staircase generator (counter + DAC) is a primitive arbitrary-waveform generator. Describe what waveform you'd get if the '193 counted <em>down</em> instead, and what you'd get alternating up/down.</li>
+    <li>Flash conversion needed 3 comparators for 2 bits. Derive the comparator count for n bits, evaluate it for 8 and 10 bits, and explain the engineering trade this architecture makes (and why oscilloscope front-ends pay it gladly).</li>
+    <li>Security connection: sensor-spoofing attacks target exactly the boundary you built in Part 6 — if an attacker can nudge V<sub>in</sub> across one comparator threshold, the digital system downstream sees a different "fact." Using your Data Table 6 thresholds, state the minimum voltage perturbation that changes your ADC's output code, and explain in two sentences why more bits of resolution can make such tampering both harder to hide and easier to detect.</li>
+  </ol>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="facts">
+    <div class="fact"><div class="f-label">Decoder</div><div class="f-val">n bits in → one-hot of 2ⁿ out</div></div>
+    <div class="fact"><div class="f-label">Encoder</div><div class="f-val">2ⁿ lines in → n-bit code out</div></div>
+    <div class="fact"><div class="f-label">MUX / DEMUX</div><div class="f-val">many→one / one→many · n selects = 2ⁿ ch.</div></div>
+    <div class="fact"><div class="f-label">Demux identity</div><div class="f-val">= decoder with data on enable</div></div>
+    <div class="fact"><div class="f-label">CD4511 control pins</div><div class="f-val">LT̄ HIGH · BL̄ HIGH · LE LOW</div></div>
+    <div class="fact"><div class="f-label">R-2R output</div><div class="f-val">V_out = V_ref × code / 2ⁿ</div></div>
+    <div class="fact"><div class="f-label">This lab's LSB (4-bit, 5 V)</div><div class="f-val">5/16 = 0.3125 V</div></div>
+    <div class="fact"><div class="f-label">Flash ADC cost</div><div class="f-val">2ⁿ − 1 comparators</div></div>
+    <div class="fact"><div class="f-label">Thermometer code</div><div class="f-val">Comparators fill bottom-up</div></div>
+    <div class="fact"><div class="f-label">Quantization error</div><div class="f-val">≤ ±½ LSB · shrinks with bits, never 0</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Six questions drawn directly from the lab. Select an answer for each, then press Grade My Quiz.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Grade My Quiz</button>
+      <div id="scoreBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lab-flipflops.html">← Lab: Latches &amp; Flip-Flops</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 Course Home</a>
+  <a href="#objectives">Back to Top ↑</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Hands-On Lab: Encoders, Decoders, MUX/DEMUX &amp; ADC/DAC in Tinkercad<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  drawIF();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ DATA TABLES ============ */
+function clearTables(){
+  if(!confirm('Clear all data table entries?')) return;
+  document.querySelectorAll('table.data input').forEach(function(i){ i.value=''; });
+}
+
+/* ============ INTERFACE PLAYGROUND ============ */
+var cv=document.getElementById('ifCv'), cx=cv.getContext('2d');
+var MODE='dec';
+var st={a1:0,a0:0, d:[0,0,0,0], sel:0, s1:0, data:1, bits:[0,0,0,0], auto:null};
+
+function setMode(m,btn){
+  MODE=m;
+  document.querySelectorAll('#modeSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  if(st.auto){ clearInterval(st.auto); st.auto=null; }
+  document.getElementById('adcCtrl').style.display = (MODE==='adc')?'block':'none';
+  buildIfBtns(); drawIF();
+}
+function tglA(n){ st[n]=1-st[n]; drawIF(); }
+function tglBit(i){ st.bits[i]=1-st.bits[i]; drawIF(); }
+function pressD(i){ st.d=[0,0,0,0]; st.d[i]=1; drawIF(); }
+function relD(){ st.d=[0,0,0,0]; drawIF(); }
+function autoCount(){
+  if(st.auto){ clearInterval(st.auto); st.auto=null; drawIF(); return; }
+  st.auto=setInterval(function(){
+    var n=(st.bits[3]*8+st.bits[2]*4+st.bits[1]*2+st.bits[0]+1)&15;
+    st.bits=[n&1,(n>>1)&1,(n>>2)&1,(n>>3)&1];
+    drawIF();
+  },400);
+}
+function buildIfBtns(){
+  var h='';
+  if(MODE==='dec'||MODE==='demux'){
+    h+='<button class="g-btn" onclick="tglA(\'a1\')">A1</button><button class="g-btn" onclick="tglA(\'a0\')">A0</button>';
+    if(MODE==='demux') h+='<button class="g-btn g-green" onclick="tglA(\'data\')">DATA</button>';
+  } else if(MODE==='enc'){
+    for(var i=0;i<4;i++) h+='<button class="g-btn" onclick="pressD('+i+')">D'+i+'</button>';
+    h+='<button class="g-btn" onclick="relD()">release</button>';
+  } else if(MODE==='mux'){
+    h+='<button class="g-btn" onclick="tglA(\'a0\')">Input A</button><button class="g-btn" onclick="tglA(\'a1\')">Input B</button><button class="g-btn g-green" onclick="tglA(\'sel\')">S (select)</button>';
+  } else if(MODE==='dac'){
+    for(var j=3;j>=0;j--) h+='<button class="g-btn" onclick="tglBit('+j+')">b'+j+'</button>';
+    h+='<button class="g-btn g-green" onclick="autoCount()">▶ Auto-Count</button>';
+  } else { h=''; }
+  document.getElementById('ifBtns').innerHTML=h;
+}
+
+function led(x,y,on,label){
+  cx.beginPath(); cx.arc(x,y,15,0,Math.PI*2);
+  if(on){ cx.fillStyle=css('--red'); cx.shadowColor=css('--red'); cx.shadowBlur=18; cx.fill(); cx.shadowBlur=0; }
+  else { cx.fillStyle=css('--card-alt'); cx.fill(); }
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=2; cx.stroke();
+  cx.fillStyle=css('--text'); cx.font='bold 12px Arial'; cx.textAlign='left';
+  cx.fillText(label, x+24, y+4);
+}
+function wire(x1,y1,x2,y2,on){
+  cx.strokeStyle=on?css('--green'):css('--border'); cx.lineWidth=on?3.5:2;
+  cx.beginPath(); cx.moveTo(x1,y1); cx.lineTo(x2,y2); cx.stroke();
+}
+function box(x,y,w,h,label,sub){
+  cx.fillStyle=css('--card-alt'); cx.strokeStyle=css('--navy'); cx.lineWidth=3;
+  cx.beginPath();
+  // trapezoid for mux/demux handled by caller via label
+  cx.rect(x,y,w,h); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 15px Georgia'; cx.textAlign='center';
+  cx.fillText(label, x+w/2, y+h/2);
+  if(sub){ cx.font='11px Arial'; cx.fillStyle=css('--text-muted'); cx.fillText(sub, x+w/2, y+h/2+18); }
+}
+function trap(x,y,w,h,flip,label){
+  cx.fillStyle=css('--card-alt'); cx.strokeStyle=css('--navy'); cx.lineWidth=3;
+  cx.beginPath();
+  if(!flip){ cx.moveTo(x,y); cx.lineTo(x+w,y+h*0.25); cx.lineTo(x+w,y+h*0.75); cx.lineTo(x,y+h); }
+  else { cx.moveTo(x,y+h*0.25); cx.lineTo(x+w,y); cx.lineTo(x+w,y+h); cx.lineTo(x,y+h*0.75); }
+  cx.closePath(); cx.fill(); cx.stroke();
+  cx.fillStyle=css('--navy'); cx.font='bold 14px Georgia'; cx.textAlign='center';
+  cx.fillText(label, x+w/2, y+h/2+5);
+}
+
+function drawIF(){
+  var W=cv.width, H=cv.height;
+  cx.clearRect(0,0,W,H);
+  var read='';
+
+  if(MODE==='dec'||MODE==='demux'){
+    var code=st.a1*2+st.a0;
+    box(240,120,160,160, MODE==='dec'?'2-to-4':'1-to-4', MODE==='dec'?'decoder':'demux');
+    cx.font='bold 14px Courier New'; cx.textAlign='right'; cx.fillStyle=css('--text');
+    cx.fillText('A1='+st.a1, 226, 166);
+    cx.fillText('A0='+st.a0, 226, 216);
+    wire(100,160,240,160, st.a1===1); wire(100,210,240,210, st.a0===1);
+    if(MODE==='demux'){
+      cx.fillText('DATA='+st.data, 226, 262);
+      wire(100,256,240,256, st.data===1);
+    }
+    for(var i=0;i<4;i++){
+      var on = (i===code) && (MODE==='dec' || st.data===1);
+      wire(400,140+i*40, 470,140+i*40, on);
+      led(500,140+i*40, on, 'Y'+i+(i===code?'  ← selected':''));
+    }
+    read = (MODE==='dec')
+      ? 'Code A1A0 = '+st.a1+st.a0+' ('+code+')<br>One-hot: only Y'+code+' active<br>74xx: 74HC139 / 74HC138'
+      : 'Select = '+st.a1+st.a0+' → route to Y'+code+'<br>DATA = '+st.data+' appears at Y'+code+' only<br>Same silicon as the decoder ✓';
+  }
+  else if(MODE==='enc'){
+    var idx=st.d.indexOf(1);
+    box(240,120,160,160,'4-to-2','encoder');
+    for(var k=0;k<4;k++){
+      cx.font='bold 13px Courier New'; cx.textAlign='right'; cx.fillStyle=css('--text');
+      cx.fillText('D'+k+'='+st.d[k], 226, 148+k*36);
+      wire(110,142+k*36,240,142+k*36, st.d[k]===1);
+    }
+    var a1= (st.d[2]|st.d[3]), a0=(st.d[1]|st.d[3]);
+    wire(400,170,470,170,a1===1); led(500,170,a1===1,'A1 = '+a1);
+    wire(400,230,470,230,a0===1); led(500,230,a0===1,'A0 = '+a0);
+    read = (idx>=0? 'D'+idx+' pressed → code '+a1+a0 : 'No input → code 00 (same as D0!)')+
+      '<br>Simple encoder: no priority<br>74xx: 74HC147 / 74HC148 add it';
+  }
+  else if(MODE==='mux'){
+    trap(260,110,130,180,false,'MUX');
+    cx.font='bold 13px Courier New'; cx.textAlign='right'; cx.fillStyle=css('--text');
+    cx.fillText('A='+st.a0, 246, 156); cx.fillText('B='+st.a1, 246, 256);
+    wire(120,150,260,150, st.a0===1 && st.sel===0);
+    wire(120,250,260,250, st.a1===1 && st.sel===1);
+    cx.textAlign='center'; cx.fillText('S='+st.sel, 325, 330);
+    wire(325,310,325,290, true);
+    var y=(st.sel===0? st.a0 : st.a1);
+    wire(390,200,470,200,y===1);
+    led(500,200,y===1,'Y = '+y+'  (showing '+(st.sel===0?'A':'B')+')');
+    read='Select S = '+st.sel+' → channel '+(st.sel===0?'A':'B')+'<br>Y = S̄·A + S·B = '+y+
+      '<br>Unselected input: ignored<br>74xx: 74HC157 / 74HC151';
+  }
+  else if(MODE==='dac'){
+    var n=st.bits[3]*8+st.bits[2]*4+st.bits[1]*2+st.bits[0];
+    var vout=5*n/16;
+    /* staircase transfer plot */
+    var padL=60,padR=20,padT=20,padB=48;
+    function X(c){ return padL+c/16*(W-padL-padR); }
+    function Y(v){ return H-padB-(v/5)*(H-padT-padB); }
+    cx.strokeStyle=css('--border'); cx.lineWidth=1; cx.font='10px Arial'; cx.fillStyle=css('--text-muted');
+    for(var v=0;v<=5;v++){ cx.beginPath(); cx.moveTo(padL,Y(v)); cx.lineTo(W-padR,Y(v)); cx.stroke(); cx.textAlign='right'; cx.fillText(v+' V',padL-6,Y(v)+3); }
+    for(var c=0;c<=16;c+=2){ cx.textAlign='center'; cx.fillText(c+'',X(c),H-padB+14); }
+    cx.fillStyle=css('--text'); cx.font='bold 12px Arial'; cx.textAlign='center';
+    cx.fillText('input code (0–15)', (padL+W-padR)/2, H-8);
+    cx.strokeStyle=css('--navy'); cx.lineWidth=3; cx.beginPath();
+    for(var c2=0;c2<16;c2++){
+      cx.moveTo(X(c2),Y(5*c2/16)); cx.lineTo(X(c2+1),Y(5*c2/16));
+      if(c2<15) cx.lineTo(X(c2+1),Y(5*(c2+1)/16));
+    }
+    cx.stroke();
+    cx.fillStyle=css('--red');
+    cx.beginPath(); cx.arc(X(n)+ (X(1)-X(0))/2, Y(vout), 8, 0, Math.PI*2); cx.fill();
+    cx.strokeStyle='#fff'; cx.lineWidth=2; cx.stroke();
+    read='Code = '+st.bits[3]+st.bits[2]+st.bits[1]+st.bits[0]+' ('+n+')<br>'+
+      'V_out = 5 × '+n+'/16 = <strong>'+vout.toFixed(4)+' V</strong><br>'+
+      '1 LSB = 0.3125 V<br>'+(st.auto?'▶ counting — the Part 5 staircase':'toggle bits or ▶ Auto-Count');
+  }
+  else { /* adc */
+    var vin=parseFloat(document.getElementById('vinSlide').value);
+    document.getElementById('vinVal').textContent=vin.toFixed(2)+' V';
+    var code3=(vin>1.25?1:0)+(vin>2.5?1:0)+(vin>3.75?1:0);
+    var padL2=60,padR2=200,padT2=20,padB2=48;
+    function XV(v){ return padL2+v/5*(W-padL2-padR2); }
+    function YC(c){ return H-padB2-(c/3)*(H-padT2-padB2); }
+    cx.strokeStyle=css('--border'); cx.lineWidth=1; cx.font='10px Arial'; cx.fillStyle=css('--text-muted');
+    [1.25,2.5,3.75].forEach(function(t){ cx.beginPath(); cx.setLineDash([4,4]); cx.moveTo(XV(t),padT2); cx.lineTo(XV(t),H-padB2); cx.stroke(); cx.setLineDash([]); cx.textAlign='center'; cx.fillText(t+'V',XV(t),H-padB2+14); });
+    for(var cc=0;cc<=3;cc++){ cx.textAlign='right'; cx.fillText(cc+'',padL2-8,YC(cc)+3); }
+    cx.fillStyle=css('--text'); cx.font='bold 12px Arial'; cx.textAlign='center';
+    cx.fillText('V_in (volts)', (padL2+W-padR2)/2, H-8);
+    cx.save(); cx.translate(16,(padT2+H-padB2)/2); cx.rotate(-Math.PI/2); cx.fillText('output code',0,0); cx.restore();
+    cx.strokeStyle=css('--navy'); cx.lineWidth=3; cx.beginPath();
+    var th=[0,1.25,2.5,3.75,5];
+    for(var s=0;s<4;s++){ cx.moveTo(XV(th[s]),YC(s)); cx.lineTo(XV(th[s+1]),YC(s)); if(s<3) cx.lineTo(XV(th[s+1]),YC(s+1)); }
+    cx.stroke();
+    cx.fillStyle=css('--red');
+    cx.beginPath(); cx.arc(XV(vin), YC(code3), 8, 0, Math.PI*2); cx.fill();
+    cx.strokeStyle='#fff'; cx.lineWidth=2; cx.stroke();
+    /* thermometer LEDs */
+    led(W-130, 110, vin>3.75, 'L3 (>3.75)');
+    led(W-130, 170, vin>2.5,  'L2 (>2.50)');
+    led(W-130, 230, vin>1.25, 'L1 (>1.25)');
+    read='V_in = '+vin.toFixed(2)+' V<br>'+
+      'Thermometer: L3L2L1 = '+(vin>3.75?1:0)+''+(vin>2.5?1:0)+''+(vin>1.25?1:0)+'<br>'+
+      'Code = <strong>'+code3+'</strong> (binary '+((code3>>1)&1)+''+(code3&1)+')<br>'+
+      'Inside step: ±'+(0.625).toFixed(3)+' V maps to the same code';
+  }
+  document.getElementById('ifRead').innerHTML='<span class="r-on">'+
+    {dec:'2-TO-4 DECODER',enc:'4-TO-2 ENCODER',mux:'2-TO-1 MUX',demux:'1-TO-4 DEMUX',dac:'4-BIT R-2R DAC',adc:'2-BIT FLASH ADC'}[MODE]+
+    '</span><br>─────────────────<br>'+read;
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:'A 3-to-8 decoder (74HC138) receives the input code 101. Its outputs show:',
+  o:['binary 101 on three lines','all outputs HIGH','exactly one active output — number 5','outputs 1, 0, and 1 active'], a:2,
+  x:'A decoder is one-hot: the n-bit code names exactly one of the 2ⁿ outputs, and only that one activates. Code 101 = 5 → output Y5 alone. Your Part 1 acceptance test — count the lit LEDs, the answer is always one.'},
+ {q:'In Part 3, pressing D1 and D2 together made the simple encoder output 11 ("D3"). Commercial encoders like the 74HC148 prevent this by:',
+  o:['refusing all input','priority logic — the highest-numbered active input wins','averaging the two codes','adding more OR gates of the same kind'], a:1,
+  x:'Priority encoding resolves simultaneous inputs deterministically: highest wins, so D1+D2 together reports 10 (D2). Keyboards and interrupt controllers depend on exactly this guarantee.'},
+ {q:'The relationship between a decoder and a demultiplexer is:',
+  o:['they are unrelated','a demux is a decoder whose enable input carries the data — the select code picks which output the data appears on','a demux is two decoders','a decoder is an analog demux'], a:1,
+  x:'You proved it in Part 4: gate each decoder output with DATA and the "decoder" routes that data to the selected line. One silicon design, two datasheet titles — 74HC138 "decoder/demultiplexer."'},
+ {q:'Your 4-bit R-2R DAC on a 5 V reference produced steps of about:',
+  o:['1.25 V','0.3125 V — 1 LSB = 5 V / 2⁴','0.5 V','5 V'], a:1,
+  x:'1 LSB = V_ref/2ⁿ = 5/16 = 312.5 mV, confirmed across Data Table 5. Add bits and the step shrinks exponentially: 8 bits → 19.5 mV, 16 bits → 76 µV.'},
+ {q:'A flash ADC producing n bits requires how many comparators?',
+  o:['n','2ⁿ','2ⁿ − 1 — one per threshold between the 2ⁿ levels','n²'], a:2,
+  x:'2ⁿ levels have 2ⁿ−1 boundaries, each guarded by one comparator: your 2-bit converter used 3. The exponential hardware cost is the price of converting in a single instant — why flash rules oscilloscopes and loses phone-audio sockets to slower, cheaper architectures.'},
+ {q:'With your ADC\u2019s pot parked at 1.8 V, nudging it to 2.0 V changed nothing on the output. This is:',
+  o:['a broken comparator','quantization — every V_in inside one step maps to the same code, with error up to ±½ LSB','the pot\u2019s fault','hysteresis'], a:1,
+  x:'Both voltages live between the 1.25 V and 2.50 V thresholds, so both are code 1. The information difference was rounded away — the fundamental, irreducible cost of crossing the analog-digital border, shrunk (never eliminated) by resolution.'}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'">💡 '+item.x+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name="q'+qi+'"]:checked');
+    var opts=document.querySelectorAll('input[name="q'+qi+'"]');
+    opts.forEach(function(inp,oi){
+      var lab=inp.parentElement;
+      lab.classList.remove('correct','incorrect');
+      if(oi===item.a) lab.classList.add('correct');
+      else if(sel && parseInt(sel.value)===oi) lab.classList.add('incorrect');
+    });
+    document.getElementById('ex'+qi).classList.add('show');
+    if(sel && parseInt(sel.value)===item.a) score++;
+  });
+  var msg = score===6 ? '🏆 Perfect! Codes, routes, and conversions — the full interface toolkit.'
+          : score>=4 ? '📗 Solid work. Review the explanations for missed items against your data tables.'
+          : '📘 Getting there. Replay the playground — especially the ADC slider inside one step — then retake the quiz.';
+  document.getElementById('scoreBox').innerHTML=
+    '<div class="score-box"><div class="big">'+score+' / 6</div><div>'+msg+'</div></div>';
+  document.getElementById('scoreBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+buildIfBtns();
+drawIF();
+</script>
+</body>
+</html>
