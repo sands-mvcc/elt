@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELT 102 | Practice Exam Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mvgreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        mvblack: '#0f172a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #ffffff; color: #0f172a; }
+        .custom-checkbox:checked { background-color: #16a34a; border-color: #16a34a; }
+        .question-card { transition: all 0.2s ease-in-out; }
+        .question-card:hover { border-color: #16a34a; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1), 0 2px 4px -1px rgba(22, 163, 74, 0.06); }
+        .feedback-correct { border-left: 4px solid #16a34a; background-color: #f0fdf4; }
+        .feedback-incorrect { border-left: 4px solid #ef4444; background-color: #fef2f2; }
+        select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; -webkit-print-color-adjust: exact; color-adjust: exact; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 sm:p-8">
+
+    <header class="w-full max-w-4xl mb-8 border-b-2 border-mvgreen-600 pb-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-mvblack">ELT 102 <span class="text-mvgreen-600">Practice Exam</span></h1>
+                <p class="text-gray-600 mt-1">Digital Logic & Solid State Devices</p>
+            </div>
+            <div class="hidden sm:block text-mvgreen-600 text-4xl">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+        </div>
+    </header>
+
+    <main class="w-full max-w-4xl">
+        
+        <!-- SETUP VIEW -->
+        <section id="setup-view" class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 sm:p-8">
+            <h2 class="text-xl font-semibold mb-6 flex items-center text-mvblack">
+                <i class="fa-solid fa-sliders text-mvgreen-600 mr-2"></i> Configure Your Exam
+            </h2>
+            
+            <form id="setup-form" class="space-y-8">
+                
+                <!-- Lesson Selection -->
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-3 border-b border-gray-100 pb-2">1. Select Lessons</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="1" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 1:</b> Semiconductor Fundamentals & Diodes</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="2" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 2:</b> Power Supplies & Optoelectronics</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="3" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 3:</b> BJTs, FETs & Thyristors</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="4" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 4:</b> Transistor Amplifiers & Op-Amps</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="5" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 5:</b> Number Systems & Logic Gates</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="6" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 6:</b> Latches and Flip-Flops</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="7" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 7:</b> Encoders, MUX & Converters</span>
+                        </label>
+                        <label class="flex items-start space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                            <input type="checkbox" name="lessons" value="8" class="custom-checkbox w-5 h-5 mt-0.5 rounded border-gray-300 text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                            <span class="text-sm"><b>Lesson 8:</b> Counters, Timers & Oscillators</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Formatting & Difficulty -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <div class="md:col-span-1">
+                        <h3 class="font-medium text-gray-800 mb-3 border-b border-gray-100 pb-2">2. Question Types</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" name="types" value="mcq" class="custom-checkbox w-4 h-4 rounded text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                                <span class="text-sm">Multiple Choice</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" name="types" value="maq" class="custom-checkbox w-4 h-4 rounded text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                                <span class="text-sm">Multiple Answer</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" name="types" value="matching" class="custom-checkbox w-4 h-4 rounded text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                                <span class="text-sm">Matching</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" name="types" value="fitb" class="custom-checkbox w-4 h-4 rounded text-mvgreen-600 focus:ring-mvgreen-500" checked>
+                                <span class="text-sm">Fill-in-the-Blank</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-1">
+                        <h3 class="font-medium text-gray-800 mb-3 border-b border-gray-100 pb-2">3. Question Count</h3>
+                        <div class="flex items-center space-x-4 mt-4">
+                            <span class="text-sm font-bold text-gray-500">5</span>
+                            <input type="range" id="q-count" min="5" max="20" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-mvgreen-600" oninput="document.getElementById('q-output').innerText = this.value">
+                            <span class="text-sm font-bold text-gray-500">20</span>
+                        </div>
+                        <div class="text-center mt-2 text-sm font-semibold text-mvgreen-600"><span id="q-output">10</span> Questions</div>
+                    </div>
+
+                    <div class="md:col-span-1">
+                        <h3 class="font-medium text-gray-800 mb-3 border-b border-gray-100 pb-2">4. Difficulty</h3>
+                        <select id="difficulty" class="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-mvgreen-500 focus:border-mvgreen-500 outline-none transition-colors">
+                            <option value="any">Any Difficulty</option>
+                            <option value="easy">Beginner / Easy</option>
+                            <option value="medium">Intermediate</option>
+                            <option value="hard">Advanced / Hard</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Generate Button -->
+                <div class="pt-4 border-t border-gray-100 text-center">
+                    <button type="button" onclick="generateExam()" class="bg-mvblack hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-colors w-full sm:w-auto">
+                        <i class="fa-solid fa-gears mr-2"></i> Generate Practice Exam
+                    </button>
+                    <p id="setup-error" class="text-red-500 text-sm mt-2 hidden">Please select at least one lesson and one question type.</p>
+                </div>
+            </form>
+        </section>
+
+        <!-- EXAM VIEW (Hidden initially) -->
+        <section id="exam-view" class="hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-mvblack">Practice Assessment</h2>
+                <button onclick="resetSetup()" class="text-sm text-gray-500 hover:text-mvgreen-600 underline"><i class="fa-solid fa-arrow-left mr-1"></i> New Setup</button>
+            </div>
+            
+            <div id="questions-container" class="space-y-6">
+                <!-- Questions injected here by JS -->
+            </div>
+
+            <div class="mt-8 text-center pb-12">
+                <button type="button" onclick="gradeExam()" class="bg-mvgreen-600 hover:bg-mvgreen-700 text-white font-bold py-3 px-10 rounded-lg shadow-lg transition-colors text-lg w-full sm:w-auto">
+                    Submit Answers <i class="fa-solid fa-check ml-2"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- RESULTS VIEW (Hidden initially) -->
+        <section id="results-view" class="hidden text-center bg-white border border-gray-200 rounded-xl shadow-sm p-8 pb-12">
+            <div id="score-icon" class="text-6xl mb-4 text-mvgreen-500">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-mvblack mb-2">Exam Complete!</h2>
+            <div class="text-5xl font-extrabold text-mvgreen-600 my-6" id="final-score">80%</div>
+            <p class="text-gray-600 mb-8 text-lg" id="score-message">Great job! Review your answers below.</p>
+            <button type="button" onclick="resetSetup()" class="bg-mvblack hover:bg-gray-800 text-white font-semibold py-2 px-6 rounded-lg transition-colors inline-block">
+                Create Another Exam
+            </button>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // QUESTION BANK (Mapped to ELT 102 Outcomes)
+        // ==========================================
+        const questionBank = [
+            // Lesson 1: Semiconductors
+            { lesson: 1, type: 'mcq', difficulty: 'easy', q: "What type of material is formed when pure silicon is doped with a trivalent impurity?", options: ["N-type", "P-type", "Intrinsic", "Insulator"], a: "P-type" },
+            { lesson: 1, type: 'fitb', difficulty: 'medium', q: "The boundary region between P-type and N-type materials in a diode is known as the ________ junction.", a: ["p-n", "pn"] },
+            { lesson: 1, type: 'maq', difficulty: 'hard', q: "Which of the following statements are true regarding a silicon P-N junction in reverse bias?", options: ["The depletion region widens.", "Current flows freely.", "Only a small leakage current exists.", "It acts essentially as an open switch."], a: ["The depletion region widens.", "Only a small leakage current exists.", "It acts essentially as an open switch."] },
+            
+            // Lesson 2: Power Supplies
+            { lesson: 2, type: 'mcq', difficulty: 'easy', q: "Which circuit converts AC voltage into a pulsating DC voltage?", options: ["Amplifier", "Filter", "Rectifier", "Oscillator"], a: "Rectifier" },
+            { lesson: 2, type: 'matching', difficulty: 'medium', q: "Match the following diode types to their primary application.", pairs: [{ left: "Zener Diode", right: "Voltage Regulation" }, { left: "LED", right: "Light Emission" }, { left: "Photodiode", right: "Light Detection" }, { left: "Optocoupler", right: "Electrical Isolation" }] },
+            { lesson: 2, type: 'fitb', difficulty: 'hard', q: "Adding a capacitor in parallel with the load of a rectifier circuit reduces the ________ voltage.", a: ["ripple"] },
+            
+            // Lesson 3: Active Devices
+            { lesson: 3, type: 'mcq', difficulty: 'medium', q: "In a Bipolar Junction Transistor (BJT), the current in the collector is primarily controlled by the current in the ________.", options: ["Base", "Emitter", "Gate", "Source"], a: "Base" },
+            { lesson: 3, type: 'maq', difficulty: 'medium', q: "Which of the following devices are classified as Thyristors?", options: ["SCR", "JFET", "TRIAC", "MOSFET"], a: ["SCR", "TRIAC"] },
+            { lesson: 3, type: 'fitb', difficulty: 'hard', q: "The graphical line representing all possible operating points for a specific BJT circuit is called the DC ________ line.", a: ["load"] },
+
+            // Lesson 4: Transistor Amps & Op-Amps
+            { lesson: 4, type: 'mcq', difficulty: 'hard', q: "An ideal operational amplifier (Op-Amp) has:", options: ["Infinite input impedance and zero output impedance", "Zero input impedance and infinite output impedance", "Infinite input and output impedance", "Zero input and output impedance"], a: "Infinite input impedance and zero output impedance" },
+            { lesson: 4, type: 'matching', difficulty: 'medium', q: "Match the amplifier configuration to its key characteristic.", pairs: [{ left: "Common-Emitter", right: "High Voltage & Current Gain, Inverting" }, { left: "Inverting Op-Amp", right: "Output phase shifted 180 degrees" }, { left: "Voltage Follower", right: "Gain of 1, High Input Z" }] },
+            { lesson: 4, type: 'fitb', difficulty: 'medium', q: "A fraction of the output signal returned to the input to control amplifier gain is known as ________.", a: ["feedback", "negative feedback"] },
+
+            // Lesson 5: Logic Gates & Numbers
+            { lesson: 5, type: 'mcq', difficulty: 'easy', q: "Which logic gate produces a HIGH output ONLY when all of its inputs are HIGH?", options: ["OR", "NAND", "AND", "XOR"], a: "AND" },
+            { lesson: 5, type: 'fitb', difficulty: 'medium', q: "The binary equivalent of the decimal number 10 is ________.", a: ["1010"] },
+            { lesson: 5, type: 'maq', difficulty: 'hard', q: "Which of the following are valid Boolean algebra identities?", options: ["A + 0 = A", "A * 1 = A", "A + A' = 1", "A * A' = 1"], a: ["A + 0 = A", "A * 1 = A", "A + A' = 1"] },
+
+            // Lesson 6: Latches & Flip-Flops
+            { lesson: 6, type: 'mcq', difficulty: 'medium', q: "What is the primary difference between a latch and a flip-flop?", options: ["Latches are edge-triggered; Flip-flops are level-sensitive", "Flip-flops are edge-triggered; Latches are level-sensitive", "Latches require a clock; Flip-flops do not", "There is no difference"], a: "Flip-flops are edge-triggered; Latches are level-sensitive" },
+            { lesson: 6, type: 'matching', difficulty: 'hard', q: "Match the flip-flop to its behavior.", pairs: [{ left: "D Flip-Flop", right: "Output follows input on clock edge" }, { left: "T Flip-Flop", right: "Toggles state on clock edge if input is HIGH" }, { left: "JK Flip-Flop", right: "Can Set, Reset, Toggle, or Hold" }] },
+            { lesson: 6, type: 'fitb', difficulty: 'medium', q: "A sequential logic circuit used to store multiple bits of data is called a ________.", a: ["register", "shift register"] },
+
+            // Lesson 7: Digital Systems
+            { lesson: 7, type: 'mcq', difficulty: 'medium', q: "A circuit that selects one of many input signals and outputs it to a single line is a:", options: ["Decoder", "Encoder", "Multiplexer (MUX)", "Demultiplexer (DEMUX)"], a: "Multiplexer (MUX)" },
+            { lesson: 7, type: 'maq', difficulty: 'medium', q: "Which components are required to display a 4-bit binary number on a physical numerical display?", options: ["BCD to 7-Segment Decoder", "7-Segment Display", "Priority Encoder", "Multiplexer"], a: ["BCD to 7-Segment Decoder", "7-Segment Display"] },
+            { lesson: 7, type: 'fitb', difficulty: 'hard', q: "The process of converting a continuous analog signal into discrete digital values requires sampling and ________.", a: ["quantization", "digitization"] },
+
+            // Lesson 8: Counters & Timers
+            { lesson: 8, type: 'mcq', difficulty: 'easy', q: "A 555 timer configured to continuously output a square wave without an external trigger is in which mode?", options: ["Monostable", "Astable", "Bistable", "Synchronous"], a: "Astable" },
+            { lesson: 8, type: 'matching', difficulty: 'hard', q: "Match the counter term to its definition.", pairs: [{ left: "Ripple Counter", right: "Asynchronous; clock cascades through flip-flops" }, { left: "Synchronous Counter", right: "All flip-flops clocked simultaneously" }, { left: "Modulus (MOD)", right: "The maximum number of states before resetting" }] },
+            { lesson: 8, type: 'fitb', difficulty: 'medium', q: "In a timer circuit, the time constant determining frequency is calculated using Resistors and ________.", a: ["capacitors", "a capacitor", "capacitor"] }
+        ];
+
+        let currentExam = [];
+
+        // ==========================================
+        // APPLICATION LOGIC
+        // ==========================================
+
+        function generateExam() {
+            const form = document.getElementById('setup-form');
+            const errorMsg = document.getElementById('setup-error');
+            
+            // Get selections
+            const lessons = Array.from(form.querySelectorAll('input[name="lessons"]:checked')).map(el => parseInt(el.value));
+            const types = Array.from(form.querySelectorAll('input[name="types"]:checked')).map(el => el.value);
+            const count = parseInt(document.getElementById('q-count').value);
+            const diff = document.getElementById('difficulty').value;
+
+            // Validation
+            if (lessons.length === 0 || types.length === 0) {
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            // Filter Question Bank
+            let filtered = questionBank.filter(q => {
+                const matchLesson = lessons.includes(q.lesson);
+                const matchType = types.includes(q.type);
+                const matchDiff = (diff === 'any' || q.difficulty === diff);
+                return matchLesson && matchType && matchDiff;
+            });
+
+            // Shuffle and slice
+            filtered = shuffleArray(filtered);
+            currentExam = filtered.slice(0, count);
+
+            if(currentExam.length === 0) {
+                alert("No questions found matching these exact criteria. Try broadening your difficulty or selecting more lessons.");
+                return;
+            }
+
+            renderExam();
+        }
+
+        function renderExam() {
+            document.getElementById('setup-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('exam-view').classList.remove('hidden');
+
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((q, index) => {
+                let html = `
+                <div class="question-card bg-white border border-gray-200 rounded-xl p-6" id="qcard-${index}">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-sm font-bold text-mvgreen-600 uppercase tracking-wider">Question ${index + 1}</span>
+                        <span class="text-xs font-semibold bg-gray-100 text-gray-500 px-2 py-1 rounded">Lesson ${q.lesson}</span>
+                    </div>
+                    <p class="text-lg font-medium text-mvblack mb-4">${q.q}</p>
+                    <div class="options-container" id="qopts-${index}">
+                `;
+
+                // Render specific input types
+                if (q.type === 'mcq') {
+                    const opts = shuffleArray([...q.options]);
+                    opts.forEach(opt => {
+                        html += `
+                        <label class="flex items-center space-x-3 p-3 mb-2 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                            <input type="radio" name="ans-${index}" value="${opt}" class="w-4 h-4 text-mvgreen-600 focus:ring-mvgreen-500 border-gray-300">
+                            <span>${opt}</span>
+                        </label>`;
+                    });
+                } 
+                else if (q.type === 'maq') {
+                    const opts = shuffleArray([...q.options]);
+                    html += `<p class="text-xs text-gray-500 mb-3 italic">Select all that apply.</p>`;
+                    opts.forEach(opt => {
+                        html += `
+                        <label class="flex items-center space-x-3 p-3 mb-2 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                            <input type="checkbox" name="ans-${index}" value="${opt}" class="custom-checkbox w-4 h-4 text-mvgreen-600 focus:ring-mvgreen-500 border-gray-300 rounded">
+                            <span>${opt}</span>
+                        </label>`;
+                    });
+                }
+                else if (q.type === 'fitb') {
+                    html += `
+                        <input type="text" name="ans-${index}" placeholder="Type your answer here..." class="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-mvgreen-500 focus:border-mvgreen-500 outline-none transition-all">
+                    `;
+                }
+                else if (q.type === 'matching') {
+                    const rights = shuffleArray(q.pairs.map(p => p.right));
+                    q.pairs.forEach((p, i) => {
+                        let selectHtml = `<select name="ans-${index}-${i}" class="w-full sm:w-1/2 border border-gray-300 rounded-lg p-2 focus:ring-mvgreen-500 focus:border-mvgreen-500 outline-none"><option value="">Select match...</option>`;
+                        rights.forEach(r => { selectHtml += `<option value="${r}">${r}</option>`; });
+                        selectHtml += `</select>`;
+
+                        html += `
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 p-3 border border-gray-100 rounded-lg bg-gray-50">
+                            <span class="font-medium mb-2 sm:mb-0 sm:w-1/2 pr-4">${p.left}</span>
+                            ${selectHtml}
+                        </div>`;
+                    });
+                }
+
+                html += `</div>
+                    <div id="feedback-${index}" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+                </div>`;
+                container.innerHTML += html;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function gradeExam() {
+            let score = 0;
+            
+            currentExam.forEach((q, index) => {
+                const card = document.getElementById(`qcard-${index}`);
+                const feedback = document.getElementById(`feedback-${index}`);
+                let isCorrect = false;
+                let userAnswerStr = "";
+
+                if (q.type === 'mcq') {
+                    const selected = document.querySelector(`input[name="ans-${index}"]:checked`);
+                    if (selected && selected.value === q.a) { isCorrect = true; }
+                    userAnswerStr = selected ? selected.value : "No answer provided";
+                } 
+                else if (q.type === 'maq') {
+                    const selected = Array.from(document.querySelectorAll(`input[name="ans-${index}"]:checked`)).map(el => el.value);
+                    const correctAnswers = q.a;
+                    // Check if arrays are identical (order doesn't matter)
+                    if (selected.length === correctAnswers.length && selected.every(val => correctAnswers.includes(val))) {
+                        isCorrect = true;
+                    }
+                }
+                else if (q.type === 'fitb') {
+                    const val = document.querySelector(`input[name="ans-${index}"]`).value.trim().toLowerCase();
+                    // q.a is array of acceptable answers
+                    if (q.a.map(a => a.toLowerCase()).includes(val)) {
+                        isCorrect = true;
+                    }
+                }
+                else if (q.type === 'matching') {
+                    let allMatched = true;
+                    q.pairs.forEach((p, i) => {
+                        const sel = document.querySelector(`select[name="ans-${index}-${i}"]`).value;
+                        if (sel !== p.right) allMatched = false;
+                    });
+                    isCorrect = allMatched;
+                }
+
+                // Apply Visual Feedback
+                card.classList.remove('border-gray-200');
+                feedback.classList.remove('hidden');
+                
+                if (isCorrect) {
+                    score++;
+                    card.classList.add('feedback-correct');
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-check text-mvgreen-600 mr-1"></i> <strong>Correct.</strong>`;
+                    feedback.className = "mt-4 p-3 rounded-lg text-sm bg-green-50 text-green-800";
+                } else {
+                    card.classList.add('feedback-incorrect');
+                    let correctAnswerDisplay = q.type === 'maq' ? q.a.join("<br>• ") : (q.type === 'fitb' ? q.a[0] : (q.type === 'matching' ? "Review the correct pairs in your notes." : q.a));
+                    
+                    if(q.type === 'maq') correctAnswerDisplay = "• " + correctAnswerDisplay;
+
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600 mr-1"></i> <strong>Incorrect.</strong> <br><span class="mt-1 block text-gray-700">Correct Answer(s):<br> ${correctAnswerDisplay}</span>`;
+                    feedback.className = "mt-4 p-3 rounded-lg text-sm bg-red-50 text-red-800";
+                }
+
+                // Disable inputs
+                const inputs = card.querySelectorAll('input, select');
+                inputs.forEach(input => input.disabled = true);
+            });
+
+            // Show Results View
+            const percentage = Math.round((score / currentExam.length) * 100);
+            document.getElementById('final-score').innerText = `${percentage}% (${score}/${currentExam.length})`;
+            
+            const msgEl = document.getElementById('score-message');
+            const iconEl = document.getElementById('score-icon');
+            if(percentage >= 90) {
+                msgEl.innerText = "Outstanding! You have mastered these concepts.";
+                iconEl.innerHTML = '<i class="fa-solid fa-trophy text-yellow-500"></i>';
+            } else if (percentage >= 70) {
+                msgEl.innerText = "Good job! You have a solid understanding, but review the missed questions.";
+                iconEl.innerHTML = '<i class="fa-solid fa-thumbs-up text-blue-500"></i>';
+            } else {
+                msgEl.innerText = "Keep studying! Review the course material and try again.";
+                iconEl.innerHTML = '<i class="fa-solid fa-book-open text-gray-500"></i>';
+            }
+
+            document.getElementById('results-view').classList.remove('hidden');
+            
+            // Scroll to top to see results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Hide the submit button
+            document.querySelector('#exam-view button[onclick="gradeExam()"]').parentElement.classList.add('hidden');
+        }
+
+        function resetSetup() {
+            document.getElementById('exam-view').classList.add('hidden');
+            document.getElementById('results-view').classList.add('hidden');
+            document.getElementById('setup-view').classList.remove('hidden');
+            
+            // Re-show submit button
+            document.querySelector('#exam-view button[onclick="gradeExam()"]').parentElement.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Utility: Fisher-Yates Shuffle
+        function shuffleArray(array) {
+            let curId = array.length;
+            while (0 !== curId) {
+                let randId = Math.floor(Math.random() * curId);
+                curId -= 1;
+                let tmp = array[curId];
+                array[curId] = array[randId];
+                array[randId] = tmp;
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
