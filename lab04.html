@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Hands-On Lab: Op-Amp Configurations in Tinkercad</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td input{width:100%;min-width:90px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:.88rem;}
+table.data td input:focus{outline:2px solid var(--green);border-color:var(--green);}
+
+/* ============ STEP LIST ============ */
+.steps{counter-reset:step;list-style:none;margin:0 0 16px 0;}
+.steps li{counter-increment:step;position:relative;padding:0 0 18px 58px;margin-bottom:4px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;box-shadow:var(--shadow);}
+.steps li::after{content:'';position:absolute;left:18px;top:42px;bottom:0;width:2px;background:var(--border);}
+.steps li:last-child::after{display:none;}
+.steps li .step-title{font-weight:bold;color:var(--navy);display:block;margin-bottom:3px;}
+[data-theme="dark"] .steps li .step-title{color:#8ab6ff;}
+.steps.green li::before{background:var(--green);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;cursor:pointer;border:none;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SCHEMATIC FIGURE ============ */
+.fig{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin:20px 0;text-align:center;}
+.fig svg{width:100%;max-width:820px;height:auto;}
+.fig .fig-cap{font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;color:var(--text-muted);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;text-align:left;}
+.sch-wire{stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sch-comp{stroke:var(--navy);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sch-fill{fill:var(--navy);stroke:none;}
+.sch-lbl{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;fill:var(--text);}
+.sch-sub{font-family:'Arial Narrow',Arial,sans-serif;font-size:12.5px;fill:var(--text-muted);}
+.sch-meter{fill:var(--card-alt);stroke:var(--amber);stroke-width:2.4;}
+.sch-mlbl{font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;font-weight:bold;fill:#a86e00;}
+[data-theme="dark"] .sch-mlbl{fill:var(--amber);}
+.sch-green{stroke:var(--green);}
+.sch-red{stroke:var(--red);}
+
+/* ============ LAB (interactive) ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;}}
+@media print{.topbar,.crumbs,.theme-btn,.foot-nav,.submit-btn{display:none!important;} body{background:#fff;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+.sch-wave-in{stroke:var(--text-muted);stroke-width:2;fill:none;}
+.sch-wave-out{stroke:var(--green);stroke-width:2.6;fill:none;}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Hands-On Tinkercad Lab</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lab-opamp.html">Labs</a> &nbsp;›&nbsp;
+  Op-Amp Configurations
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 2 · Solid State Devices · Lab</span>
+  <h1>Op-Amp Configurations: Six Circuits, Two Golden Rules</h1>
+  <p class="sub">Build the LM741 into six classic configurations in Autodesk Tinkercad Circuits — voltage follower, inverting and non-inverting amplifiers, comparator, integrator, and differentiator. Measure each one, predict every gain with two simple rules, and watch feedback networks reshape waveforms in real time.</p>
+  <div class="meta-chips">
+    <span>⏱ 2 × 75-Minute Sessions</span>
+    <span>🖥 Tinkercad Circuits (Free)</span>
+    <span>🔧 LM741 · 6 Configurations</span>
+    <span>📊 Waveform Playground Explorer</span>
+    <span>✅ 6-Question Knowledge Check</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lab, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Construct</strong> a dual ±9 V supply in Tinkercad using two sources with a grounded midpoint, and wire an LM741 op-amp with correct pin assignments (2 = inverting, 3 = non-inverting, 6 = output, 7 = V+, 4 = V−).</li>
+      <li><strong>Apply</strong> the two golden rules of ideal op-amp analysis — no current enters the inputs, and with negative feedback the output drives the two inputs to the same voltage (the <em>virtual short</em>) — to predict circuit behavior before measuring it.</li>
+      <li><strong>Verify</strong> the voltage follower's unity gain and <strong>explain</strong> its purpose as an impedance buffer despite amplifying nothing.</li>
+      <li><strong>Measure</strong> the closed-loop gain of inverting (A = −R<sub>f</sub>/R<sub>in</sub>) and non-inverting (A = 1 + R<sub>f</sub>/R<sub>in</sub>) amplifiers for multiple resistor ratios, and compare against predictions within component tolerance.</li>
+      <li><strong>Demonstrate</strong> comparator action with no feedback: the output slams to a saturation rail depending on which input is higher, and a fraction of a millivolt of difference is enough.</li>
+      <li><strong>Generate</strong> waveform transformations with reactive feedback — a square wave integrated into a triangle, a triangle differentiated into a square — and <strong>relate</strong> output amplitude to the RC time constant and input slope.</li>
+      <li><strong>Identify</strong> output saturation (clipping at ≈1.5 V inside the rails for a 741) and <strong>determine</strong> the maximum input amplitude a given gain permits before clipping.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition. Review these before you build.</p>
+
+      <div class="cat-label">The Device &amp; The Rules</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Operational Amplifier</div><div class="cat">Device &amp; Rules</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A high-gain differential amplifier: it amplifies the <em>difference</em> between its two inputs by an enormous open-loop gain (~100,000 for the LM741). Alone it's nearly useless; wrapped in feedback it becomes whatever circuit the feedback network describes.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Inverting (−) &amp; Non-Inverting (+) Inputs</div><div class="cat">Device &amp; Rules</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The two inputs of the differential pair. Raising the <strong>+</strong> input pushes the output up; raising the <strong>−</strong> input pushes it down. On the LM741: pin 3 is +, pin 2 is −. Swapping them turns negative feedback into positive feedback — and a working amp into a latch.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Golden Rule #1: No Input Current</div><div class="cat">Device &amp; Rules</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The inputs have such high impedance that essentially <strong>no current flows into them</strong>. Consequence: any current arriving at an input node through one resistor must leave through another — the accounting trick behind every gain formula in this lab.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Golden Rule #2: The Virtual Short</div><div class="cat">Device &amp; Rules</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>With <strong>negative feedback</strong>, the output does whatever it takes to hold the two inputs at the <strong>same voltage</strong>. The inputs act shorted together (for analysis) without any actual connection. When the + input is grounded, the − input becomes a <em>virtual ground</em>. No feedback → no rule #2 → comparator behavior.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Feedback &amp; Gain</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Negative Feedback</div><div class="cat">Feedback &amp; Gain</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Routing a fraction of the output back to the <strong>inverting</strong> input. The op-amp's huge open-loop gain gets traded for precision: closed-loop gain is set by two resistors you choose, not by the chip's unruly internals. The single most important idea in analog electronics — and in control systems from thermostats to autopilots.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Closed-Loop Gain</div><div class="cat">Feedback &amp; Gain</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The gain of the complete circuit with feedback applied. Inverting amp: <strong>A = −R<sub>f</sub>/R<sub>in</sub></strong>. Non-inverting amp: <strong>A = 1 + R<sub>f</sub>/R<sub>in</sub></strong>. Set by resistor ratios — which is why 1% resistors give 1% gain accuracy from a chip whose open-loop gain varies wildly.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Saturation (Rails)</div><div class="cat">Feedback &amp; Gain</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The output cannot exceed the supply. A 741 tops out about <strong>1.5 V inside each rail</strong> (±7.5 V on ±9 V supplies). Ask for more gain than the rails allow and the waveform's tops and bottoms get sliced flat — <em>clipping</em>. For a comparator, saturation isn't failure; it's the whole point.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Virtual Ground</div><div class="cat">Feedback &amp; Gain</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The special case of the virtual short in the inverting amp: with the + input grounded, feedback holds the − input at 0 V. It <em>measures</em> 0 V but connects to ground through no wire — all input current is rerouted through R<sub>f</sub>. Confirming this node with a voltmeter is one of this lab's checkpoints.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">The Six Configurations</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Voltage Follower (Buffer)</div><div class="cat">Configurations</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Output wired straight back to the − input: gain exactly <strong>+1</strong>. Useless? No — it draws almost nothing from a weak source yet drives heavy loads: an <strong>impedance transformer</strong>. The circuit that proves gain isn't the only thing amplifiers are for.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Comparator</div><div class="cat">Configurations</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An op-amp with <strong>no feedback</strong>: the full open-loop gain amplifies the input difference, so the output is always slammed against one rail or the other. Output = which input is higher. The bridge between analog and digital — thermostats, light sensors, ADC front ends.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Integrator</div><div class="cat">Configurations</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An inverting amp with a <strong>capacitor as R<sub>f</sub></strong>: the output is the running total (integral) of the input, scaled by −1/RC. Feed it a constant, get a ramp; feed it a square wave, get a <strong>triangle</strong>. A parallel resistor tames DC drift in practice.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Differentiator</div><div class="cat">Configurations</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The mirror twin: <strong>capacitor at the input</strong>, resistor in feedback. Output = −RC × the input's slope. Feed it a triangle, get a <strong>square</strong>; feed it a square's edges, get spikes. A small series resistor keeps it from amplifying high-frequency noise into oscillation.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TINKERCAD NOTES ================= -->
+<section id="tinkercad">
+  <h2 class="sec-title">🖥 Tinkercad Setup Notes for Op-Amp Circuits</h2>
+  <p>Fourth lab, same toolkit — with one new chip and one supply trick you already know:</p>
+  <ul class="styled">
+    <li><strong>The op-amp:</strong> search <strong>"op amp"</strong> in the parts panel — Tinkercad's part is the classic <strong>LM741</strong> in an 8-pin DIP. Straddle it across the breadboard trench like any IC. <strong>Hover every pin</strong> and record the pinout before wiring: <em>pin 2 = inverting (−), pin 3 = non-inverting (+), pin 6 = output, pin 7 = V+, pin 4 = V−</em>. Pins 1/5 (offset null) and 8 (NC) stay unconnected in this lab.</li>
+    <li><strong>Dual supply, familiar trick:</strong> the 741 wants voltage <em>above and below</em> ground. Exactly like the center-tap emulation in the Rectifier lab, wire <strong>two 9 V sources in series and ground the midpoint</strong>: the outer ends become +9 V and −9 V rails. Use the breadboard's top rails for +9/−9 and reserve a column group for the 0 V midpoint reference.</li>
+    <li><strong>Test signals:</strong> a <strong>potentiometer</strong> across +9/−9 with its wiper as V<sub>in</sub> gives you a smooth, adjustable DC input for the follower, amps, and comparator. The <strong>function generator</strong> supplies the sine/square/triangle inputs — its output is referenced to your 0 V midpoint.</li>
+    <li><strong>Instruments:</strong> multimeters (V mode) for DC gain measurements; <strong>two oscilloscopes</strong> (input + output, 5 ms/div at 100 Hz) for the waveform configurations, exactly as in the Rectifier lab.</li>
+    <li><strong>Sanity anchor:</strong> after every rebuild, before trusting any measurement, verify pin 7 reads +9 V and pin 4 reads −9 V relative to your midpoint. Nine out of ten "broken op-amp" reports are supply-pin wiring.</li>
+  </ul>
+  <div class="callout co-warn">
+    <div class="co-title">Feedback Goes to Pin 2 — Always Check</div>
+    Every feedback circuit in this lab returns the output to the <strong>inverting</strong> input (pin 2). Wire it to pin 3 by mistake and you get positive feedback: the output latches to a rail and stays there, superficially resembling a comparator. If an "amplifier" only ever reads ±7.5 V, check which pin the feedback lands on before anything else.
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section id="materials">
+  <h2 class="sec-title">🔧 Virtual Parts List</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Qty</th><th>Component (Tinkercad name)</th><th>Setting</th><th>Used In</th></tr>
+    <tr><td>1</td><td>Breadboard (small)</td><td class="mono">—</td><td>All parts</td></tr>
+    <tr><td>2</td><td>Power Supply (or 9 V Battery)</td><td class="mono">9.00 V each, series, grounded midpoint</td><td>±9 V rails, all parts</td></tr>
+    <tr><td>1</td><td>Op Amp</td><td class="mono">LM741</td><td>All six configurations</td></tr>
+    <tr><td>1</td><td>Potentiometer</td><td class="mono">10 kΩ</td><td>DC input / comparator V<sub>ref</sub></td></tr>
+    <tr><td>1</td><td>Function Generator</td><td class="mono">sine / square / triangle · 100 Hz</td><td>Parts 2–6 AC tests</td></tr>
+    <tr><td>2</td><td>Oscilloscope</td><td class="mono">5 ms/div</td><td>Input + output waveforms</td></tr>
+    <tr><td>4</td><td>Resistor</td><td class="mono">10 kΩ ×2 · 47 kΩ · 100 kΩ</td><td>Gain networks, all parts</td></tr>
+    <tr><td>1</td><td>Resistor</td><td class="mono">1 kΩ</td><td>Differentiator series R</td></tr>
+    <tr><td>1</td><td>Capacitor</td><td class="mono">0.1 µF</td><td>Integrator / differentiator</td></tr>
+    <tr><td>2</td><td>LED + 220 Ω</td><td class="mono">red · green</td><td>Comparator output indicators</td></tr>
+    <tr><td>2</td><td>Multimeter</td><td class="mono">V mode</td><td>DC measurements, rail checks</td></tr>
+    <tr><td>~18</td><td>Wires</td><td class="mono">red / black / green</td><td>All parts</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= CIRCUIT ILLUSTRATIONS ================= -->
+<section id="schematic">
+  <h2 class="sec-title">📐 The Six Circuits You Will Build</h2>
+  <p>One op-amp, six personalities — the only thing that changes is the feedback network. All schematics assume the ±9 V rails and 0 V midpoint from Part 1 (supply pins omitted for clarity, but they are <em>always</em> connected: pin 7 → +9 V, pin 4 → −9 V).</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(0,this)">① Follower</button>
+    <button class="tab-btn" onclick="showTab(1,this)">② Inverting</button>
+    <button class="tab-btn" onclick="showTab(2,this)">③ Non-Inverting</button>
+    <button class="tab-btn" onclick="showTab(3,this)">④ Comparator</button>
+    <button class="tab-btn" onclick="showTab(4,this)">⑤ Integrator</button>
+    <button class="tab-btn" onclick="showTab(5,this)">⑥ Differentiator</button>
+  </div>
+
+  <!-- ---- TAB 1: FOLLOWER ---- -->
+  <div class="tab-pane show">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voltage follower: input to non-inverting pin, output wired directly back to inverting pin">
+        <path class="sch-comp" d="M 360 80 L 360 200 L 500 140 Z"/>
+        <text class="sch-lbl" x="376" y="176">+</text>
+        <text class="sch-lbl" x="376" y="116">−</text>
+        <text class="sch-sub" x="408" y="146">LM741</text>
+        <path class="sch-wire" d="M 160 170 H 360"/>
+        <text class="sch-lbl" x="80 " y="176">V_in</text>
+        <text class="sch-sub" x="212" y="160">pin 3 (+)</text>
+        <path class="sch-wire" d="M 500 140 H 700"/>
+        <text class="sch-lbl" x="712" y="146">V_out</text>
+        <!-- feedback: out to inverting -->
+        <path class="sch-wire" d="M 560 140 V 60 H 300 V 110 H 360"/>
+        <circle cx="560" cy="140" r="4" class="sch-fill"/>
+        <text class="sch-sub" x="330" y="48">100% feedback: output → pin 2 (−), no resistors at all</text>
+        <text class="sch-sub" x="160" y="240">Golden Rule #2: output holds pin 2 = pin 3, and pin 2 IS the output → V_out = V_in exactly. Gain = +1.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 1 — Voltage follower.</strong> The simplest feedback circuit that can exist: a bare wire from output to inverting input. Expected: V<sub>out</sub> tracks V<sub>in</sub> one-for-one across the pot's whole range (until the ±7.5 V rails).</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 2: INVERTING ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inverting amplifier: input through Rin to inverting pin, Rf from output to inverting pin, non-inverting pin grounded">
+        <path class="sch-comp" d="M 400 80 L 400 200 L 540 140 Z"/>
+        <text class="sch-lbl" x="416" y="116">−</text>
+        <text class="sch-lbl" x="416" y="176">+</text>
+        <!-- input network -->
+        <text class="sch-lbl" x="60" y="116">V_in</text>
+        <path class="sch-wire" d="M 120 110 H 170"/>
+        <path class="sch-comp" d="M 170 110 l 12 -14 l 14 28 l 14 -28 l 14 28 l 14 -28 l 12 14"/>
+        <text class="sch-lbl" x="200" y="80">R_in = 10 kΩ</text>
+        <path class="sch-wire" d="M 250 110 H 400"/>
+        <circle cx="330" cy="110" r="4" class="sch-fill"/>
+        <text class="sch-sub" x="300" y="134">virtual ground (0 V)</text>
+        <!-- ground + input -->
+        <path class="sch-wire" d="M 340 170 H 400"/>
+        <path class="sch-comp" d="M 340 170 V 190 M 328 190 H 352 M 333 196 H 347 M 337 202 H 343"/>
+        <!-- feedback Rf -->
+        <path class="sch-wire" d="M 330 110 V 40 H 420"/>
+        <path class="sch-comp" d="M 420 40 l 12 -14 l 14 28 l 14 -28 l 14 28 l 14 -28 l 12 14"/>
+        <text class="sch-lbl" x="440" y="10">R_f = 100 kΩ</text>
+        <path class="sch-wire" d="M 500 40 H 600 V 140"/>
+        <circle cx="600" cy="140" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 540 140 H 720"/>
+        <text class="sch-lbl" x="732" y="146">V_out</text>
+        <text class="sch-sub" x="120" y="250">Rule #2 pins the − input at 0 V; Rule #1 forces I(R_in) = I(R_f).   Gain A = −R_f / R_in = −10.   0.5 V in → −5.0 V out.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 2 — Inverting amplifier.</strong> Input current through R<sub>in</sub> must exit through R<sub>f</sub> (Rule #1), and the − node sits at virtual ground (Rule #2) — the two rules give A = −R<sub>f</sub>/R<sub>in</sub> in two lines of algebra. Sign flip included: positive in, negative out.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 3: NON-INVERTING ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Non-inverting amplifier: input to non-inverting pin, voltage divider Rf and Rin from output to ground with midpoint at inverting pin">
+        <path class="sch-comp" d="M 400 80 L 400 200 L 540 140 Z"/>
+        <text class="sch-lbl" x="416" y="116">−</text>
+        <text class="sch-lbl" x="416" y="176">+</text>
+        <path class="sch-wire" d="M 160 170 H 400"/>
+        <text class="sch-lbl" x="80" y="176">V_in</text>
+        <path class="sch-wire" d="M 540 140 H 720"/>
+        <text class="sch-lbl" x="732" y="146">V_out</text>
+        <!-- feedback divider -->
+        <path class="sch-wire" d="M 600 140 V 40 H 480"/>
+        <circle cx="600" cy="140" r="4" class="sch-fill"/>
+        <path class="sch-comp" d="M 480 40 l -12 -14 l -14 28 l -14 -28 l -14 28 l -14 -28 l -12 14"/>
+        <text class="sch-lbl" x="380" y="12">R_f = 100 kΩ</text>
+        <path class="sch-wire" d="M 400 40 H 300 V 110 H 400"/>
+        <circle cx="300" cy="110" r="4" class="sch-fill"/>
+        <!-- Rin to ground -->
+        <path class="sch-wire" d="M 300 110 V 150"/>
+        <path class="sch-comp" d="M 300 150 l 14 12 l -28 14 l 28 14 l -28 14 l 28 14 l -14 12"/>
+        <text class="sch-lbl" x="180" y="200">R_in = 10 kΩ</text>
+        <path class="sch-wire" d="M 300 230 V 248"/>
+        <path class="sch-comp" d="M 288 248 H 312 M 293 254 H 307 M 297 260 H 303"/>
+        <text class="sch-sub" x="120" y="290">The divider feeds a fraction R_in/(R_in+R_f) of the output back to pin 2; Rule #2 makes that fraction equal V_in.   Gain A = 1 + R_f/R_in = +11.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 3 — Non-inverting amplifier.</strong> The signal enters the + input; the feedback divider decides how much output it takes to match it. No sign flip, higher input impedance than the inverting amp — and gain can never be less than 1 (remove R<sub>f</sub> entirely and you're back at the follower).</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 4: COMPARATOR ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparator: potentiometer wiper sets reference on inverting pin, input on non-inverting pin, no feedback, LEDs indicate output rail">
+        <path class="sch-comp" d="M 400 80 L 400 200 L 540 140 Z"/>
+        <text class="sch-lbl" x="416" y="116">−</text>
+        <text class="sch-lbl" x="416" y="176">+</text>
+        <path class="sch-wire" d="M 200 170 H 400"/>
+        <text class="sch-lbl" x="100" y="176">V_in</text>
+        <!-- pot for Vref -->
+        <path class="sch-wire" d="M 260 40 V 60"/>
+        <text class="sch-lbl" x="238" y="30">+9 V</text>
+        <path class="sch-comp" d="M 260 60 l 8 12 l -16 11 l 16 11 l -16 11 l 16 11 l -8 12"/>
+        <path class="sch-wire" d="M 260 128 V 150"/>
+        <path class="sch-comp" d="M 248 150 H 272 M 253 156 H 267 M 257 162 H 263"/>
+        <path class="sch-fill" d="M 290 94 L 276 100 L 290 106 Z"/>
+        <path class="sch-wire" d="M 288 100 H 340 V 110 H 400"/>
+        <text class="sch-lbl" x="300" y="88">V_ref (wiper)</text>
+        <text class="sch-sub" x="130" y="110">10 kΩ pot</text>
+        <!-- output + LEDs -->
+        <path class="sch-wire" d="M 540 140 H 640"/>
+        <text class="sch-lbl" x="600" y="128">V_out</text>
+        <path class="sch-wire" d="M 640 140 V 80"/>
+        <path class="sch-fill" d="M 624 80 L 656 80 L 640 54 Z"/>
+        <path class="sch-comp" d="M 624 54 H 656"/>
+        <text class="sch-sub" x="668" y="70">green: out = +7.5 V</text>
+        <path class="sch-wire" d="M 640 140 V 200"/>
+        <path class="sch-fill" d="M 624 200 L 656 200 L 640 226 Z"/>
+        <path class="sch-comp" d="M 624 226 H 656"/>
+        <text class="sch-sub" x="668" y="216">red: out = −7.5 V</text>
+        <text class="sch-sub" x="668" y="238">(each LED + 220 Ω to 0 V,</text>
+        <text class="sch-sub" x="668" y="256">opposite polarities)</text>
+        <text class="sch-sub" x="120" y="300">NO feedback path — Rule #2 is off. Open-loop gain ~100,000 turns any V_in − V_ref difference into a rail: V_in &gt; V_ref → +sat, V_in &lt; V_ref → −sat.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 4 — Comparator.</strong> The only circuit here with no feedback. The pot's wiper defines the threshold; the output reports which input wins, at full saturation, instantly. Two back-to-back LED branches make the decision visible: green above threshold, red below.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 5: INTEGRATOR ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Integrator: input resistor to inverting pin, capacitor in feedback with parallel 100 kilohm resistor, square wave in and triangle wave out">
+        <path class="sch-comp" d="M 400 100 L 400 220 L 540 160 Z"/>
+        <text class="sch-lbl" x="416" y="136">−</text>
+        <text class="sch-lbl" x="416" y="196">+</text>
+        <path class="sch-wire" d="M 120 130 H 170"/>
+        <text class="sch-lbl" x="52" y="136">V_in</text>
+        <path class="sch-comp" d="M 170 130 l 12 -14 l 14 28 l 14 -28 l 14 28 l 14 -28 l 12 14"/>
+        <text class="sch-lbl" x="196" y="100">R = 10 kΩ</text>
+        <path class="sch-wire" d="M 250 130 H 400"/>
+        <circle cx="330" cy="130" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 340 190 H 400"/>
+        <path class="sch-comp" d="M 340 190 V 210 M 328 210 H 352 M 333 216 H 347 M 337 222 H 343"/>
+        <!-- feedback C -->
+        <path class="sch-wire" d="M 330 130 V 44 H 440"/>
+        <path class="sch-comp" d="M 440 28 V 60 M 454 28 V 60"/>
+        <path class="sch-wire" d="M 454 44 H 600 V 160"/>
+        <text class="sch-lbl" x="470" y="24">C = 0.1 µF</text>
+        <!-- parallel Rf -->
+        <path class="sch-wire" d="M 330 90 H 420"/>
+        <circle cx="330" cy="90" r="4" class="sch-fill"/>
+        <path class="sch-comp" d="M 420 90 l 12 -12 l 14 24 l 14 -24 l 14 24 l 14 -24 l 12 12"/>
+        <text class="sch-sub" x="430" y="112">100 kΩ anti-drift (parallel with C)</text>
+        <path class="sch-wire" d="M 500 90 H 600"/>
+        <circle cx="600" cy="90" r="4" class="sch-fill"/>
+        <circle cx="600" cy="160" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 540 160 H 720"/>
+        <text class="sch-lbl" x="732" y="166">V_out</text>
+        <!-- waveforms -->
+        <path class="sch-wave-in" d="M 630 230 h 22 v -26 h 22 v 26 h 22 v -26 h 22 v 26 h 22"/>
+        <text class="sch-sub" x="630" y="222">in: square</text>
+        <path class="sch-wave-out" d="M 630 296 l 22 -24 l 22 24 l 22 -24 l 22 24 l 22 -24"/>
+        <text class="sch-sub" x="630" y="272">out: triangle</text>
+        <text class="sch-sub" x="60" y="290">V_out = −(1/RC) ∫ V_in dt.  RC = 1 ms.  ±1 V square @ 100 Hz → constant-slope ramps → ~5 V_pp triangle, inverted.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 5 — Integrator.</strong> The capacitor accumulates input current as charge — the electronic running total. During each flat half of the square wave the input current is constant, so the output ramps at a constant slope: triangles. The parallel 100 kΩ bleeds off DC so tiny offsets can't slowly ramp the output into a rail.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 6: DIFFERENTIATOR ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Differentiator: series 1 kilohm and capacitor at input to inverting pin, 10 kilohm feedback resistor, triangle in and square out">
+        <path class="sch-comp" d="M 400 100 L 400 220 L 540 160 Z"/>
+        <text class="sch-lbl" x="416" y="136">−</text>
+        <text class="sch-lbl" x="416" y="196">+</text>
+        <path class="sch-wire" d="M 100 130 H 140"/>
+        <text class="sch-lbl" x="36" y="136">V_in</text>
+        <path class="sch-comp" d="M 140 130 l 10 -10 l 10 20 l 10 -20 l 10 20 l 10 -10"/>
+        <text class="sch-sub" x="140" y="106">1 kΩ (stability)</text>
+        <path class="sch-wire" d="M 190 130 H 220"/>
+        <path class="sch-comp" d="M 220 114 V 146 M 234 114 V 146"/>
+        <text class="sch-lbl" x="212" y="100">C = 0.1 µF</text>
+        <path class="sch-wire" d="M 234 130 H 400"/>
+        <circle cx="330" cy="130" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 340 190 H 400"/>
+        <path class="sch-comp" d="M 340 190 V 210 M 328 210 H 352 M 333 216 H 347 M 337 222 H 343"/>
+        <!-- feedback R -->
+        <path class="sch-wire" d="M 330 130 V 50 H 420"/>
+        <path class="sch-comp" d="M 420 50 l 12 -14 l 14 28 l 14 -28 l 14 28 l 14 -28 l 12 14"/>
+        <text class="sch-lbl" x="440" y="20">R = 10 kΩ</text>
+        <path class="sch-wire" d="M 500 50 H 600 V 160"/>
+        <circle cx="600" cy="160" r="4" class="sch-fill"/>
+        <path class="sch-wire" d="M 540 160 H 720"/>
+        <text class="sch-lbl" x="732" y="166">V_out</text>
+        <!-- waveforms -->
+        <path class="sch-wave-in" d="M 630 250 l 22 -24 l 22 24 l 22 -24 l 22 24 l 22 -24"/>
+        <text class="sch-sub" x="630" y="216">in: triangle</text>
+        <path class="sch-wave-out" d="M 630 302 h 22 v -22 h 22 v 22 h 22 v -22 h 22 v 22 h 22"/>
+        <text class="sch-sub" x="630" y="274">out: square</text>
+        <text class="sch-sub" x="60" y="292">V_out = −RC · dV_in/dt.  RC = 1 ms.  Constant triangle slope → constant output level; slope flips sign → output snaps: squares.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 6 — Differentiator.</strong> The integrator's mirror: now the capacitor senses the input's <em>rate of change</em> and the feedback resistor converts that current to voltage. A triangle's slope is constant except for sign — so the output is a square. The 1 kΩ series resistor limits high-frequency gain so the circuit doesn't scream at noise.</div>
+    </div>
+  </div>
+
+  <h3>Expected Results at a Glance</h3>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Configuration</th><th class="mono">Feedback element</th><th class="mono">Transfer function</th><th class="mono">Test input</th><th class="mono">Expected output</th></tr>
+    <tr><td><strong>① Follower</strong></td><td class="mono">wire</td><td class="mono">V_out = V_in</td><td class="mono">DC sweep via pot</td><td class="mono">tracks 1:1 to ±7.5 V</td></tr>
+    <tr><td><strong>② Inverting</strong></td><td class="mono">R_f = 100 k</td><td class="mono">A = −R_f/R_in = −10</td><td class="mono">+0.50 V DC</td><td class="mono">−5.0 V</td></tr>
+    <tr><td><strong>③ Non-inverting</strong></td><td class="mono">R_f = 100 k divider</td><td class="mono">A = 1 + R_f/R_in = +11</td><td class="mono">+0.50 V DC</td><td class="mono">+5.5 V</td></tr>
+    <tr><td><strong>④ Comparator</strong></td><td class="mono">none</td><td class="mono">rail = sign(V_in − V_ref)</td><td class="mono">pot sweep past V_ref</td><td class="mono">snap ±7.5 V · LEDs swap</td></tr>
+    <tr><td><strong>⑤ Integrator</strong></td><td class="mono">C = 0.1 µF (∥100 k)</td><td class="mono">V_out = −(1/RC)∫V_in dt</td><td class="mono">±1 V square · 100 Hz</td><td class="mono">~5 V_pp triangle</td></tr>
+    <tr><td><strong>⑥ Differentiator</strong></td><td class="mono">R = 10 k (C input)</td><td class="mono">V_out = −RC·dV_in/dt</td><td class="mono">±1 V triangle · 100 Hz</td><td class="mono">~±0.4 V square</td></tr>
+  </table></div>
+  <div class="formula">Inverting: A = −R_f/R_in     Non-inverting: A = 1 + R_f/R_in     Integrator: V_out = −(1/RC)∫V_in dt     Differentiator: V_out = −RC·dV_in/dt     741 rails ≈ ±(V_supply − 1.5 V)</div>
+</section>
+
+<!-- ================= PROCEDURE ================= -->
+<section id="procedure">
+  <h2 class="sec-title">🛠 Step-by-Step Procedure</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Suggested split: Session 1 = Parts 1–4 (DC configurations). Session 2 = Parts 5–6 (waveform configurations) + analysis.</p>
+
+  <h3>Part 1 — Dual Supply &amp; Voltage Follower (≈25 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Create the workspace.</span> New circuit named <em>"LastName – Op-Amp Lab."</em> Place a small breadboard.</li>
+    <li><span class="step-title">Build the ±9 V rails.</span> Two 9 V supplies in series: Supply A's − terminal to Supply B's + terminal — that junction is your <strong>0 V midpoint</strong>. Wire A's + to the top red rail (+9 V), B's − to the top black rail (−9 V), and the midpoint to a dedicated column group. Verify with a multimeter: +9.0 and −9.0 relative to midpoint. (Same trick as the Rectifier lab's center tap.)</li>
+    <li><span class="step-title">Seat and power the 741.</span> Place the op-amp across the trench. Hover-verify all pins, then wire <strong>pin 7 → +9 V</strong> and <strong>pin 4 → −9 V</strong>. Re-verify both supply pins with the meter before continuing — make this your ritual for every rebuild.</li>
+    <li><span class="step-title">Adjustable DC input.</span> 10 kΩ potentiometer across +9 V and −9 V; its wiper is V<sub>in</sub>, swinging anywhere between the rails. Multimeter M1 from wiper to 0 V.</li>
+    <li><span class="step-title">Wire the follower.</span> Wiper → pin 3 (+). One wire from pin 6 (output) back to pin 2 (−). Multimeter M2 from pin 6 to 0 V.</li>
+    <li><span class="step-title">Test unity gain.</span> Simulate. Sweep the pot and record five (V<sub>in</sub>, V<sub>out</sub>) pairs across the range in Data Table 1 — including near +9 V and −9 V, where the output stalls at the ±7.5 V saturation limits while the input keeps going. That stall is your first rail sighting.</li>
+    <li><span class="step-title">Answer before moving on.</span> Gain = 1 — so what did the circuit accomplish? (Hint: how much current did the pot's wiper have to supply?) One sentence in your report.</li>
+  </ol>
+
+  <h3>Part 2 — Inverting Amplifier (≈20 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Rewire per Figure 2.</span> Remove the follower wire. Wiper → R<sub>in</sub> (10 kΩ) → pin 2. R<sub>f</sub> (100 kΩ) from pin 6 back to pin 2. Pin 3 → 0 V midpoint.</li>
+    <li><span class="step-title">Predict.</span> A = −100k/10k = −10. Fill in the predicted column of Data Table 2 for inputs +0.25 V, +0.50 V, −0.50 V.</li>
+    <li><span class="step-title">Measure the gain.</span> For each input, set the pot (watch M1), record V<sub>out</sub>, compute measured gain. Signs matter — record them.</li>
+    <li><span class="step-title">Probe the virtual ground.</span> Move a voltmeter to pin 2 while the amp is working: ≈0 V, with no wire to ground. Golden Rule #2, measured. Record it.</li>
+    <li><span class="step-title">Find the clip point.</span> Slowly raise V<sub>in</sub> until V<sub>out</sub> stops at −7.5 V. Record the input voltage where clipping began and check it against 7.5 V ÷ 10.</li>
+    <li><span class="step-title">Change the gain.</span> Swap R<sub>f</sub> to 47 kΩ (A = −4.7), re-measure one point, and confirm the ratio rules. Restore 100 kΩ.</li>
+  </ol>
+
+  <h3>Part 3 — Non-Inverting Amplifier (≈15 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Rewire per Figure 3.</span> Wiper → pin 3. R<sub>f</sub> (100 kΩ) pin 6 → pin 2; R<sub>in</sub> (10 kΩ) pin 2 → 0 V.</li>
+    <li><span class="step-title">Predict, then measure.</span> A = 1 + 100k/10k = +11. Test +0.25 V and +0.50 V; record predicted vs measured in Data Table 2. No sign flip this time.</li>
+    <li><span class="step-title">The follower connection.</span> Thought check for the report: set R<sub>f</sub> = 0 (a wire) and R<sub>in</sub> = ∞ (removed) in the gain formula. What circuit does the non-inverting amp become?</li>
+  </ol>
+
+  <h3>Part 4 — Comparator (≈15 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Remove ALL feedback.</span> Take R<sub>f</sub> out entirely — nothing connects pin 6 to pin 2. Pot wiper → pin 2 as V<sub>ref</sub>; set it near +2 V. A second voltage (reuse the other pot terminal wiring or a supply tap through a divider) → pin 3 as V<sub>in</sub>. Simplest: move the function generator in as V<sub>in</sub>, sine, 100 Hz, ±4 V.</li>
+    <li><span class="step-title">Output indicators.</span> Two LED + 220 Ω branches from pin 6 to 0 V, opposite polarities (Figure 4): green lights on +7.5 V, red on −7.5 V.</li>
+    <li><span class="step-title">Observe the snap.</span> Simulate with the scope on pin 6: the sine input emerges as a <strong>square wave</strong> — the output only ever visits the two rails, switching the instant the sine crosses V<sub>ref</sub>. Record the duty cycle at V<sub>ref</sub> = 0 V and V<sub>ref</sub> = +2 V in Data Table 3. Notice: same chip as Part 2, opposite personality — the only difference is feedback.</li>
+  </ol>
+
+  <h3>Part 5 — Integrator (≈20 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Wire Figure 5.</span> Function generator (<strong>square</strong>, 100 Hz, ±1 V) → R = 10 kΩ → pin 2. Feedback: C = 0.1 µF from pin 6 to pin 2, with 100 kΩ in parallel. Pin 3 → 0 V. Scopes on input and output, 5 ms/div.</li>
+    <li><span class="step-title">Predict the shape and size.</span> RC = 1 ms. Each half-cycle (5 ms) integrates a constant ±1 V: slope = 1 V/1 ms = 1000 V/s for 5 ms → ~5 V swing. Sketch your predicted output before running.</li>
+    <li><span class="step-title">Run and record.</span> Square in, <strong>triangle out</strong> — measure the output V<sub>pp</sub> and note the inversion (output ramps DOWN while input is HIGH). Record in Data Table 3.</li>
+    <li><span class="step-title">Frequency experiment.</span> Double the generator to 200 Hz and re-measure V<sub>pp</sub>: half the integration time → half the amplitude. Record and explain.</li>
+  </ol>
+
+  <h3>Part 6 — Differentiator (≈20 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Wire Figure 6.</span> Generator (<strong>triangle</strong>, 100 Hz, ±1 V) → 1 kΩ → C = 0.1 µF → pin 2. Feedback: R = 10 kΩ, pin 6 → pin 2. Pin 3 → 0 V.</li>
+    <li><span class="step-title">Predict.</span> The ±1 V triangle swings 2 V over each 5 ms half-period: slope = ±400 V/s. V<sub>out</sub> = −RC·slope = −(1 ms)(±400 V/s) = ∓0.4 V. Predicted: a ±0.4 V <strong>square wave</strong>, inverted relative to the slope.</li>
+    <li><span class="step-title">Run and record.</span> Triangle in, square out. Measure the output levels against your prediction; note any rounding at the transitions (the 1 kΩ stability resistor at work). Record in Data Table 3.</li>
+    <li><span class="step-title">The spike test.</span> Switch the generator to a <strong>square</strong> input for a moment: the differentiator answers each edge with a sharp spike and rests at zero between them — the slope of a flat line is zero. Sketch what you see, then restore the triangle.</li>
+    <li><span class="step-title">Wrap up.</span> Complete the Analysis Questions and Knowledge Check, then Print/Save your report with the data tables filled in.</li>
+  </ol>
+
+  <div class="callout co-tip">
+    <div class="co-title">Troubleshooting</div>
+    <strong>Output stuck at a rail in an amplifier circuit?</strong> Feedback is missing or landed on pin 3 — check pin 2 first. Then verify both supply pins (7 and 4). <strong>Gain right but sign wrong?</strong> You built the other amplifier — check which pin the signal enters. <strong>Integrator output slowly crawls to a rail?</strong> The 100 kΩ anti-drift resistor is missing or open. <strong>Differentiator output hashy or oscillating?</strong> The 1 kΩ series resistor is missing. <strong>Everything reads 0?</strong> The 0 V midpoint isn't shared between supplies, generator, and instruments — all references must meet at one node.
+  </div>
+</section>
+
+<!-- ================= DATA TABLES ================= -->
+<section id="data">
+  <h2 class="sec-title">📋 Data Tables</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Type readings directly into the tables — they persist when you print this page.</p>
+
+  <h3>Data Table 1 — Voltage Follower (Part 1)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl1">
+    <tr><th class="mono">V_in (pot)</th><th class="mono">V_out</th><th class="mono">Gain</th><th>Tracking or saturated?</th></tr>
+    <tr><td class="mono">≈ −8 V</td><td><input aria-label="follower output at minus 8 volts"></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">≈ −4 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">≈ +4 V</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">≈ +8 V</td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 2 — Amplifier Gains (Parts 2–3)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl2">
+    <tr><th>Configuration</th><th class="mono">V_in</th><th class="mono">Predicted V_out</th><th class="mono">Measured V_out</th><th class="mono">Measured gain</th><th class="mono">Pin 2 voltage</th></tr>
+    <tr><td class="mono">Inverting −10</td><td class="mono">+0.25 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Inverting −10</td><td class="mono">+0.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Inverting −10</td><td class="mono">−0.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Inverting −4.7 (R_f 47 k)</td><td class="mono">+0.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Non-inv +11</td><td class="mono">+0.25 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Non-inv +11</td><td class="mono">+0.50 V</td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Inverting −10 · clip test</td><td class="mono">V_in at first clip:</td><td colspan="2"><input aria-label="input voltage at clipping"></td><td class="mono" colspan="2">check: ≈ 7.5 V ÷ 10</td></tr>
+  </table></div>
+
+  <h3>Data Table 3 — Comparator &amp; Waveform Circuits (Parts 4–6)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl3">
+    <tr><th>Circuit / condition</th><th class="mono">Input</th><th class="mono">Output shape</th><th class="mono">Output levels / V_pp</th><th>Notes (inversion? duty? spikes?)</th></tr>
+    <tr><td class="mono">Comparator · V_ref = 0 V</td><td class="mono">±4 V sine 100 Hz</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Comparator · V_ref = +2 V</td><td class="mono">±4 V sine 100 Hz</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Integrator · 100 Hz</td><td class="mono">±1 V square</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Integrator · 200 Hz</td><td class="mono">±1 V square</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Differentiator · 100 Hz</td><td class="mono">±1 V triangle</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Differentiator · spike test</td><td class="mono">±1 V square</td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+  <div class="g-btns" style="max-width:420px;">
+    <button class="g-btn g-green" onclick="window.print()">🖨 Print / Save Report</button>
+    <button class="g-btn" onclick="clearTables()">↺ Clear Tables</button>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE EXPLORER ================= -->
+<section id="explorer">
+  <h2 class="sec-title">📈 Interactive Op-Amp Waveform Playground</h2>
+  <p>One virtual 741 on ±9 V rails (saturation ≈ ±7.5 V), six selectable personalities. The gray trace is the input; the green trace is the output. Push the gain or amplitude until the output flattens against the rails — clipping is easier to recognize once you've caused it on purpose.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="oaCv" width="640" height="430" aria-label="Op-amp input and output waveforms for the selected configuration"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label><span>Configuration</span></label>
+          <div class="seg" id="cfgSeg">
+            <button class="active" onclick="setCfg('follower',this)">Follower</button>
+            <button onclick="setCfg('inv',this)">Inverting</button>
+            <button onclick="setCfg('noninv',this)">Non-Inv</button>
+            <button onclick="setCfg('comp',this)">Comparator</button>
+            <button onclick="setCfg('int',this)">Integrator</button>
+            <button onclick="setCfg('diff',this)">Differentiator</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label><span>Input Waveform</span></label>
+          <div class="seg" id="waveSeg">
+            <button class="active" onclick="setWave('sine',this)">Sine</button>
+            <button onclick="setWave('square',this)">Square</button>
+            <button onclick="setWave('tri',this)">Triangle</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label><span>Input Amplitude (peak)</span><span id="ampVal">1.0 V</span></label>
+          <input type="range" id="ampSlide" min="0.1" max="4" step="0.1" value="1" oninput="drawOA()">
+        </div>
+        <div class="ctrl">
+          <label><span>R<sub>f</sub> (amps) · gain network</span></label>
+          <div class="seg" id="rfSeg">
+            <button onclick="setRF(10000,this)">10 k</button>
+            <button onclick="setRF(47000,this)">47 k</button>
+            <button class="active" onclick="setRF(100000,this)">100 k</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label><span>V<sub>ref</sub> (comparator)</span><span id="vrefVal">0.0 V</span></label>
+          <input type="range" id="vrefSlide" min="-3" max="3" step="0.1" value="0" oninput="drawOA()">
+        </div>
+        <div class="g-btns">
+          <button class="g-btn g-green" onclick="presetOA('int','square')">Lab Part 5</button>
+          <button class="g-btn g-green" onclick="presetOA('diff','tri')">Part 6</button>
+          <button class="g-btn" onclick="presetOA('inv','sine')">Clip Hunt</button>
+        </div>
+        <div class="readout" id="oaRead"></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">What To Notice</div>
+    Try the integrator with a <em>sine</em> input: out comes a cosine — shifted a quarter cycle, because the integral of sine is −cosine. Then give the differentiator a square wave and watch it answer only the edges. And in the "Clip Hunt" preset, raise the amplitude past 0.75 V: gain −10 wants ±7.5+ V of output, the rails refuse, and the sine's crown gets sliced flat. Every distorted guitar amp you've ever heard is that flattening, done on purpose.
+  </div>
+</section>
+
+<!-- ================= ANALYSIS QUESTIONS ================= -->
+<section id="analysis">
+  <h2 class="sec-title">✍ Analysis Questions</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Answer in complete sentences in your lab report.</p>
+  <ol class="styled">
+    <li>Derive the inverting amplifier's gain formula from the two golden rules, in three steps or fewer, using your Part 2 component values.</li>
+    <li>The follower has a gain of exactly 1. Describe a concrete scenario (sensor, audio, measurement) where inserting a follower fixes a real problem, and name the property it exploits.</li>
+    <li>In Part 2 you measured ≈0 V at pin 2 with no ground wire attached to it. Explain the mechanism: what is the op-amp's output physically doing to hold that node at zero?</li>
+    <li>Predict each result and justify: (a) the inverting amp's R<sub>f</sub> fails open; (b) the comparator accidentally gets a feedback resistor from output to pin 2.</li>
+    <li>Using your Part 5 data: show the calculation predicting the integrator's output V<sub>pp</sub> at 100 Hz, and explain why doubling the frequency halved it.</li>
+    <li>The differentiator answered a square wave with spikes and a flat zero between them. Explain both features using V<sub>out</sub> = −RC·dV<sub>in</sub>/dt.</li>
+    <li>Design exercise: choose R<sub>in</sub> and R<sub>f</sub> from standard values (1 k, 4.7 k, 10 k, 22 k, 47 k, 100 k) for an inverting amp with a gain as close as possible to −22, and state the largest input peak it can handle on ±9 V rails without clipping.</li>
+  </ol>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="facts">
+    <div class="fact"><div class="f-label">Golden Rule #1</div><div class="f-val">No current into the inputs</div></div>
+    <div class="fact"><div class="f-label">Golden Rule #2 (needs feedback)</div><div class="f-val">Output forces V(+) = V(−)</div></div>
+    <div class="fact"><div class="f-label">LM741 pinout</div><div class="f-val">2 (−) · 3 (+) · 6 out · 7 V+ · 4 V−</div></div>
+    <div class="fact"><div class="f-label">Inverting gain</div><div class="f-val">A = −R_f / R_in</div></div>
+    <div class="fact"><div class="f-label">Non-inverting gain</div><div class="f-val">A = 1 + R_f / R_in (never &lt; 1)</div></div>
+    <div class="fact"><div class="f-label">Follower</div><div class="f-val">Gain +1 · impedance buffer</div></div>
+    <div class="fact"><div class="f-label">Comparator</div><div class="f-val">No feedback · output = a rail</div></div>
+    <div class="fact"><div class="f-label">Integrator</div><div class="f-val">square → triangle · −(1/RC)∫</div></div>
+    <div class="fact"><div class="f-label">Differentiator</div><div class="f-val">triangle → square · −RC·d/dt</div></div>
+    <div class="fact"><div class="f-label">741 saturation</div><div class="f-val">≈ 1.5 V inside each rail</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Six questions drawn directly from the lab. Select an answer for each, then press Grade My Quiz.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Grade My Quiz</button>
+      <div id="scoreBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lab-bjt.html">← Lab: BJT Transistors</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 Course Home</a>
+  <a href="#objectives">Back to Top ↑</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Hands-On Lab: Op-Amp Configurations in Tinkercad<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  drawOA();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ DATA TABLES ============ */
+function clearTables(){
+  if(!confirm('Clear all data table entries?')) return;
+  document.querySelectorAll('table.data input').forEach(function(i){ i.value=''; });
+}
+
+/* ============ OP-AMP PLAYGROUND ============ */
+var cv=document.getElementById('oaCv'), cx=cv.getContext('2d');
+var CFG='follower', WAVE='sine', RF=100000, RIN=10000, VSAT=7.5;
+var FREQ=100, RC=0.001;  /* integrator/differentiator RC = 10k x 0.1uF */
+
+function setCfg(c,btn){
+  CFG=c;
+  document.querySelectorAll('#cfgSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawOA();
+}
+function setWave(w,btn){
+  WAVE=w;
+  document.querySelectorAll('#waveSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawOA();
+}
+function setRF(r,btn){
+  RF=r;
+  document.querySelectorAll('#rfSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  drawOA();
+}
+function presetOA(cfg,wave){
+  CFG=cfg; WAVE=wave;
+  var cMap={follower:0,inv:1,noninv:2,comp:3,'int':4,'diff':5};
+  var wMap={sine:0,square:1,tri:2};
+  var cb=document.querySelectorAll('#cfgSeg button');
+  cb.forEach(function(x){x.classList.remove('active');}); cb[cMap[cfg]].classList.add('active');
+  var wb=document.querySelectorAll('#waveSeg button');
+  wb.forEach(function(x){x.classList.remove('active');}); wb[wMap[wave]].classList.add('active');
+  if(cfg==='inv'){ document.getElementById('ampSlide').value=0.6; }
+  if(cfg==='int'||cfg==='diff'){ document.getElementById('ampSlide').value=1.0; }
+  drawOA();
+}
+
+function vin(t,A){
+  var ph=(t*FREQ)%1; if(ph<0) ph+=1;
+  if(WAVE==='sine')   return A*Math.sin(2*Math.PI*FREQ*t);
+  if(WAVE==='square') return ph<0.5 ? A : -A;
+  /* triangle: rises -A..A over first half, falls over second */
+  return ph<0.5 ? -A+4*A*ph : 3*A-4*A*ph;
+}
+function clip(v){ return Math.max(-VSAT,Math.min(VSAT,v)); }
+
+function drawOA(){
+  var A=parseFloat(document.getElementById('ampSlide').value);
+  var VREF=parseFloat(document.getElementById('vrefSlide').value);
+  document.getElementById('ampVal').textContent=A.toFixed(1)+' V';
+  document.getElementById('vrefVal').textContent=VREF.toFixed(1)+' V';
+
+  var W=cv.width, H=cv.height;
+  cx.clearRect(0,0,W,H);
+  var padL=52, padR=14, padT=16, padB=40;
+  var T=3/FREQ, vMax=9;
+  function X(t){ return padL+t/T*(W-padL-padR); }
+  function Y(v){ return padT+(vMax-v)/(2*vMax)*(H-padT-padB); }
+
+  /* compute output over time (numeric, so integrator/diff work for any wave) */
+  var N=2400, dt=T/N, settle=2*T;
+  var out=[], acc=0, prev=vin(-settle,A);
+  for(var t=-settle; t<=T; t+=dt){
+    var vi=vin(t,A), vo;
+    if(CFG==='follower') vo=vi;
+    else if(CFG==='inv') vo=-(RF/RIN)*vi;
+    else if(CFG==='noninv') vo=(1+RF/RIN)*vi;
+    else if(CFG==='comp') vo=(vi>VREF)?VSAT:-VSAT;
+    else if(CFG==='int'){
+      acc+=-(vi/RC)*dt;               /* ideal integration */
+      acc*=Math.exp(-dt/(100000*1e-7)); /* 100k anti-drift leak */
+      vo=acc;
+    } else { /* diff, with slight smoothing from the 1k series R */
+      var raw=-RC*(vi-prev)/dt;
+      vo=(out.length? out[out.length-1][2]*0.55 : 0)+0.45*clip(raw);
+    }
+    prev=vi;
+    var voc=clip(vo);
+    if(t>=0) out.push([t,vi,voc]);
+    else if(out.length) out.length=0;
+  }
+
+  /* grid */
+  cx.strokeStyle=css('--border'); cx.lineWidth=1;
+  cx.font='11px Arial'; cx.fillStyle=css('--text-muted'); cx.textAlign='right';
+  for(var v=-8; v<=8; v+=2){
+    cx.beginPath(); cx.moveTo(padL,Y(v)); cx.lineTo(W-padR,Y(v)); cx.stroke();
+    cx.fillText(v+'', padL-6, Y(v)+4);
+  }
+  cx.textAlign='center';
+  for(var ms=0; ms<=T*1000+0.1; ms+=5){
+    cx.beginPath(); cx.moveTo(X(ms/1000),padT); cx.lineTo(X(ms/1000),H-padB); cx.stroke();
+    cx.fillText(ms+'', X(ms/1000), H-padB+16);
+  }
+  /* rails */
+  cx.strokeStyle=css('--red'); cx.lineWidth=1.2; cx.setLineDash([3,5]);
+  cx.beginPath(); cx.moveTo(padL,Y(VSAT)); cx.lineTo(W-padR,Y(VSAT)); cx.stroke();
+  cx.beginPath(); cx.moveTo(padL,Y(-VSAT)); cx.lineTo(W-padR,Y(-VSAT)); cx.stroke();
+  cx.setLineDash([]);
+  cx.fillStyle=css('--red'); cx.font='10px Arial'; cx.textAlign='left';
+  cx.fillText('+7.5 V rail', padL+4, Y(VSAT)-4);
+  cx.fillText('−7.5 V rail', padL+4, Y(-VSAT)+12);
+  /* zero axis */
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=1.6;
+  cx.beginPath(); cx.moveTo(padL,Y(0)); cx.lineTo(W-padR,Y(0)); cx.stroke();
+  cx.fillStyle=css('--text'); cx.font='bold 12px Arial'; cx.textAlign='center';
+  cx.fillText('time (ms) · 3 cycles @ 100 Hz', (padL+W-padR)/2, H-6);
+  cx.save(); cx.translate(14,(padT+H-padB)/2); cx.rotate(-Math.PI/2);
+  cx.fillText('volts',0,0); cx.restore();
+
+  /* input trace */
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=1.8; cx.setLineDash([5,4]);
+  cx.beginPath();
+  out.forEach(function(p,i){ var x=X(p[0]), y=Y(p[1]); if(i===0) cx.moveTo(x,y); else cx.lineTo(x,y); });
+  cx.stroke(); cx.setLineDash([]);
+  /* output trace */
+  cx.strokeStyle=css('--green'); cx.lineWidth=3;
+  cx.beginPath();
+  out.forEach(function(p,i){ var x=X(p[0]), y=Y(p[2]); if(i===0) cx.moveTo(x,y); else cx.lineTo(x,y); });
+  cx.stroke();
+  /* legend */
+  cx.font='bold 11px Arial'; cx.textAlign='left';
+  cx.strokeStyle=css('--text-muted'); cx.setLineDash([5,4]); cx.lineWidth=1.8;
+  cx.beginPath(); cx.moveTo(padL+8,padT+10); cx.lineTo(padL+38,padT+10); cx.stroke(); cx.setLineDash([]);
+  cx.fillStyle=css('--text-muted'); cx.fillText('V_in', padL+44, padT+14);
+  cx.strokeStyle=css('--green'); cx.lineWidth=3;
+  cx.beginPath(); cx.moveTo(padL+86,padT+10); cx.lineTo(padL+116,padT+10); cx.stroke();
+  cx.fillStyle=css('--green-dark'); cx.fillText('V_out', padL+122, padT+14);
+
+  /* readout */
+  var pk=0, mn=1e9, clipped=false;
+  out.forEach(function(p){ pk=Math.max(pk,p[2]); mn=Math.min(mn,p[2]); if(Math.abs(p[2])>=VSAT-0.01) clipped=true; });
+  var names={follower:'FOLLOWER · A = +1',inv:'INVERTING · A = −'+(RF/RIN).toFixed(1),noninv:'NON-INVERTING · A = +'+(1+RF/RIN).toFixed(1),comp:'COMPARATOR · open loop','int':'INTEGRATOR · −(1/RC)∫','diff':'DIFFERENTIATOR · −RC·d/dt'};
+  var gainNote='';
+  if(CFG==='inv') gainNote='R_f='+(RF/1000)+'k / R_in=10k<br>';
+  if(CFG==='noninv') gainNote='1 + '+(RF/1000)+'k/10k<br>';
+  if(CFG==='comp') gainNote='V_ref = '+VREF.toFixed(1)+' V<br>';
+  if(CFG==='int'||CFG==='diff') gainNote='RC = 10k × 0.1 µF = 1 ms<br>';
+  document.getElementById('oaRead').innerHTML=
+    '<span class="r-on">'+names[CFG]+'</span><br>'+
+    '─────────────────<br>'+
+    gainNote+
+    'V_in peak  = '+A.toFixed(2)+' V<br>'+
+    'V_out max  = '+pk.toFixed(2)+' V<br>'+
+    'V_out min  = '+mn.toFixed(2)+' V<br>'+
+    'V_out pp   = '+(pk-mn).toFixed(2)+' V<br>'+
+    '─────────────────<br>'+
+    (clipped ? '<span class="r-off">⚠ CLIPPING — output at rail</span>' : '<span class="r-on">within rails ✓</span>');
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:'An inverting amplifier is built with R_in = 10 kΩ and R_f = 47 kΩ. Its gain is:',
+  o:['+4.7','−4.7','+5.7','−0.21'], a:1,
+  x:'A = −R_f/R_in = −47k/10k = −4.7. The minus sign is real output behavior — positive input drives the output negative — not a bookkeeping convention.'},
+ {q:'The "virtual ground" at an inverting amp\u2019s − input exists because:',
+  o:['pin 2 is internally wired to ground','the feedback loop drives the output to whatever voltage holds the two inputs equal, and the + input is grounded','no current means no voltage anywhere','the input resistor shorts it to 0 V'], a:1,
+  x:'Golden Rule #2: with negative feedback, the output continuously adjusts to zero the difference between the inputs. Ground the + input and the − input is *held* at 0 V by the output\u2019s effort — with no wire doing it.'},
+ {q:'A voltage follower has a gain of 1. Its actual job is to:',
+  o:['increase signal amplitude slightly','invert the signal without gain','present a very high input impedance while providing a low-impedance output — an impedance buffer','filter high frequencies'], a:2,
+  x:'The follower draws essentially nothing from a delicate source (Rule #1) yet its output can drive substantial loads. It amplifies current capability, not voltage.'},
+ {q:'The comparator\u2019s output only ever sits at ±7.5 V because:',
+  o:['the LEDs clamp it','with no feedback, the open-loop gain of ~100,000 amplifies any input difference straight into saturation','the 741 is a digital chip','V_ref limits the swing'], a:1,
+  x:'Without feedback there is no Rule #2 and nothing tames the gain: a 0.1 mV difference × 100,000 already demands 10 V, so the output is pinned to a rail — which one depends only on which input is higher.'},
+ {q:'Feeding a ±1 V square wave into the integrator produced a triangle because:',
+  o:['the capacitor filters out the corners','integrating a constant yields a constant-slope ramp, and the square alternates between two constants','the op-amp inverts twice','triangles are the 741\u2019s natural output'], a:1,
+  x:'During each flat half-cycle the input is constant, so the output ramps linearly; when the square flips sign the ramp reverses. Constant → ramp is the graphical meaning of integration.'},
+ {q:'Doubling the input frequency to the integrator (same amplitude) causes the output triangle to:',
+  o:['double in amplitude','stay the same','halve in amplitude — each ramp has half the time to grow','turn into a sine'], a:2,
+  x:'The slope is fixed by V_in/RC; only the ramp *duration* changed. Half the half-period → half the peak-to-peak swing, exactly as measured in Part 5 step 4.'}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'">💡 '+item.x+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name="q'+qi+'"]:checked');
+    var opts=document.querySelectorAll('input[name="q'+qi+'"]');
+    opts.forEach(function(inp,oi){
+      var lab=inp.parentElement;
+      lab.classList.remove('correct','incorrect');
+      if(oi===item.a) lab.classList.add('correct');
+      else if(sel && parseInt(sel.value)===oi) lab.classList.add('incorrect');
+    });
+    document.getElementById('ex'+qi).classList.add('show');
+    if(sel && parseInt(sel.value)===item.a) score++;
+  });
+  var msg = score===6 ? '🏆 Perfect! Two golden rules, six circuits — mastered.'
+          : score>=4 ? '📗 Solid work. Review the explanations for missed items against your data tables.'
+          : '📘 Getting there. Replay the playground presets while watching the readout, then retake the quiz.';
+  document.getElementById('scoreBox').innerHTML=
+    '<div class="score-box"><div class="big">'+score+' / 6</div><div>'+msg+'</div></div>';
+  document.getElementById('scoreBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+drawOA();
+</script>
+</body>
+</html>
