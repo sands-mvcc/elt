@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102 Hands-On Lab: Two-Input Logic Gates with 74xx Chips in Tinkercad</title>
+<style>
+:root{
+  --navy:#0047AB; --navy-dark:#003580; --navy-darker:#002a66;
+  --green:#00a86b; --green-dark:#00875a;
+  --amber:#e8a020; --red:#c0392b;
+  --bg:#f5f7fa; --card:#ffffff; --card-alt:#eef2f8;
+  --text:#1c2733; --text-muted:#5a6b7d;
+  --border:#d7dfe9; --shadow:0 2px 10px rgba(0,40,90,.10);
+  --code-bg:#eef2f8;
+}
+[data-theme="dark"]{
+  --navy:#4d8cff; --navy-dark:#3a6fd0; --navy-darker:#0d1b2e;
+  --green:#2ecc8f; --green-dark:#22b07a;
+  --amber:#f0b545; --red:#e06050;
+  --bg:#0f1620; --card:#18222f; --card-alt:#1f2c3c;
+  --text:#e8eef5; --text-muted:#9fb0c2;
+  --border:#2c3a4c; --shadow:0 2px 12px rgba(0,0,0,.45);
+  --code-bg:#111a26;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);line-height:1.65;transition:background .3s,color .3s;}
+
+/* ============ HEADER ============ */
+.topbar{background:linear-gradient(135deg,#0047AB,#002a66);color:#fff;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+[data-theme="dark"] .topbar{background:linear-gradient(135deg,#0d1b2e,#001a40);}
+.topbar .brand{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;letter-spacing:.05em;}
+.topbar .lesson-badge{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 14px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;}
+.theme-btn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 16px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;transition:background .2s;}
+.theme-btn:hover{background:rgba(255,255,255,.3);}
+.crumbs{background:var(--card);border-bottom:1px solid var(--border);padding:8px 24px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;color:var(--text-muted);}
+.crumbs a{color:var(--navy);text-decoration:none;}
+.crumbs a:hover{text-decoration:underline;}
+
+/* ============ HERO ============ */
+.hero{background:linear-gradient(135deg,#0047AB 0%,#003580 55%,#00875a 130%);color:#fff;text-align:center;padding:52px 24px 44px;}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#123a75 0%,#0d1b2e 55%,#0e4a36 130%);}
+.hero .kicker{display:inline-block;background:var(--green);color:#fff;border-radius:20px;padding:4px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;}
+.hero h1{font-size:2.4rem;margin-bottom:12px;line-height:1.2;}
+.hero .sub{max-width:760px;margin:0 auto 22px;font-size:1.1rem;opacity:.92;font-style:italic;}
+.meta-chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.meta-chips span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 16px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;}
+
+/* ============ LAYOUT ============ */
+.wrap{max-width:1080px;margin:0 auto;padding:34px 22px 60px;}
+section{margin-bottom:44px;}
+h2.sec-title{font-size:1.7rem;color:var(--navy);border-bottom:3px solid var(--green);padding-bottom:8px;margin-bottom:20px;}
+h3{color:var(--navy);margin:26px 0 10px;font-size:1.25rem;}
+h4{color:var(--green-dark);margin:20px 0 8px;font-size:1.05rem;}
+p{margin-bottom:14px;}
+ul.styled,ol.styled{margin:0 0 16px 26px;}
+ul.styled li,ol.styled li{margin-bottom:9px;}
+strong{color:var(--navy);}
+[data-theme="dark"] strong{color:#8ab6ff;}
+
+/* ============ OBJECTIVES ============ */
+.objectives{background:var(--card);border-left:6px solid var(--green);border-radius:0 10px 10px 0;box-shadow:var(--shadow);padding:24px 28px;}
+.objectives li{margin-bottom:10px;}
+.objectives li::marker{color:var(--green);}
+
+/* ============ ACCORDION ============ */
+.acc{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;}
+.acc-head{width:100%;background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;border:none;padding:15px 22px;font-family:Georgia,serif;font-size:1.25rem;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+[data-theme="dark"] .acc-head{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.acc-head .plus{font-size:1.3rem;transition:transform .3s;}
+.acc.open .acc-head .plus{transform:rotate(45deg);}
+.acc-body{display:none;padding:22px;}
+.acc.open .acc-body{display:block;}
+
+/* ============ FLIP CARDS ============ */
+.cat-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--green-dark);font-size:.95rem;font-weight:bold;margin:22px 0 12px;border-bottom:1px dashed var(--border);padding-bottom:4px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.flip{perspective:900px;height:190px;cursor:pointer;}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s;}
+.flip.flipped .flip-inner{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:10px;padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.face.front{background:var(--card);border:2px solid var(--navy);box-shadow:var(--shadow);}
+.face.front .term{font-weight:bold;color:var(--navy);font-size:1.02rem;margin-bottom:8px;}
+.face.front .cat{font-family:'Arial Narrow',Arial,sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);}
+.face.front .hint{font-family:'Arial Narrow',Arial,sans-serif;font-size:.78rem;color:var(--green-dark);margin-top:10px;}
+.face.back{background:linear-gradient(135deg,var(--navy-dark),var(--navy-darker));color:#fff;transform:rotateY(180deg);font-size:.86rem;line-height:1.45;overflow-y:auto;justify-content:flex-start;padding-top:14px;}
+[data-theme="dark"] .face.back{background:linear-gradient(135deg,#1a3a68,#0d1b2e);}
+.face.back .def-label{font-family:'Arial Narrow',Arial,sans-serif;text-transform:uppercase;font-size:.7rem;letter-spacing:.1em;color:var(--amber);margin-bottom:6px;}
+
+/* ============ CALLOUTS ============ */
+.callout{border-radius:10px;padding:16px 20px;margin:18px 0;border-left:6px solid;}
+.callout .co-title{font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;font-size:.9rem;margin-bottom:6px;}
+.co-tip{background:rgba(0,168,107,.09);border-color:var(--green);}
+.co-tip .co-title{color:var(--green-dark);}
+.co-pro{background:rgba(0,71,171,.08);border-color:var(--navy);}
+.co-pro .co-title{color:var(--navy);}
+.co-warn{background:rgba(232,160,32,.12);border-color:var(--amber);}
+.co-warn .co-title{color:#a86e00;}
+[data-theme="dark"] .co-warn .co-title{color:var(--amber);}
+.formula{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:'Courier New',monospace;font-size:.98rem;margin:14px 0;overflow-x:auto;}
+
+/* ============ TABLES ============ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table.data{width:100%;border-collapse:collapse;font-size:.93rem;}
+table.data th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-family:'Arial Narrow',Arial,sans-serif;letter-spacing:.03em;}
+[data-theme="dark"] table.data th{background:#1a3a68;}
+table.data td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.data tr:nth-child(even) td{background:var(--card-alt);}
+table.data td.mono, table.data th.mono{font-family:'Courier New',monospace;}
+table.data td input{width:100%;min-width:90px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Courier New',monospace;font-size:.88rem;}
+table.data td input:focus{outline:2px solid var(--green);border-color:var(--green);}
+
+/* ============ STEP LIST ============ */
+.steps{counter-reset:step;list-style:none;margin:0 0 16px 0;}
+.steps li{counter-increment:step;position:relative;padding:0 0 18px 58px;margin-bottom:4px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:0;width:38px;height:38px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Arial Narrow',Arial,sans-serif;font-weight:bold;font-size:1.05rem;box-shadow:var(--shadow);}
+.steps li::after{content:'';position:absolute;left:18px;top:42px;bottom:0;width:2px;background:var(--border);}
+.steps li:last-child::after{display:none;}
+.steps li .step-title{font-weight:bold;color:var(--navy);display:block;margin-bottom:3px;}
+[data-theme="dark"] .steps li .step-title{color:#8ab6ff;}
+.steps.green li::before{background:var(--green);}
+
+/* ============ SIM LINK CHIPS ============ */
+.sim-links{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.sim-chip{display:inline-flex;align-items:center;gap:7px;background:var(--green);color:#fff;text-decoration:none;border-radius:22px;padding:8px 18px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;box-shadow:var(--shadow);transition:transform .15s,background .2s;cursor:pointer;border:none;}
+.sim-chip:hover{background:var(--green-dark);transform:translateY(-2px);}
+.sim-chip.alt{background:var(--navy);}
+.sim-chip.alt:hover{background:var(--navy-dark);}
+
+/* ============ SCHEMATIC FIGURE ============ */
+.fig{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:20px;margin:20px 0;text-align:center;}
+.fig svg{width:100%;max-width:820px;height:auto;}
+.fig .fig-cap{font-family:'Arial Narrow',Arial,sans-serif;font-size:.88rem;color:var(--text-muted);margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;text-align:left;}
+.sch-wire{stroke:var(--text);stroke-width:2.4;fill:none;stroke-linecap:round;}
+.sch-comp{stroke:var(--navy);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.sch-fill{fill:var(--navy);stroke:none;}
+.sch-lbl{font-family:'Courier New',monospace;font-size:15px;font-weight:bold;fill:var(--text);}
+.sch-sub{font-family:'Arial Narrow',Arial,sans-serif;font-size:12.5px;fill:var(--text-muted);}
+.sch-meter{fill:var(--card-alt);stroke:var(--amber);stroke-width:2.4;}
+.sch-mlbl{font-family:'Arial Narrow',Arial,sans-serif;font-size:13px;font-weight:bold;fill:#a86e00;}
+[data-theme="dark"] .sch-mlbl{fill:var(--amber);}
+.sch-green{stroke:var(--green);}
+.sch-red{stroke:var(--red);}
+
+/* ============ LAB (interactive) ============ */
+.grapher{background:var(--card);border:2px solid var(--navy);border-radius:12px;box-shadow:var(--shadow);padding:22px;margin:20px 0;}
+.grapher-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start;}
+@media(max-width:820px){.grapher-grid{grid-template-columns:1fr;}}
+canvas.scope{width:100%;height:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;display:block;}
+.ctrl{margin-bottom:15px;}
+.ctrl label{display:flex;justify-content:space-between;font-family:'Arial Narrow',Arial,sans-serif;font-size:.9rem;font-weight:bold;color:var(--navy);margin-bottom:4px;}
+.ctrl input[type=range]{width:100%;accent-color:var(--green);cursor:pointer;}
+.seg{display:flex;flex-wrap:wrap;gap:6px;}
+.seg button{flex:1;min-width:58px;font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-radius:8px;padding:8px 6px;cursor:pointer;font-size:.85rem;transition:all .2s;}
+.seg button:hover{color:var(--navy);border-color:var(--navy);}
+.seg button.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.readout{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;font-family:'Courier New',monospace;font-size:.84rem;line-height:1.75;}
+.readout .r-on{color:var(--green-dark);font-weight:bold;}
+.readout .r-off{color:var(--red);font-weight:bold;}
+.g-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:12px;}
+.g-btn{flex:1;min-width:64px;background:var(--navy);color:#fff;border:none;border-radius:6px;padding:8px 6px;cursor:pointer;font-family:'Arial Narrow',Arial,sans-serif;font-size:.82rem;transition:background .2s;}
+.g-btn:hover{background:var(--navy-dark);}
+.g-btn.g-green{background:var(--green);}
+.g-btn.g-green:hover{background:var(--green-dark);}
+
+/* ============ FACTS BOX ============ */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
+.fact{background:var(--card-alt);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.fact .f-label{font-family:'Arial Narrow',Arial,sans-serif;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:4px;}
+.fact .f-val{font-weight:bold;color:var(--navy);font-size:.95rem;}
+[data-theme="dark"] .fact .f-val{color:#8ab6ff;}
+
+/* ============ QUIZ ============ */
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:18px;}
+.quiz-q .q-text{font-weight:bold;margin-bottom:12px;}
+.quiz-q .opt{display:block;padding:9px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;font-size:.95rem;}
+.quiz-q .opt:hover{border-color:var(--navy);background:var(--card-alt);}
+.quiz-q .opt input{margin-right:9px;accent-color:var(--navy);}
+.quiz-q .opt.correct{border-color:var(--green);background:rgba(0,168,107,.12);}
+.quiz-q .opt.incorrect{border-color:var(--red);background:rgba(192,57,43,.10);}
+.quiz-q .explain{display:none;margin-top:10px;padding:12px 14px;border-radius:8px;background:rgba(0,71,171,.07);border-left:4px solid var(--navy);font-size:.9rem;}
+.quiz-q .explain.show{display:block;}
+.submit-btn{background:var(--green);color:#fff;border:none;border-radius:26px;padding:13px 42px;font-size:1.05rem;font-family:Georgia,serif;cursor:pointer;display:block;margin:22px auto 8px;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.submit-btn:hover{background:var(--green-dark);transform:translateY(-2px);}
+.score-box{text-align:center;background:var(--card);border:2px solid var(--navy);border-radius:12px;padding:20px;margin-top:14px;}
+.score-box .big{font-size:1.9rem;font-weight:bold;color:var(--navy);}
+
+/* ============ FOOT NAV ============ */
+.foot-nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:48px;}
+.foot-nav a{background:var(--navy);color:#fff;text-decoration:none;border-radius:26px;padding:11px 26px;font-family:'Arial Narrow',Arial,sans-serif;box-shadow:var(--shadow);transition:background .2s,transform .15s;}
+.foot-nav a:hover{background:var(--navy-dark);transform:translateY(-2px);}
+.foot-nav a.home{background:var(--green);}
+.foot-nav a.home:hover{background:var(--green-dark);}
+footer{background:var(--navy-darker);color:rgba(255,255,255,.75);text-align:center;padding:26px 20px;font-family:'Arial Narrow',Arial,sans-serif;font-size:.83rem;line-height:1.7;}
+[data-theme="dark"] footer{background:#0a1420;}
+@media(max-width:640px){.hero h1{font-size:1.8rem;}}
+@media print{.topbar,.crumbs,.theme-btn,.foot-nav,.submit-btn{display:none!important;} body{background:#fff;}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;} .flip-inner{transition:none;}}
+
+/* ============ TABS ============ */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0;border-bottom:3px solid var(--navy);padding-bottom:0;}
+.tab-btn{font-family:'Arial Narrow',Arial,sans-serif;background:var(--card-alt);color:var(--text-muted);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:9px 15px;cursor:pointer;font-size:.9rem;transition:all .2s;}
+.tab-btn:hover{background:var(--card);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);font-weight:bold;}
+.tab-pane{display:none;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;box-shadow:var(--shadow);padding:28px 30px;}
+.tab-pane.show{display:block;}
+.sch-wave-in{stroke:var(--text-muted);stroke-width:2;fill:none;}
+.sch-wave-out{stroke:var(--green);stroke-width:2.6;fill:none;}
+</style>
+</head>
+<body>
+<!-- ================= TOP BAR ================= -->
+<div class="topbar">
+  <span class="brand">⚡ ELT 102 · Digital Logic &amp; Solid State Devices</span>
+  <span class="lesson-badge">Hands-On Tinkercad Lab</span>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌓 Mode</button>
+</div>
+<nav class="crumbs">
+  <a href="https://sands-mvcc.github.io/elt/index.html">Home</a> &nbsp;›&nbsp;
+  <a href="lab-gates.html">Labs</a> &nbsp;›&nbsp;
+  Two-Input Logic Gates with 74xx Chips
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="kicker">Unit 1 · Digital Logic · Lab</span>
+  <h1>Logic Gates in Silicon: The 74xx Family</h1>
+  <p class="sub">Wire real integrated circuits — 74HC00, 02, 04, 08, 32, and 86 — into a reusable test bench in Autodesk Tinkercad Circuits. Derive the truth table of every two-input gate by direct measurement, dodge the famous 7402 pinout trap, and build the one gate Tinkercad doesn't give you: XNOR, from parts.</p>
+  <div class="meta-chips">
+    <span>⏱ 2 × 75-Minute Sessions</span>
+    <span>🖥 Tinkercad Circuits (Free)</span>
+    <span>🔧 6 Chips · 7 Gates · 1 Test Bench</span>
+    <span>📊 Interactive Gate Playground</span>
+    <span>✅ 6-Question Knowledge Check</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= OBJECTIVES ================= -->
+<section id="objectives">
+  <h2 class="sec-title">Learning Objectives</h2>
+  <div class="objectives">
+    <p><em>By the end of this lab, you will be able to:</em></p>
+    <ul class="styled">
+      <li><strong>Construct</strong> a reusable logic test bench in Tinkercad — switch-driven inputs, LED output indicator, and a socketed gate under test — and use it to characterize six different 74xx-family ICs.</li>
+      <li><strong>Determine</strong> the complete truth table of AND, OR, NAND, NOR, XOR, XNOR, and NOT gates by direct measurement, recording one row per input combination.</li>
+      <li><strong>Interpret</strong> 14-pin DIP pinout diagrams: locate pin 1 from the notch, apply the counterclockwise numbering convention, and wire V<sub>CC</sub> (pin 14) and GND (pin 7) on every chip before anything else.</li>
+      <li><strong>Contrast</strong> the standard quad-gate pinout (74HC00/08/32/86: inputs 1,2 → output 3) with the reversed 74HC02 NOR pinout (output 1 ← inputs 2,3), and explain why datasheet verification beats assumption.</li>
+      <li><strong>Write</strong> the Boolean expression for each gate (A·B, A+B, <span style="text-decoration:overline;">A·B</span>, <span style="text-decoration:overline;">A+B</span>, A⊕B, <span style="text-decoration:overline;">A⊕B</span>, <span style="text-decoration:overline;">A</span>) and match expressions to measured behavior.</li>
+      <li><strong>Synthesize</strong> an XNOR function from a 74HC86 XOR gate and a 74HC04 inverter, demonstrating that gates compose into new functions.</li>
+      <li><strong>Demonstrate</strong> NAND's universality by building a working NOT and AND from 74HC00 gates alone, and <strong>explain</strong> why defined logic levels (never floating inputs) matter in real hardware.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= KEY TERMS ================= -->
+<section id="keyterms">
+  <h2 class="sec-title">Key Terms &amp; Concepts</h2>
+  <div class="acc" id="termsAcc">
+    <button class="acc-head" onclick="toggleAcc('termsAcc')">Key Terms &amp; Concepts <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Click any card to reveal its definition. Review these before you build.</p>
+
+      <div class="cat-label">Digital Fundamentals</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Logic Gate</div><div class="cat">Digital Fundamentals</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>A circuit that implements a Boolean function: inputs and output are restricted to two states, HIGH (1) and LOW (0). Under the hood, each gate is a handful of the transistors you met in the BJT lab, arranged as saturating switches.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Logic Levels (HIGH / LOW)</div><div class="cat">Digital Fundamentals</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Voltage ranges that count as 1 and 0. For a 5 V 74HC chip, roughly: above ~3.5 V reads HIGH, below ~1.5 V reads LOW. Everything between is undefined — the no-man's-land your switches must cross quickly and never park in.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Truth Table</div><div class="cat">Digital Fundamentals</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The gate's complete résumé: every input combination and the output each produces. A two-input gate has exactly 2² = 4 rows; measure all four and you know everything the gate can ever do. This lab is truth-table archaeology, chip by chip.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Boolean Expression</div><div class="cat">Digital Fundamentals</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Algebra for logic: AND is multiplication (A·B), OR is addition (A+B), NOT is the overbar (<span style="text-decoration:overline;">A</span>), XOR is ⊕. Every circuit in this lab has a one-line expression — and every expression you'll write in later combinational-logic work compiles down to gates like these.</div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">The Chips</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">74xx Family</div><div class="cat">The Chips</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>The most famous logic IC series ever made, born as TTL in the 1960s and still shipping. The last digits name the function: <strong>00</strong> NAND · <strong>02</strong> NOR · <strong>04</strong> NOT · <strong>08</strong> AND · <strong>32</strong> OR · <strong>86</strong> XOR. Tinkercad's parts are the 74HC (high-speed CMOS) versions — same pinouts, same logic.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">DIP Package &amp; Pin 1</div><div class="cat">The Chips</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Dual In-line Package: two rows of pins straddling the breadboard trench. Find the <strong>notch</strong> (or dot); pin 1 is immediately counterclockwise of it, and numbering runs counterclockwise around the chip. For all 14-pin chips in this lab: <strong>GND = pin 7, V<sub>CC</sub> = pin 14</strong> — the diagonal corners.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Quad 2-Input Package</div><div class="cat">The Chips</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Each 14-pin gate chip holds <strong>four identical, independent gates</strong> (the 7404 holds six inverters). You'll use gate #1 (pins 1–3) throughout, but any of the four works — a fact that saves real boards when one gate section dies.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">The 7402 Pinout Trap</div><div class="cat">The Chips</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>On the 00/08/32/86, each gate reads <em>inputs 1,2 → output 3</em>. The NOR chip alone is mirrored: <strong>output on pin 1, inputs on pins 2,3</strong>. Wire it by habit and your "NOR" produces nonsense. The lab's standing lesson: <em>the datasheet, not the pattern, is the authority.</em></div>
+        </div></div>
+      </div>
+
+      <div class="cat-label">Gate Behavior</div>
+      <div class="cards">
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">XOR: The Difference Detector</div><div class="cat">Gate Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Output HIGH only when the inputs <strong>disagree</strong>. Equivalently: a 1-bit adder's sum, a controllable inverter, a parity generator. XNOR is its complement — HIGH when inputs <strong>match</strong> — which makes it a 1-bit equality comparator.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Universal Gates</div><div class="cat">Gate Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>NAND (and NOR) can each build <em>every</em> other logic function. Tie a NAND's inputs together → NOT. Follow a NAND with that NOT → AND. Entire processors have been built from a single gate type — Part 5 gives you a taste.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Floating Input</div><div class="cat">Gate Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>An input connected to nothing. It doesn't read as 0 — it reads as <em>whatever stray charge says</em>, drifting and flickering (CMOS inputs are so high-impedance they'll follow your hand's electric field). Rule: every input gets a defined level, always. Our SPDT slide switches guarantee it.</div>
+        </div></div>
+        <div class="flip" onclick="this.classList.toggle('flipped')"><div class="flip-inner">
+          <div class="face front"><div class="term">Active-HIGH Indicator</div><div class="cat">Gate Behavior</div><div class="hint">🔄 Click to reveal definition</div></div>
+          <div class="face back"><div class="def-label">Definition</div>Our output LED (through 220 Ω to ground) lights when the gate output is HIGH — so <strong>LED ON = logic 1</strong>, directly. Keep the convention in mind when reading tables: the LED is a 1-bit display, and you are the analog-to-digital converter.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TINKERCAD NOTES ================= -->
+<section id="tinkercad">
+  <h2 class="sec-title">🖥 Tinkercad Setup Notes for Logic ICs</h2>
+  <p>Fifth lab, familiar toolkit — new part family:</p>
+  <ul class="styled">
+    <li><strong>Finding the chips:</strong> in the parts panel, switch <em>Components</em> to <strong>All</strong> and search the number — "74HC08" (quad AND), "74HC32" (OR), "74HC00" (NAND), "74HC02" (NOR), "74HC86" (XOR), "74HC04" (hex inverter). Tinkercad labels each pin when you hover — but read the pinout tabs below <em>first</em>, then use hover to confirm.</li>
+    <li><strong>No XNOR chip:</strong> Tinkercad's library has no 74HC266. Part 4 builds XNOR from XOR + inverter — a genuine design exercise, and the same lesson as the Rectifier lab's missing transformer: simulators have gaps; engineers compose around them.</li>
+    <li><strong>Power first, always:</strong> every chip needs <strong>pin 14 → 5 V</strong> and <strong>pin 7 → GND</strong> before any logic wiring. A logic chip without power doesn't do "nothing" — it does <em>garbage</em>, which is worse.</li>
+    <li><strong>Inputs via slide switches:</strong> Tinkercad's <em>Slideswitch</em> is SPDT — wire terminal 1 to GND, terminal 3 to 5 V, and the <strong>middle terminal to the gate input</strong>. The input is then always solidly HIGH or LOW, never floating.</li>
+    <li><strong>Output indicator:</strong> gate output → LED anode; LED cathode → 220 Ω → GND. LED ON = 1.</li>
+    <li><strong>Supply:</strong> one Power Supply at <strong>5.00 V</strong> (or Tinkercad's 5 V regulator/breadboard supply) to the rails. 74HC chips are happy from 2–6 V; we standardize on 5 V.</li>
+  </ul>
+  <div class="callout co-warn">
+    <div class="co-title">The One Habit This Lab Exists to Teach</div>
+    Before wiring any IC: <strong>find the notch → identify pin 1 → confirm power pins → confirm the gate's input/output pins against the pinout diagram.</strong> Thirty seconds of ritual. The 74HC02 in Part 2 is deliberately included because it punishes anyone who skips it.
+  </div>
+</section>
+
+<!-- ================= MATERIALS ================= -->
+<section id="materials">
+  <h2 class="sec-title">🔧 Virtual Parts List</h2>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Qty</th><th>Component (Tinkercad name)</th><th>Setting / Part</th><th>Purpose</th></tr>
+    <tr><td>1</td><td>Breadboard (small)</td><td class="mono">—</td><td>Test bench platform</td></tr>
+    <tr><td>1</td><td>Power Supply</td><td class="mono">5.00 V</td><td>Logic supply to rails</td></tr>
+    <tr><td>2</td><td>Slideswitch</td><td class="mono">SPDT: GND / input / 5 V</td><td>Inputs A and B, never floating</td></tr>
+    <tr><td>1</td><td>LED (red) + Resistor 220 Ω</td><td class="mono">—</td><td>Output indicator: ON = 1</td></tr>
+    <tr><td>1 ea</td><td>74HC08 · 74HC32 · 74HC00 · 74HC02 · 74HC86</td><td class="mono">quad 2-input gates</td><td>AND · OR · NAND · NOR · XOR</td></tr>
+    <tr><td>1</td><td>74HC04</td><td class="mono">hex inverter</td><td>NOT · XNOR build · NAND challenge</td></tr>
+    <tr><td>1</td><td>Multimeter</td><td class="mono">V mode</td><td>Measuring actual HIGH/LOW voltages</td></tr>
+    <tr><td>~12</td><td>Wires</td><td class="mono">red / black / green</td><td>Power, ground, logic</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= CIRCUIT ILLUSTRATIONS ================= -->
+<section id="schematic">
+  <h2 class="sec-title">📐 The Test Bench &amp; The Pinouts</h2>
+  <p>One test bench, six chips. You build the switch-and-LED harness once; each new gate is a two-minute chip swap — provided you respect the pinouts.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab(0,this)">① The Test Bench</button>
+    <button class="tab-btn" onclick="showTab(1,this)">② Standard Pinout (00·08·32·86)</button>
+    <button class="tab-btn" onclick="showTab(2,this)">③ The Exceptions (02 · 04)</button>
+    <button class="tab-btn" onclick="showTab(3,this)">④ The XNOR Build</button>
+  </div>
+
+  <!-- ---- TAB 1: TEST BENCH ---- -->
+  <div class="tab-pane show">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logic test bench: two SPDT slide switches drive gate inputs A and B, gate output drives an LED through 220 ohms to ground">
+        <!-- rails -->
+        <path class="sch-wire sch-red" d="M 60 40 H 780"/>
+        <text class="sch-lbl" x="20" y="46" fill="var(--red)">+5 V</text>
+        <path class="sch-wire" d="M 60 300 H 780"/>
+        <text class="sch-lbl" x="20" y="306">GND</text>
+        <!-- switch A -->
+        <rect x="120" y="120" width="90" height="44" rx="8" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="2.4"/>
+        <text class="sch-lbl" x="165" y="148" text-anchor="middle">SW A</text>
+        <path class="sch-wire sch-red" d="M 130 120 V 40"/>
+        <path class="sch-wire" d="M 200 164 V 300"/>
+        <path class="sch-wire sch-green" d="M 165 164 V 200 H 330"/>
+        <text class="sch-lbl" x="240" y="192">A</text>
+        <!-- switch B -->
+        <rect x="120" y="216" width="90" height="44" rx="8" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="2.4"/>
+        <text class="sch-lbl" x="165" y="244" text-anchor="middle">SW B</text>
+        <path class="sch-wire sch-red" d="M 130 216 V 40"/>
+        <path class="sch-wire" d="M 200 260 V 300"/>
+        <path class="sch-wire sch-green" d="M 165 260 V 236 H 330 V 224"/>
+        <text class="sch-lbl" x="240" y="230">B</text>
+        <!-- gate under test (generic AND shape) -->
+        <path class="sch-comp" d="M 330 180 V 244 H 380 A 32 32 0 0 0 380 180 Z"/>
+        <text class="sch-sub" x="336" y="270">gate under test</text>
+        <text class="sch-sub" x="336" y="288">(pins per tabs ② / ③)</text>
+        <path class="sch-wire sch-green" d="M 330 200 H 330"/>
+        <!-- output -->
+        <path class="sch-wire" d="M 412 212 H 520"/>
+        <text class="sch-lbl" x="440" y="200">Y</text>
+        <!-- LED -->
+        <path class="sch-fill" d="M 520 194 L 556 194 L 538 226 Z"/>
+        <path class="sch-comp" d="M 520 226 H 556"/>
+        <path class="sch-comp" d="M 552 200 l 14 -10 M 560 208 l 14 -10"/>
+        <text class="sch-lbl" x="580" y="216">LED</text>
+        <path class="sch-wire" d="M 538 226 V 246"/>
+        <path class="sch-comp" d="M 538 246 l 8 10 l -16 9 l 16 9 l -16 9 l 8 10"/>
+        <text class="sch-lbl" x="558" y="272">220 Ω</text>
+        <path class="sch-wire" d="M 538 293 V 300"/>
+        <!-- chip power reminder -->
+        <text class="sch-sub" x="620" y="90">Chip power (every chip, first):</text>
+        <text class="sch-sub" x="620" y="112">pin 14 → +5 V · pin 7 → GND</text>
+        <text class="sch-sub" x="620" y="146">Switch wiring (each input):</text>
+        <text class="sch-sub" x="620" y="168">side 1 → GND · side 2 → +5 V</text>
+        <text class="sch-sub" x="620" y="190">middle → gate input</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 1 — The reusable test bench.</strong> Two SPDT switches give solid HIGH/LOW inputs A and B; the LED reports output Y (ON = 1). Only the chip in the middle changes between Parts 1–3 — build the harness with a little slack in the wires so chip swaps are painless.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 2: STANDARD PINOUT ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="14 pin DIP pinout shared by 74HC00, 08, 32, 86: gate one uses pins 1 and 2 as inputs and pin 3 as output; pin 7 ground, pin 14 VCC">
+        <!-- DIP body -->
+        <rect x="300" y="50" width="180" height="260" rx="10" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="3"/>
+        <path d="M 372 50 A 18 18 0 0 0 408 50" fill="none" stroke="var(--navy)" stroke-width="3"/>
+        <text class="sch-sub" x="390" y="86" text-anchor="middle">notch = pin-1 end</text>
+        <text class="sch-lbl" x="390" y="186" text-anchor="middle">74HC00 · 08</text>
+        <text class="sch-lbl" x="390" y="210" text-anchor="middle">32 · 86</text>
+        <!-- left pins 1-7 -->
+        <g class="sch-lbl" font-size="14">
+          <text x="268" y="82" text-anchor="end">1  ·  1A  (input)</text>
+          <text x="268" y="120" text-anchor="end">2  ·  1B  (input)</text>
+          <text x="268" y="158" text-anchor="end">3  ·  1Y  (OUTPUT)</text>
+          <text x="268" y="196" text-anchor="end">4  ·  2A</text>
+          <text x="268" y="234" text-anchor="end">5  ·  2B</text>
+          <text x="268" y="272" text-anchor="end">6  ·  2Y</text>
+          <text x="268" y="304" text-anchor="end">7  ·  GND ⏚</text>
+        </g>
+        <!-- right pins 14-8 -->
+        <g class="sch-lbl" font-size="14">
+          <text x="512" y="82">14 · V_CC (+5 V)</text>
+          <text x="512" y="120">13 · 4B</text>
+          <text x="512" y="158">12 · 4A</text>
+          <text x="512" y="196">11 · 4Y</text>
+          <text x="512" y="234">10 · 3B</text>
+          <text x="512" y="272">9  · 3A</text>
+          <text x="512" y="304">8  · 3Y</text>
+        </g>
+        <!-- pin stubs -->
+        <g stroke="var(--navy)" stroke-width="3">
+          <line x1="278" y1="78" x2="300" y2="78"/><line x1="278" y1="116" x2="300" y2="116"/>
+          <line x1="278" y1="154" x2="300" y2="154"/><line x1="278" y1="192" x2="300" y2="192"/>
+          <line x1="278" y1="230" x2="300" y2="230"/><line x1="278" y1="268" x2="300" y2="268"/>
+          <line x1="278" y1="300" x2="300" y2="300"/>
+          <line x1="480" y1="78" x2="502" y2="78"/><line x1="480" y1="116" x2="502" y2="116"/>
+          <line x1="480" y1="154" x2="502" y2="154"/><line x1="480" y1="192" x2="502" y2="192"/>
+          <line x1="480" y1="230" x2="502" y2="230"/><line x1="480" y1="268" x2="502" y2="268"/>
+          <line x1="480" y1="300" x2="502" y2="300"/>
+        </g>
+        <text class="sch-sub" x="40" y="340">Gate #1 = pins 1, 2 → 3. Four independent gates per chip; this lab uses gate #1. Same map for AND, OR, NAND, and XOR chips.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 2 — The standard quad-gate pinout.</strong> 74HC00 (NAND), 74HC08 (AND), 74HC32 (OR), and 74HC86 (XOR) all share this map: inputs 1 &amp; 2, output 3. Power always at the diagonal corners: GND pin 7, V<sub>CC</sub> pin 14. One wiring pattern covers four of the six chips.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 3: EXCEPTIONS ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Exception pinouts: 74HC02 NOR has output on pin 1 and inputs on pins 2 and 3; 74HC04 inverter has input pin 1 output pin 2">
+        <!-- 7402 -->
+        <rect x="90" y="60" width="150" height="230" rx="10" fill="var(--card-alt)" stroke="var(--red)" stroke-width="3"/>
+        <path d="M 148 60 A 16 16 0 0 0 182 60" fill="none" stroke="var(--red)" stroke-width="3"/>
+        <text class="sch-lbl" x="165" y="180" text-anchor="middle">74HC02</text>
+        <text class="sch-sub" x="165" y="200" text-anchor="middle">quad NOR</text>
+        <g class="sch-lbl" font-size="13.5">
+          <text x="80" y="92" text-anchor="end">1 · 1Y (OUTPUT!)</text>
+          <text x="80" y="128" text-anchor="end">2 · 1A (input)</text>
+          <text x="80" y="164" text-anchor="end">3 · 1B (input)</text>
+          <text x="80" y="272" text-anchor="end">7 · GND</text>
+        </g>
+        <g class="sch-lbl" font-size="13.5">
+          <text x="252" y="92">14 · V_CC</text>
+        </g>
+        <text class="sch-sub" x="70" y="322">⚠ MIRRORED: output first. Gate #1 = pin 1 ← pins 2, 3.</text>
+        <!-- 7404 -->
+        <rect x="520" y="60" width="150" height="230" rx="10" fill="var(--card-alt)" stroke="var(--navy)" stroke-width="3"/>
+        <path d="M 578 60 A 16 16 0 0 0 612 60" fill="none" stroke="var(--navy)" stroke-width="3"/>
+        <text class="sch-lbl" x="595" y="180" text-anchor="middle">74HC04</text>
+        <text class="sch-sub" x="595" y="200" text-anchor="middle">hex inverter</text>
+        <g class="sch-lbl" font-size="13.5">
+          <text x="510" y="92" text-anchor="end">1 · 1A (input)</text>
+          <text x="510" y="128" text-anchor="end">2 · 1Y (output)</text>
+          <text x="510" y="164" text-anchor="end">3 · 2A</text>
+          <text x="510" y="272" text-anchor="end">7 · GND</text>
+        </g>
+        <g class="sch-lbl" font-size="13.5">
+          <text x="682" y="92">14 · V_CC</text>
+          <text x="682" y="128">13 · 6A</text>
+        </g>
+        <text class="sch-sub" x="500" y="322">Six inverters: 1→2, 3→4, 5→6, 9→8, 11→10, 13→12.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 3 — The two exceptions.</strong> The 74HC02 NOR mirrors the standard map — output on pin 1, inputs on 2 and 3. History says the layout simplified the original chip's internal routing; the lab says it's why engineers check datasheets. The 74HC04 packs six single-input inverters; only NOT uses one switch and needs just input A.</div>
+    </div>
+  </div>
+
+  <!-- ---- TAB 4: XNOR BUILD ---- -->
+  <div class="tab-pane">
+    <div class="fig" style="border:none;box-shadow:none;padding:0;">
+      <svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="XNOR built from XOR followed by inverter: A and B into 74HC86 gate, its output pin 3 into 74HC04 pin 1, inverter output pin 2 to LED">
+        <text class="sch-lbl" x="60" y="106">A</text>
+        <path class="sch-wire sch-green" d="M 90 100 H 200"/>
+        <text class="sch-lbl" x="60" y="166">B</text>
+        <path class="sch-wire sch-green" d="M 90 160 H 200"/>
+        <!-- XOR shape -->
+        <path class="sch-comp" d="M 192 70 q 24 60 0 120"/>
+        <path class="sch-comp" d="M 206 70 q 24 60 0 120 q 60 6 100 -60 q -40 -66 -100 -60"/>
+        <text class="sch-lbl" x="232" y="136">⊕</text>
+        <text class="sch-sub" x="196" y="220">74HC86 gate 1</text>
+        <text class="sch-sub" x="196" y="238">(pins 1, 2 → 3)</text>
+        <path class="sch-wire" d="M 306 130 H 420"/>
+        <text class="sch-sub" x="330" y="120">A ⊕ B</text>
+        <!-- inverter -->
+        <path class="sch-comp" d="M 420 96 L 420 164 L 484 130 Z"/>
+        <circle cx="494" cy="130" r="9" class="sch-comp"/>
+        <text class="sch-sub" x="404" y="196">74HC04 inverter 1</text>
+        <text class="sch-sub" x="404" y="214">(pin 1 → 2)</text>
+        <path class="sch-wire" d="M 503 130 H 620"/>
+        <text class="sch-lbl" x="540" y="118">Y = <tspan text-decoration="overline">A ⊕ B</tspan> = XNOR</text>
+        <!-- LED -->
+        <path class="sch-fill" d="M 620 112 L 656 112 L 638 144 Z"/>
+        <path class="sch-comp" d="M 620 144 H 656"/>
+        <path class="sch-comp" d="M 652 118 l 14 -10 M 660 126 l 14 -10"/>
+        <path class="sch-wire" d="M 638 144 V 168"/>
+        <path class="sch-comp" d="M 638 168 l 8 10 l -16 9 l 16 9 l -16 9 l 8 10"/>
+        <path class="sch-wire" d="M 638 215 V 236 H 400"/>
+        <text class="sch-sub" x="330" y="242">to GND</text>
+        <text class="sch-sub" x="60" y="278">Both chips powered (14 → +5 V, 7 → GND). Inverting XOR's "inputs differ" gives XNOR's "inputs match" — a 1-bit equality tester.</text>
+      </svg>
+      <div class="fig-cap"><strong>Figure 4 — XNOR from parts.</strong> Tinkercad has no XNOR chip, so you compose one: 74HC86 pin 3 feeds 74HC04 pin 1; the inverter's pin 2 drives the LED. Predicted truth table: the exact complement of your measured XOR column.</div>
+    </div>
+  </div>
+
+  <h3>The Seven Gates at a Glance</h3>
+  <div class="tbl-wrap"><table class="data">
+    <tr><th>Gate</th><th class="mono">Chip</th><th class="mono">Gate-1 pins</th><th class="mono">Boolean</th><th>Output is HIGH when…</th></tr>
+    <tr><td><strong>AND</strong></td><td class="mono">74HC08</td><td class="mono">1, 2 → 3</td><td class="mono">Y = A·B</td><td>both inputs are 1</td></tr>
+    <tr><td><strong>OR</strong></td><td class="mono">74HC32</td><td class="mono">1, 2 → 3</td><td class="mono">Y = A+B</td><td>at least one input is 1</td></tr>
+    <tr><td><strong>NAND</strong></td><td class="mono">74HC00</td><td class="mono">1, 2 → 3</td><td class="mono">Y = <span style="text-decoration:overline;">A·B</span></td><td>NOT both 1 (AND inverted)</td></tr>
+    <tr><td><strong>NOR</strong></td><td class="mono">74HC02 ⚠</td><td class="mono">2, 3 → 1</td><td class="mono">Y = <span style="text-decoration:overline;">A+B</span></td><td>both inputs are 0 (OR inverted)</td></tr>
+    <tr><td><strong>XOR</strong></td><td class="mono">74HC86</td><td class="mono">1, 2 → 3</td><td class="mono">Y = A⊕B</td><td>inputs differ</td></tr>
+    <tr><td><strong>XNOR</strong></td><td class="mono">86 + 04 build</td><td class="mono">3 → 1 → 2</td><td class="mono">Y = <span style="text-decoration:overline;">A⊕B</span></td><td>inputs match</td></tr>
+    <tr><td><strong>NOT</strong></td><td class="mono">74HC04</td><td class="mono">1 → 2</td><td class="mono">Y = <span style="text-decoration:overline;">A</span></td><td>the (single) input is 0</td></tr>
+  </table></div>
+</section>
+
+<!-- ================= PROCEDURE ================= -->
+<section id="procedure">
+  <h2 class="sec-title">🛠 Step-by-Step Procedure</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Suggested split: Session 1 = Parts 1–2 (bench + the five quad-gate chips). Session 2 = Parts 3–5 + analysis.</p>
+
+  <h3>Part 1 — Build the Test Bench + First Chip: AND (≈30 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Create the workspace.</span> New circuit named <em>"LastName – Logic Gates Lab."</em> Small breadboard; Power Supply at <strong>5.00 V</strong> to the bottom rails.</li>
+    <li><span class="step-title">Input switches.</span> Place two Slideswitches left of the board. For each: terminal 1 → GND rail, terminal 3 → +5 V rail, <strong>middle terminal → a labeled breadboard column</strong> (call them column A and column B). Slide each switch and verify with the multimeter: the middle terminal reads cleanly 0 V or 5 V.</li>
+    <li><span class="step-title">Output indicator.</span> Reserve a column Y → LED anode; cathode → 220 Ω → GND rail.</li>
+    <li><span class="step-title">Seat the 74HC08.</span> Straddle the trench, <strong>notch to the left</strong>. Ritual: find the notch → pin 1 below-left of it → wire <strong>pin 14 → +5 V, pin 7 → GND</strong> → hover-confirm pins 1, 2, 3 against Figure 2.</li>
+    <li><span class="step-title">Connect the harness.</span> Column A → pin 1, column B → pin 2, pin 3 → column Y.</li>
+    <li><span class="step-title">Measure the truth table.</span> Start the simulation. Step through all four input combinations <strong>in binary order — 00, 01, 10, 11</strong> — and record the LED state for each row in Data Table 1's AND column. Four rows, no skipping: two of them are where AND, NAND, and OR all look alike, and the other two are where they don't.</li>
+    <li><span class="step-title">Measure a real HIGH.</span> With Y = 1, put the multimeter on pin 3: record the actual output voltage in Data Table 3. It won't be exactly 5.000 V — note what it is.</li>
+  </ol>
+
+  <h3>Part 2 — The Chip Parade: OR, NAND, XOR, then NOR (≈30 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Swap to the 74HC32 (OR).</span> Stop the sim, delete only the chip, seat the 74HC32 in the same spot, re-wire power + pins 1/2/3 (same map). Measure all four rows into the OR column.</li>
+    <li><span class="step-title">Swap to the 74HC00 (NAND).</span> Same drill. Before measuring, <em>predict</em> the column by inverting your AND results — then verify row by row.</li>
+    <li><span class="step-title">Swap to the 74HC86 (XOR).</span> Same map again. Measure, and note in words when the LED lights.</li>
+    <li><span class="step-title">Now the 74HC02 (NOR) — read first.</span> Open Figure 3. This chip is mirrored: <strong>inputs go to pins 2 and 3, output comes from pin 1.</strong> Wire it accordingly: A → pin 2, B → pin 3, pin 1 → Y.</li>
+    <li><span class="step-title">Measure NOR</span> into its column. Then, as a deliberate experiment: rewire it the <em>standard</em> way (A→1, B→2, 3→Y) for one input combination and observe the nonsense. Put the correct wiring back. You have now personally met the trap — record one sentence about what the wrong wiring produced.</li>
+  </ol>
+
+  <h3>Part 3 — NOT with the Hex Inverter (≈10 min)</h3>
+  <ol class="steps">
+    <li><span class="step-title">Seat the 74HC04.</span> Power ritual first. This gate has ONE input: column A → pin 1, pin 2 → Y. Switch B rests this round.</li>
+    <li><span class="step-title">Measure both rows</span> (A = 0, A = 1) into Data Table 2. Then try one of the other five inverters on the chip (say pins 3 → 4) to confirm the sections are identical and independent.</li>
+  </ol>
+
+  <h3>Part 4 — Build the Missing Gate: XNOR (≈15 min)</h3>
+  <ol class="steps green">
+    <li><span class="step-title">Two chips, both powered.</span> Seat the 74HC86 and the 74HC04 side by side; give <em>each</em> its pin 14 / pin 7 power connections.</li>
+    <li><span class="step-title">Compose per Figure 4.</span> A → 86 pin 1, B → 86 pin 2; 86 pin 3 → 04 pin 1; 04 pin 2 → Y.</li>
+    <li><span class="step-title">Predict, then measure.</span> Write the predicted XNOR column (complement of your XOR data) first, then measure all four rows. The gate that wasn't in the library now exists on your bench.</li>
+  </ol>
+
+  <h3>Part 5 — Universal-Gate Challenge (≈15 min, extension)</h3>
+  <ol class="steps">
+    <li><span class="step-title">NOT from NAND.</span> On a fresh 74HC00: tie pins 1 and 2 together to column A; pin 3 → Y. Measure both rows — you built an inverter from a NAND.</li>
+    <li><span class="step-title">AND from NAND.</span> Keep gate 1 as a normal NAND (A→1, B→2). Route its output (pin 3) into gate 2's <em>tied-together</em> inputs (pins 4 and 5 jumpered); pin 6 → Y. Measure all four rows and compare to Part 1's AND column: identical, using only NANDs.</li>
+    <li><span class="step-title">Reflect.</span> One paragraph: why does "NAND is universal" matter for how real chips and FPGAs are manufactured?</li>
+    <li><span class="step-title">Wrap up.</span> Complete the Analysis Questions and Knowledge Check, then Print/Save the report with your data tables.</li>
+  </ol>
+
+  <div class="callout co-tip">
+    <div class="co-title">Troubleshooting</div>
+    <strong>LED never changes?</strong> Check chip power first — pin 14 and pin 7 — then confirm the output pin actually routes to Y. <strong>Output flickers or drifts?</strong> An input is floating: a switch middle terminal isn't landing on the input column. <strong>NOR truth table looks wrong?</strong> You wired the 02 with the standard map — Figure 3. <strong>Everything works but backwards?</strong> Your LED is fine; check whether you accidentally grabbed the NAND instead of the AND chip (the labels matter more than the habit).
+  </div>
+</section>
+
+<!-- ================= DATA TABLES ================= -->
+<section id="data">
+  <h2 class="sec-title">📋 Data Tables</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Record the LED state (1 = ON, 0 = OFF) for every row. The tables persist when you print this page.</p>
+
+  <h3>Data Table 1 — Two-Input Gates (measured truth tables)</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl1">
+    <tr><th class="mono">A</th><th class="mono">B</th><th class="mono">AND (08)</th><th class="mono">OR (32)</th><th class="mono">NAND (00)</th><th class="mono">NOR (02)</th><th class="mono">XOR (86)</th><th class="mono">XNOR (86+04)</th></tr>
+    <tr><td class="mono">0</td><td class="mono">0</td><td><input aria-label="AND output row 00"></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0</td><td class="mono">1</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">0</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">1</td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 2 — NOT &amp; the NAND-Built Gates</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl2">
+    <tr><th class="mono">A</th><th class="mono">B</th><th class="mono">NOT (04)</th><th class="mono">NOT from NAND</th><th class="mono">AND from 2× NAND</th></tr>
+    <tr><td class="mono">0</td><td class="mono">0</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">0</td><td class="mono">1</td><td class="mono">—</td><td class="mono">—</td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">0</td><td><input></td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">1</td><td class="mono">1</td><td class="mono">—</td><td class="mono">—</td><td><input></td></tr>
+  </table></div>
+
+  <h3>Data Table 3 — Real Voltages Behind the 1s and 0s</h3>
+  <div class="tbl-wrap"><table class="data" id="tbl3">
+    <tr><th>Measurement</th><th class="mono">Voltage</th><th>Reads as</th></tr>
+    <tr><td class="mono">Output pin, LED ON (any gate)</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Output pin, LED OFF</td><td><input></td><td><input></td></tr>
+    <tr><td class="mono">Switch middle terminal, slid HIGH</td><td><input></td><td><input></td></tr>
+  </table></div>
+  <div class="g-btns" style="max-width:420px;">
+    <button class="g-btn g-green" onclick="window.print()">🖨 Print / Save Report</button>
+    <button class="g-btn" onclick="clearTables()">↺ Clear Tables</button>
+  </div>
+</section>
+
+<!-- ================= INTERACTIVE EXPLORER ================= -->
+<section id="explorer">
+  <h2 class="sec-title">📈 Interactive Gate Playground</h2>
+  <p>A live twin of your Tinkercad test bench. Pick a gate, click the input switches, and watch the symbol, the wires, the LED, and the truth-table highlight respond together. Use it to <em>predict</em> each row before you measure it on the breadboard — and afterward, to check your data tables.</p>
+  <div class="grapher">
+    <div class="grapher-grid">
+      <div>
+        <canvas class="scope" id="gCv" width="640" height="360" aria-label="Live logic gate diagram showing input states, distinctive gate shape, and output LED"></canvas>
+        <div class="g-btns" style="margin-top:14px;">
+          <button class="g-btn" id="btnA" onclick="tgl('A')" style="font-size:1rem;">A = 0 (click)</button>
+          <button class="g-btn" id="btnB" onclick="tgl('B')" style="font-size:1rem;">B = 0 (click)</button>
+        </div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label><span>Gate Under Test</span></label>
+          <div class="seg" id="gateSeg">
+            <button class="active" onclick="setGate('AND',this)">AND</button>
+            <button onclick="setGate('OR',this)">OR</button>
+            <button onclick="setGate('NAND',this)">NAND</button>
+            <button onclick="setGate('NOR',this)">NOR</button>
+            <button onclick="setGate('XOR',this)">XOR</button>
+            <button onclick="setGate('XNOR',this)">XNOR</button>
+            <button onclick="setGate('NOT',this)">NOT</button>
+          </div>
+        </div>
+        <div class="readout" id="gRead" style="margin-bottom:14px;"></div>
+        <div class="tbl-wrap"><table class="data" id="ttbl" style="font-size:.85rem;"></table></div>
+      </div>
+    </div>
+  </div>
+  <div class="callout co-pro">
+    <div class="co-title">What To Notice</div>
+    Walk any gate through 00 → 01 → 10 → 11 and watch the highlighted row descend the truth table — that binary counting order is the same discipline the procedure demands at the bench. Then compare NAND against AND at every step: the LED is always opposite. Finally, look at where the bubble sits on the N-gates' symbols: the bubble <em>is</em> the inversion, drawn.
+  </div>
+</section>
+
+<!-- ================= ANALYSIS QUESTIONS ================= -->
+<section id="analysis">
+  <h2 class="sec-title">✍ Analysis Questions</h2>
+  <p style="font-style:italic;color:var(--text-muted);">Answer in complete sentences in your lab report.</p>
+  <ol class="styled">
+    <li>Two of the four rows of your AND and OR columns are identical, and two differ. Identify which rows distinguish the gates, and explain why testing only "both LOW" and "both HIGH" would be an incomplete characterization of a mystery chip.</li>
+    <li>Compare your NAND column to your AND column, and your NOR column to your OR column. State the relationship, then express it with a Boolean overbar.</li>
+    <li>Describe what happened in the deliberate mis-wiring experiment of Part 2 step 5, and explain why the 74HC02's mirrored pinout produced that behavior rather than a clean "wrong gate."</li>
+    <li>Your XNOR was built from two chips. Using your measured XOR data, prove (row by row) that the composite circuit had to produce the XNOR truth table.</li>
+    <li>In Data Table 3, the "HIGH" output wasn't exactly 5.000 V, yet the logic worked perfectly. Explain how defined logic-level <em>ranges</em> make digital circuits immune to the small analog imperfections you measured — and why a floating input defeats that immunity.</li>
+    <li>From Part 5: draw (or describe) how you would build an <strong>OR</strong> gate using only 74HC00 NAND gates. (Hint: De Morgan — invert both inputs first. How many NAND sections does it take?)</li>
+    <li>A security-minded connection: XOR is the heart of stream ciphers and one-time pads because A ⊕ K ⊕ K = A. Using your measured XOR truth table, show why XORing with the same key twice returns the original bit.</li>
+  </ol>
+</section>
+
+<!-- ================= KEY FACTS ================= -->
+<section id="facts">
+  <h2 class="sec-title">Key Facts Reference Box</h2>
+  <div class="facts">
+    <div class="fact"><div class="f-label">Chip numbers</div><div class="f-val">00 NAND · 02 NOR · 04 NOT · 08 AND · 32 OR · 86 XOR</div></div>
+    <div class="fact"><div class="f-label">Power pins (14-pin DIP)</div><div class="f-val">GND = 7 · V_CC = 14</div></div>
+    <div class="fact"><div class="f-label">Standard gate-1 pins</div><div class="f-val">inputs 1, 2 → output 3</div></div>
+    <div class="fact"><div class="f-label">74HC02 exception</div><div class="f-val">output 1 ← inputs 2, 3</div></div>
+    <div class="fact"><div class="f-label">Pin 1 location</div><div class="f-val">Counterclockwise from the notch</div></div>
+    <div class="fact"><div class="f-label">Rows in a 2-input truth table</div><div class="f-val">2² = 4 · test in binary order</div></div>
+    <div class="fact"><div class="f-label">XOR / XNOR meaning</div><div class="f-val">differ-detector / match-detector</div></div>
+    <div class="fact"><div class="f-label">Universal gates</div><div class="f-val">NAND and NOR each build everything</div></div>
+    <div class="fact"><div class="f-label">NOT from NAND</div><div class="f-val">tie both inputs together</div></div>
+    <div class="fact"><div class="f-label">Floating input</div><div class="f-val">undefined — always tie HIGH or LOW</div></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2 class="sec-title">Interactive Knowledge Check</h2>
+  <div class="acc open" id="quizAcc">
+    <button class="acc-head" onclick="toggleAcc('quizAcc')">Interactive Knowledge Check <span class="plus">➕</span></button>
+    <div class="acc-body">
+      <p style="font-style:italic;color:var(--text-muted);">Six questions drawn directly from the lab. Select an answer for each, then press Grade My Quiz.</p>
+      <div id="quizWrap"></div>
+      <button class="submit-btn" onclick="gradeQuiz()">Grade My Quiz</button>
+      <div id="scoreBox"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOT NAV ================= -->
+<div class="foot-nav">
+  <a href="lab-opamp.html">← Lab: Op-Amp Configurations</a>
+  <a class="home" href="https://sands-mvcc.github.io/elt/index.html">🏠 Course Home</a>
+  <a href="#objectives">Back to Top ↑</a>
+</div>
+
+</main>
+
+<footer>
+  ELT 102 · Digital Logic &amp; Solid State Devices · Hands-On Lab: Two-Input Logic Gates with 74xx Chips in Tinkercad<br>
+  Designed and Built by Lead Electronics Instructor &amp; Professor · Moraine Valley Community College<br>
+  © 2026 ELT 102 Course Materials. All rights reserved. Self-contained Offline Edition.
+</footer>
+
+<script>
+/* ============ THEME ============ */
+(function(){
+  if(localStorage.getItem('elt-theme')==='dark'){ document.documentElement.setAttribute('data-theme','dark'); }
+})();
+function toggleTheme(){
+  var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d){ document.documentElement.removeAttribute('data-theme'); localStorage.setItem('elt-theme','light'); }
+  else { document.documentElement.setAttribute('data-theme','dark'); localStorage.setItem('elt-theme','dark'); }
+  drawGate();
+}
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+/* ============ ACCORDION & TABS ============ */
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(i,btn){
+  document.querySelectorAll('.tab-pane').forEach(function(p,idx){ p.classList.toggle('show',idx===i); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+
+/* ============ DATA TABLES ============ */
+function clearTables(){
+  if(!confirm('Clear all data table entries?')) return;
+  document.querySelectorAll('table.data input').forEach(function(i){ i.value=''; });
+}
+
+/* ============ GATE PLAYGROUND ============ */
+var cv=document.getElementById('gCv'), cx=cv.getContext('2d');
+var GATE='AND', A=0, B=0;
+var GDEF={
+  AND: {fn:function(a,b){return a&&b?1:0;},   chip:'74HC08', pins:'1, 2 → 3',  expr:'Y = A·B',    bubble:false, shape:'and', two:true},
+  OR:  {fn:function(a,b){return a||b?1:0;},   chip:'74HC32', pins:'1, 2 → 3',  expr:'Y = A+B',    bubble:false, shape:'or',  two:true},
+  NAND:{fn:function(a,b){return a&&b?0:1;},   chip:'74HC00', pins:'1, 2 → 3',  expr:'Y = (A·B)\u0305', bubble:true, shape:'and', two:true},
+  NOR: {fn:function(a,b){return a||b?0:1;},   chip:'74HC02 ⚠', pins:'2, 3 → 1', expr:'Y = (A+B)\u0305', bubble:true, shape:'or', two:true},
+  XOR: {fn:function(a,b){return (a^b)?1:0;},  chip:'74HC86', pins:'1, 2 → 3',  expr:'Y = A⊕B',    bubble:false, shape:'xor', two:true},
+  XNOR:{fn:function(a,b){return (a^b)?0:1;},  chip:'86 + 04 build', pins:'3 → 1 → 2', expr:'Y = (A⊕B)\u0305', bubble:true, shape:'xor', two:true},
+  NOT: {fn:function(a,b){return a?0:1;},      chip:'74HC04', pins:'1 → 2',     expr:'Y = A\u0305', bubble:true, shape:'not', two:false}
+};
+
+function setGate(g,btn){
+  GATE=g;
+  document.querySelectorAll('#gateSeg button').forEach(function(x){x.classList.remove('active');});
+  btn.classList.add('active');
+  buildTT(); drawGate();
+}
+function tgl(w){
+  if(w==='A') A=1-A; else B=1-B;
+  drawGate();
+}
+
+function wireColor(v){ return v? css('--green') : css('--text-muted'); }
+
+function drawGate(){
+  var d=GDEF[GATE], Y=d.fn(A,B);
+  document.getElementById('btnA').textContent='A = '+A+' (click)';
+  document.getElementById('btnB').textContent='B = '+B+' (click)';
+  document.getElementById('btnB').style.visibility=d.two?'visible':'hidden';
+
+  var W=cv.width, H=cv.height;
+  cx.clearRect(0,0,W,H);
+  var midY=H/2, gx=250, gw=150;
+
+  /* input wires + labels */
+  cx.font='bold 22px Courier New'; cx.textAlign='left';
+  var yA=d.two? midY-38 : midY, yB=midY+38;
+  cx.strokeStyle=wireColor(A); cx.lineWidth=4;
+  cx.beginPath(); cx.moveTo(80,yA); cx.lineTo(gx+(d.shape==='xor'?18:2),yA); cx.stroke();
+  cx.fillStyle=wireColor(A); cx.fillText('A='+A, 20, yA+7);
+  if(d.two){
+    cx.strokeStyle=wireColor(B);
+    cx.beginPath(); cx.moveTo(80,yB); cx.lineTo(gx+(d.shape==='xor'?18:2),yB); cx.stroke();
+    cx.fillStyle=wireColor(B); cx.fillText('B='+B, 20, yB+7);
+  }
+
+  /* gate body */
+  cx.strokeStyle=css('--navy'); cx.lineWidth=4; cx.fillStyle=css('--card-alt');
+  var outX=gx+gw;
+  if(d.shape==='and'){
+    cx.beginPath();
+    cx.moveTo(gx,midY-55); cx.lineTo(gx+gw-60,midY-55);
+    cx.arc(gx+gw-60,midY,55,-Math.PI/2,Math.PI/2);
+    cx.lineTo(gx,midY+55); cx.closePath();
+    cx.fill(); cx.stroke();
+    outX=gx+gw-5;
+  } else if(d.shape==='or'||d.shape==='xor'){
+    cx.beginPath();
+    cx.moveTo(gx,midY-55);
+    cx.quadraticCurveTo(gx+95,midY-55, gx+gw, midY);
+    cx.quadraticCurveTo(gx+95,midY+55, gx, midY+55);
+    cx.quadraticCurveTo(gx+34,midY, gx, midY-55);
+    cx.closePath(); cx.fill(); cx.stroke();
+    if(d.shape==='xor'){
+      cx.beginPath();
+      cx.moveTo(gx-14,midY-55);
+      cx.quadraticCurveTo(gx+20,midY, gx-14, midY+55);
+      cx.stroke();
+    }
+    outX=gx+gw;
+  } else { /* not: triangle */
+    cx.beginPath();
+    cx.moveTo(gx,midY-50); cx.lineTo(gx,midY+50); cx.lineTo(gx+110,midY); cx.closePath();
+    cx.fill(); cx.stroke();
+    outX=gx+110;
+  }
+  /* bubble */
+  if(d.bubble){
+    cx.beginPath(); cx.arc(outX+11,midY,11,0,Math.PI*2);
+    cx.fillStyle=css('--card'); cx.fill(); cx.stroke();
+    outX+=22;
+  }
+  /* gate label */
+  cx.fillStyle=css('--navy'); cx.font='bold 17px Georgia'; cx.textAlign='center';
+  cx.fillText(GATE, gx+(d.shape==='not'?46:64), midY+6);
+
+  /* output wire */
+  cx.strokeStyle=wireColor(Y); cx.lineWidth=4;
+  cx.beginPath(); cx.moveTo(outX,midY); cx.lineTo(500,midY); cx.stroke();
+  cx.fillStyle=wireColor(Y); cx.font='bold 22px Courier New'; cx.textAlign='left';
+  cx.fillText('Y='+Y, 508, midY-22);
+
+  /* LED */
+  cx.beginPath(); cx.arc(540,midY,26,0,Math.PI*2);
+  if(Y){ cx.fillStyle=css('--red');
+    cx.shadowColor=css('--red'); cx.shadowBlur=28; cx.fill(); cx.shadowBlur=0;
+  } else { cx.fillStyle=css('--card-alt'); cx.fill(); }
+  cx.strokeStyle=css('--text-muted'); cx.lineWidth=2.5; cx.stroke();
+  cx.fillStyle=Y?'#fff':css('--text-muted'); cx.font='bold 12px Arial'; cx.textAlign='center';
+  cx.fillText(Y?'ON':'off', 540, midY+4);
+
+  /* readout */
+  document.getElementById('gRead').innerHTML=
+    '<span class="r-on">'+GATE+' · '+d.chip+'</span><br>'+
+    '─────────────────<br>'+
+    'Gate-1 pins: '+d.pins+'<br>'+
+    'Boolean: '+d.expr+'<br>'+
+    'Inputs: A='+A+(d.two?(' · B='+B):' (single input)')+'<br>'+
+    'Output: Y='+Y+' → LED '+(Y?'ON':'OFF');
+
+  /* truth table highlight */
+  highlightTT();
+}
+
+function buildTT(){
+  var d=GDEF[GATE], t=document.getElementById('ttbl'), h;
+  if(d.two){
+    h='<tr><th class="mono">A</th><th class="mono">B</th><th class="mono">Y</th></tr>';
+    for(var i=0;i<4;i++){
+      var a=(i>>1)&1, b=i&1;
+      h+='<tr id="ttr'+i+'"><td class="mono">'+a+'</td><td class="mono">'+b+'</td><td class="mono"><strong>'+d.fn(a,b)+'</strong></td></tr>';
+    }
+  } else {
+    h='<tr><th class="mono">A</th><th class="mono">Y</th></tr>';
+    for(var j=0;j<2;j++){
+      h+='<tr id="ttr'+j+'"><td class="mono">'+j+'</td><td class="mono"><strong>'+d.fn(j,0)+'</strong></td></tr>';
+    }
+  }
+  t.innerHTML=h;
+}
+function highlightTT(){
+  var d=GDEF[GATE], n=d.two?4:2, cur=d.two?(A*2+B):A;
+  for(var i=0;i<n;i++){
+    var r=document.getElementById('ttr'+i);
+    if(!r) continue;
+    r.style.outline = (i===cur)? '3px solid '+css('--green') : 'none';
+    r.style.background = (i===cur)? 'rgba(0,168,107,.14)' : '';
+  }
+}
+
+/* ============ QUIZ ============ */
+var QUIZ=[
+ {q:'You need a working AND gate. Which chip do you reach for, and where does gate #1 live?',
+  o:['74HC00, pins 1,2 → 3','74HC08, pins 1,2 → 3','74HC08, pins 2,3 → 1','74HC32, pins 1,2 → 3'], a:1,
+  x:'The \u201908 is the quad AND, and it uses the standard map: inputs on pins 1 and 2, output on pin 3. (The \u201900 is NAND — same pinout, inverted personality.)'},
+ {q:'The 74HC02 NOR chip differs from the other quad gates in this lab because:',
+  o:['it has 16 pins','its power pins are reversed','its gate pinout is mirrored — output on pin 1, inputs on pins 2 and 3','it contains only two gates'], a:2,
+  x:'The \u201902 alone puts each gate\u2019s OUTPUT first. Power is still pin 14/pin 7. This is the lab\u2019s standing argument for reading the datasheet instead of wiring from habit.'},
+ {q:'Your gate\u2019s output LED flickers randomly as you move the mouse near the circuit. The most likely cause is:',
+  o:['the LED is failing','an input pin is floating — connected to nothing','the 220 Ω resistor is too large','the chip needs more than 5 V'], a:1,
+  x:'A floating CMOS input has no defined level and will follow stray fields and charge. Every input must be tied HIGH or LOW at all times — which is exactly why the bench uses SPDT switches rather than a wire you connect and disconnect.'},
+ {q:'To build a NOT gate from a 74HC00 NAND, you:',
+  o:['ground one input','tie both inputs of one gate together and use them as the single input','connect the output back to an input','use two NAND gates in series'], a:1,
+  x:'With A on both inputs, NAND computes (A·A)\u0305 = A\u0305. One gate section, one jumper — and it\u2019s step one of proving NAND can build anything.'},
+ {q:'XOR outputs 1 exactly when:',
+  o:['both inputs are 1','at least one input is 1','the two inputs are different','the two inputs are equal'], a:2,
+  x:'XOR is the difference detector — HIGH only for 01 and 10. Its complement XNOR (which you built from XOR + NOT) is the equality detector, HIGH for 00 and 11.'},
+ {q:'You measured the \u201cHIGH\u201d output at about 4.9 V rather than exactly 5 V, yet every gate behaved perfectly. This works because:',
+  o:['4.9 V rounds up to 5 V','digital inputs accept ranges of voltage as 1 and 0, so small analog imperfections don\u2019t change the logic','the LED corrects the voltage','74HC chips regulate their own outputs'], a:1,
+  x:'Logic levels are defined as bands, not points — anything above the HIGH threshold is a clean 1. That tolerance to analog imperfection is the core reason digital systems are robust... until an input floats into the undefined middle band.'}
+];
+(function buildQuiz(){
+  var w=document.getElementById('quizWrap'), L=['A','B','C','D'];
+  QUIZ.forEach(function(item,qi){
+    var d=document.createElement('div'); d.className='quiz-q';
+    var h='<div class="q-text">'+(qi+1)+'. '+item.q+'</div>';
+    item.o.forEach(function(opt,oi){
+      h+='<label class="opt"><input type="radio" name="q'+qi+'" value="'+oi+'">'+L[oi]+'. '+opt+'</label>';
+    });
+    h+='<div class="explain" id="ex'+qi+'">💡 '+item.x+'</div>';
+    d.innerHTML=h; w.appendChild(d);
+  });
+})();
+function gradeQuiz(){
+  var score=0;
+  QUIZ.forEach(function(item,qi){
+    var sel=document.querySelector('input[name="q'+qi+'"]:checked');
+    var opts=document.querySelectorAll('input[name="q'+qi+'"]');
+    opts.forEach(function(inp,oi){
+      var lab=inp.parentElement;
+      lab.classList.remove('correct','incorrect');
+      if(oi===item.a) lab.classList.add('correct');
+      else if(sel && parseInt(sel.value)===oi) lab.classList.add('incorrect');
+    });
+    document.getElementById('ex'+qi).classList.add('show');
+    if(sel && parseInt(sel.value)===item.a) score++;
+  });
+  var msg = score===6 ? '🏆 Perfect! Seven gates, six chips, one trap — all conquered.'
+          : score>=4 ? '📗 Solid work. Review the explanations for missed items against Data Table 1.'
+          : '📘 Getting there. Walk each gate through 00→01→10→11 in the playground, then retake the quiz.';
+  document.getElementById('scoreBox').innerHTML=
+    '<div class="score-box"><div class="big">'+score+' / 6</div><div>'+msg+'</div></div>';
+  document.getElementById('scoreBox').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+buildTT();
+drawGate();
+</script>
+</body>
+</html>
