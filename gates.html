@@ -5,8 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Logic Gates — Digital Electronics Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script>
+  // Apply saved/default theme BEFORE paint to avoid flash-of-wrong-theme.
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('logicGatesTheme'); } catch (e) {}
+    var theme = saved === 'dark' ? 'dark' : 'light'; // default: light
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
 <style>
+  /* ══════════════════════════════════════════════
+     THEME VARIABLES
+     Default (base :root) = LIGHT theme.
+     html[data-theme="dark"] overrides with the
+     original neon/dark lab palette.
+     ══════════════════════════════════════════════ */
   :root {
+    --bg: #eef2f7;
+    --panel: #ffffff;
+    --panel2: #e7edf5;
+    --border: #c7d2e0;
+    --accent: #0077b6;
+    --accent2: #05966c;
+    --accent3: #c2410c;
+    --hi: #0f172a;
+    --mid: #33415a;
+    --lo: #6b7c93;
+    --on-color: #05966c;
+    --off-color: #cbd5e1;
+    --glow: 0 0 14px rgba(0,119,182,0.25);
+    --glow-green: 0 0 14px rgba(5,150,108,0.3);
+    --glow-orange: 0 0 14px rgba(194,65,12,0.3);
+    --grid-color: rgba(0,119,182,0.06);
+    --scanline-color: rgba(15,23,42,0.015);
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-ui: 'Exo 2', sans-serif;
+    --font-display: 'Orbitron', sans-serif;
+  }
+
+  html[data-theme="dark"] {
     --bg: #06090f;
     --panel: #0d1420;
     --panel2: #111c2e;
@@ -22,9 +60,8 @@
     --glow: 0 0 20px rgba(0,212,255,0.4);
     --glow-green: 0 0 20px rgba(0,255,157,0.5);
     --glow-orange: 0 0 20px rgba(255,107,53,0.5);
-    --font-mono: 'Share Tech Mono', monospace;
-    --font-ui: 'Exo 2', sans-serif;
-    --font-display: 'Orbitron', sans-serif;
+    --grid-color: rgba(0,212,255,0.03);
+    --scanline-color: rgba(0,0,0,0.08);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,6 +72,7 @@
     font-family: var(--font-ui);
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.25s ease, color 0.25s ease;
   }
 
   /* Animated grid background */
@@ -43,8 +81,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
     background-size: 40px 40px;
     pointer-events: none;
     z-index: 0;
@@ -57,7 +95,7 @@
     inset: 0;
     background: repeating-linear-gradient(
       0deg, transparent, transparent 2px,
-      rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      var(--scanline-color) 2px, var(--scanline-color) 4px
     );
     pointer-events: none;
     z-index: 1;
@@ -87,6 +125,48 @@
     transform: translateX(-50%);
     width: 200px; height: 2px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* ── THEME TOGGLE BUTTON ── */
+  .theme-toggle-btn {
+    position: absolute;
+    top: 6px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 5;
+  }
+
+  .theme-toggle-btn:hover {
+    background: rgba(0,119,182,0.08);
+    box-shadow: var(--glow);
+  }
+
+  html[data-theme="dark"] .theme-toggle-btn:hover {
+    background: rgba(0,212,255,0.1);
+  }
+
+  .theme-toggle-btn .icon { font-size: 13px; line-height: 1; }
+
+  @media (max-width: 700px) {
+    .theme-toggle-btn {
+      position: static;
+      display: inline-flex;
+      margin-top: 14px;
+    }
   }
 
   .lab-badge {
@@ -145,6 +225,7 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     overflow: hidden;
+    transition: background 0.25s ease, border-color 0.25s ease;
   }
 
   .panel-header {
@@ -839,6 +920,9 @@
 
   <!-- HEADER -->
   <header>
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+      <span class="icon" id="themeToggleIcon">🌙</span><span id="themeToggleText">DARK MODE</span>
+    </button>
     <div class="lab-badge">⚡ Digital Electronics Laboratory</div>
     <h1>Logic <span>Gates</span></h1>
     <div class="subtitle">Interactive Simulator &amp; Learning Module &nbsp;|&nbsp; Boolean Logic Fundamentals</div>
@@ -1051,6 +1135,31 @@
 </div>
 
 <script>
+// ══════════════════════════════════════════════════
+//  THEME TOGGLE
+// ══════════════════════════════════════════════════
+function applyThemeUI() {
+  const theme = document.documentElement.getAttribute('data-theme') || 'light';
+  const icon = document.getElementById('themeToggleIcon');
+  const text = document.getElementById('themeToggleText');
+  if (theme === 'light') {
+    icon.textContent = '🌙';
+    text.textContent = 'DARK MODE';
+  } else {
+    icon.textContent = '☀';
+    text.textContent = 'LIGHT MODE';
+  }
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme') || 'light';
+  const next = current === 'light' ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('logicGatesTheme', next); } catch (e) {}
+  applyThemeUI();
+}
+
 // ══════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════
@@ -1516,6 +1625,7 @@ document.addEventListener('keydown', (e) => {
 // ══════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════
+applyThemeUI();
 shuffleQuiz();
 selectGate('AND');
 loadQuiz();
