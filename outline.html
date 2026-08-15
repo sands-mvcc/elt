@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELT 102-350 | Interactive Course Outline</title>
+<style>
+  /* ─── Design Tokens (matches sands-mvcc.github.io/elt102) ──────── */
+  :root {
+    --green-dark:   #1b5e20;
+    --green-mid:    #2e7d32;
+    --green-bright: #43a047;
+    --green-light:  #e8f5e9;
+    --green-accent: #00a86b;
+    --amber:        #f57f17;
+    --amber-light:  #fff8e1;
+    --blue-chip:    #0d47a1;
+    --chip-bg:      #e3f2fd;
+
+    --bg:           #f4f6f8;
+    --surface:      #ffffff;
+    --text:         #1a1a1a;
+    --text-muted:   #555;
+    --border:       #d0d0d0;
+    --header-bg:    #1b5e20;
+    --header-text:  #ffffff;
+    --card-hover:   #f0faf2;
+    --tag-semi:     #e8f5e9;
+    --tag-semi-txt: #1b5e20;
+    --tag-active:   #e3f2fd;
+    --tag-active-txt:#0d47a1;
+    --tag-logic:    #fff3e0;
+    --tag-logic-txt:#e65100;
+    --tag-digital:  #f3e5f5;
+    --tag-digital-txt:#6a1b9a;
+    --tag-exam:     #fce4ec;
+    --tag-exam-txt: #880e4f;
+    --tag-lab:      #e8eaf6;
+    --tag-lab-txt:  #283593;
+    --tag-tool:     #e0f7fa;
+    --tag-tool-txt: #006064;
+    --shadow:       0 2px 8px rgba(0,0,0,.10);
+    --radius:       10px;
+  }
+
+  body.dark {
+    --bg:          #121212;
+    --surface:     #1e1e1e;
+    --text:        #e8e8e8;
+    --text-muted:  #aaa;
+    --border:      #333;
+    --header-bg:   #0a3d0a;
+    --card-hover:  #1a2e1a;
+    --tag-semi:    #1a3a1a;
+    --tag-semi-txt:#81c784;
+    --tag-active:  #0d2240;
+    --tag-active-txt:#90caf9;
+    --tag-logic:   #2e1a00;
+    --tag-logic-txt:#ffb74d;
+    --tag-digital: #1a0a2e;
+    --tag-digital-txt:#ce93d8;
+    --tag-exam:    #2e0a18;
+    --tag-exam-txt:#f48fb1;
+    --tag-lab:     #0a0d2e;
+    --tag-lab-txt: #9fa8da;
+    --tag-tool:    #002a2e;
+    --tag-tool-txt:#80deea;
+    --amber-light: #1a1200;
+    --chip-bg:     #0d1f40;
+    --shadow:       0 2px 8px rgba(0,0,0,.4);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background .25s, color .25s;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 3px 10px rgba(0,0,0,.3);
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+  .brand-badge {
+    background: var(--green-accent);
+    color: #fff;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    letter-spacing: .5px;
+    white-space: nowrap;
+  }
+  .header-titles h1 {
+    font-family: Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: .2px;
+    line-height: 1.2;
+  }
+  .header-titles p {
+    font-size: .8rem;
+    opacity: .85;
+    margin-top: 2px;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .5px;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .back-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: .8rem;
+    opacity: .9;
+    padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 20px;
+  }
+  .back-link:hover { background: rgba(255,255,255,.15); }
+  #toggle-btn {
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: .8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background .2s;
+    white-space: nowrap;
+  }
+  #toggle-btn:hover { background: rgba(255,255,255,.25); }
+
+  .hero {
+    background: linear-gradient(135deg, var(--green-mid) 0%, #1a3a1a 100%);
+    color: #fff;
+    padding: 32px 20px 26px;
+    text-align: center;
+  }
+  .hero h2 {
+    font-family: Georgia, serif;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    font-size: .92rem;
+    opacity: .92;
+    max-width: 660px;
+    margin: 0 auto 16px;
+    line-height: 1.6;
+  }
+
+  /* ─── Progress Bar ──────────────────────────────────────────── */
+  .progress-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+  }
+  .progress-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .progress-label {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .4px;
+    white-space: nowrap;
+  }
+  .progress-track {
+    flex: 1;
+    min-width: 160px;
+    height: 10px;
+    background: var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--green-accent));
+    border-radius: 5px;
+    transition: width .4s ease;
+    width: 0%;
+  }
+  #progress-text { font-size: .8rem; color: var(--text-muted); white-space: nowrap; }
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: .74rem;
+    padding: 5px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+  }
+  .reset-btn:hover { border-color: var(--green-bright); color: var(--green-mid); }
+
+  /* ─── Filter Bar ────────────────────────────────────────────── */
+  .filter-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    position: sticky;
+    top: 61px;
+    z-index: 90;
+  }
+  .filter-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filter-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: .78rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: .3px;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--green-bright); }
+  .filter-chip.active {
+    background: var(--green-mid);
+    border-color: var(--green-mid);
+    color: #fff;
+  }
+  .search-input {
+    margin-left: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: .82rem;
+    padding: 7px 14px;
+    border-radius: 16px;
+    min-width: 180px;
+    font-family: Arial, sans-serif;
+  }
+  .search-input:focus { outline: none; border-color: var(--green-bright); }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
+
+  .notice-banner {
+    background: var(--amber-light);
+    border: 1px solid #ffe082;
+    border-left: 4px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: .85rem;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 22px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .notice-banner .nb-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── Unit Divider ──────────────────────────────────────────── */
+  .unit-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0 14px;
+  }
+  .unit-divider:first-child { margin-top: 0; }
+  .unit-num {
+    background: var(--green-dark);
+    color: #fff;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 5px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .unit-title {
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    color: var(--green-dark);
+    font-weight: 700;
+  }
+  body.dark .unit-title { color: var(--green-bright); }
+  .unit-line { flex: 1; height: 2px; background: var(--border); }
+  .unit-exam-chip {
+    background: var(--tag-exam);
+    color: var(--tag-exam-txt);
+    font-size: .72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* ─── Accordion (Lesson Day) ──────────────────────────────────── */
+  .day-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--green-bright);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: opacity .2s, transform .2s;
+  }
+  .day-item.hidden-item { display: none; }
+  .day-item.done { border-left-color: var(--green-accent); }
+  .day-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-check {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    accent-color: var(--green-accent);
+    cursor: pointer;
+  }
+  .day-head-main { flex: 1; min-width: 0; }
+  .day-head-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 3px;
+  }
+  .day-badge {
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .topic-tag {
+    font-size: .68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: .3px;
+    white-space: nowrap;
+  }
+  .tag-semi    { background: var(--tag-semi);    color: var(--tag-semi-txt); }
+  .tag-active  { background: var(--tag-active);  color: var(--tag-active-txt); }
+  .tag-logic   { background: var(--tag-logic);   color: var(--tag-logic-txt); }
+  .tag-digital { background: var(--tag-digital); color: var(--tag-digital-txt); }
+  .tag-exam    { background: var(--tag-exam);    color: var(--tag-exam-txt); }
+  .tag-lab     { background: var(--tag-lab);     color: var(--tag-lab-txt); }
+
+  .day-title {
+    font-family: Georgia, serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    line-height: 1.3;
+  }
+  body.dark .day-title { color: var(--green-bright); }
+  .day-sub { font-size: .78rem; color: var(--text-muted); margin-top: 2px; }
+  .day-chevron {
+    font-size: .9rem;
+    color: var(--green-accent);
+    transition: transform .25s;
+    flex-shrink: 0;
+  }
+  .day-item.open .day-chevron { transform: rotate(180deg); }
+
+  .day-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease;
+    border-top: 1px solid var(--border);
+  }
+  .day-item.open .day-body { max-height: 2200px; }
+  .day-body-inner { padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+
+  .sub-block { }
+  .sub-label {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--green-mid);
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body.dark .sub-label { color: var(--green-bright); }
+  .sub-content {
+    font-size: .86rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .keyword-row {
+    font-size: .78rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .keyword-row strong { color: var(--green-mid); }
+  body.dark .keyword-row strong { color: var(--green-bright); }
+
+  .exercise-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .exercise-list li {
+    font-size: .85rem;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .exercise-list li::before { content: "▸"; color: var(--green-accent); flex-shrink: 0; }
+
+  .lab-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .lab-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .lab-box-title {
+    font-weight: 700;
+    font-size: .88rem;
+    color: var(--green-dark);
+    margin-bottom: 3px;
+  }
+  body.dark .lab-box-title { color: var(--green-bright); }
+  .lab-box-desc { font-size: .82rem; color: var(--text); line-height: 1.5; }
+  .lab-skills { font-size: .76rem; color: var(--text-muted); margin-top: 5px; }
+  .lab-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--green-accent);
+    text-decoration: none;
+  }
+  .lab-link:hover { text-decoration: underline; }
+
+  .day-footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 4px;
+  }
+  .day-footer-row a {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--green-accent);
+    text-decoration: none;
+    background: var(--green-light);
+    padding: 6px 12px;
+    border-radius: 16px;
+  }
+  body.dark .day-footer-row a { background: rgba(67,160,71,.15); }
+  .day-footer-row a:hover { text-decoration: underline; }
+
+  .exam-banner {
+    background: var(--tag-exam);
+    color: var(--tag-exam-txt);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: .85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0 18px;
+  }
+
+  footer {
+    background: var(--header-bg);
+    color: rgba(255,255,255,.8);
+    text-align: center;
+    padding: 18px 20px;
+    font-size: .78rem;
+    line-height: 1.7;
+    letter-spacing: .3px;
+  }
+  footer span { color: var(--green-accent); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .header-titles h1 { font-size: 1.05rem; }
+    .hero h2 { font-size: 1.25rem; }
+    .search-input { margin-left: 0; width: 100%; }
+    .filter-bar { top: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ HEADER ═══════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-badge">ELT 102</div>
+      <div class="header-titles">
+        <h1>Interactive Course Outline</h1>
+        <p>ELT 102-350 · Digital Logic &amp; Solid State Devices</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="back-link" href="index.html">← Course Home</a>
+      <button id="toggle-btn" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<div class="hero">
+  <h2>Readings, Exercises &amp; Labs — Day by Day</h2>
+  <p>Every lesson's reading, embedded exercises, and matching Tinkercad lab in one place. Check off each day as you complete it, filter by unit, or search by keyword.</p>
+</div>
+
+<!-- ═══════════════════════ PROGRESS ═══════════════════════ -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <span class="progress-label">Your Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <span id="progress-text">0 / 8 lessons complete</span>
+    <button class="reset-btn" onclick="resetProgress()">Reset</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FILTER BAR ═══════════════════════ -->
+<div class="filter-bar">
+  <div class="filter-inner" id="filter-chips">
+    <button class="filter-chip active" data-filter="all">All Units</button>
+    <button class="filter-chip" data-filter="semi">I · Semiconductors</button>
+    <button class="filter-chip" data-filter="active">II · Active Devices</button>
+    <button class="filter-chip" data-filter="logic">III · Logic Fundamentals</button>
+    <button class="filter-chip" data-filter="digital">IV · Digital Systems</button>
+    <input type="text" class="search-input" id="search-box" placeholder="🔍 Search key terms…">
+  </div>
+</div>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main>
+
+  <div class="notice-banner">
+    <span class="nb-icon">📌</span>
+    <div>Click any day to expand its reading assignment, exercises, and lab. Check the box once you've completed a day — your progress is saved in this browser. The textbook is <strong>optional</strong>; the lesson page itself is the required reading for every day.</div>
+  </div>
+
+  <!-- ══════════════ UNIT I ══════════════ -->
+  <div class="unit-divider">
+    <span class="unit-num">Unit I</span>
+    <span class="unit-title">Semiconductors &amp; Power Supplies</span>
+    <div class="unit-line"></div>
+  </div>
+
+  <!-- Day 1 -->
+  <div class="day-item" data-unit="semi" data-keywords="p-n junction doping forward bias reverse bias characteristic curve diode zener rectifier switch">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="1" onclick="event.stopPropagation(); toggleComplete(1, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 1</span>
+          <span class="topic-tag tag-semi">Semiconductors</span>
+        </div>
+        <div class="day-title">Semiconductor Fundamentals &amp; Diodes</div>
+        <div class="day-sub">Atomic structure · P-N junction · forward/reverse bias · diode I-V curve</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson01.html</em> — from "Why Semiconductors Changed Everything" through "The Zener Diode as a Voltage Regulator." Covers atomic structure of Si/Ge, N-type/P-type doping, the P-N junction and depletion region, forward/reverse bias, the diode I-V characteristic curve, and the diode as switch, rectifier, and regulator.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> P-N Junction, Doping, Forward Bias, Reverse Bias, Characteristic Curve</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Interactive Diode I-V Curve Grapher — manipulate bias voltage and observe the resulting curve</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">⚡</span>
+            <div>
+              <div class="lab-box-title">Lab 1 — Diode Operations</div>
+              <div class="lab-box-desc">Plot forward and reverse bias characteristic curves for Si and Ge diodes. Measure threshold voltage, dynamic resistance, and observe breakdown behavior using the DC power supply and DMM.</div>
+              <div class="lab-skills"><strong>Skills:</strong> DMM · Power Supply · Curve Tracing · Forward/Reverse Bias</div>
+              <a class="lab-link" href="lab01.html">Open Lab 1 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson01.html">Open Lesson 1 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 2 -->
+  <div class="day-item" data-unit="semi" data-keywords="rectifier ripple voltage zener led optocoupler optical isolation half-wave full-wave bridge">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="2" onclick="event.stopPropagation(); toggleComplete(2, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 2</span>
+          <span class="topic-tag tag-semi">Semiconductors</span>
+        </div>
+        <div class="day-title">Diode Applications, Power Supply Circuits &amp; Optoelectronics</div>
+        <div class="day-sub">Rectifiers · Filters · Voltage Regulators · LEDs · Optocouplers</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson02.html</em> — from "From Wall Outlet to Working Circuit" through "Optocouplers and Optical Isolation Design." Covers half-wave/full-wave/bridge rectifiers, capacitive filtering and ripple voltage, voltage regulators, oscilloscope AC/DC measurement, LEDs, photodiodes/phototransistors, and optical isolation.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> Rectifier, Ripple Voltage, Zener Diode, LED, Optocoupler, Optical Isolation</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Ripple-voltage calculation practice: V<sub>r(pp)</sub> ≈ I<sub>LOAD</sub> / (f<sub>ripple</sub> × C)</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🔌</span>
+            <div>
+              <div class="lab-box-title">Lab 2 — Rectifier &amp; Power Supply Analysis</div>
+              <div class="lab-box-desc">Build and compare half-wave and full-wave bridge rectifier circuits. Add capacitive filter stages and measure ripple voltage with the oscilloscope. Verify zener regulation performance.</div>
+              <div class="lab-skills"><strong>Skills:</strong> Oscilloscope · Bridge Rectifier · Filter · Ripple · Zener</div>
+              <a class="lab-link" href="lab02.html">Open Lab 2 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson02.html">Open Lesson 2 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-banner">📝 Exam 1 — Semiconductors &amp; Power Supplies (due end of Week 2) · Try the <a href="practice-exam.html" style="color:inherit;">Practice Exam Builder</a> filtered to Lessons 1–2 first.</div>
+
+  <!-- ══════════════ UNIT II ══════════════ -->
+  <div class="unit-divider">
+    <span class="unit-num">Unit II</span>
+    <span class="unit-title">Active Devices &amp; Amplifiers</span>
+    <div class="unit-line"></div>
+  </div>
+
+  <!-- Day 3 -->
+  <div class="day-item" data-unit="active" data-keywords="bjt mosfet jfet scr triac dc load line thyristor biasing npn pnp">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="3" onclick="event.stopPropagation(); toggleComplete(3, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 3</span>
+          <span class="topic-tag tag-active">Active Devices</span>
+        </div>
+        <div class="day-title">BJTs, FETs, MOSFETs, SCR &amp; TRIAC</div>
+        <div class="day-sub">Transistors · Thyristors · High-Power Switching</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson03.html</em> — from "The Active Device Family Tree" through "Choosing the Right Device: A Technician's Decision Guide." Covers NPN/PNP operation, the three BJT configurations (CE/CB/CC), DC load-line analysis, JFET vs. MOSFET, and SCR/TRIAC triggering.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> BJT, MOSFET, JFET, SCR, TRIAC, DC Load Line, Thyristor, Biasing</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Load-line construction practice (plot Q-point from bias values)</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🔋</span>
+            <div>
+              <div class="lab-box-title">Lab 3 — BJT Biasing &amp; DC Load Line</div>
+              <div class="lab-box-desc">Bias an NPN transistor in the common-emitter configuration. Plot the DC load line on the collector characteristics, identify the Q-point, and verify saturation vs. cutoff switching behavior.</div>
+              <div class="lab-skills"><strong>Skills:</strong> BJT Biasing · Load Line · Q-Point · CE Configuration · Switching</div>
+              <a class="lab-link" href="lab03.html">Open Lab 3 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson03.html">Open Lesson 3 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 4 -->
+  <div class="day-item" data-unit="active" data-keywords="voltage gain impedance common-emitter op-amp inverting non-inverting feedback comparator integrator differentiator">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="4" onclick="event.stopPropagation(); toggleComplete(4, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 4</span>
+          <span class="topic-tag tag-active">Active Devices</span>
+        </div>
+        <div class="day-title">Transistor Amplifiers &amp; Op-Amps</div>
+        <div class="day-sub">Small-Signal AC · Voltage Gain · Operational Amplifiers</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson04.html</em> — from "From Holding a Point to Moving a Signal" through "Feedback Fundamentals: The Big Idea." Covers CE small-signal gain (A<sub>V</sub> ≈ −R<sub>C</sub>/r'<sub>e</sub>), input/output impedance, op-amp golden rules, inverting/non-inverting configurations, the comparator, and the integrator/differentiator.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> Voltage Gain, Impedance, Common-Emitter, Op-Amp, Inverting, Non-Inverting, Feedback</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>🧪 Dedicated Circuit Simulators — one per amplifier topology</li>
+            <li>Gain-equation practice problems</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">📡</span>
+            <div>
+              <div class="lab-box-title">Lab 4 — CE Amplifier &amp; Op-Amp Configurations</div>
+              <div class="lab-box-desc">Measure voltage gain, input/output impedance, and phase inversion for a CE amplifier. Then configure an LM741 op-amp as both inverting and non-inverting amplifiers and verify gain equations.</div>
+              <div class="lab-skills"><strong>Skills:</strong> Gain Measurement · Impedance · CE Amp · Op-Amp · Inverting/Non-Inverting</div>
+              <a class="lab-link" href="lab04.html">Open Lab 4 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson04.html">Open Lesson 4 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-banner">📝 Exam 2 — Transistors, Amplifiers &amp; Regulators (due end of Week 4) · Try the <a href="practice-exam.html" style="color:inherit;">Practice Exam Builder</a> filtered to Lessons 3–4 first.</div>
+
+  <!-- ══════════════ UNIT III ══════════════ -->
+  <div class="unit-divider">
+    <span class="unit-num">Unit III</span>
+    <span class="unit-title">Logic Fundamentals</span>
+    <div class="unit-line"></div>
+  </div>
+
+  <!-- Day 5 -->
+  <div class="day-item" data-unit="logic" data-keywords="binary hexadecimal octal 2's complement boolean algebra truth table logic gate nand nor demorgan">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="5" onclick="event.stopPropagation(); toggleComplete(5, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 5</span>
+          <span class="topic-tag tag-logic">Logic Fundamentals</span>
+        </div>
+        <div class="day-title">Number Systems, Logic Gates &amp; Boolean Algebra</div>
+        <div class="day-sub">Binary · Hex · Octal · AND · OR · NOT · NAND · NOR</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson05.html</em> — from "Crossing the Digital Bridge" through "DeMorgan's Theorems and Truth Table Analysis." Covers binary/octal/decimal/hex conversions, base-N arithmetic, 2's complement, the five fundamental gates, NAND/NOR as universal gates, and Boolean algebra laws.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> Binary, Hexadecimal, 2's Complement, Boolean Algebra, Truth Table, Logic Gate</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>🧪 Companion Simulators — gate/truth-table builder</li>
+            <li>Number-conversion drill set (binary ↔ octal ↔ hex)</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🔢</span>
+            <div>
+              <div class="lab-box-title">Lab 5 — Logic Gate Truth Table Verification</div>
+              <div class="lab-box-desc">Wire AND, OR, NOT, NAND, NOR, XOR, and XNOR gates using 7400-series ICs. Complete full truth tables using LED output indicators and verify Boolean identities with multi-gate combinations.</div>
+              <div class="lab-skills"><strong>Skills:</strong> 7400 ICs · Truth Tables · Logic Probe · Boolean Verification</div>
+              <a class="lab-link" href="lab05.html">Open Lab 5 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson05.html">Open Lesson 5 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 6 -->
+  <div class="day-item" data-unit="logic" data-keywords="sr latch d flip-flop jk flip-flop sequential logic bistable clocked">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="6" onclick="event.stopPropagation(); toggleComplete(6, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 6</span>
+          <span class="topic-tag tag-logic">Logic Fundamentals</span>
+        </div>
+        <div class="day-title">Latches and Flip-Flops</div>
+        <div class="day-sub">Latches · Flip-Flops · Sequential Logic</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson06.html</em> — from "The Core Idea: A Circuit With Two Stable States" through "Operations Vocabulary & Where These Devices Live." Covers bistability, level-sensitive latches vs. edge-triggered flip-flops, the SR latch (and its S=R=1 hazard), gated SR/D latches, and SR/D/JK/T flip-flops.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> SR Latch, D Flip-Flop, Sequential Logic</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Timing-diagram interpretation practice</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🔄</span>
+            <div>
+              <div class="lab-box-title">Lab 6 — Flip-Flop Operation &amp; Register Design</div>
+              <div class="lab-box-desc">Construct and test SR, D, and JK flip-flop circuits using 74xx ICs. Demonstrate clocked operation, set/reset, and toggle modes. Chain flip-flops to build a 4-bit shift register.</div>
+              <div class="lab-skills"><strong>Skills:</strong> D Flip-Flop · JK Flip-Flop · Clock Signal · Shift Register</div>
+              <a class="lab-link" href="lab06.html">Open Lab 6 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson06.html">Open Lesson 6 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-banner">📝 Exam 3 — Number Systems &amp; Logic Gates (due end of Week 6) · Try the <a href="practice-exam.html" style="color:inherit;">Practice Exam Builder</a> filtered to Lessons 5–6 first.</div>
+
+  <!-- ══════════════ UNIT IV ══════════════ -->
+  <div class="unit-divider">
+    <span class="unit-num">Unit IV</span>
+    <span class="unit-title">Digital Systems</span>
+    <div class="unit-line"></div>
+  </div>
+
+  <!-- Day 7 -->
+  <div class="day-item" data-unit="digital" data-keywords="encoder decoder mux demux adc dac resolution sampling rate bcd 7-segment">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="7" onclick="event.stopPropagation(); toggleComplete(7, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 7</span>
+          <span class="topic-tag tag-digital">Digital Systems</span>
+        </div>
+        <div class="day-title">Encoders, Decoders, Multiplexers, A/D &amp; D/A Converters</div>
+        <div class="day-sub">MUX · DEMUX · ADC · DAC · BCD · 7-Segment</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson07.html</em> — from "Encoding, Routing, and Converting Signals" through "The Six Devices, Side by Side." Covers priority encoders, binary decoders, 7-segment display drivers, BCD conversion, MUX/DEMUX operation, and ADC/DAC fundamentals (resolution, sampling rate).</div>
+          <div class="keyword-row"><strong>Key terms:</strong> Encoder, Decoder, MUX, DEMUX, ADC, DAC, Resolution, Sampling Rate, BCD</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Side-by-side device comparison exercise (all six device types)</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🖵</span>
+            <div>
+              <div class="lab-box-title">Lab 7 — 7-Segment Display Decoder &amp; Priority Encoder</div>
+              <div class="lab-box-desc">Wire a BCD-to-7-segment decoder IC to drive a common-cathode display. Design and test a priority encoder that translates switch inputs to a 3-bit binary output code.</div>
+              <div class="lab-skills"><strong>Skills:</strong> BCD Decoder · 7-Segment Display · Priority Encoder · IC Wiring</div>
+              <a class="lab-link" href="lab07.html">Open Lab 7 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson07.html">Open Lesson 7 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day 8 -->
+  <div class="day-item" data-unit="digital" data-keywords="ripple counter synchronous counter 555 timer astable monostable oscillator rc time constant johnson">
+    <div class="day-head" onclick="toggleDay(this.parentElement)">
+      <input type="checkbox" class="day-check" data-day="8" onclick="event.stopPropagation(); toggleComplete(8, this)">
+      <div class="day-head-main">
+        <div class="day-head-top">
+          <span class="day-badge">Day 8</span>
+          <span class="topic-tag tag-digital">Digital Systems</span>
+        </div>
+        <div class="day-title">Counters, Timers &amp; Oscillators</div>
+        <div class="day-sub">Ripple Counter · 555 Timer · Astable · Monostable · Crystal OSC</div>
+      </div>
+      <span class="day-chevron">▾</span>
+    </div>
+    <div class="day-body">
+      <div class="day-body-inner">
+        <div class="sub-block">
+          <div class="sub-label">📖 Reading Assignment</div>
+          <div class="sub-content">Core Lesson Content, <em>lesson08.html</em> — from "Giving Digital Systems a Heartbeat" through "The Johnson (Twisted-Ring) Counter — and the Family Portrait." Covers async/sync counter design, modulus counters, up/down counting, 555 timer astable (f = 1.44/((R₁+2R₂)C)) and monostable (T = 1.1·R·C) modes, and crystal oscillators.</div>
+          <div class="keyword-row"><strong>Key terms:</strong> Ripple Counter, Synchronous Counter, 555 Timer, Astable, Monostable, Oscillator, RC Time Constant</div>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">✍️ Exercises</div>
+          <ul class="exercise-list">
+            <li>Frequency/period calculation practice (555 astable &amp; monostable formulas)</li>
+            <li>Interactive Knowledge Check (end of lesson)</li>
+          </ul>
+        </div>
+        <div class="sub-block">
+          <div class="sub-label">🔬 Lab</div>
+          <div class="lab-box">
+            <span class="lab-icon">🔁</span>
+            <div>
+              <div class="lab-box-title">Lab 8 — Binary &amp; Decade Counter Circuits</div>
+              <div class="lab-box-desc">Build a 4-bit ripple counter using JK flip-flops and a synchronous decade counter using a 74160 IC. Observe waveforms with the oscilloscope and calculate count frequency vs. clock input.</div>
+              <div class="lab-skills"><strong>Skills:</strong> Ripple Counter · Synchronous Counter · 74160 · Frequency · Waveform Analysis</div>
+              <a class="lab-link" href="lab08.html">Open Lab 8 →</a>
+            </div>
+          </div>
+        </div>
+        <div class="day-footer-row">
+          <a href="lesson08.html">Open Lesson 8 →</a>
+          <a href="activities.html">Related Simulators →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="exam-banner">📝 Exam 4 — Latches &amp; Flip-Flops, plus 🏆 Final Exam (cumulative, due end of Week 8) · Try the <a href="practice-exam.html" style="color:inherit;">Practice Exam Builder</a> or <a href="final-review.html" style="color:inherit;">Final Exam Review</a>.</div>
+
+  <div id="no-results" style="display:none; text-align:center; padding:30px; color:var(--text-muted); font-size:.9rem;">No lessons match that search. Try a different key term.</div>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <span>ELT 102-350</span> — Digital Logic &amp; Solid State Devices | Interactive Course Outline<br>
+  Moraine Valley Community College · Department of Engineering &amp; Technology<br>
+  8 Days · 8 Labs · 4 Module Exams + Final
+</footer>
+
+<!-- ═══════════════════════ SCRIPT ═══════════════════════ -->
+<script>
+  const STORAGE_KEY = 'elt102-theme';
+  const PROGRESS_KEY = 'elt102-outline-progress';
+
+  function applyTheme(dark) {
+    document.body.classList.toggle('dark', dark);
+    document.getElementById('toggle-btn').textContent = dark ? '☀️ Light' : '🌙 Dark';
+  }
+  function toggleTheme() {
+    const isDark = !document.body.classList.contains('dark');
+    localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+    applyTheme(isDark);
+  }
+  (function () {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved === 'dark' || (!saved && prefersDark));
+  })();
+
+  // ── Accordion ──────────────────────────────────────────────
+  function toggleDay(item) {
+    item.classList.toggle('open');
+  }
+
+  // ── Progress tracking ──────────────────────────────────────
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveProgress(p) { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); }
+
+  function toggleComplete(day, checkbox) {
+    const p = getProgress();
+    p[day] = checkbox.checked;
+    saveProgress(p);
+    checkbox.closest('.day-item').classList.toggle('done', checkbox.checked);
+    updateProgressBar();
+  }
+
+  function updateProgressBar() {
+    const p = getProgress();
+    const total = 8;
+    const done = Object.values(p).filter(Boolean).length;
+    document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
+    document.getElementById('progress-text').textContent = done + ' / ' + total + ' lessons complete';
+  }
+
+  function resetProgress() {
+    if (!confirm('Reset your progress for all 8 lessons?')) return;
+    localStorage.removeItem(PROGRESS_KEY);
+    document.querySelectorAll('.day-check').forEach(cb => { cb.checked = false; cb.closest('.day-item').classList.remove('done'); });
+    updateProgressBar();
+  }
+
+  (function initProgress() {
+    const p = getProgress();
+    document.querySelectorAll('.day-check').forEach(cb => {
+      const day = cb.getAttribute('data-day');
+      if (p[day]) {
+        cb.checked = true;
+        cb.closest('.day-item').classList.add('done');
+      }
+    });
+    updateProgressBar();
+  })();
+
+  // ── Unit filter ─────────────────────────────────────────────
+  document.getElementById('filter-chips').addEventListener('click', function(e) {
+    if (!e.target.classList.contains('filter-chip')) return;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    applyFilters();
+  });
+
+  // ── Search ──────────────────────────────────────────────────
+  document.getElementById('search-box').addEventListener('input', applyFilters);
+
+  function applyFilters() {
+    const activeChip = document.querySelector('.filter-chip.active');
+    const unit = activeChip ? activeChip.getAttribute('data-filter') : 'all';
+    const query = document.getElementById('search-box').value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    document.querySelectorAll('.day-item').forEach(item => {
+      const matchesUnit = (unit === 'all') || (item.getAttribute('data-unit') === unit);
+      const haystack = (item.getAttribute('data-keywords') + ' ' + item.textContent).toLowerCase();
+      const matchesQuery = !query || haystack.includes(query);
+      const visible = matchesUnit && matchesQuery;
+      item.classList.toggle('hidden-item', !visible);
+      if (visible) visibleCount++;
+    });
+
+    // hide/show unit dividers and exam banners based on whether any unit filter is active
+    document.querySelectorAll('.unit-divider, .exam-banner').forEach(el => {
+      el.style.display = (unit === 'all') ? '' : 'none';
+    });
+
+    document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
