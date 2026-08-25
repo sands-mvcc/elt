@@ -1,0 +1,828 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELT102 Digital Logic &amp; Solid State Devices Simulator Prompt Builder</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --primary-blue: #1565c0;
+            --light-blue: #e3f2fd;
+            --accent-amber: #ff8f00;
+            --border-color: #cccccc;
+            --dark-gray: #333333;
+            --panel-bg: #ffffff;
+            --form-bg: #fafafa;
+            --muted-text: #666666;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        html[data-color-mode="dark"] {
+            --bg-color: #12161c;
+            --text-color: #e8ecf1;
+            --primary-blue: #4d9bf5;
+            --light-blue: #1b2735;
+            --accent-amber: #ffb74d;
+            --border-color: #3a4250;
+            --dark-gray: #0b0e13;
+            --panel-bg: #171c24;
+            --form-bg: #1b212b;
+            --muted-text: #9aa4b2;
+            --shadow: 0 4px 10px rgba(0,0,0,0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        header {
+            background-color: var(--dark-gray);
+            color: #ffffff;
+            padding: 1.5rem 2rem;
+            border-bottom: 5px solid var(--primary-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 24px;
+            background-color: var(--accent-amber);
+            border-radius: 2px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #bbbbbb;
+        }
+
+        .theme-toggle {
+            background-color: transparent;
+            border: 1px solid #666666;
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 85px);
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        /* Left Panel - Form */
+        .form-panel {
+            padding: 2rem;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            max-height: calc(100vh - 85px);
+            background-color: var(--panel-bg);
+        }
+
+        /* Right Panel - Preview */
+        .preview-panel {
+            padding: 2rem;
+            background-color: var(--light-blue);
+            overflow-y: auto;
+            max-height: calc(100vh - 85px);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .field-hint {
+            font-size: 0.8rem;
+            color: var(--muted-text);
+            margin-top: 0.35rem;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* File upload styling */
+        .file-drop {
+            border: 2px dashed var(--border-color);
+            border-radius: 6px;
+            padding: 1rem;
+            background-color: var(--form-bg);
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .file-drop:hover {
+            border-color: var(--primary-blue);
+            background-color: var(--light-blue);
+        }
+
+        .file-drop input[type="file"] {
+            width: 100%;
+            font-size: 0.85rem;
+        }
+
+        #fileList {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-color);
+        }
+
+        .file-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: var(--light-blue);
+            border: 1px solid var(--primary-blue);
+            color: var(--text-color);
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            margin: 0.2rem 0.3rem 0.2rem 0;
+            font-size: 0.8rem;
+        }
+
+        .file-chip button {
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        /* Persona council styling */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.9rem;
+            background-color: var(--form-bg);
+        }
+
+        .persona-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-weight: 400;
+            font-size: 0.88rem;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 0.4rem;
+            border-radius: 4px;
+            transition: background-color 0.15s ease;
+        }
+
+        .persona-option:hover {
+            background-color: var(--light-blue);
+        }
+
+        .persona-option input[type="checkbox"] {
+            margin-top: 3px;
+            accent-color: var(--primary-blue);
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .persona-option span.persona-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .persona-option span.persona-desc {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--muted-text);
+            font-weight: 400;
+        }
+
+        @media (max-width: 700px) {
+            .persona-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d47a1;
+        }
+
+        .btn-secondary {
+            background-color: var(--dark-gray);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #000000;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(128,128,128,0.1);
+        }
+
+        .prompt-output-container {
+            flex-grow: 1;
+            position: relative;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #promptPreview {
+            width: 100%;
+            height: 100%;
+            min-height: 450px;
+            padding: 1.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            border: none;
+            resize: none;
+            background: transparent;
+            color: var(--text-color);
+            outline: none;
+            white-space: pre-wrap;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--dark-gray);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--accent-amber);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .form-panel, .preview-panel {
+                max-height: none;
+                overflow-y: visible;
+            }
+            .preview-panel {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>AI Simulator Prompt Engine</h1>
+            <p>ELT102-350 &mdash; Digital Logic &amp; Solid State Devices Faculty Toolkit</p>
+        </div>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
+    </header>
+
+    <div class="container">
+        <div class="form-panel">
+            <div class="panel-title">
+                <span>Configuration Parameters</span>
+                <button class="btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="loadExample()">⚡ Load Example</button>
+            </div>
+
+            <form id="promptForm">
+                <div class="form-group">
+                    <label for="simulatorType">Simulator Framework Type</label>
+                    <select id="simulatorType" oninput="updatePrompt()">
+                        <option value="Technical troubleshooting simulator">Technical troubleshooting simulator</option>
+                        <option value="Digital Logic Circuit Design Simulator">Digital Logic Circuit Design Simulator</option>
+                        <option value="Semiconductor Device Characterization Simulator">Semiconductor Device Characterization Simulator</option>
+                        <option value="Fault Diagnosis &amp; Bench Troubleshooting Simulator">Fault Diagnosis &amp; Bench Troubleshooting Simulator</option>
+                        <option value="Power Supply &amp; Rectifier Circuit Simulator">Power Supply &amp; Rectifier Circuit Simulator</option>
+                        <option value="Transistor Biasing &amp; Amplifier Design Simulator">Transistor Biasing &amp; Amplifier Design Simulator</option>
+                        <option value="Op-Amp Configuration Simulator">Op-Amp Configuration Simulator</option>
+                        <option value="Boolean Algebra &amp; Logic Gate Simulator">Boolean Algebra &amp; Logic Gate Simulator</option>
+                        <option value="Flip-Flop &amp; Sequential Logic Simulator">Flip-Flop &amp; Sequential Logic Simulator</option>
+                        <option value="Encoder/Decoder &amp; Multiplexer Simulator">Encoder/Decoder &amp; Multiplexer Simulator</option>
+                        <option value="A/D and D/A Converter Simulator">A/D and D/A Converter Simulator</option>
+                        <option value="Counter, Timer &amp; Oscillator Design Simulator">Counter, Timer &amp; Oscillator Design Simulator</option>
+                        <option value="Bench Test &amp; Measurement (DMM/Oscilloscope) Simulator">Bench Test &amp; Measurement (DMM/Oscilloscope) Simulator</option>
+                        <option value="Breadboard Assembly &amp; Continuity Simulator">Breadboard Assembly &amp; Continuity Simulator</option>
+                        <option value="Component Selection &amp; Datasheet Interpretation Simulator">Component Selection &amp; Datasheet Interpretation Simulator</option>
+                        <option value="Safety &amp; Lab Procedure Compliance Simulator">Safety &amp; Lab Procedure Compliance Simulator</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="courseTitle">Course Title / Context</label>
+                    <input type="text" id="courseTitle" placeholder="e.g., ELT102-350: Digital Logic &amp; Solid State Devices" oninput="updatePrompt()">
+                </div>
+
+                <div class="form-group">
+                    <label for="targetAudience">Target Learner Profile</label>
+                    <input type="text" id="targetAudience" placeholder="e.g., Engineering &amp; Technology majors, hybrid lecture/lab students" oninput="updatePrompt()">
+                </div>
+
+                <div class="form-group">
+                    <label>AI Expert Persona Council (select any that should shape/validate this build)</label>
+                    <div class="persona-grid" id="personaGrid">
+                        <label class="persona-option">
+                            <input type="checkbox" class="persona-checkbox" value="Electronics SME" onchange="updatePrompt()">
+                            <span>
+                                <span class="persona-name">Electronics SME</span>
+                                <span class="persona-desc">Validates technical accuracy of semiconductor physics, circuit behavior, and digital logic against industry and IEEE standards</span>
+                            </span>
+                        </label>
+                        <label class="persona-option">
+                            <input type="checkbox" class="persona-checkbox" value="Instructional Design Expert" onchange="updatePrompt()">
+                            <span>
+                                <span class="persona-name">Instructional Design Expert</span>
+                                <span class="persona-desc">Aligns activity to objectives, scaffolding, and assessment</span>
+                            </span>
+                        </label>
+                        <label class="persona-option">
+                            <input type="checkbox" class="persona-checkbox" value="Graphic Design Expert" onchange="updatePrompt()">
+                            <span>
+                                <span class="persona-name">Graphic Design Expert</span>
+                                <span class="persona-desc">Shapes visual hierarchy, color, typography, and accessibility</span>
+                            </span>
+                        </label>
+                        <label class="persona-option">
+                            <input type="checkbox" class="persona-checkbox" value="Webpage Expert Developer" onchange="updatePrompt()">
+                            <span>
+                                <span class="persona-name">Webpage Expert Developer</span>
+                                <span class="persona-desc">Ensures clean, single-file, cross-browser HTML/JS output</span>
+                            </span>
+                        </label>
+                        <label class="persona-option">
+                            <input type="checkbox" class="persona-checkbox" value="Data Validation Expert" onchange="updatePrompt()">
+                            <span>
+                                <span class="persona-name">Data Validation Expert</span>
+                                <span class="persona-desc">Audits scoring logic, state tracking, and edge cases</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="coreObjective">Primary Learning Objective</label>
+                    <textarea id="coreObjective" placeholder="What specific skill, circuit, or diagnostic process should the student master through this simulation?" oninput="updatePrompt()"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="scenarioConfig">Scenario Settings &amp; Technical Details</label>
+                    <textarea id="scenarioConfig" placeholder="Detail the circuit topology, components, test equipment, or standards involved (e.g., bridge rectifier, 7805 regulator, CMOS logic family, IEEE/ANSI schematic symbols)." oninput="updatePrompt()"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="referenceUrls">Reference URL(s) for Content Context</label>
+                    <input type="text" id="referenceUrls" placeholder="e.g., https://sands-mvcc.github.io/elt102/ (comma-separated for multiple)" oninput="updatePrompt()">
+                    <div class="field-hint">Note: this tool cannot fetch page content itself. URLs are passed through as reference links for the receiving AI to consider or for you to fetch content from separately.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fileUpload">Upload Context File(s)</label>
+                    <div class="file-drop">
+                        <input type="file" id="fileUpload" multiple onchange="handleFileUpload(event)">
+                        <div class="field-hint">Text-based files (.txt, .md, .csv, .json, .html, .xml, .yaml) are read and embedded directly into the prompt. Other file types (images, PDFs, docx) are listed by filename as attached reference context.</div>
+                    </div>
+                    <div id="fileList"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Progression &amp; Complexity Rules</label>
+                    <select id="difficulty" oninput="updatePrompt()">
+                        <option value="Guided / Introductory (Provides hints, gentle difficulty ramp)">Guided / Introductory</option>
+                        <option value="Intermediate (Standard lab-bench challenges, minimal scaffolding)">Intermediate</option>
+                        <option value="Advanced / Adversarial (Multiple simultaneous faults, time-critical constraints, full sandbox logic)">Advanced / Adversarial</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedbackMechanism">Evaluation &amp; Assessment Strategy</label>
+                    <textarea id="feedbackMechanism" placeholder="How should the AI evaluate answers? Provide strict diagnostic-order criteria, dynamic score tracking, hint penalties, or post-activity review requirements." oninput="updatePrompt()"></textarea>
+                </div>
+            </form>
+
+            <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                <button class="btn-secondary" onclick="resetForm()">🔄 Reset Parameters</button>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="panel-title">Generated Prompt Preview</div>
+
+            <div class="toolbar">
+                <button class="btn-primary" onclick="copyPrompt()">📋 Copy Prompt</button>
+                <button class="btn-secondary" onclick="downloadPrompt()">💾 Download as TXT</button>
+            </div>
+
+            <div class="prompt-output-container">
+                <textarea id="promptPreview" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="notification">Prompt copied to clipboard!</div>
+
+    <script>
+        // Holds parsed file context: [{name, type, content, isText}]
+        let uploadedFilesContext = [];
+
+        const personaMandates = {
+            "Electronics SME": "Validate every technical claim, circuit topology, component behavior, and diagnostic step for real-world accuracy against semiconductor physics, digital logic theory, and current industry/IEEE conventions relevant to ELT102 course objectives.",
+            "Instructional Design Expert": "Ensure the simulation is tightly aligned to the stated learning objective, follows a sound scaffolding/Bloom's Taxonomy progression, and ties every feedback moment to a measurable outcome.",
+            "Graphic Design Expert": "Recommend a clean, accessible visual hierarchy (color palette, typography, iconography, spacing) that reinforces the learning experience without overwhelming the learner, consistent with the existing course design system.",
+            "Webpage Expert Developer": "Ensure the resulting simulator is implemented as clean, single-file, zero-dependency HTML/CSS/JS, cross-browser compatible, responsive, and ready to deploy directly to GitHub Pages.",
+            "Data Validation Expert": "Audit all scoring logic, state tracking, conditional branching, and generated data outputs for internal consistency, correct edge-case handling, and freedom from logical contradictions."
+        };
+
+        const TEXT_EXTENSIONS = ['.txt', '.md', '.csv', '.json', '.html', '.htm', '.js', '.css', '.xml', '.yaml', '.yml', '.log'];
+        const MAX_CHARS_PER_FILE = 4000;
+
+        function isTextFile(filename) {
+            const lower = filename.toLowerCase();
+            return TEXT_EXTENSIONS.some(ext => lower.endsWith(ext));
+        }
+
+        function handleFileUpload(event) {
+            const files = Array.from(event.target.files);
+            uploadedFilesContext = [];
+            const fileListEl = document.getElementById('fileList');
+            fileListEl.innerHTML = '';
+
+            if (files.length === 0) {
+                updatePrompt();
+                return;
+            }
+
+            let pending = files.length;
+
+            files.forEach(file => {
+                const entry = { name: file.name, type: file.type || 'unknown', content: '', isText: isTextFile(file.name) };
+                uploadedFilesContext.push(entry);
+
+                if (entry.isText) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        let text = e.target.result || '';
+                        if (text.length > MAX_CHARS_PER_FILE) {
+                            text = text.slice(0, MAX_CHARS_PER_FILE) + '\n...[truncated]...';
+                        }
+                        entry.content = text;
+                        pending--;
+                        if (pending === 0) {
+                            renderFileList();
+                            updatePrompt();
+                        }
+                    };
+                    reader.onerror = () => {
+                        entry.content = '[Error reading file content]';
+                        pending--;
+                        if (pending === 0) {
+                            renderFileList();
+                            updatePrompt();
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    pending--;
+                    if (pending === 0) {
+                        renderFileList();
+                        updatePrompt();
+                    }
+                }
+            });
+        }
+
+        function renderFileList() {
+            const fileListEl = document.getElementById('fileList');
+            fileListEl.innerHTML = uploadedFilesContext.map((f, idx) => {
+                const badge = f.isText ? 'text embedded' : 'binary reference';
+                return `<span class="file-chip">${f.name} <em style="font-style:normal;color:var(--primary-blue);">(${badge})</em> <button type="button" onclick="removeFile(${idx})" title="Remove">×</button></span>`;
+            }).join('');
+        }
+
+        function removeFile(idx) {
+            uploadedFilesContext.splice(idx, 1);
+            renderFileList();
+            updatePrompt();
+        }
+
+        function getSelectedPersonas() {
+            return Array.from(document.querySelectorAll('.persona-checkbox:checked')).map(cb => cb.value);
+        }
+
+        function buildPersonaSection() {
+            const selected = getSelectedPersonas();
+            if (selected.length === 0) {
+                return "No specific persona council selected. Proceed using general best-practice instructional design and electronics education standards.";
+            }
+            return selected.map(p => `- **${p}:** ${personaMandates[p]}`).join('\n');
+        }
+
+        function buildReferenceContextBlock() {
+            const urlsRaw = document.getElementById('referenceUrls').value.trim();
+            const urls = urlsRaw ? urlsRaw.split(',').map(u => u.trim()).filter(Boolean) : [];
+
+            let block = '';
+
+            if (urls.length > 0) {
+                block += `\n**Reference URL(s) provided by the instructor:**\n${urls.map(u => `- ${u}`).join('\n')}\n`;
+            }
+
+            if (uploadedFilesContext.length > 0) {
+                const textFiles = uploadedFilesContext.filter(f => f.isText);
+                const binaryFiles = uploadedFilesContext.filter(f => !f.isText);
+
+                if (textFiles.length > 0) {
+                    block += `\n**Embedded context from uploaded file(s):**\n`;
+                    textFiles.forEach(f => {
+                        block += `\n--- BEGIN FILE: ${f.name} ---\n${f.content}\n--- END FILE: ${f.name} ---\n`;
+                    });
+                }
+
+                if (binaryFiles.length > 0) {
+                    block += `\n**Attached reference file(s) (content not extractable in this tool, filenames provided for context):**\n${binaryFiles.map(f => `- ${f.name}`).join('\n')}\n`;
+                }
+            }
+
+            return block;
+        }
+
+        function updatePrompt() {
+            const simulatorType = document.getElementById('simulatorType').value;
+            const courseTitle = document.getElementById('courseTitle').value || '[Insert Course Title]';
+            const targetAudience = document.getElementById('targetAudience').value || '[Insert Learner Profile]';
+            const coreObjective = document.getElementById('coreObjective').value || '[Insert Primary Learning Objective]';
+            const scenarioConfig = document.getElementById('scenarioConfig').value || '[Insert Scenario Circuit/Equipment and Constraints]';
+            const difficulty = document.getElementById('difficulty').value;
+            const feedbackMechanism = document.getElementById('feedbackMechanism').value || '[Insert Evaluation Criteria/Scoring Rules]';
+
+            const personaSection = buildPersonaSection();
+            const referenceContextBlock = buildReferenceContextBlock();
+
+            const generatedPrompt = `You are an advanced, adaptive educational engine specializing in creating high-fidelity interactive training environments. Your goal is to act as a **${simulatorType}** tailored for a course titled **"${courseTitle}"**, designed for **${targetAudience}**.
+
+### 1. CORE ROLE & ENVIRONMENT MODE
+* **Role Configuration:** You operate strictly as an interactive text-based educational sandbox engine.
+* **Interface Rule:** Never break character, explain your AI backend mechanics, or provide the entire solution upfront unless explicitly commanded by system-level keys.
+* **Complexity Level:** ${difficulty}
+
+### 2. AI EXPERT PERSONA COUNCIL
+Before and during content generation, internally consult and satisfy the following expert perspectives. Treat this as a standing review council whose mandates all apply simultaneously to the final output:
+${personaSection}
+
+### 3. PRIMARY INSTRUCTIONAL OBJECTIVE
+The core competency the student must demonstrate is:
+> ${coreObjective}
+
+### 4. TECHNICAL SCENARIO ARCHITECTURE & INITIATION
+Initialize a realistic scenario using the following circuit, equipment, and constraints:
+${scenarioConfig}
+${referenceContextBlock}
+### 5. SIMULATION WORKFLOW & INTERACTION LOGIC
+1.  **Initialization:** Present a realistic lab-bench brief or circuit status notification indicating the system's baseline status or fault condition.
+2.  **Turn-by-Turn Execution:** Await user diagnostic checks, measurement requests, component substitutions, or design adjustments.
+3.  **State Management:** Maintain an implicit state matrix tracking circuit conditions, measured values, replaced/adjusted components, and test equipment readings based on user actions. Respond dynamically with realistic circuit consequences for incorrect inputs.
+4.  **Formatting Outputs:** Present schematics, truth tables, waveform descriptions, or measurement readouts within strict raw markdown code blocks.
+
+### 6. FEEDBACK, EVALUATION & GRADING STRATEGY
+Evaluate performance and guide the user dynamically via the following framework:
+${feedbackMechanism}
+
+---
+**STIMULUS INITIALIZATION COMMAND:** Begin the exercise by presenting the circuit/system's initial state, immediate bench readings or symptoms, and the first prompt asking the learner for their initial diagnostic or design action.`;
+
+            document.getElementById('promptPreview').value = generatedPrompt;
+        }
+
+        function copyPrompt() {
+            const previewTextArea = document.getElementById('promptPreview');
+            previewTextArea.select();
+            previewTextArea.setSelectionRange(0, 99999); /* For mobile devices */
+
+            navigator.clipboard.writeText(previewTextArea.value).then(() => {
+                showToast("Prompt copied to clipboard successfully!");
+            }).catch(() => {
+                showToast("Failed to copy. Please manually select and copy text.");
+            });
+        }
+
+        async function downloadPrompt() {
+            const text = document.getElementById('promptPreview').value;
+            const type = document.getElementById('simulatorType').value.replace(/\s+/g, '-').toLowerCase();
+            const filename = `elt102-${type}-prompt.txt`;
+
+            // When hosted inside the Claude Artifact viewer, hand the file to the
+            // viewer's own save flow. On a normal web host (e.g. GitHub Pages),
+            // window.claude is undefined and we fall through to a direct download.
+            if (window.claude && typeof window.claude.use === 'function') {
+                try {
+                    const downloads = await window.claude.use('downloads');
+                    if (downloads) {
+                        await downloads.save({ filename, data: text });
+                        showToast("Downloading prompt text file...");
+                        return;
+                    }
+                } catch (err) {
+                    // Declined, rate-limited, or unavailable — fall back below.
+                }
+            }
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showToast("Downloading prompt text file...");
+        }
+
+        function resetForm() {
+            if (confirm("Are you sure you want to clear all inputs? Your current work will be lost.")) {
+                document.getElementById('promptForm').reset();
+                uploadedFilesContext = [];
+                document.getElementById('fileList').innerHTML = '';
+                document.querySelectorAll('.persona-checkbox').forEach(cb => cb.checked = false);
+                updatePrompt();
+                showToast("Form fields reset.");
+            }
+        }
+
+        function loadExample() {
+            document.getElementById('simulatorType').value = "Fault Diagnosis & Bench Troubleshooting Simulator";
+            document.getElementById('courseTitle').value = "ELT102-350: Digital Logic & Solid State Devices";
+            document.getElementById('targetAudience').value = "Community college Engineering & Technology students in a hybrid lecture/lab electronics course";
+            document.getElementById('coreObjective').value = "Diagnose a non-functioning regulated DC power supply by systematically testing the transformer, bridge rectifier, filter capacitor, and 7805 linear regulator stages using simulated multimeter and oscilloscope readings to isolate the faulted component.";
+            document.getElementById('scenarioConfig').value = "A linear DC power supply built from a 12VAC step-down transformer, full-wave bridge rectifier, 1000uF filter capacitor, and 7805 linear voltage regulator feeding a 5V digital logic breadboard. The supply worked yesterday but now outputs 0V. Learner has access to a simulated digital multimeter (DC/AC voltage, resistance, continuity) and a dual-trace oscilloscope.";
+            document.getElementById('difficulty').value = "Intermediate (Standard lab-bench challenges, minimal scaffolding)";
+            document.getElementById('feedbackMechanism').value = "Judge inputs based on correct systematic troubleshooting order (input side before output side, macro to micro, safety discharge checks before probing). Deduct points for guessing component replacement without diagnostic justification or skipping capacitor discharge safety steps. Output a 'Fault Isolation Report' summarizing correct/incorrect diagnostic steps at completion.";
+            document.getElementById('referenceUrls').value = "https://sands-mvcc.github.io/elt102/";
+
+            document.querySelectorAll('.persona-checkbox').forEach(cb => {
+                cb.checked = (cb.value === "Electronics SME" || cb.value === "Instructional Design Expert");
+            });
+
+            updatePrompt();
+            showToast("Loaded Digital Logic sample configuration!");
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            const root = document.documentElement;
+            const isDark = root.getAttribute('data-color-mode') === 'dark';
+            const toggleBtn = document.getElementById('themeToggle');
+            if (isDark) {
+                root.removeAttribute('data-color-mode');
+                toggleBtn.textContent = '🌙 Dark';
+            } else {
+                root.setAttribute('data-color-mode', 'dark');
+                toggleBtn.textContent = '☀️ Light';
+            }
+        }
+
+        // Initialize with default template text on startup (default theme: light)
+        window.onload = function() {
+            updatePrompt();
+        };
+    </script>
+</body>
+</html>
